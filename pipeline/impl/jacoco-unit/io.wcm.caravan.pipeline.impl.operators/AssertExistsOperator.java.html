@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AssertExistsOperator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Implementation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.impl.operators</a> &gt; <span class="el_source">AssertExistsOperator.java</span></div><h1>AssertExistsOperator.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.impl.operators;
+
+import io.wcm.caravan.pipeline.JsonPipelineInputException;
+import io.wcm.caravan.pipeline.JsonPipelineOutput;
+import io.wcm.caravan.pipeline.impl.JsonPathSelector;
+import rx.Observable.Operator;
+import rx.Subscriber;
+import rx.exceptions.Exceptions;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
+
+/**
+ * An operator that will check if the pipeline's output contains data at a given JSONPath, and fail with a
+ * {@link JsonPipelineInputException} if this assumptions is not fulfilled.
+ */
+public class AssertExistsOperator implements Operator&lt;JsonPipelineOutput, JsonPipelineOutput&gt; {
+
+  private final String jsonPath;
+  private final int statusCode;
+  private final String msg;
+
+  /**
+   * @param jsonPath the JSONPath to evaluate on the pipeline's output
+   * @param statusCode the appropriate HTTP status code in case data is missing
+   * @param msg an informative error message
+   */
+<span class="fc" id="L49">  public AssertExistsOperator(String jsonPath, int statusCode, String msg) {</span>
+
+    // fail fast if the given json path is invalid
+<span class="fc" id="L52">    JsonPath.compile(jsonPath);</span>
+
+<span class="fc" id="L54">    this.jsonPath = jsonPath;</span>
+<span class="fc" id="L55">    this.statusCode = statusCode;</span>
+<span class="fc" id="L56">    this.msg = msg;</span>
+<span class="fc" id="L57">  }</span>
+
+  @Override
+  public Subscriber&lt;? super JsonPipelineOutput&gt; call(Subscriber&lt;? super JsonPipelineOutput&gt; subscriber) {
+<span class="fc" id="L61">    return new Subscriber&lt;JsonPipelineOutput&gt;() {</span>
+
+      private boolean assertionFailed;
+
+      @Override
+      public void onCompleted() {
+        // take care not to call #onCompleted if #onError has been called because the assertion failed
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (!assertionFailed) {</span>
+<span class="fc" id="L69">          subscriber.onCompleted();</span>
+        }
+<span class="fc" id="L71">      }</span>
+
+      @Override
+      public void onError(Throwable e) {
+<span class="fc" id="L75">        Exceptions.throwIfFatal(e);</span>
+<span class="fc" id="L76">        subscriber.onError(e);</span>
+<span class="fc" id="L77">      }</span>
+
+      @Override
+      public void onNext(JsonPipelineOutput output) {
+
+<span class="fc" id="L82">        JsonNode jsonResponse = output.getPayload();</span>
+
+        // if this #assertExist is chained after an #extract call, the responseNode or its child node can be a MissingNode and we should bail out early
+
+<span class="pc bpc" id="L86" title="2 of 6 branches missed.">        if (jsonResponse == null || jsonResponse.isMissingNode() || !jsonResponse.iterator().hasNext()</span>
+<span class="pc bpc" id="L87" title="1 of 4 branches missed.">            || (jsonResponse.isObject() &amp;&amp; jsonResponse.iterator().next().isMissingNode())) {</span>
+<span class="fc" id="L88">          onAssertionFailed();</span>
+<span class="fc" id="L89">          return;</span>
+        }
+
+        try {
+          // evalute the JSONPath on the pipeline's response
+<span class="fc" id="L94">          ArrayNode jsonPathResult = new JsonPathSelector(jsonPath).call(jsonResponse);</span>
+
+<span class="fc bfc" id="L96" title="All 2 branches covered.">          if (jsonPathResult.size() == 0) {</span>
+<span class="fc" id="L97">            onAssertionFailed();</span>
+          }
+          else {
+            // the responseNode has content at the given JsonPath, so we can continue processing the response
+<span class="fc" id="L101">            subscriber.onNext(output);</span>
+          }
+        }
+<span class="nc" id="L104">        catch (PathNotFoundException p) {</span>
+<span class="nc" id="L105">          onAssertionFailed();</span>
+<span class="fc" id="L106">        }</span>
+<span class="fc" id="L107">      }</span>
+
+      public void onAssertionFailed() {
+<span class="fc" id="L110">        assertionFailed = true;</span>
+<span class="fc" id="L111">        this.onError(new JsonPipelineInputException(statusCode, msg));</span>
+<span class="fc" id="L112">      }</span>
+    };
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

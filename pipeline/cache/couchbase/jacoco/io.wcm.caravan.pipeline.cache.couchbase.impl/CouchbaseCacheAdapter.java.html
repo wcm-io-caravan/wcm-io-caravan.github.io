@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CouchbaseCacheAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Cache Adapter for Couchbase</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.cache.couchbase.impl</a> &gt; <span class="el_source">CouchbaseCacheAdapter.java</span></div><h1>CouchbaseCacheAdapter.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.cache.couchbase.impl;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.commons.osgi.PropertiesUtil;
+import org.apache.sling.nosql.couchbase.client.CouchbaseClient;
+import org.apache.sling.nosql.couchbase.client.CouchbaseKey;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.ComponentContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import com.codahale.metrics.health.HealthCheck;
+import com.codahale.metrics.health.HealthCheckRegistry;
+import com.couchbase.client.java.AsyncBucket;
+import com.couchbase.client.java.document.RawJsonDocument;
+
+import io.wcm.caravan.commons.metrics.rx.HitsAndMissesCountingMetricsOperator;
+import io.wcm.caravan.commons.metrics.rx.TimerMetricsOperator;
+import io.wcm.caravan.pipeline.cache.CachePersistencyOptions;
+import io.wcm.caravan.pipeline.cache.spi.CacheAdapter;
+import rx.Observable;
+import rx.Observer;
+
+/**
+ * {@link CacheAdapter} implementation for Couchbase.
+ */
+@Component(immediate = true, metatype = true,
+label = &quot;wcm.io Caravan Pipeline Cache Adapter for Couchbase&quot;,
+description = &quot;Configure pipeline caching in couchbase.&quot;)
+@Service(CacheAdapter.class)
+<span class="fc" id="L63">public class CouchbaseCacheAdapter implements CacheAdapter {</span>
+
+  static final String COUCHBASE_CLIENT_ID = &quot;caravan-pipeline-cacheadapter-couchbase&quot;;
+
+  @Property(label = &quot;Service Ranking&quot;,
+      description = &quot;Used to determine the of caching layers if you are using multiple Cache Adapters. &quot;
+          + &quot;Fast system-internal caches should have a lower service than slower network caches, so that they are queried first.&quot;,
+          intValue = CouchbaseCacheAdapter.DEFAULT_RANKING,
+          propertyPrivate = false)
+  static final String PROPERTY_RANKING = Constants.SERVICE_RANKING;
+  static final int DEFAULT_RANKING = 2000;
+
+  @Property(label = &quot;Cache Key Prefix&quot;, description = &quot;Prefix for caching keys.&quot;,
+      value = CouchbaseCacheAdapter.CACHE_KEY_PREFIX_DEFAULT)
+  static final String CACHE_KEY_PREFIX_PROPERTY = &quot;cacheKeyPrefix&quot;;
+  private static final String CACHE_KEY_PREFIX_DEFAULT = &quot;json-pipeline:&quot;;
+
+  @Property(label = &quot;Cache Timeout&quot;, description = &quot;Timeout in ms for Coucbase cache operations.&quot;,
+      intValue = CouchbaseCacheAdapter.CACHE_TIMEOUT_DEFAULT)
+  static final String CACHE_TIMEOUT_PROPERTY = &quot;cacheTimeout&quot;;
+  private static final int CACHE_TIMEOUT_DEFAULT = 1000;
+
+  @Property(label = &quot;Cache Writable&quot;,
+      description = &quot;Determines if this system should be allowed to write into the couchbase cache. If disabled it will only be able to read existing entries.&quot;,
+      boolValue = CouchbaseCacheAdapter.CACHE_WRITABLE_DEFAULT)
+  static final String CACHE_WRITABLE_PROPERTY = &quot;cacheWritable&quot;;
+  private static final boolean CACHE_WRITABLE_DEFAULT = true;
+
+  @Property(label = &quot;Cache Isolated&quot;,
+      description = &quot;If enabled, this system's hostname will be appended to all cache keys. &quot; +
+          &quot;This can be used in development or test environments to share the same couchbase bucket without actually sharing any cached data&quot;,
+          boolValue = CouchbaseCacheAdapter.CACHE_ISOLATED_DEFAULT)
+  static final String CACHE_ISOLATED_PROPERTY = &quot;cacheIsolated&quot;;
+  private static final boolean CACHE_ISOLATED_DEFAULT = false;
+
+  @Property(label = &quot;Enabled&quot;,
+      description = &quot;Enables or disables the whole cache adapter and all operations.&quot;,
+      boolValue = CouchbaseCacheAdapter.CACHE_ENABLED_DEFAULT)
+  static final String CACHE_ENABLED_PROPERTY = &quot;enabled&quot;;
+  private static final boolean CACHE_ENABLED_DEFAULT = true;
+
+
+<span class="fc" id="L105">  private static final Logger log = LoggerFactory.getLogger(CouchbaseCacheAdapter.class);</span>
+
+  @Reference(target = &quot;(&quot; + CouchbaseClient.CLIENT_ID_PROPERTY + &quot;=&quot; + COUCHBASE_CLIENT_ID + &quot;)&quot;)
+  private CouchbaseClient couchbaseClient;
+
+  @Reference
+  private MetricRegistry metricRegistry;
+  private Timer getLatencyTimer;
+  private Timer putLatencyTimer;
+  private Counter hitsCounter;
+  private Counter missesCounter;
+
+  @Reference
+  private HealthCheckRegistry healthCheckRegistry;
+
+  private String keyPrefix;
+  private int timeout;
+  private boolean writable;
+  private boolean isolated;
+  private boolean enabled;
+
+  @Activate
+  private void activate(ComponentContext componentContext, Map&lt;String, Object&gt; config) {
+<span class="fc" id="L128">    keyPrefix = PropertiesUtil.toString(config.get(CACHE_KEY_PREFIX_PROPERTY), CACHE_KEY_PREFIX_DEFAULT);</span>
+<span class="fc" id="L129">    timeout = PropertiesUtil.toInteger(config.get(CACHE_TIMEOUT_PROPERTY), CACHE_TIMEOUT_DEFAULT);</span>
+<span class="fc" id="L130">    writable = PropertiesUtil.toBoolean(config.get(CACHE_WRITABLE_PROPERTY), CACHE_WRITABLE_DEFAULT);</span>
+<span class="fc" id="L131">    isolated = PropertiesUtil.toBoolean(config.get(CACHE_ISOLATED_PROPERTY), CACHE_ISOLATED_DEFAULT);</span>
+<span class="fc" id="L132">    enabled = PropertiesUtil.toBoolean(config.get(CACHE_ENABLED_PROPERTY), CACHE_ENABLED_DEFAULT);</span>
+
+<span class="fc" id="L134">    getLatencyTimer = metricRegistry.timer(MetricRegistry.name(getClass(), &quot;latency&quot;, &quot;get&quot;));</span>
+<span class="fc" id="L135">    putLatencyTimer = metricRegistry.timer(MetricRegistry.name(getClass(), &quot;latency&quot;, &quot;put&quot;));</span>
+<span class="fc" id="L136">    hitsCounter = metricRegistry.counter(MetricRegistry.name(getClass(), &quot;hits&quot;));</span>
+<span class="fc" id="L137">    missesCounter = metricRegistry.counter(MetricRegistry.name(getClass(), &quot;misses&quot;));</span>
+
+<span class="fc" id="L139">    healthCheckRegistry.register(MetricRegistry.name(getClass()), new HealthCheck() {</span>
+      @Override
+      protected Result check() throws Exception {
+<span class="nc bnc" id="L142" title="All 4 branches missed.">        return couchbaseClient != null &amp;&amp; couchbaseClient.isEnabled() ? Result.healthy() : Result.unhealthy(&quot;No cache bucket&quot;);</span>
+      }
+    });
+
+<span class="fc" id="L146">  }</span>
+
+  @Deactivate
+  private void deactivate(ComponentContext componentContext) {
+<span class="fc" id="L150">    metricRegistry.remove(MetricRegistry.name(getClass(), &quot;latency&quot;, &quot;get&quot;));</span>
+<span class="fc" id="L151">    metricRegistry.remove(MetricRegistry.name(getClass(), &quot;latency&quot;, &quot;put&quot;));</span>
+<span class="fc" id="L152">    metricRegistry.remove(MetricRegistry.name(getClass(), &quot;hits&quot;));</span>
+<span class="fc" id="L153">    metricRegistry.remove(MetricRegistry.name(getClass(), &quot;misses&quot;));</span>
+<span class="fc" id="L154">    healthCheckRegistry.unregister(MetricRegistry.name(getClass()));</span>
+<span class="fc" id="L155">  }</span>
+
+  @Override
+  public Observable&lt;String&gt; get(String cacheKey, CachePersistencyOptions options) {
+<span class="pc bpc" id="L159" title="2 of 6 branches missed.">    if (!enabled || options == null || !options.shouldUsePersistentCaches()) {</span>
+<span class="fc" id="L160">      return Observable.empty();</span>
+    }
+
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">    if (!couchbaseClient.isEnabled()) {</span>
+<span class="nc" id="L164">      log.warn(&quot;Couchbase client '{}' is disabled, please check the configuration.&quot;, COUCHBASE_CLIENT_ID);</span>
+<span class="nc" id="L165">      return Observable.empty();</span>
+    }
+
+<span class="fc" id="L168">    AsyncBucket bucket = couchbaseClient.getAsyncBucket();</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">    if (bucket == null) {</span>
+<span class="nc" id="L170">      log.error(&quot;Failed to obtain couchase bucket from &quot; + couchbaseClient.getBucketName() + &quot;, couchbase client &quot; + couchbaseClient.getClientId());</span>
+<span class="nc" id="L171">      return Observable.empty();</span>
+    }
+
+    Observable&lt;RawJsonDocument&gt; fromCache;
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">    if (options.isExtendStorageTimeOnGet()) {</span>
+<span class="nc" id="L176">      fromCache = bucket.getAndTouch(getCacheKey(cacheKey), options.getStorageTime(), RawJsonDocument.class);</span>
+    }
+    else {
+<span class="fc" id="L179">      fromCache = bucket.get(getCacheKey(cacheKey), RawJsonDocument.class);</span>
+    }
+
+<span class="fc" id="L182">    return fromCache</span>
+<span class="fc" id="L183">        .timeout(timeout, TimeUnit.MILLISECONDS, Observable.create(f -&gt; {</span>
+<span class="fc" id="L184">          log.warn(&quot;Timeout accessing Couchbase cache&quot;);</span>
+<span class="fc" id="L185">          f.onCompleted();</span>
+<span class="fc" id="L186">        }))</span>
+<span class="fc" id="L187">        .lift(new TimerMetricsOperator&lt;RawJsonDocument&gt;(getLatencyTimer))</span>
+<span class="fc" id="L188">        .lift(new HitsAndMissesCountingMetricsOperator&lt;RawJsonDocument&gt;(hitsCounter, missesCounter))</span>
+<span class="fc" id="L189">        .map(doc -&gt; {</span>
+<span class="fc" id="L190">          String content = doc.content();</span>
+<span class="fc" id="L191">          log.trace(&quot;Succesfully retrieved document with id {}: {}&quot;, doc.id(), doc.content());</span>
+<span class="fc" id="L192">          return content;</span>
+        });
+  }
+
+  @Override
+  public void put(String cacheKey, String jsonString, CachePersistencyOptions options) {
+<span class="pc bpc" id="L198" title="2 of 8 branches missed.">    if (!enabled || !writable || options == null || !options.shouldUsePersistentCaches()) {</span>
+<span class="fc" id="L199">      return;</span>
+    }
+
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">    if (!couchbaseClient.isEnabled()) {</span>
+<span class="nc" id="L203">      log.warn(&quot;Couchbase client '{}' is disabled, please check the configuration.&quot;, COUCHBASE_CLIENT_ID);</span>
+<span class="nc" id="L204">      return;</span>
+    }
+
+<span class="fc" id="L207">    AsyncBucket bucket = couchbaseClient.getAsyncBucket();</span>
+<span class="pc bpc" id="L208" title="1 of 2 branches missed.">    if (bucket == null) {</span>
+<span class="nc" id="L209">      log.error(&quot;Failed to obtain couchase bucket from &quot; + couchbaseClient.getBucketName() + &quot;, couchbase client &quot; + couchbaseClient.getClientId());</span>
+<span class="nc" id="L210">      return;</span>
+    }
+
+<span class="fc" id="L213">    RawJsonDocument doc = RawJsonDocument.create(getCacheKey(cacheKey), options.getStorageTime(), jsonString);</span>
+<span class="fc" id="L214">    Observable&lt;RawJsonDocument&gt; insertionObservable = bucket.upsert(doc);</span>
+
+<span class="fc" id="L216">    insertionObservable</span>
+<span class="fc" id="L217">    .timeout(timeout, TimeUnit.MILLISECONDS, Observable.create(f -&gt; {</span>
+<span class="fc" id="L218">      log.warn(&quot;Timeout writing into Couchbase cache&quot;);</span>
+<span class="fc" id="L219">      f.onCompleted();</span>
+<span class="fc" id="L220">    }))</span>
+<span class="fc" id="L221">    .lift(new TimerMetricsOperator&lt;RawJsonDocument&gt;(putLatencyTimer))</span>
+<span class="fc" id="L222">    .subscribe(new Observer&lt;RawJsonDocument&gt;() {</span>
+
+      @Override
+      public void onNext(RawJsonDocument insertedDoc) {
+<span class="fc" id="L226">        log.trace(&quot;Succesfully put into Couchbase cache document with id {}:\n{}&quot;, insertedDoc.id(), insertedDoc.content());</span>
+<span class="fc" id="L227">      }</span>
+
+      @Override
+      public void onCompleted() {
+        // nothing
+<span class="fc" id="L232">      }</span>
+
+      @Override
+      public void onError(Throwable e) {
+<span class="nc" id="L236">        log.error(&quot;Failed to put document &quot; + getCacheKey(cacheKey) + &quot; into the Couchbase cache&quot;, e);</span>
+<span class="nc" id="L237">      }</span>
+
+    });
+<span class="fc" id="L240">  }</span>
+
+  private String getCacheKey(String cacheKey) {
+
+<span class="fc" id="L244">    String fullCacheKey = cacheKey;</span>
+
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">    if (isolated) {</span>
+      try {
+<span class="nc" id="L248">        String hostName = InetAddress.getLocalHost().getHostName();</span>
+<span class="nc" id="L249">        fullCacheKey += &quot;_&quot; + hostName;</span>
+      }
+<span class="nc" id="L251">      catch (UnknownHostException ex) {</span>
+<span class="nc" id="L252">        log.error(&quot;Failed to obtain this system's own host name to append it to the cache key&quot;, ex);</span>
+<span class="nc" id="L253">        isolated = false;</span>
+<span class="nc" id="L254">      }</span>
+    }
+
+<span class="fc" id="L257">    return CouchbaseKey.build(fullCacheKey, keyPrefix);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

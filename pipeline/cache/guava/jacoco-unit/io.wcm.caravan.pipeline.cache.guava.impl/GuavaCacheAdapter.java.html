@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GuavaCacheAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Cache Adapter for Guava</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.cache.guava.impl</a> &gt; <span class="el_source">GuavaCacheAdapter.java</span></div><h1>GuavaCacheAdapter.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.cache.guava.impl;
+
+import io.wcm.caravan.pipeline.cache.CachePersistencyOptions;
+import io.wcm.caravan.pipeline.cache.spi.CacheAdapter;
+
+import java.math.BigDecimal;
+import java.util.Map;
+
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.commons.osgi.PropertiesUtil;
+import org.osgi.framework.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import rx.Observable;
+
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.Weigher;
+
+/**
+ * {@link CacheAdapter} implementation for Guava.
+ * Provides guava {@link Cache}, which size is specified in bytes. Default cache size is 10 MB. Provide higher property
+ * value {@value #MAX_CACHE_SIZE_MB_PROPERTY} to set up higher cache capacity.
+ * items life time depends on the amount and size of stored cache items. Items, which capacity is higher than 1/4 of the
+ * declared cache size will not be stored.
+ */
+@Component(immediate = true, metatype = true,
+label = &quot;wcm.io Caravan Pipeline Cache Adapter for Guava&quot;,
+description = &quot;Configure pipeline caching in guava.&quot;)
+@Service(CacheAdapter.class)
+<span class="fc" id="L59">public class GuavaCacheAdapter implements CacheAdapter {</span>
+
+<span class="fc" id="L61">  private static final Logger log = LoggerFactory.getLogger(GuavaCacheAdapter.class);</span>
+
+  @Property(label = &quot;Service Ranking&quot;, intValue = GuavaCacheAdapter.DEFAULT_RANKING,
+      description = &quot;Used to determine the order of caching layers if you are using multiple Cache Adapters. &quot;
+          + &quot;Fast system-internal caches should have a lower service than slower network caches, so that they are queried first.&quot;,
+          propertyPrivate = false)
+  static final String PROPERTY_RANKING = Constants.SERVICE_RANKING;
+  static final int DEFAULT_RANKING = 1000;
+
+  @Property(label = &quot;Max. size in MB&quot;,
+      description = &quot;Declares the maximum total amount of VM memory in Megabyte that will be used by this cache adapter.&quot;)
+  static final String MAX_CACHE_SIZE_MB_PROPERTY = &quot;maxCacheSizeMB&quot;;
+<span class="fc" id="L73">  private static final Integer MAX_CACHE_SIZE_MB_DEFAULT = 10;</span>
+
+  @Property(label = &quot;Enabled&quot;,
+      description = &quot;Enables or disables the whole cache adapter and all operations.&quot;,
+      boolValue = GuavaCacheAdapter.CACHE_ENABLED_DEFAULT)
+  static final String CACHE_ENABLED_PROPERTY = &quot;enabled&quot;;
+  private static final boolean CACHE_ENABLED_DEFAULT = true;
+
+  /**
+   * 1024*1024 multiplier used to provide bytes from megabyte values to create correct cache weight
+   */
+<span class="fc" id="L84">  private static final BigDecimal WEIGHT_MULTIPLIER = new BigDecimal(1048576);</span>
+
+  private Cache&lt;String, String&gt; guavaCache;
+  private long cacheWeightInBytes;
+  private boolean enabled;
+
+  @Reference
+  private MetricRegistry metricRegistry;
+  private Timer getLatencyTimer;
+  private Timer putLatencyTimer;
+  private Counter hitsCounter;
+  private Counter missesCounter;
+
+  @Activate
+  void activate(Map&lt;String, Object&gt; config) {
+<span class="fc" id="L99">    cacheWeightInBytes = new BigDecimal(PropertiesUtil.toDouble(config.get(MAX_CACHE_SIZE_MB_PROPERTY), MAX_CACHE_SIZE_MB_DEFAULT))</span>
+<span class="fc" id="L100">    .multiply(WEIGHT_MULTIPLIER).longValue();</span>
+<span class="fc" id="L101">    this.guavaCache = CacheBuilder.newBuilder().weigher(new Weigher&lt;String, String&gt;() {</span>
+      @Override
+      public int weigh(String key, String value) {
+<span class="fc" id="L104">        return getWeight(key) + getWeight(value);</span>
+      }
+<span class="fc" id="L106">    }).maximumWeight(cacheWeightInBytes).build();</span>
+<span class="fc" id="L107">    enabled = PropertiesUtil.toBoolean(config.get(CACHE_ENABLED_PROPERTY), CACHE_ENABLED_DEFAULT);</span>
+
+<span class="fc" id="L109">    getLatencyTimer = metricRegistry.timer(MetricRegistry.name(getClass(), &quot;latency&quot;, &quot;get&quot;));</span>
+<span class="fc" id="L110">    putLatencyTimer = metricRegistry.timer(MetricRegistry.name(getClass(), &quot;latency&quot;, &quot;put&quot;));</span>
+<span class="fc" id="L111">    hitsCounter = metricRegistry.counter(MetricRegistry.name(getClass(), &quot;hits&quot;));</span>
+<span class="fc" id="L112">    missesCounter = metricRegistry.counter(MetricRegistry.name(getClass(), &quot;misses&quot;));</span>
+<span class="fc" id="L113">  }</span>
+
+  private int getWeight(String toMeasure) {
+<span class="fc" id="L116">    return 8 * ((((toMeasure.length()) * 2) + 45) / 8);</span>
+  }
+
+  @Deactivate
+  void deactivate() {
+<span class="fc" id="L121">    metricRegistry.remove(MetricRegistry.name(getClass(), &quot;latency&quot;, &quot;get&quot;));</span>
+<span class="fc" id="L122">    metricRegistry.remove(MetricRegistry.name(getClass(), &quot;latency&quot;, &quot;put&quot;));</span>
+<span class="fc" id="L123">    metricRegistry.remove(MetricRegistry.name(getClass(), &quot;hits&quot;));</span>
+<span class="fc" id="L124">    metricRegistry.remove(MetricRegistry.name(getClass(), &quot;misses&quot;));</span>
+<span class="fc" id="L125">  }</span>
+
+  @Override
+  public Observable&lt;String&gt; get(String cacheKey, CachePersistencyOptions options) {
+<span class="pc bpc" id="L129" title="1 of 4 branches missed.">    if (!enabled || !options.shouldUseTransientCaches()) {</span>
+<span class="fc" id="L130">      return Observable.empty();</span>
+    }
+
+<span class="fc" id="L133">    return Observable.create(subscriber -&gt; {</span>
+<span class="fc" id="L134">      Timer.Context context = getLatencyTimer.time();</span>
+<span class="fc" id="L135">      String cacheEntry = guavaCache.getIfPresent(cacheKey);</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">      if (cacheEntry != null) {</span>
+<span class="fc" id="L137">        hitsCounter.inc();</span>
+<span class="fc" id="L138">        subscriber.onNext(cacheEntry);</span>
+      }
+      else {
+<span class="fc" id="L141">        missesCounter.inc();</span>
+      }
+<span class="fc" id="L143">      context.stop();</span>
+<span class="fc" id="L144">      log.trace(&quot;Succesfully retrieved document with id {}: {}&quot;, cacheKey, cacheEntry);</span>
+<span class="fc" id="L145">      subscriber.onCompleted();</span>
+<span class="fc" id="L146">    });</span>
+
+  }
+
+  @Override
+  public void put(String cacheKey, String jsonString, CachePersistencyOptions options) {
+<span class="pc bpc" id="L152" title="1 of 4 branches missed.">    if (!enabled || !options.shouldUseTransientCaches()) {</span>
+<span class="fc" id="L153">      return;</span>
+    }
+
+<span class="fc" id="L156">    Timer.Context context = putLatencyTimer.time();</span>
+<span class="fc" id="L157">    guavaCache.put(cacheKey, jsonString);</span>
+<span class="fc" id="L158">    context.stop();</span>
+<span class="fc" id="L159">    log.trace(&quot;Succesfully put document into Guava cache with id {}:\n{}&quot;, cacheKey, jsonString);</span>
+
+<span class="fc" id="L161">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

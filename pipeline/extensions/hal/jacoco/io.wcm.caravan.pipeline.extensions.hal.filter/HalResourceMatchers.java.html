@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalResourceMatchers.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Extension for HAL</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.extensions.hal.filter</a> &gt; <span class="el_source">HalResourceMatchers.java</span></div><h1>HalResourceMatchers.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.extensions.hal.filter;
+
+import io.wcm.caravan.hal.resource.HalResource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.osgi.annotation.versioning.ProviderType;
+
+/**
+ * Default HAL resource matchers.
+ */
+@ProviderType
+public final class HalResourceMatchers {
+
+  private HalResourceMatchers() {
+    // nothing to do
+  }
+
+  /**
+   * @param relationToMatch HAL resource relation
+   * @return True if resource has given relation
+   */
+  public static HalResourcePredicate relation(String relationToMatch) {
+<span class="fc" id="L42">    return new HalResourcePredicate() {</span>
+
+      @Override
+      public String getId() {
+<span class="nc" id="L46">        return &quot;MATCHES(/&quot; + relationToMatch + &quot;)&quot;;</span>
+      }
+
+      @Override
+      public boolean apply(HalPath halPath, HalResource hal) {
+<span class="fc" id="L51">        return StringUtils.equals(relationToMatch, halPath.current());</span>
+      }
+
+    };
+  }
+
+  /**
+   * @param relationToMatch Relation of the {@code item}
+   * @return True if resource is an {@code item} of the given relation.
+   */
+  public static HalResourcePredicate collection(String relationToMatch) {
+<span class="fc" id="L62">    return new HalResourcePredicate() {</span>
+
+      @Override
+      public String getId() {
+<span class="nc" id="L66">        return &quot;MATCHES(/&quot; + relationToMatch + &quot;/item)&quot;;</span>
+      }
+
+      @Override
+      public boolean apply(HalPath halPath, HalResource hal) {
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        return StringUtils.equals(&quot;item&quot;, halPath.current())</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">            &amp;&amp; StringUtils.equals(relationToMatch, halPath.last(1));</span>
+      }
+    };
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

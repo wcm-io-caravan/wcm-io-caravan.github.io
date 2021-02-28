@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Extension for HAL</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.extensions.hal.client</a> &gt; <span class="el_source">HalClient.java</span></div><h1>HalClient.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.extensions.hal.client;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import org.osgi.annotation.versioning.ProviderType;
+import org.slf4j.Logger;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.hal.resource.util.HalBuilder;
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.io.http.request.CaravanHttpRequestBuilder;
+import io.wcm.caravan.pipeline.JsonPipeline;
+import io.wcm.caravan.pipeline.JsonPipelineAction;
+import io.wcm.caravan.pipeline.JsonPipelineExceptionHandler;
+import io.wcm.caravan.pipeline.JsonPipelineFactory;
+import io.wcm.caravan.pipeline.cache.CacheStrategy;
+import io.wcm.caravan.pipeline.extensions.hal.action.BuildResource;
+import io.wcm.caravan.pipeline.extensions.hal.action.CreateResource;
+import io.wcm.caravan.pipeline.extensions.hal.action.ModifyResource;
+import io.wcm.caravan.pipeline.extensions.hal.client.action.DeepEmbedLinks;
+import io.wcm.caravan.pipeline.extensions.hal.client.action.EmbedLink;
+import io.wcm.caravan.pipeline.extensions.hal.client.action.EmbedLinks;
+import io.wcm.caravan.pipeline.extensions.hal.client.action.FollowLink;
+import io.wcm.caravan.pipeline.extensions.hal.client.action.LoadLink;
+import rx.functions.Action1;
+import rx.functions.Func2;
+
+/**
+ * Factory for HAL specific {@link JsonPipelineAction}s.
+ */
+@ProviderType
+public final class HalClient {
+
+  private ServiceIdExtractor serviceIdExtractor;
+  private final CacheStrategy cacheStrategy;
+  private final Map&lt;String, String&gt; contextProperties;
+
+  private final CaravanHttpRequest entryPointRequest;
+
+<span class="pc" id="L66">  private List&lt;JsonPipelineExceptionHandler&gt; exceptionHandlers = Lists.newArrayList();</span>
+  private Logger logger;
+
+  /**
+   * @param serviceId Service ID
+   * @param cacheStrategy default cache strategy to use for all actions that fetch additional resources
+   */
+  public HalClient(String serviceId, CacheStrategy cacheStrategy) {
+<span class="fc" id="L74">    this(serviceId, cacheStrategy, ImmutableMap.of());</span>
+<span class="fc" id="L75">  }</span>
+
+  /**
+   * @param serviceId Service ID
+   * @param cacheStrategy default cache strategy to use for all actions that fetch additional resources
+   * @param contextProperties a Map of properties to pass on to
+   *          {@link JsonPipelineFactory#create(CaravanHttpRequest, Map)}
+   */
+<span class="fc" id="L83">  public HalClient(String serviceId, CacheStrategy cacheStrategy, Map&lt;String, String&gt; contextProperties) {</span>
+<span class="fc" id="L84">    this.serviceIdExtractor = (path) -&gt; serviceId;</span>
+<span class="fc" id="L85">    this.cacheStrategy = cacheStrategy;</span>
+<span class="fc" id="L86">    this.contextProperties = contextProperties;</span>
+<span class="fc" id="L87">    this.entryPointRequest = new CaravanHttpRequestBuilder(serviceId).append(&quot;/&quot;).build();</span>
+<span class="fc" id="L88">  }</span>
+
+  /**
+   * @param entryPointRequest the request to be executed to fetch the HAL entry point
+   * @param cacheStrategy default cache strategy to use for all actions that fetch additional resources
+   * @param contextProperties a Map of properties to pass on to
+   *          {@link JsonPipelineFactory#create(CaravanHttpRequest, Map)}
+   */
+<span class="nc" id="L96">  public HalClient(CaravanHttpRequest entryPointRequest, CacheStrategy cacheStrategy, Map&lt;String, String&gt; contextProperties) {</span>
+<span class="nc" id="L97">    this.serviceIdExtractor = (path) -&gt; entryPointRequest.getServiceId();</span>
+<span class="nc" id="L98">    this.cacheStrategy = cacheStrategy;</span>
+<span class="nc" id="L99">    this.contextProperties = contextProperties;</span>
+<span class="nc" id="L100">    this.entryPointRequest = entryPointRequest;</span>
+<span class="nc" id="L101">  }</span>
+
+  /**
+   * @param entryPointRequest the request to be executed to fetch the HAL entry point
+   * @param serviceIdExtractor Service ID extractor
+   * @param cacheStrategy default cache strategy to use for all actions that fetch additional resources
+   * @param contextProperties a Map of properties to pass on to
+   *          {@link JsonPipelineFactory#create(CaravanHttpRequest, Map)}
+   */
+  public HalClient(CaravanHttpRequest entryPointRequest, ServiceIdExtractor serviceIdExtractor, CacheStrategy cacheStrategy,
+<span class="nc" id="L111">      Map&lt;String, String&gt; contextProperties) {</span>
+<span class="nc" id="L112">    this.serviceIdExtractor = (path) -&gt; entryPointRequest.getServiceId();</span>
+<span class="nc" id="L113">    this.cacheStrategy = cacheStrategy;</span>
+<span class="nc" id="L114">    this.contextProperties = contextProperties;</span>
+<span class="nc" id="L115">    this.entryPointRequest = entryPointRequest;</span>
+<span class="nc" id="L116">  }</span>
+
+  /**
+   * Adds an exception handler for the pipeline actions.
+   * @param newExceptionHandler The exceptionHandler to set.
+   * @return This HAL client
+   */
+  public HalClient addExceptionHandler(JsonPipelineExceptionHandler newExceptionHandler) {
+<span class="fc" id="L124">    this.exceptionHandlers.add(newExceptionHandler);</span>
+<span class="fc" id="L125">    return this;</span>
+  }
+
+  /**
+   * Sets the logger for the pipeline actions.
+   * @param value Logger to set.
+   * @return This HAL client
+   */
+  public HalClient setLogger(Logger value) {
+<span class="nc" id="L134">    this.logger = value;</span>
+<span class="nc" id="L135">    return this;</span>
+  }
+
+  /**
+   * Replaces the default service id extractor (that uses the same serviceId for all requests) with a custom logic
+   * @param extractor the ServiceIdExtractor to use
+   * @return this hal client
+   */
+  public HalClient setServiceIdExtractor(ServiceIdExtractor extractor) {
+<span class="nc" id="L144">    this.serviceIdExtractor = extractor;</span>
+<span class="nc" id="L145">    return this;</span>
+  }
+
+  /**
+   * Creates a {@link JsonPipeline} that will fetch the entry point of the HAL service
+   * @param factory the factory to use to create the pipeline
+   * @return the pipeline
+   */
+  public JsonPipeline getEntryPoint(JsonPipelineFactory factory) {
+<span class="nc" id="L154">    return create(factory, entryPointRequest);</span>
+  }
+
+  /**
+   * Creates a JSON pipeline for a service entry point.
+   * @deprecated use {@link #getEntryPoint(JsonPipelineFactory)} instead
+   * @param factory Pipeline factory
+   * @return JSON pipeline
+   */
+  @Deprecated
+  public JsonPipeline createEntryPoint(JsonPipelineFactory factory) {
+<span class="nc" id="L165">    return create(factory, &quot;/&quot;);</span>
+  }
+
+  /**
+   * Creates a JSON pipeline for a service and URL.
+   * @deprecated specify the entry point in the constructor and use {@link #getEntryPoint(JsonPipelineFactory)} instead
+   * @param factory Pipeline factory
+   * @param url URL to start
+   * @return JSON pipeline
+   */
+  @Deprecated
+  public JsonPipeline create(JsonPipelineFactory factory, String url) {
+<span class="nc" id="L177">    return create(factory, new CaravanHttpRequestBuilder(serviceIdExtractor.getServiceId(url)).append(url).build());</span>
+  }
+
+  /**
+   * Creates a JSON pipeline for a HTTP request.
+   * @deprecated specify the entry point in the constructor and use {@link #getEntryPoint(JsonPipelineFactory)} instead
+   * @param factory Pipeline factory
+   * @param request Pre-configured HTTP request
+   * @return JSON pipeline
+   */
+  @Deprecated
+  public JsonPipeline create(JsonPipelineFactory factory, CaravanHttpRequest request) {
+<span class="nc" id="L189">    JsonPipeline entryPoint = factory.create(request, contextProperties);</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">    if (cacheStrategy != null) {</span>
+<span class="nc" id="L191">      entryPoint = entryPoint.addCachePoint(cacheStrategy);</span>
+    }
+<span class="nc" id="L193">    return entryPoint;</span>
+  }
+
+  /**
+   * Creates a follow link action for the first relation specific link
+   * @param relation Link relation
+   * @return Follow link action
+   */
+  public FollowLink follow(String relation) {
+<span class="nc" id="L202">    return follow(relation, Collections.emptyMap(), 0);</span>
+  }
+
+  /**
+   * Creates a follow link action for the first relation specific link with the given URL parameters.
+   * @param relation Link relation
+   * @param parameters URL parameters
+   * @return Follow link action
+   */
+  public FollowLink follow(String relation, Map&lt;String, Object&gt; parameters) {
+<span class="nc" id="L212">    return follow(relation, parameters, 0);</span>
+  }
+
+  /**
+   * Creates a follow link action for the {@code index} specified link.
+   * @param relation Link relation
+   * @param index Link index
+   * @return Follow link action
+   */
+  public FollowLink follow(String relation, int index) {
+<span class="nc" id="L222">    return follow(relation, Collections.emptyMap(), index);</span>
+  }
+
+  /**
+   * Creates a follow link action for the {@code index} specified link with the given URL parameters.
+   * @param relation Link relation
+   * @param parameters URL parameters
+   * @param index Link index
+   * @return Follow link action
+   */
+  public FollowLink follow(String relation, Map&lt;String, Object&gt; parameters, int index) {
+<span class="nc" id="L233">    return (FollowLink)new FollowLink(serviceIdExtractor, relation, index, parameters)</span>
+<span class="nc" id="L234">        .setCacheStrategy(cacheStrategy)</span>
+<span class="nc" id="L235">        .setExceptionHandlers(exceptionHandlers)</span>
+<span class="nc" id="L236">        .setLogger(logger);</span>
+  }
+
+  /**
+   * Creates a follow link action for the forst link with the given relation and name
+   * @param relation Link relation
+   * @param parameters URL parameters
+   * @param name of the link to follow
+   * @return Follow link action
+   */
+  public FollowLink follow(String relation, Map&lt;String, Object&gt; parameters, String name) {
+<span class="nc" id="L247">    return (FollowLink)new FollowLink(serviceIdExtractor, relation, name, parameters)</span>
+<span class="nc" id="L248">        .setCacheStrategy(cacheStrategy)</span>
+<span class="nc" id="L249">        .setExceptionHandlers(exceptionHandlers)</span>
+<span class="nc" id="L250">        .setLogger(logger);</span>
+  }
+
+  /**
+   * Creates an embed links action for all relation specific links.
+   * @param relation Link relation
+   * @return Embed links action
+   */
+  public EmbedLinks embed(String relation) {
+<span class="fc" id="L259">    return embed(relation, Collections.emptyMap());</span>
+  }
+
+  /**
+   * Creates an embed links action for all relation specific links with the given URL parameters.
+   * @param relation Link relation
+   * @param parameters URL parameters
+   * @return Embed links action
+   */
+  public EmbedLinks embed(String relation, Map&lt;String, Object&gt; parameters) {
+<span class="fc" id="L269">    return (EmbedLinks)new EmbedLinks(serviceIdExtractor, relation, parameters)</span>
+<span class="fc" id="L270">        .setCacheStrategy(cacheStrategy)</span>
+<span class="fc" id="L271">        .setExceptionHandlers(exceptionHandlers)</span>
+<span class="fc" id="L272">        .setLogger(logger);</span>
+  }
+
+  /**
+   * Creates an embed link action for the {@code index} specified link.
+   * @param relation Link relation
+   * @param index Link index
+   * @return Embed links action
+   */
+  public EmbedLink embed(String relation, int index) {
+<span class="fc" id="L282">    return embed(relation, Collections.emptyMap(), index);</span>
+  }
+
+  /**
+   * Creates an embed link action for the {@code index} specified link with the given URL parameters.
+   * @param relation Link relation
+   * @param parameters URL parameters
+   * @param index Link index
+   * @return Embed links action
+   */
+  public EmbedLink embed(String relation, Map&lt;String, Object&gt; parameters, int index) {
+<span class="fc" id="L293">    return (EmbedLink)new EmbedLink(serviceIdExtractor, relation, index, parameters)</span>
+<span class="fc" id="L294">        .setCacheStrategy(cacheStrategy)</span>
+<span class="fc" id="L295">        .setExceptionHandlers(exceptionHandlers)</span>
+<span class="fc" id="L296">        .setLogger(logger);</span>
+  }
+
+  /**
+   * Fetches the content of all links with the given relation in a HAL resource &lt;strong&gt;and all embedded
+   * resources&lt;/strong&gt;, and replaces the links with the
+   * corresponding embedded resources.
+   * @param relation Link relation
+   * @return Deep Embed links action
+   */
+  public DeepEmbedLinks deepEmbed(String relation) {
+<span class="fc" id="L307">    return deepEmbed(relation, Collections.emptyMap());</span>
+  }
+
+  /**
+   * Fetches the content of all links with the given relation in a HAL resource &lt;strong&gt;and all embedded
+   * resources&lt;/strong&gt;, and replaces the links with the
+   * corresponding embedded resources.
+   * @param relation Link relation
+   * @param parameters URL parameters
+   * @return Deep Embed links action
+   */
+  public DeepEmbedLinks deepEmbed(String relation, Map&lt;String, Object&gt; parameters) {
+<span class="fc" id="L319">    return (DeepEmbedLinks)new DeepEmbedLinks(serviceIdExtractor, relation, parameters)</span>
+<span class="fc" id="L320">        .setCacheStrategy(cacheStrategy)</span>
+<span class="fc" id="L321">        .setExceptionHandlers(exceptionHandlers)</span>
+<span class="fc" id="L322">        .setLogger(logger);</span>
+  }
+
+  /**
+   * Allows to create a {@link BuildResource} action by specifying the output href and a lambda
+   * @param selfHref the path of the output resource to be used for the self helf
+   * @param buildFunc the lambda that gets the previous step's output and a {@link HalBuilder} with the specified
+   *          self-link
+   * @return the action that executes the lambda build function
+   * @deprecated use createResource instead
+   **/
+  @Deprecated
+  public BuildResource buildResource(String selfHref, Func2&lt;HalResource, HalBuilder, HalResource&gt; buildFunc) {
+<span class="nc" id="L335">    return new BuildResource(selfHref) {</span>
+
+      @Override
+      public HalResource build(HalResource input, HalBuilder outputBuilder) {
+<span class="nc" id="L339">        return buildFunc.call(input, outputBuilder);</span>
+      }
+    };
+  }
+
+  /**
+   * Allows to create a {@link CreateResource} action by specifying the output href and a lambda.
+   * The {@link CreateResource} action will automatically generated a cache-key based on the given href, and also
+   * set the self-link of the resource returned by the lambda
+   * @param selfHref the path of the output resource to be used for the self helf
+   * @param buildFunc the lambda that gets the previous step's output and should return a new HalResource
+   * @return the action that executes the lambda build function
+   **/
+  public CreateResource createResource(String selfHref, Function&lt;HalResource, HalResource&gt; buildFunc) {
+<span class="nc" id="L353">    return new CreateResource(selfHref) {</span>
+
+      @Override
+      public HalResource createOutput(HalResource input) {
+<span class="nc" id="L357">        return buildFunc.apply(input);</span>
+      }
+    };
+  }
+
+  /**
+   * Allows to create a {@link ModifyResource} action by specifying the output href and a lambda
+   * @param selfHref the path of the output resource to be used for the self helf
+   * @param modifyFunc the lambda that gets a HalResource with the previous step's output and the specified self-link
+   * @return the action that executes the lambda build function
+   **/
+  public ModifyResource modifyResource(String selfHref, Action1&lt;HalResource&gt; modifyFunc) {
+<span class="nc" id="L369">    return new ModifyResource(selfHref) {</span>
+
+      @Override
+      public void modify(HalResource output) {
+<span class="nc" id="L373">        modifyFunc.call(output);</span>
+<span class="nc" id="L374">      }</span>
+    };
+  }
+
+  /**
+   * Creates a {@link LoadLink} action for the given link.
+   * @param link Link to load
+   * @return Load link action
+   */
+  public LoadLink load(Link link) {
+<span class="nc" id="L384">    return load(link, Collections.emptyMap());</span>
+  }
+
+  /**
+   * Creates a {@link LoadLink} action for the given link and URI parameters.
+   * @param link Link to load
+   * @param parameters URI parameters
+   * @return Load link action
+   */
+  public LoadLink load(Link link, Map&lt;String, Object&gt; parameters) {
+<span class="fc" id="L394">    return (LoadLink)new LoadLink(serviceIdExtractor, link, parameters)</span>
+<span class="fc" id="L395">        .setCacheStrategy(cacheStrategy)</span>
+<span class="fc" id="L396">        .setExceptionHandlers(exceptionHandlers)</span>
+<span class="fc" id="L397">        .setLogger(logger);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

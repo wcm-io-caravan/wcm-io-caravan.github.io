@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FilterEmbeddedHalResource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Extension for HAL</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.extensions.hal.filter</a> &gt; <span class="el_source">FilterEmbeddedHalResource.java</span></div><h1>FilterEmbeddedHalResource.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.extensions.hal.filter;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.pipeline.JsonPipelineAction;
+import io.wcm.caravan.pipeline.JsonPipelineContext;
+import io.wcm.caravan.pipeline.JsonPipelineOutput;
+import rx.Observable;
+
+/**
+ * Walks recursive through the HAL resource and its embedded resources. Given {@code matcher} determines which embedded
+ * HAL resource should get filtered by the
+ * given {@code predicate}.
+ */
+@ProviderType
+public final class FilterEmbeddedHalResource implements JsonPipelineAction {
+
+  private final HalResourcePredicate matcher;
+  private final HalResourcePredicate predicate;
+
+  /**
+   * @param matcher HAL resource matcher
+   * @param predicate HAL resource predicate
+   */
+<span class="fc" id="L45">  public FilterEmbeddedHalResource(HalResourcePredicate matcher, HalResourcePredicate predicate) {</span>
+<span class="fc" id="L46">    this.matcher = matcher;</span>
+<span class="fc" id="L47">    this.predicate = predicate;</span>
+<span class="fc" id="L48">  }</span>
+
+  @Override
+  public String getId() {
+<span class="nc" id="L52">    return &quot;FILTER-EMBEDDED-HAL-RESOURCE(&quot; + matcher.getId() + &quot;-&quot; + predicate.getId() + &quot;)&quot;;</span>
+  }
+
+  @Override
+  public Observable&lt;JsonPipelineOutput&gt; execute(JsonPipelineOutput previousStepOutput, JsonPipelineContext pipelineContext) {
+
+<span class="fc" id="L58">    HalResource hal = new HalResource(previousStepOutput.getPayload());</span>
+<span class="fc" id="L59">    process(new HalPath(), hal);</span>
+<span class="fc" id="L60">    return Observable.just(previousStepOutput);</span>
+
+  }
+
+  private void process(HalPath halPath, HalResource hal) {
+
+<span class="fc bfc" id="L66" title="All 2 branches covered.">    for (String relation : hal.getEmbedded().keySet()) {</span>
+<span class="fc" id="L67">      HalPath newHalPath = halPath.add(relation);</span>
+<span class="fc" id="L68">      filterEmbeddedResources(newHalPath, hal);</span>
+<span class="fc" id="L69">      processEmbeddedResources(newHalPath, hal);</span>
+<span class="fc" id="L70">    }</span>
+
+<span class="fc" id="L72">  }</span>
+
+  private void filterEmbeddedResources(HalPath halPath, HalResource hal) {
+
+<span class="fc" id="L76">    int index = 0;</span>
+<span class="fc" id="L77">    String relation = halPath.current();</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">    for (HalResource resource : hal.getEmbedded(relation)) {</span>
+<span class="pc bpc" id="L79" title="1 of 4 branches missed.">      if (matcher.apply(halPath, resource) &amp;&amp; !predicate.apply(halPath, resource)) {</span>
+<span class="fc" id="L80">        hal.removeEmbedded(relation, index);</span>
+      }
+      else {
+<span class="fc" id="L83">        index++;</span>
+      }
+<span class="fc" id="L85">    }</span>
+
+<span class="fc" id="L87">  }</span>
+
+  private void processEmbeddedResources(HalPath halPath, HalResource hal) {
+
+<span class="fc" id="L91">    hal.getEmbedded(halPath.current()).stream()</span>
+<span class="fc" id="L92">        .forEach(resource -&gt; process(halPath, resource));</span>
+<span class="fc" id="L93">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

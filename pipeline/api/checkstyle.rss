@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>JSON Pipeline API - Checkstyle report</title>
+    <link>https://caravan.wcm.io/pipeline/api/</link>
+    <description>JSON Pipeline API - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
+    <item>
+      <title>File: 19,
+             Errors: 0,
+             Warnings: 1,
+             Infos: 0
+      </title>
+            <link>https://caravan.wcm.io/pipeline/api//checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineExceptionHandlers.java">io/wcm/caravan/pipeline/JsonPipelineExceptionHandlers.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineActions.java">io/wcm/caravan/pipeline/JsonPipelineActions.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.spi.CacheAdapter.java">io/wcm/caravan/pipeline/cache/spi/CacheAdapter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.CacheStrategies.java">io/wcm/caravan/pipeline/cache/CacheStrategies.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineOutput.java">io/wcm/caravan/pipeline/JsonPipelineOutput.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.package-info.java">io/wcm/caravan/pipeline/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.CacheDateUtils.java">io/wcm/caravan/pipeline/cache/CacheDateUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineContext.java">io/wcm/caravan/pipeline/JsonPipelineContext.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.CachePersistencyOptions.java">io/wcm/caravan/pipeline/cache/CachePersistencyOptions.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.package-info.java">io/wcm/caravan/pipeline/cache/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineInputException.java">io/wcm/caravan/pipeline/JsonPipelineInputException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipeline.java">io/wcm/caravan/pipeline/JsonPipeline.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.CacheStrategy.java">io/wcm/caravan/pipeline/cache/CacheStrategy.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineOutputException.java">io/wcm/caravan/pipeline/JsonPipelineOutputException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineExceptionHandler.java">io/wcm/caravan/pipeline/JsonPipelineExceptionHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineAction.java">io/wcm/caravan/pipeline/JsonPipelineAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.spi.package-info.java">io/wcm/caravan/pipeline/cache/spi/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.CacheControlUtils.java">io/wcm/caravan/pipeline/cache/CacheControlUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineFactory.java">io/wcm/caravan/pipeline/JsonPipelineFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

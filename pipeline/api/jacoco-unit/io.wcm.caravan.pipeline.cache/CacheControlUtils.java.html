@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CacheControlUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline API</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.cache</a> &gt; <span class="el_source">CacheControlUtils.java</span></div><h1>CacheControlUtils.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.cache;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import io.wcm.caravan.pipeline.JsonPipeline;
+import io.wcm.caravan.pipeline.JsonPipelineOutput;
+import rx.Observable;
+import rx.functions.Func1;
+import rx.observers.SafeSubscriber;
+
+/**
+ * Cache control utilities aid to manage pipeline output cache control meta data.
+ */
+@ProviderType
+public final class CacheControlUtils {
+
+  private CacheControlUtils() {
+    // static methods only
+  }
+
+  /**
+   * @param pipelineOutputs Pipeline outputs with {@code max-age} values
+   * @return the lowest max-age value of all the given pipeline outputs
+   */
+  public static int getLowestMaxAge(Iterable&lt;JsonPipelineOutput&gt; pipelineOutputs) {
+
+<span class="fc" id="L50">    return Observable</span>
+<span class="fc" id="L51">        .from(pipelineOutputs)</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        .filter(output -&gt; output != null)</span>
+<span class="fc" id="L53">        .map(output -&gt; output.getMaxAge())</span>
+<span class="fc" id="L54">        .reduce(Math::min)</span>
+<span class="fc" id="L55">        .toBlocking().single();</span>
+  }
+
+  /**
+   * @param pipelineOutputs  Pipeline outputs with {@code max-age} values
+   * @return the lowest max-age value of all the given pipeline outputs
+   */
+  public static int getLowestMaxAge(JsonPipelineOutput... pipelineOutputs) {
+<span class="fc" id="L63">    return getLowestMaxAge(Arrays.asList(pipelineOutputs));</span>
+  }
+
+  /**
+   * Aggregates multiple resources fetched with different {@link JsonPipeline} instances, into a single
+   * {@link JsonPipelineOutput} and ensures sure that the max-age Cache-Control-Header is set to the minimum value of
+   * all aggregated responses.
+   * @param pipelines an observable that emits MULTIPLE {@link JsonPipeline}s
+   * @param zipFunc a lambda that is given the list of all {@link JsonPipelineOutput}s when they have been retrieved
+   * @return a new observable that emits the aggregated JsonPipelineOutput with the correct max-age
+   */
+  public static Observable&lt;JsonPipelineOutput&gt; zipWithLowestMaxAge(
+      Observable&lt;JsonPipeline&gt; pipelines,
+      Func1&lt;List&lt;JsonPipelineOutput&gt;, JsonPipelineOutput&gt; zipFunc) {
+
+<span class="fc" id="L78">    Observable&lt;Observable&lt;JsonPipelineOutput&gt;&gt; outputs = pipelines.map(pipeline -&gt; pipeline.getOutput());</span>
+
+<span class="fc" id="L80">    return zipWithLowestMaxAgeInternal(outputs, zipFunc);</span>
+  }
+
+  /**
+   * Aggregates multiple resources fetched with different {@link JsonPipeline} instances, into a single
+   * {@link JsonPipelineOutput} and ensures sure that the max-age Cache-Control-Header is set to the minimum value of
+   * all aggregated responses.
+   * @param pipelines the {@link JsonPipeline}s to zip
+   * @param zipFunc a lambda that is given the list of all {@link JsonPipelineOutput}s when they have been retrieved
+   * @return a new observable that emits the aggregated JsonPipelineOutput with the correct max-age
+   */
+  public static Observable&lt;JsonPipelineOutput&gt; zipWithLowestMaxAge(
+      Iterable&lt;JsonPipeline&gt; pipelines,
+      Func1&lt;List&lt;JsonPipelineOutput&gt;, JsonPipelineOutput&gt; zipFunc) {
+
+<span class="fc" id="L95">    Observable&lt;Observable&lt;JsonPipelineOutput&gt;&gt; outputs = Observable.from(pipelines).map(pipeline -&gt; pipeline.getOutput());</span>
+
+<span class="fc" id="L97">    return zipWithLowestMaxAgeInternal(outputs, zipFunc);</span>
+  }
+
+
+  private static Observable&lt;JsonPipelineOutput&gt; zipWithLowestMaxAgeInternal(
+      Observable&lt;Observable&lt;JsonPipelineOutput&gt;&gt; multipleOutputs,
+      Func1&lt;List&lt;JsonPipelineOutput&gt;, JsonPipelineOutput&gt; zipFunc) {
+
+    // this method could just return the zippingObservable created below, but this lead to an odd bug when this
+    // method was called with an empty &quot;multipleOutputs&quot; observable. In that case, the OperatorZip called
+    // #onCompleted twice (is this an implementation bug in rx.java?), which was causing weird behaviour
+    // if #defaultIfEmpty was used on the zipped result (the default value was emitted twice)
+
+    // that behaviour can be avoided by adding a SafeSubscriber layer
+
+<span class="fc" id="L112">    return Observable.create(subscriber -&gt; {</span>
+
+<span class="fc" id="L114">      Observable&lt;JsonPipelineOutput&gt; zippingObservable = Observable.zip(multipleOutputs, (arrayOfOutputs) -&gt; {</span>
+
+        // collect the JsonPipelineOutput instances in a generic list (casting is required since FuncN only gives as a Object[])
+<span class="fc" id="L117">        List&lt;JsonPipelineOutput&gt; listOfOutputs = new ArrayList&lt;&gt;(arrayOfOutputs.length);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        for (Object o : arrayOfOutputs) {</span>
+<span class="fc" id="L119">          listOfOutputs.add((JsonPipelineOutput)o);</span>
+        }
+
+        // calculate the zipping function to produce the aggregated resposne from all JsonPipelineOutputs
+<span class="fc" id="L123">        JsonPipelineOutput zippedOutput = zipFunc.call(listOfOutputs);</span>
+
+        // then update the max age of the overall output with the lowest max-age values of all outputs in the list
+<span class="fc" id="L126">        int lowestMaxAge = getLowestMaxAge(listOfOutputs);</span>
+<span class="fc" id="L127">        return zippedOutput.withMaxAge(lowestMaxAge);</span>
+
+      });
+
+<span class="fc" id="L131">      zippingObservable.subscribe(new SafeSubscriber&lt;JsonPipelineOutput&gt;(subscriber));</span>
+<span class="fc" id="L132">    });</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

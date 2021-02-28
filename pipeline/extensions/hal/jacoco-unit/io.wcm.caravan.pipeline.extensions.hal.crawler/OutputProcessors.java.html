@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OutputProcessors.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Extension for HAL</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.extensions.hal.crawler</a> &gt; <span class="el_source">OutputProcessors.java</span></div><h1>OutputProcessors.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.extensions.hal.crawler;
+
+import java.util.List;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.google.common.collect.Iterables;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.pipeline.JsonPipelineOutput;
+
+/**
+ * Default output processors
+ */
+@ProviderType
+public final class OutputProcessors {
+
+  private OutputProcessors() {
+    // nothing to do
+  }
+
+  /**
+   * Creates a flat Collection of HAL links for each processed request.
+   * @return Output processor creating flat links collection
+   */
+  public static OutputProcessor report() {
+<span class="fc" id="L48">    return new OutputProcessor() {</span>
+
+      @Override
+      public JsonPipelineOutput process(JsonPipelineOutput previousStepOutput, List&lt;JsonPipelineOutput&gt; loadedLinkOutputs) {
+
+        // create output HAL
+<span class="fc" id="L54">        String url = getUrl(previousStepOutput);</span>
+<span class="fc" id="L55">        HalResource hal = new HalResource(url);</span>
+
+        // add URL with relation to links
+<span class="fc" id="L58">        CaravanHttpRequest request = getRequest(previousStepOutput);</span>
+<span class="pc bpc" id="L59" title="1 of 4 branches missed.">        if (request != null &amp;&amp; request.getHeaders().containsKey(HalCrawler.HEADER_CRAWLER_RELATION)) {</span>
+<span class="fc" id="L60">          String relation = Iterables.getFirst(request.getHeaders().get(HalCrawler.HEADER_CRAWLER_RELATION), null);</span>
+<span class="fc" id="L61">          hal.addLinks(relation, new Link(url));</span>
+        }
+
+        // add child links
+<span class="fc" id="L65">        loadedLinkOutputs.stream()</span>
+<span class="fc" id="L66">            .map(loadedLinkOutput -&gt; new HalResource(loadedLinkOutput.getPayload()))</span>
+<span class="fc" id="L67">            .flatMap(loadedLinkHal -&gt; loadedLinkHal.getLinks().entries().stream())</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            .filter(entry -&gt; !&quot;self&quot;.equals(entry.getKey()))</span>
+<span class="fc" id="L69">            .forEach(entry -&gt; hal.addLinks(entry.getKey(), entry.getValue()));</span>
+
+        // output
+<span class="fc" id="L72">        return previousStepOutput.withPayload(hal.getModel());</span>
+      }
+
+      @Override
+      public String getId() {
+<span class="fc" id="L77">        return &quot;REPORT&quot;;</span>
+      }
+
+    };
+  }
+
+  private static String getUrl(JsonPipelineOutput previousStepOutput) {
+<span class="fc" id="L84">    CaravanHttpRequest request = getRequest(previousStepOutput);</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">    return request == null ? null : request.getUrl();</span>
+  }
+
+  private static CaravanHttpRequest getRequest(JsonPipelineOutput previousStepOutput) {
+
+<span class="fc" id="L90">    List&lt;CaravanHttpRequest&gt; requests = previousStepOutput.getRequests();</span>
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">    if (requests.isEmpty()) {</span>
+<span class="nc" id="L92">      return null;</span>
+    }
+<span class="fc" id="L94">    return requests.get(requests.size() - 1);</span>
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

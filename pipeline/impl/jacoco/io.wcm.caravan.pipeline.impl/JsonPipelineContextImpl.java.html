@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonPipelineContextImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Implementation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.impl</a> &gt; <span class="el_source">JsonPipelineContextImpl.java</span></div><h1>JsonPipelineContextImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.impl;
+
+import io.wcm.caravan.pipeline.JsonPipelineContext;
+import io.wcm.caravan.pipeline.JsonPipelineFactory;
+import io.wcm.caravan.pipeline.cache.spi.CacheAdapter;
+
+import java.util.Map;
+
+import com.codahale.metrics.MetricRegistry;
+
+
+/**
+ * Keeps non modifiable references to instances of objects provided by factory {@link JsonPipelineFactoryImpl} for each
+ * new implementation of {@link JsonPipelineImpl}. Each entry of JSON pipeline context must exist during the pipeline
+ * life cycle. Temporary objects or primitives should not be a part of context.
+ */
+public class JsonPipelineContextImpl implements JsonPipelineContext {
+
+  private final JsonPipelineFactory factory;
+
+  private final CacheAdapter cacheAdapter;
+
+  private final MetricRegistry metricRegistry;
+
+  private final Map&lt;String, String&gt; cacheMetadataProperties;
+
+  /**
+   * @param cacheAdapter a caching layer / cache adapter to use
+   * @param metricRegistry metrics registry
+   * @param contextProperties additional metadata in string property form
+   */
+<span class="fc" id="L51">  public JsonPipelineContextImpl(JsonPipelineFactory factory, CacheAdapter cacheAdapter, MetricRegistry metricRegistry, Map&lt;String, String&gt; contextProperties) {</span>
+<span class="fc" id="L52">    this.factory = factory;</span>
+<span class="fc" id="L53">    this.cacheAdapter = cacheAdapter;</span>
+<span class="fc" id="L54">    this.metricRegistry = metricRegistry;</span>
+<span class="fc" id="L55">    this.cacheMetadataProperties = contextProperties;</span>
+<span class="fc" id="L56">  }</span>
+
+  @Override
+  public JsonPipelineFactory getFactory() {
+<span class="nc" id="L60">    return factory;</span>
+  }
+
+  @Override
+  public CacheAdapter getCacheAdapter() {
+<span class="fc" id="L65">    return this.cacheAdapter;</span>
+  }
+
+  public MetricRegistry getMetricRegistry() {
+<span class="fc" id="L69">    return this.metricRegistry;</span>
+  }
+
+  @Override
+  public Map&lt;String, String&gt; getProperties() {
+<span class="fc" id="L74">    return this.cacheMetadataProperties;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalPath.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Extension for HAL</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.extensions.hal.filter</a> &gt; <span class="el_source">HalPath.java</span></div><h1>HalPath.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.extensions.hal.filter;
+
+import org.apache.commons.lang3.StringUtils;
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.google.common.collect.ImmutableList;
+
+/**
+ * Represents a path of embedded resources in a HAL resource by concatenating the relation names of the embedded ones.
+ */
+@ProviderType
+public final class HalPath {
+
+  private final ImmutableList&lt;String&gt; relations;
+
+  /**
+   * Initializes a root
+   */
+<span class="fc" id="L38">  public HalPath() {</span>
+<span class="fc" id="L39">    relations = ImmutableList.of();</span>
+<span class="fc" id="L40">  }</span>
+
+<span class="fc" id="L42">  private HalPath(ImmutableList&lt;String&gt; relations) {</span>
+<span class="fc" id="L43">    this.relations = relations;</span>
+<span class="fc" id="L44">  }</span>
+
+  /**
+   * Adds a relation to the path
+   * @param relation Relation name of the embedded resource
+   * @return New HAL path
+   */
+  public HalPath add(String relation) {
+<span class="fc" id="L52">    return new HalPath(ImmutableList.&lt;String&gt;builder().addAll(relations).add(relation).build());</span>
+  }
+
+  /**
+   * @param index Position in the path
+   * @return Relation for the given index. Can be null
+   */
+  public String get(int index) {
+<span class="fc bfc" id="L60" title="All 4 branches covered.">    return index &lt; 0 || index &gt; relations.size() - 1 ? null : relations.get(index);</span>
+  }
+
+  /**
+   * @return The first relation name in the path. Can be null
+   */
+  public String first() {
+<span class="fc" id="L67">    return get(0);</span>
+  }
+
+
+  /**
+   * @see HalPath#last(int) {@code last(0)}
+   * @return Relation name of the current embedded resource
+   */
+  public String current() {
+<span class="fc" id="L76">    return last(0);</span>
+  }
+  /**
+   * Returns the n-th last relations name in the path
+   * @param last Step from the end of the path
+   * @return Relation name. Can be {@code null}
+   */
+  public String last(int last) {
+<span class="fc" id="L84">    int index = relations.size() - 1 - last;</span>
+<span class="fc" id="L85">    return get(index);</span>
+  }
+
+  /**
+   * @return Number of relation names
+   */
+  public int size() {
+<span class="fc" id="L92">    return relations.size();</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="fc" id="L97">    return '/' + StringUtils.join(relations, '/');</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

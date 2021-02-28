@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RemoveAllProperties.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Extension for HAL</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.extensions.hal.action</a> &gt; <span class="el_source">RemoveAllProperties.java</span></div><h1>RemoveAllProperties.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.extensions.hal.action;
+
+import java.util.Set;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.google.common.collect.Sets;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.pipeline.JsonPipelineAction;
+import io.wcm.caravan.pipeline.JsonPipelineContext;
+import io.wcm.caravan.pipeline.JsonPipelineOutput;
+import rx.Observable;
+
+/**
+ * Removes all properties for a HAL resource and its embedded resources. (use {@link #except(String...)} to specify
+ * properties you want to keep.
+ */
+@ProviderType
+<span class="nc" id="L41">public final class RemoveAllProperties implements JsonPipelineAction {</span>
+
+<span class="nc" id="L43">  private final Set&lt;String&gt; propertiesToKeep = Sets.newHashSet();</span>
+
+  @Override
+  public String getId() {
+<span class="nc bnc" id="L47" title="All 2 branches missed.">    return propertiesToKeep.isEmpty() ? &quot;REMOVE-ALL-PROPERTIES&quot; : &quot;REMOVE-ALL-PROPERTIES(&quot; + StringUtils.join(propertiesToKeep, '-') + &quot;)&quot;;</span>
+  }
+
+  @Override
+  public Observable&lt;JsonPipelineOutput&gt; execute(JsonPipelineOutput previousStepOutput, JsonPipelineContext pipelineContext) {
+
+<span class="nc" id="L53">    HalResource hal = new HalResource(previousStepOutput.getPayload());</span>
+
+<span class="nc" id="L55">    removePropertiesRecursive(hal, propertiesToKeep);</span>
+
+<span class="nc" id="L57">    return Observable.just(previousStepOutput);</span>
+  }
+
+  /**
+   * @param properties name of properties that should be preserved
+   * @return This action
+   */
+  public RemoveAllProperties except(String... properties) {
+
+<span class="nc" id="L66">    Stream.of(properties).forEach(property -&gt; propertiesToKeep.add(property));</span>
+
+<span class="nc" id="L68">    return this;</span>
+  }
+
+  /**
+   * Removes all properties except the specified ones from the given resource and all embedded resources
+   * @param hal a HAL resource
+   * @param propertiesToKeep all properties that should be left untouched
+   */
+  public static void removePropertiesRecursive(HalResource hal, Set&lt;String&gt; propertiesToKeep) {
+
+    // remove properties
+<span class="nc" id="L79">    hal.getStateFieldNames().stream()</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        .filter(property -&gt; !propertiesToKeep.contains(property))</span>
+<span class="nc" id="L81">        .forEach(property -&gt; hal.getModel().remove(property));</span>
+
+    // check embedded resources
+<span class="nc" id="L84">    hal.getEmbedded().values().stream()</span>
+<span class="nc" id="L85">        .forEach(embedded -&gt; removePropertiesRecursive(embedded, propertiesToKeep));</span>
+
+<span class="nc" id="L87">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

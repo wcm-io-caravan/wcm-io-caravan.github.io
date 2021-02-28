@@ -1,0 +1,3 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+JSON Pipeline Cache Adapter for Guava,io.wcm.caravan.pipeline.cache.guava.impl,GuavaCacheAdapter,8,261,4,8,0,40,4,12,1,9
+JSON Pipeline Cache Adapter for Guava,io.wcm.caravan.pipeline.cache.guava.impl,GuavaCacheAdapter.new Weigher() {...},0,16,0,0,0,2,0,2,0,2

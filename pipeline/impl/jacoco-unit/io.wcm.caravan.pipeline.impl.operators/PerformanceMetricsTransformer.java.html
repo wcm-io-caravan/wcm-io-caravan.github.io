@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PerformanceMetricsTransformer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Implementation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.impl.operators</a> &gt; <span class="el_source">PerformanceMetricsTransformer.java</span></div><h1>PerformanceMetricsTransformer.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.impl.operators;
+
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Stopwatch;
+import com.google.common.base.Ticker;
+
+import rx.Observable;
+import rx.Observable.OnSubscribe;
+import rx.Observable.Operator;
+import rx.Observable.Transformer;
+import rx.Observer;
+
+/**
+ * A class that measures the time spent by a specific {@link Transformer}, {@link Operator} or {@link Observable}.
+ * Usage of this class is limited to observables with a single emission
+ */
+public final class PerformanceMetricsTransformer&lt;T&gt; implements Transformer&lt;T, T&gt; {
+
+<span class="fc" id="L42">  private static final Logger log = LoggerFactory.getLogger(PerformanceMetricsTransformer.class);</span>
+
+  private final Transformer&lt;T, T&gt; toMeasure;
+
+  private final Stopwatch subscriptionStopwatch;
+  private final Stopwatch observationStopwatch;
+  private final Stopwatch emissionStopwatch;
+
+  /**
+   * constructor for unit-tests that allows you to specify a custom ticker. For general usage use
+   * {@link #withSystemTicker(Transformer)}
+   * @param toMeasure the transformer that should be measured
+   * @param ticker the time source
+   */
+  PerformanceMetricsTransformer(Transformer&lt;T, T&gt; toMeasure, Ticker ticker) {
+<span class="fc" id="L57">    super();</span>
+<span class="fc" id="L58">    this.toMeasure = toMeasure;</span>
+
+<span class="fc" id="L60">    subscriptionStopwatch = Stopwatch.createUnstarted(ticker);</span>
+<span class="fc" id="L61">    observationStopwatch = Stopwatch.createUnstarted(ticker);</span>
+<span class="fc" id="L62">    emissionStopwatch = Stopwatch.createUnstarted(ticker);</span>
+<span class="fc" id="L63">  }</span>
+
+  /**
+   * constructor for unit-tests that allows you to specify a custom ticker. For general usage use
+   * {@link #withSystemTicker(Operator)}
+   * @param toMeasure the operator that should be measured
+   * @param ticker the time source
+   */
+  PerformanceMetricsTransformer(Operator&lt;T, T&gt; toMeasure, Ticker ticker) {
+
+    // if the subject to be measured is an operator we wrap it in a trivial transformer
+<span class="fc" id="L74">    this(new Transformer&lt;T, T&gt;() {</span>
+
+      @Override
+      public Observable&lt;T&gt; call(Observable&lt;T&gt; sourceObservable) {
+<span class="fc" id="L78">        return Observable.create(subscriber -&gt; {</span>
+          // apply the operator to measure to the source observable before subscribing
+<span class="fc" id="L80">          sourceObservable.lift(toMeasure).subscribe(subscriber);</span>
+<span class="fc" id="L81">        });</span>
+      }
+
+    }, ticker);
+<span class="fc" id="L85">  }</span>
+
+  /**
+   * constructor for unit-tests that allows you to specify a custom ticker. For general usage use
+   * {@link #withSystemTicker(Observable)}
+   * @param toMeasure the operator that should be measured
+   * @param ticker the time source
+   */
+  PerformanceMetricsTransformer(Observable&lt;T&gt; toMeasure, Ticker ticker) {
+
+    // if the subject to be measured is an operator we wrap it in a trivial transformer
+<span class="fc" id="L96">    this(new Transformer&lt;T, T&gt;() {</span>
+
+      @Override
+      public Observable&lt;T&gt; call(Observable&lt;T&gt; sourceObservable) {
+<span class="fc" id="L100">        return sourceObservable;</span>
+      }
+    }, ticker);
+
+<span class="fc" id="L104">  }</span>
+
+  /**
+   * @param toMeasure the transformer that should be measured
+   * @param &lt;T&gt; type
+   * @return a PerformanceMetricsTransformer that uses the {@link Ticker#systemTicker()}
+   */
+  public static &lt;T&gt; PerformanceMetricsTransformer&lt;T&gt; withSystemTicker(Transformer&lt;T, T&gt; toMeasure) {
+<span class="nc" id="L112">    return new PerformanceMetricsTransformer&lt;T&gt;(toMeasure, Ticker.systemTicker());</span>
+  }
+
+  /**
+   * @param toMeasure the operator that should be measured
+   * @param &lt;T&gt; type
+   * @return a PerformanceMetricsTransformer that uses the {@link Ticker#systemTicker()}
+   */
+  public static &lt;T&gt; PerformanceMetricsTransformer&lt;T&gt; withSystemTicker(Operator&lt;T, T&gt; toMeasure) {
+<span class="nc" id="L121">    return new PerformanceMetricsTransformer&lt;T&gt;(toMeasure, Ticker.systemTicker());</span>
+  }
+
+  /**
+   * @param toMeasure the observable that should be measured
+   * @param &lt;T&gt; type
+   * @return a PerformanceMetricsTransformer that uses the {@link Ticker#systemTicker()}
+   */
+  public static &lt;T&gt; PerformanceMetricsTransformer&lt;T&gt; withSystemTicker(Observable&lt;T&gt; toMeasure) {
+<span class="nc" id="L130">    return new PerformanceMetricsTransformer&lt;T&gt;(toMeasure, Ticker.systemTicker());</span>
+  }
+
+  @Override
+  public Observable&lt;T&gt; call(Observable&lt;T&gt; dataSource) {
+
+<span class="fc" id="L136">    Observable&lt;T&gt; wrappedInputObservable = Observable.create(subscriberToMeasure -&gt; {</span>
+
+      // 3. this is called after the subscriber to measure has finished its job and subscribes to this input observable
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">      if (subscriptionStopwatch.isRunning()) {</span>
+<span class="fc" id="L140">        subscriptionStopwatch.stop();</span>
+      }
+
+      // 4. we now start the stop watch that measures how long the actual data source takes between subscription and emission
+<span class="fc" id="L144">      observationStopwatch.start();</span>
+<span class="fc" id="L145">      dataSource.subscribe(new Observer&lt;T&gt;() {</span>
+
+        @Override
+        public void onCompleted() {
+<span class="fc" id="L149">          subscriberToMeasure.onCompleted();</span>
+<span class="fc" id="L150">        }</span>
+
+        @Override
+        public void onError(Throwable e) {
+<span class="nc" id="L154">          subscriberToMeasure.onError(e);</span>
+<span class="nc" id="L155">        }</span>
+
+        @Override
+        public void onNext(T emission) {
+
+          // 5. the source data is available, we now stop the observation stop watch
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">          if (observationStopwatch.isRunning()) {</span>
+<span class="fc" id="L162">            observationStopwatch.stop();</span>
+          }
+
+          // 6. now start the stop watch to measure the time it takes for the transfomer to handle the data
+<span class="fc" id="L166">          emissionStopwatch.start();</span>
+<span class="fc" id="L167">          subscriberToMeasure.onNext(emission);</span>
+<span class="fc" id="L168">        }</span>
+      });
+<span class="fc" id="L170">    });</span>
+
+<span class="fc" id="L172">    Observable&lt;T&gt; wrappedOutputObservable = Observable.create(actualOutputSubscriber -&gt; {</span>
+
+<span class="fc" id="L174">      Observable&lt;T&gt; observableToMeasure = toMeasure.call(wrappedInputObservable);</span>
+
+      // 1. start the subscription stop watch
+<span class="fc" id="L177">      subscriptionStopwatch.start();</span>
+
+      // 2. subscribing here will call onSubscribe function of the transformer that we want to measure
+<span class="fc" id="L180">      observableToMeasure.subscribe(new Observer&lt;T&gt;() {</span>
+
+        @Override
+        public void onCompleted() {
+<span class="fc" id="L184">          actualOutputSubscriber.onCompleted();</span>
+<span class="fc" id="L185">        }</span>
+
+        @Override
+        public void onError(Throwable e) {
+<span class="nc" id="L189">          actualOutputSubscriber.onError(e);</span>
+<span class="nc" id="L190">        }</span>
+
+        @Override
+        public void onNext(T emission) {
+          // 7. the transformer to measure has finished processing the data, so we stop the emission stop watch
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">          if (emissionStopwatch.isRunning()) {</span>
+<span class="fc" id="L196">            emissionStopwatch.stop();</span>
+          }
+
+<span class="fc" id="L199">          log.info(&quot;subscription=&quot; + getSubscriptionMillis() + &quot;ms, observation=&quot; + getObservationMillis() + &quot;ms, emission: &quot; + getEmissionMillis() + &quot;ms&quot;);</span>
+
+<span class="fc" id="L201">          actualOutputSubscriber.onNext(emission);</span>
+<span class="fc" id="L202">        }</span>
+      });
+<span class="fc" id="L204">    });</span>
+
+<span class="fc" id="L206">    return wrappedOutputObservable.cache();</span>
+  }
+
+
+  /**
+   * Calculate the time spent during the {@link OnSubscribe} function of the {@link Transformer} to measure. Will be 0
+   * if you are using this class to measure a {@link Operator} or {@link Observable}
+   * @return the time in milliseconds spent subscribing onto the source observable
+   */
+  public long getSubscriptionMillis() {
+<span class="fc" id="L216">    return this.subscriptionStopwatch.elapsed(TimeUnit.MILLISECONDS);</span>
+  }
+
+  /**
+   * Calculate the time spent waiting for the source observable to emit the result
+   * @return the time in milliseconds spent waiting for the source observable
+   */
+  public long getObservationMillis() {
+<span class="fc" id="L224">    return this.observationStopwatch.elapsed(TimeUnit.MILLISECONDS);</span>
+  }
+
+  /**
+   * Calculate the time spent processing the emission of the source observable
+   * @return the time in milliseconds spent processing the emission
+   */
+  public long getEmissionMillis() {
+<span class="fc" id="L232">    return this.emissionStopwatch.elapsed(TimeUnit.MILLISECONDS);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalCrawler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Extension for HAL</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.extensions.hal.crawler</a> &gt; <span class="el_source">HalCrawler.java</span></div><h1>HalCrawler.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.extensions.hal.crawler;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Sets;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.pipeline.JsonPipeline;
+import io.wcm.caravan.pipeline.JsonPipelineAction;
+import io.wcm.caravan.pipeline.JsonPipelineContext;
+import io.wcm.caravan.pipeline.JsonPipelineOutput;
+import io.wcm.caravan.pipeline.cache.CacheStrategy;
+import io.wcm.caravan.pipeline.extensions.hal.client.HalClient;
+import io.wcm.caravan.pipeline.extensions.hal.client.action.LoadLink;
+import rx.Observable;
+
+/**
+ * Crawler walking on a HAL resource graph.
+ */
+@ProviderType
+public final class HalCrawler implements JsonPipelineAction {
+
+  /**
+   * HTTP header for HAL link relation
+   */
+  public static final String HEADER_CRAWLER_RELATION = &quot;Caravan-Crawler-HAL-Link-Relation&quot;;
+
+<span class="pc" id="L57">  private final Set&lt;String&gt; startedUrls = Sets.newConcurrentHashSet();</span>
+<span class="pc" id="L58">  private final Set&lt;String&gt; processedUrls = Sets.newConcurrentHashSet();</span>
+
+  private final HalClient client;
+  private final LinkExtractor linkExtractor;
+  private final UriParametersProvider uriParametersProvider;
+  private final OutputProcessor outputProcessor;
+  private final StopCriterion stopCriterion;
+
+  private CacheStrategy cacheStrategy;
+
+  /**
+   * @param client HAL client
+   * @param linkExtractor Link extractor
+   * @param uriParametersProvider URI parameter provider
+   * @param outputProcessor Output processor
+   */
+<span class="nc" id="L74">  public HalCrawler(HalClient client, LinkExtractor linkExtractor, UriParametersProvider uriParametersProvider, OutputProcessor outputProcessor) {</span>
+<span class="nc" id="L75">    this.client = client;</span>
+<span class="nc" id="L76">    this.linkExtractor = linkExtractor;</span>
+<span class="nc" id="L77">    this.uriParametersProvider = uriParametersProvider;</span>
+<span class="nc" id="L78">    this.outputProcessor = outputProcessor;</span>
+<span class="nc" id="L79">    this.stopCriterion = StopCriteria.alwaysEnabled();</span>
+
+<span class="nc" id="L81">  }</span>
+
+  /**
+   * @param client HAL client
+   * @param linkExtractor Link extractor
+   * @param uriParametersProvider URI parameter provider
+   * @param outputProcessor Output processor
+   * @param stopCriterion Stop Criterion
+   */
+  public HalCrawler(HalClient client, LinkExtractor linkExtractor, UriParametersProvider uriParametersProvider, OutputProcessor outputProcessor,
+<span class="fc" id="L91">      StopCriterion stopCriterion) {</span>
+<span class="fc" id="L92">    this.client = client;</span>
+<span class="fc" id="L93">    this.linkExtractor = linkExtractor;</span>
+<span class="fc" id="L94">    this.uriParametersProvider = uriParametersProvider;</span>
+<span class="fc" id="L95">    this.outputProcessor = outputProcessor;</span>
+<span class="fc" id="L96">    this.stopCriterion = stopCriterion;</span>
+
+<span class="fc" id="L98">  }</span>
+
+  /**
+   * @param strategy The cacheStrategy to set.
+   * @return This crawler
+   */
+  public HalCrawler setCacheStrategy(CacheStrategy strategy) {
+<span class="fc" id="L105">    this.cacheStrategy = strategy;</span>
+<span class="fc" id="L106">    return this;</span>
+  }
+
+  @Override
+  public String getId() {
+<span class="fc" id="L111">    return &quot;HAL-CRAWLER-(&quot; + linkExtractor.getId() + '-' + uriParametersProvider.getId() + '-' + outputProcessor.getId() + ')';</span>
+  }
+
+  @Override
+  public Observable&lt;JsonPipelineOutput&gt; execute(JsonPipelineOutput previousStepOutput, JsonPipelineContext pipelineContext) {
+
+<span class="fc" id="L117">    String currentUrl = getCurrentUrl(previousStepOutput);</span>
+<span class="fc" id="L118">    processedUrls.add(currentUrl);</span>
+<span class="fc" id="L119">    JsonPipeline startingPipeline = pipelineContext.getFactory().createEmpty(pipelineContext.getProperties());</span>
+
+<span class="fc" id="L121">    HalResource currentHalResource = getCurrentHalResource(previousStepOutput, currentUrl);</span>
+<span class="fc" id="L122">    ListMultimap&lt;String, Link&gt; links = linkExtractor.extract(currentHalResource);</span>
+
+
+<span class="fc" id="L125">    return Observable.from(links.entries())</span>
+        // create pipeline action
+<span class="fc" id="L127">        .map(entry -&gt; {</span>
+<span class="fc" id="L128">          String relation = entry.getKey();</span>
+<span class="fc" id="L129">          Link link = entry.getValue();</span>
+<span class="fc" id="L130">          Map&lt;String, Object&gt; parameters = uriParametersProvider.getParameters(currentHalResource, relation, link);</span>
+<span class="fc" id="L131">          LoadLink action = client.load(link, parameters);</span>
+<span class="fc" id="L132">          action.setHttpHeaders(ImmutableMultimap.of(HEADER_CRAWLER_RELATION, relation));</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">          if (cacheStrategy != null) {</span>
+<span class="fc" id="L134">            action.setCacheStrategy(cacheStrategy);</span>
+          }
+<span class="fc" id="L136">          return action;</span>
+        })
+        // filter unique by URL
+<span class="fc" id="L139">        .distinct(action -&gt; action.getUrl())</span>
+        // filter already processed URLs
+<span class="fc bfc" id="L141" title="All 4 branches covered.">        .filter(action -&gt; !startedUrls.contains(action.getUrl()) &amp;&amp; !processedUrls.contains(action.getUrl()))</span>
+        // filter actions for stopped crawler
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">        .filter(action -&gt; !stopCriterion.isStopRequested())</span>
+        // add URL to processed and create pipeline
+<span class="fc" id="L145">        .map(action -&gt; {</span>
+<span class="fc" id="L146">          startedUrls.add(action.getUrl());</span>
+<span class="fc" id="L147">          return startingPipeline.applyAction(action);</span>
+        })
+        // add this action to the pipeline
+<span class="fc" id="L150">        .map(pipeline -&gt; pipeline.applyAction(this))</span>
+        // get pipeline outputs
+<span class="fc" id="L152">        .flatMap(JsonPipeline::getOutput)</span>
+        // get pipeline outputs list
+<span class="fc" id="L154">        .toList()</span>
+        // process output
+<span class="fc" id="L156">        .map(linkOutputs -&gt; outputProcessor.process(previousStepOutput, linkOutputs));</span>
+
+  }
+
+  private String getCurrentUrl(JsonPipelineOutput output) {
+
+<span class="fc" id="L162">    List&lt;CaravanHttpRequest&gt; requests = output.getRequests();</span>
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">    if (requests.isEmpty()) {</span>
+<span class="nc" id="L164">      return &quot;unknown&quot;;</span>
+    }
+<span class="fc" id="L166">    CaravanHttpRequest request = requests.get(requests.size() - 1);</span>
+<span class="fc" id="L167">    return request.getUrl();</span>
+
+  }
+
+  private HalResource getCurrentHalResource(JsonPipelineOutput previousStepOutput, String currentUrl) {
+
+<span class="fc" id="L173">    JsonNode json = previousStepOutput.getPayload();</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">    if (!(json instanceof ObjectNode)) {</span>
+<span class="fc" id="L175">      HalResource hal = new HalResource(currentUrl);</span>
+<span class="fc" id="L176">      hal.getModel().set(&quot;content&quot;, json);</span>
+<span class="fc" id="L177">      return hal;</span>
+    }
+<span class="fc" id="L179">    return new HalResource(json);</span>
+
+  }
+
+  /**
+   * @return true if crawling has been stopped by the {@link StopCriterion}
+   */
+  public boolean isStopRequested() {
+<span class="nc" id="L187">    return stopCriterion.isStopRequested();</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

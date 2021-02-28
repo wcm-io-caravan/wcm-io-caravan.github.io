@@ -1,0 +1,582 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>CachePointTransformer xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../apidocs/io/wcm/caravan/pipeline/impl/operators/CachePointTransformer.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * #%L</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * wcm.io</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * %%</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> * Copyright (C) 2014 wcm.io</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> * %%</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> * you may not use this file except in compliance with the License.</em>
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment"> * You may obtain a copy of the License at</em>
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment"> *      <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_comment"> * Unless required by applicable law or agreed to in writing, software</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_comment"> * distributed under the License is distributed on an "AS IS" BASIS,</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_comment"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_comment"> * See the License for the specific language governing permissions and</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_comment"> * limitations under the License.</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_comment"> * #L%</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">package</strong> io.wcm.caravan.pipeline.impl.operators;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> java.util.SortedSet;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> java.util.TreeSet;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.TimeUnit;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.StringUtils;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.math.NumberUtils;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.apache.http.HttpStatus;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> com.codahale.metrics.Counter;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> com.codahale.metrics.MetricRegistry;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> com.codahale.metrics.Timer;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.JsonNode;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.node.ObjectNode;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> com.google.common.collect.ImmutableList;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> com.google.common.collect.ImmutableMap;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.commons.metrics.rx.TimerMetricsOperator;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.io.http.request.CaravanHttpRequest;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.pipeline.JsonPipelineInputException;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.pipeline.JsonPipelineOutput;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.pipeline.cache.CacheDateUtils;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.pipeline.cache.CachePersistencyOptions;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.pipeline.cache.CacheStrategy;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.pipeline.cache.spi.CacheAdapter;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.pipeline.impl.JacksonFunctions;
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.pipeline.impl.JsonPipelineContextImpl;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.pipeline.impl.JsonPipelineOutputImpl;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> rx.Observable;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <strong class="jxr_keyword">import</strong> rx.Observable.Transformer;
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <strong class="jxr_keyword">import</strong> rx.Observer;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <strong class="jxr_keyword">import</strong> rx.Subscriber;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <strong class="jxr_keyword">import</strong> rx.exceptions.Exceptions;
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment"> * a rather complicated transformer that implements the pipelines caching capabilities</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="CachePointTransformer" href="../../../../../../io/wcm/caravan/pipeline/impl/operators/CachePointTransformer.html#CachePointTransformer">CachePointTransformer</a> <strong class="jxr_keyword">implements</strong> Transformer&lt;JsonPipelineOutput, JsonPipelineOutput&gt; {
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger log = LoggerFactory.getLogger(CachePointTransformer.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>    <strong class="jxr_keyword">private</strong> <a name="JsonPipelineContextImpl" href="../../../../../../io/wcm/caravan/pipeline/impl/JsonPipelineContextImpl.html#JsonPipelineContextImpl">JsonPipelineContextImpl</a> context;
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> List&lt;CaravanHttpRequest&gt; requests;
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String descriptor;
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> CacheStrategy strategy;
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String correlationId;
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">   * @param context a context of the actual JSON pipeline</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">   * @param requests the outgoing REST request(s) used to obtain the JSON data to be cached</em>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <em class="jxr_javadoccomment">   * @param descriptor the unique id of the pipeline (to build a cache key)</em>
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  <em class="jxr_javadoccomment">   * @param strategy the CacheStrategy to get storage time and refresh interval</em>
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>    <strong class="jxr_keyword">public</strong> <a name="CachePointTransformer" href="../../../../../../io/wcm/caravan/pipeline/impl/operators/CachePointTransformer.html#CachePointTransformer">CachePointTransformer</a>(<a name="JsonPipelineContextImpl" href="../../../../../../io/wcm/caravan/pipeline/impl/JsonPipelineContextImpl.html#JsonPipelineContextImpl">JsonPipelineContextImpl</a> context, List&lt;CaravanHttpRequest&gt; requests, String descriptor, CacheStrategy strategy) {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">super</strong>();
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      <strong class="jxr_keyword">this</strong>.context = context;
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      <strong class="jxr_keyword">this</strong>.requests = requests;
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">this</strong>.descriptor = descriptor;
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      <strong class="jxr_keyword">this</strong>.strategy = strategy;
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      StringBuffer sb = <strong class="jxr_keyword">new</strong> StringBuffer();
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">for</strong> (CaravanHttpRequest request : requests) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>        <strong class="jxr_keyword">if</strong> (sb.length() == 0) {
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>          sb.append(request.getCorrelationId());
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>        }
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>        <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>          sb.append(<span class="jxr_string">","</span>).append(request.getCorrelationId());
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>        }
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      }
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>      <strong class="jxr_keyword">this</strong>.correlationId = sb.toString();
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>    }
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> SortedSet&lt;String&gt; getSourceServiceIds(List&lt;CaravanHttpRequest&gt; requests) {
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      SortedSet&lt;String&gt; sourceServiceIds = <strong class="jxr_keyword">new</strong> TreeSet&lt;String&gt;();
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>      <strong class="jxr_keyword">for</strong> (CaravanHttpRequest request : requests) {
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>       sourceServiceIds.add(request.getServiceId());
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>     }
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">return</strong> sourceServiceIds;
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>   }
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> 
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>   <strong class="jxr_keyword">private</strong> String getSourceServicePrefix() {
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">return</strong> StringUtils.join(getSourceServiceIds(requests), '+');
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>   }
+<a class="jxr_linenumber" name="L108" href="#L108">108</a> 
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>   @Override
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>   <strong class="jxr_keyword">public</strong> Observable&lt;JsonPipelineOutput&gt; call(Observable&lt;JsonPipelineOutput&gt; output) {
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> 
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>     <em class="jxr_comment">// the code within the lambda passed to Observable#create will be executed when subscribe is called on the "cachedSource" observable</em>
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>     Observable&lt;JsonPipelineOutput&gt; cachedSource = Observable.create((subscriber) -&gt; {
+<a class="jxr_linenumber" name="L114" href="#L114">114</a> 
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>       <em class="jxr_comment">// construct a unique cache key from the pipeline's descriptor</em>
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>       String sourceServicePrefix = getSourceServicePrefix();
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>       CacheAdapter cacheAdapter = context.getCacheAdapter();
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>       <strong class="jxr_keyword">final</strong> String cacheKey = sourceServicePrefix + <span class="jxr_string">":"</span> + descriptor;
+<a class="jxr_linenumber" name="L119" href="#L119">119</a> 
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>       <em class="jxr_comment">// the caching strategy determines if the storage time should be extended for cache hits(i.e. Time-to-Idle behaviour)</em>
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>       CachePersistencyOptions options = strategy.getCachePersistencyOptions(requests);
+<a class="jxr_linenumber" name="L122" href="#L122">122</a> 
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>       <em class="jxr_comment">// try to asynchronously(!) fetch the response from the cache</em>
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>       Observable&lt;String&gt; cachedJsonString = cacheAdapter.get(cacheKey, options);
+<a class="jxr_linenumber" name="L125" href="#L125">125</a> 
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>       <em class="jxr_comment">// create service specific metrics</em>
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>       MetricRegistry metricRegistry = context.getMetricRegistry();
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>       Timer timer = metricRegistry.timer(MetricRegistry.name(getClass(), sourceServicePrefix, <span class="jxr_string">"latency"</span>, <span class="jxr_string">"get"</span>));
+<a class="jxr_linenumber" name="L129" href="#L129">129</a> 
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>       CacheMetrics cacheMetrics = <strong class="jxr_keyword">new</strong> CacheMetrics(metricRegistry, sourceServicePrefix);
+<a class="jxr_linenumber" name="L131" href="#L131">131</a> 
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>       <em class="jxr_comment">// CacheResponseObserver will decide what to do when the response is ready (or could not be retrieved from cache)</em>
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>       cachedJsonString
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>       .lift(<strong class="jxr_keyword">new</strong> TimerMetricsOperator&lt;String&gt;(timer))
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>       .subscribe(<strong class="jxr_keyword">new</strong> CacheResponseObserver(cacheKey, output, subscriber, cacheMetrics));
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>     });
+<a class="jxr_linenumber" name="L137" href="#L137">137</a> 
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>     <strong class="jxr_keyword">return</strong> cachedSource;
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>   }
+<a class="jxr_linenumber" name="L140" href="#L140">140</a> 
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> CacheMetrics {
+<a class="jxr_linenumber" name="L142" href="#L142">142</a> 
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Counter hitsCounter;
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Counter missesCounter;
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Counter stalesCounter;
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Counter fallbacksCounter;
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Counter errorsCounter;
+<a class="jxr_linenumber" name="L148" href="#L148">148</a> 
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>     <strong class="jxr_keyword">private</strong> CacheMetrics(MetricRegistry metricRegistry, String metricServicePrefix) {
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>       hitsCounter = metricRegistry.counter(MetricRegistry.name(CachePointTransformer.<strong class="jxr_keyword">class</strong>, metricServicePrefix, <span class="jxr_string">"hits"</span>));
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>       missesCounter = metricRegistry.counter(MetricRegistry.name(CachePointTransformer.<strong class="jxr_keyword">class</strong>, metricServicePrefix, <span class="jxr_string">"misses"</span>));
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>       stalesCounter = metricRegistry.counter(MetricRegistry.name(CachePointTransformer.<strong class="jxr_keyword">class</strong>, metricServicePrefix, <span class="jxr_string">"stales"</span>));
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>       fallbacksCounter = metricRegistry.counter(MetricRegistry.name(CachePointTransformer.<strong class="jxr_keyword">class</strong>, metricServicePrefix, <span class="jxr_string">"fallbacks"</span>));
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>       errorsCounter = metricRegistry.counter(MetricRegistry.name(CachePointTransformer.<strong class="jxr_keyword">class</strong>, metricServicePrefix, <span class="jxr_string">"errors"</span>));
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>     }
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>   }
+<a class="jxr_linenumber" name="L157" href="#L157">157</a> 
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L159" href="#L159">159</a> <em class="jxr_javadoccomment">   * An observer that is subscribed to the {@link Observable} returned by</em>
+<a class="jxr_linenumber" name="L160" href="#L160">160</a> <em class="jxr_javadoccomment">   * {@link CacheAdapter#get(String, CachePersistencyOptions)} , and is responsible for</em>
+<a class="jxr_linenumber" name="L161" href="#L161">161</a> <em class="jxr_javadoccomment">   * &lt;ul&gt;</em>
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">   * &lt;li&gt;unwrapping the JSON content from the caching envelope if it was successfully retrieved from cache&lt;/li&gt;</em>
+<a class="jxr_linenumber" name="L163" href="#L163">163</a> <em class="jxr_javadoccomment">   * &lt;li&gt;forwarding the unwrapped response to the subscriber given in the constructor&lt;/li&gt;</em>
+<a class="jxr_linenumber" name="L164" href="#L164">164</a> <em class="jxr_javadoccomment">   * &lt;li&gt;fetch the response from the Pipeline's dataSource if it couldn't be retrieved from cache&lt;/li&gt;</em>
+<a class="jxr_linenumber" name="L165" href="#L165">165</a> <em class="jxr_javadoccomment">   * &lt;li&gt;store the fetched responses to couchbase (wrapped in an envelope with metadata&lt;/li&gt;</em>
+<a class="jxr_linenumber" name="L166" href="#L166">166</a> <em class="jxr_javadoccomment">   * &lt;/ul&gt;</em>
+<a class="jxr_linenumber" name="L167" href="#L167">167</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> CacheResponseObserver <strong class="jxr_keyword">implements</strong> Observer&lt;String&gt; {
+<a class="jxr_linenumber" name="L169" href="#L169">169</a> 
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String cacheKey;
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Observable&lt;JsonPipelineOutput&gt; originalSource;
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Subscriber&lt;? <strong class="jxr_keyword">super</strong> JsonPipelineOutput&gt; subscriber;
+<a class="jxr_linenumber" name="L173" href="#L173">173</a> 
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> CacheMetrics cacheMetrics;
+<a class="jxr_linenumber" name="L175" href="#L175">175</a> 
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> cacheHit;
+<a class="jxr_linenumber" name="L177" href="#L177">177</a> 
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>     <strong class="jxr_keyword">private</strong> CacheResponseObserver(String cacheKey, Observable&lt;JsonPipelineOutput&gt; originalSource, Subscriber&lt;? <strong class="jxr_keyword">super</strong> JsonPipelineOutput&gt; subscriberToForwardTo,
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>         CacheMetrics cacheMetrics) {
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>       <strong class="jxr_keyword">this</strong>.cacheKey = cacheKey;
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>       <strong class="jxr_keyword">this</strong>.originalSource = originalSource;
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>       <strong class="jxr_keyword">this</strong>.subscriber = subscriberToForwardTo;
+<a class="jxr_linenumber" name="L183" href="#L183">183</a> 
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>       <strong class="jxr_keyword">this</strong>.cacheMetrics = cacheMetrics;
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>     }
+<a class="jxr_linenumber" name="L186" href="#L186">186</a> 
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>     @Override
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onNext(String cachedContent) {
+<a class="jxr_linenumber" name="L189" href="#L189">189</a> 
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>       CacheEnvelope cacheEntry = CacheEnvelope.fromEnvelopeString(cachedContent, cacheKey);
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>       <strong class="jxr_keyword">if</strong> (cacheEntry == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>         log.warn(<span class="jxr_string">"CACHE ERROR for {} - the cached response could not be parsed,\n{}"</span>, <strong class="jxr_keyword">this</strong>.cacheKey, correlationId);
+<a class="jxr_linenumber" name="L193" href="#L193">193</a> 
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>         <em class="jxr_comment">// increase the error counter for the source serviceID</em>
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>         cacheMetrics.errorsCounter.inc();
+<a class="jxr_linenumber" name="L196" href="#L196">196</a> 
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>         <em class="jxr_comment">// ignore cache envelopes that can not be parsed</em>
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>         <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>       }
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>       cacheHit = <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L201" href="#L201">201</a> 
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>       <strong class="jxr_keyword">int</strong> responseAge = cacheEntry.getResponseAge();
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>       <strong class="jxr_keyword">int</strong> refreshInterval = strategy.getCachePersistencyOptions(requests).getRefreshInterval();
+<a class="jxr_linenumber" name="L204" href="#L204">204</a> 
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>       <strong class="jxr_keyword">int</strong> expirySeconds = cacheEntry.getExpirySeconds();
+<a class="jxr_linenumber" name="L206" href="#L206">206</a> 
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>       <strong class="jxr_keyword">int</strong> maxAgeFromClient = getClientMaxAge();
+<a class="jxr_linenumber" name="L208" href="#L208">208</a> 
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>       <em class="jxr_comment">// check if the content from cache is fresh enough to serve it</em>
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>       <strong class="jxr_keyword">if</strong> (responseAge &lt; refreshInterval &amp;&amp; responseAge &lt; maxAgeFromClient &amp;&amp; expirySeconds &gt; 0) {
+<a class="jxr_linenumber" name="L211" href="#L211">211</a> 
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>         log.debug(<span class="jxr_string">"CACHE HIT for {},\n{}"</span>, <strong class="jxr_keyword">this</strong>.cacheKey, correlationId);
+<a class="jxr_linenumber" name="L213" href="#L213">213</a> 
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>         <em class="jxr_comment">// increase the hits counter for the source serviceID</em>
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>         cacheMetrics.hitsCounter.inc();
+<a class="jxr_linenumber" name="L216" href="#L216">216</a> 
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>         <em class="jxr_comment">// the document could be retrieved, so forward it (parsed as a JsonNode) to the actual subscriber to the cachedSource</em>
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>         serveCachedContent(cacheEntry, refreshInterval);
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>       }
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>       <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>         <em class="jxr_comment">// this means the cached content is outdated - we better fetch the data from the backend</em>
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>         String reason;
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>         <strong class="jxr_keyword">if</strong> (responseAge &gt;= refreshInterval) {
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>           reason = <span class="jxr_string">"it's "</span> + responseAge + <span class="jxr_string">" seconds old and the cache strategy has a refresh interval of "</span> + refreshInterval + <span class="jxr_string">" seconds."</span>;
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>         }
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>         <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (responseAge &gt;= maxAgeFromClient) {
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>           reason = <span class="jxr_string">"it's "</span> + responseAge + <span class="jxr_string">" seconds old and the client requested a max-age of "</span> + maxAgeFromClient + <span class="jxr_string">" seconds."</span>;
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>         }
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>         <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>           reason = <span class="jxr_string">"it has expired "</span> + (-expirySeconds) + <span class="jxr_string">" seconds ago, according to the original max-age header from the http-response"</span>;
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>         }
+<a class="jxr_linenumber" name="L232" href="#L232">232</a> 
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>         log.debug(<span class="jxr_string">"CACHE STALE - content for {} is available, but {},\n{}"</span>, cacheKey, reason, correlationId);
+<a class="jxr_linenumber" name="L234" href="#L234">234</a> 
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>         fetchAndStore(<strong class="jxr_keyword">new</strong> Subscriber&lt;JsonPipelineOutput&gt;() {
+<a class="jxr_linenumber" name="L236" href="#L236">236</a> 
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>           @Override
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>           <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onNext(JsonPipelineOutput fetchedOutput) {
+<a class="jxr_linenumber" name="L239" href="#L239">239</a> 
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>             <em class="jxr_comment">// increase the stales counter for the source serviceID</em>
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>             cacheMetrics.stalesCounter.inc();
+<a class="jxr_linenumber" name="L242" href="#L242">242</a> 
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>             subscriber.onNext(fetchedOutput);
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>           }
+<a class="jxr_linenumber" name="L245" href="#L245">245</a> 
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>           @Override
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>           <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onCompleted() {
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>             subscriber.onCompleted();
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>           }
+<a class="jxr_linenumber" name="L250" href="#L250">250</a> 
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>           @Override
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>           <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onError(Throwable e) {
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>             Exceptions.throwIfFatal(e);
+<a class="jxr_linenumber" name="L254" href="#L254">254</a> 
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>             <em class="jxr_comment">// if the cached response was a an error as well (e.g. 404), then do not use it as a fallback.</em>
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>             <em class="jxr_comment">// instead  just forward the actual exception that occurred</em>
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>             <strong class="jxr_keyword">if</strong> (cacheEntry.getStatusCode() &gt;= 400) {
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>               subscriber.onError(e);
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>               <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>             }
+<a class="jxr_linenumber" name="L261" href="#L261">261</a> 
+<a class="jxr_linenumber" name="L262" href="#L262">262</a> 
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>             <strong class="jxr_keyword">if</strong> (e instanceof JsonPipelineInputException &amp;&amp; ((JsonPipelineInputException)e).getStatusCode() == 404) {
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>               log.warn(<span class="jxr_string">"CACHE FALLBACK - Using stale content from cache as a fallback after failing to fresh content for "</span> + cacheKey + <span class="jxr_string">",\n"</span>
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>                   + correlationId + <span class="jxr_string">"\n"</span> + e.getMessage());
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>             }
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>             <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>               log.warn(<span class="jxr_string">"CACHE FALLBACK - Using stale content from cache as a fallback after failing to fresh content for "</span> + cacheKey + <span class="jxr_string">",\n"</span>
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>                   + correlationId, e);
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>             }
+<a class="jxr_linenumber" name="L271" href="#L271">271</a> 
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>             <em class="jxr_comment">// increase the fallbacks counter for the source serviceID</em>
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>             cacheMetrics.fallbacksCounter.inc();
+<a class="jxr_linenumber" name="L274" href="#L274">274</a> 
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>             <a name="JsonPipelineOutputImpl" href="../../../../../../io/wcm/caravan/pipeline/<a name="JsonPipelineOutputImpl" href="../../../../../../io/wcm/caravan/pipeline/impl/JsonPipelineOutputImpl.html#JsonPipelineOutputImpl">JsonPipelineOutputImpl</a>tImpl.html#JsonPipelineOutputImpl">JsonPipelineOutputImpl</a> pipelineOutput = <strong class="jxr_keyword">new</strong> <a name="JsonPipelineOutputImpl" href="../../../../../../io/wcm/caravan/pipeline/impl/JsonPipelineOutputImpl.html#JsonPipelineOutputImpl">JsonPipelineOutputImpl</a>(cacheEntry.getContentNode(), requests);
+<a class="jxr_linenumber" name="L276" href="#L276">276</a> 
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>             <em class="jxr_comment">// when fallback content is served from cache, it should not be cached by the client at all</em>
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>             subscriber.onNext(pipelineOutput.withMaxAge(0));
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>             subscriber.onCompleted();
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>           }
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>         });
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>       }
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>     }
+<a class="jxr_linenumber" name="L284" href="#L284">284</a> 
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> getClientMaxAge() {
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>       <strong class="jxr_keyword">int</strong> maxAgeFromClient = (<strong class="jxr_keyword">int</strong>)TimeUnit.DAYS.toSeconds(365);
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>       <strong class="jxr_keyword">for</strong> (String cacheControl : requests.get(0).getHeaders().get(<span class="jxr_string">"Cache-Control"</span>)) {
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>         <strong class="jxr_keyword">if</strong> (cacheControl.startsWith(<span class="jxr_string">"max-age"</span>)) {
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>           <strong class="jxr_keyword">int</strong> maxAge = NumberUtils.toInt(StringUtils.substringAfter(cacheControl, <span class="jxr_string">"="</span>), maxAgeFromClient);
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>           <strong class="jxr_keyword">if</strong> (maxAge &gt; 0) {
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>             maxAgeFromClient = maxAge;
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>           }
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>         }
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>       }
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>       <strong class="jxr_keyword">return</strong> maxAgeFromClient;
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>     }
+<a class="jxr_linenumber" name="L297" href="#L297">297</a> 
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> serveCachedContent(CacheEnvelope cacheEntry, <strong class="jxr_keyword">int</strong> refreshInterval) {
+<a class="jxr_linenumber" name="L299" href="#L299">299</a> 
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>       <strong class="jxr_keyword">if</strong> (cacheEntry.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         <em class="jxr_comment">// the cache entry is a 404 response that should be thrown as an exception to be handled by the subscriber</em>
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>         String cachedInfoSuffix = <span class="jxr_string">" (Cached from "</span> + cacheEntry.getSources() + <span class="jxr_string">" at "</span> + cacheEntry.getGeneratedDate() + <span class="jxr_string">")"</span>;
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>         subscriber.onError(<strong class="jxr_keyword">new</strong> JsonPipelineInputException(HttpStatus.SC_NOT_FOUND, cacheEntry.getReasonString() + cachedInfoSuffix));
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>       }
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>       <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>         <em class="jxr_comment">// make sure to set the max-age content-header just to the time the cached content will become stale</em>
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>         <strong class="jxr_keyword">int</strong> maxAge = refreshInterval - cacheEntry.getResponseAge();
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>         maxAge = Math.min(maxAge, cacheEntry.getExpirySeconds());
+<a class="jxr_linenumber" name="L309" href="#L309">309</a> 
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>         subscriber.onNext(<strong class="jxr_keyword">new</strong> <a name="JsonPipelineOutputImpl" href="../../../../../../io/wcm/caravan/pipeline/impl/JsonPipelineOutputImpl.html#JsonPipelineOutputImpl">JsonPipelineOutputImpl</a>(cacheEntry.getContentNode(), requests).withMaxAge(maxAge));
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>         subscriber.onCompleted();
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>       }
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>     }
+<a class="jxr_linenumber" name="L314" href="#L314">314</a> 
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>     @Override
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onCompleted() {
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>       <strong class="jxr_keyword">if</strong> (!cacheHit) {
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>         <em class="jxr_comment">// there was no emission, so the response has to be fetched from the service</em>
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>         log.debug(<span class="jxr_string">"CACHE MISS for {} fetching response from {} through pipeline,\n{}"</span>, cacheKey, getSourceServicePrefix(), correlationId);
+<a class="jxr_linenumber" name="L320" href="#L320">320</a> 
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>         <em class="jxr_comment">// increase the misses counter for the source serviceID</em>
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>         cacheMetrics.missesCounter.inc();
+<a class="jxr_linenumber" name="L323" href="#L323">323</a> 
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>         fetchAndStore(subscriber);
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>       }
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>     }
+<a class="jxr_linenumber" name="L327" href="#L327">327</a> 
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>     @Override
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onError(Throwable e) {
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>       Exceptions.throwIfFatal(e);
+<a class="jxr_linenumber" name="L331" href="#L331">331</a> 
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>       <em class="jxr_comment">// also fall back to the actual service if the couchbase request failed</em>
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>       log.warn(<span class="jxr_string">"Failed to connect to couchbase server, falling back to direct connection to "</span> + getSourceServicePrefix() + <span class="jxr_string">",\n"</span>
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>           + correlationId, e);
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>       fetchAndStore(subscriber);
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>     }
+<a class="jxr_linenumber" name="L337" href="#L337">337</a> 
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> fetchAndStore(Subscriber&lt;? <strong class="jxr_keyword">super</strong> JsonPipelineOutput&gt; backendResponseSubscriber) {
+<a class="jxr_linenumber" name="L339" href="#L339">339</a> 
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>       <em class="jxr_comment">// fetch the output with a new subscription, which will also store the response in the cache when it is retrieved</em>
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>       originalSource.subscribe(<strong class="jxr_keyword">new</strong> Observer&lt;JsonPipelineOutput&gt;() {
+<a class="jxr_linenumber" name="L342" href="#L342">342</a> 
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>         @Override
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onNext(JsonPipelineOutput fetchedModel) {
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>           CachePersistencyOptions options = strategy.getCachePersistencyOptions(requests);
+<a class="jxr_linenumber" name="L346" href="#L346">346</a> 
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>           <strong class="jxr_keyword">int</strong> contentMaxAge = options.getRefreshInterval();
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>           <strong class="jxr_keyword">if</strong> (fetchedModel.getMaxAge() &gt;= 0) {
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>             contentMaxAge = Math.min(contentMaxAge, fetchedModel.getMaxAge());
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>           }
+<a class="jxr_linenumber" name="L351" href="#L351">351</a> 
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>           log.debug(<span class="jxr_string">"CACHE PUT - response for {} has been fetched and will be put in the cache, max-age={} sec,\n{}"</span>, cacheKey, contentMaxAge,
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>               correlationId);
+<a class="jxr_linenumber" name="L354" href="#L354">354</a> 
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>           CacheEnvelope cacheEntry = CacheEnvelope.from200Response(fetchedModel.getPayload(), contentMaxAge, requests,
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>               cacheKey, descriptor, context.getProperties());
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>           context.getCacheAdapter().put(cacheKey, cacheEntry.getEnvelopeString(), options);
+<a class="jxr_linenumber" name="L358" href="#L358">358</a> 
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>           <em class="jxr_comment">// everything else is just forwarding to the subscriber to the cachedSource</em>
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>           backendResponseSubscriber.onNext(fetchedModel.withMaxAge(contentMaxAge));
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>         }
+<a class="jxr_linenumber" name="L362" href="#L362">362</a> 
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>         @Override
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onCompleted() {
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>           backendResponseSubscriber.onCompleted();
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>         }
+<a class="jxr_linenumber" name="L367" href="#L367">367</a> 
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>         @Override
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onError(Throwable e) {
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>           Exceptions.throwIfFatal(e);
+<a class="jxr_linenumber" name="L371" href="#L371">371</a> 
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>           <strong class="jxr_keyword">if</strong> (e instanceof JsonPipelineInputException) {
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>             <strong class="jxr_keyword">if</strong> (((JsonPipelineInputException)e).getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+<a class="jxr_linenumber" name="L374" href="#L374">374</a> 
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>               <strong class="jxr_keyword">int</strong> maxAgeFor404 = 60;
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>               CachePersistencyOptions options = CachePersistencyOptions.createTransient(maxAgeFor404);
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>               log.debug(<span class="jxr_string">"CACHE PUT - 404 response for {} will be stored in the cache, max-age={} sec,\n{}"</span>,
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>                   descriptor, options.getRefreshInterval(), correlationId);
+<a class="jxr_linenumber" name="L379" href="#L379">379</a> 
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>               CacheEnvelope cacheEntry = CacheEnvelope.from404Response(e.getMessage(), maxAgeFor404, requests, cacheKey, descriptor, context.getProperties());
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>               context.getCacheAdapter().put(cacheKey, cacheEntry.getEnvelopeString(), options);
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>             }
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>           }
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>           backendResponseSubscriber.onError(e);
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>         }
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>       });
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>     }
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>   }
+<a class="jxr_linenumber" name="L389" href="#L389">389</a> 
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_javadoccomment">   * Implements generation and parsing of the cache "envelope" document, that wraps the JSON output of the pipeline to</em>
+<a class="jxr_linenumber" name="L392" href="#L392">392</a> <em class="jxr_javadoccomment">   * be able to store additional metadata in the cache</em>
+<a class="jxr_linenumber" name="L393" href="#L393">393</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> CacheEnvelope {
+<a class="jxr_linenumber" name="L395" href="#L395">395</a> 
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String CACHE_METADATA_PROPERTY = <span class="jxr_string">"metadata"</span>;
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String CACHE_CONTENT_PROPERTY = <span class="jxr_string">"content"</span>;
+<a class="jxr_linenumber" name="L398" href="#L398">398</a> 
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> ObjectNode envelopeNode;
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> ObjectNode metadataNode;
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> JsonNode contentNode;
+<a class="jxr_linenumber" name="L402" href="#L402">402</a> 
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>     <strong class="jxr_keyword">private</strong> CacheEnvelope(ObjectNode envelopeNode) {
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>       <strong class="jxr_keyword">this</strong>.envelopeNode = envelopeNode;
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>       metadataNode = (ObjectNode)envelopeNode.get(CACHE_METADATA_PROPERTY);
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>       contentNode = envelopeNode.get(CACHE_CONTENT_PROPERTY);
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>     }
+<a class="jxr_linenumber" name="L408" href="#L408">408</a> 
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L410" href="#L410">410</a> <em class="jxr_javadoccomment">     * Parse a JSON string that was obtained from the couchbase cache</em>
+<a class="jxr_linenumber" name="L411" href="#L411">411</a> <em class="jxr_javadoccomment">     * @param jsonString JSON string</em>
+<a class="jxr_linenumber" name="L412" href="#L412">412</a> <em class="jxr_javadoccomment">     * @param cacheKey Cache key</em>
+<a class="jxr_linenumber" name="L413" href="#L413">413</a> <em class="jxr_javadoccomment">     * @return the CacheEntry - or null if the json String was not in the expected format</em>
+<a class="jxr_linenumber" name="L414" href="#L414">414</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> CacheEnvelope fromEnvelopeString(String jsonString, String cacheKey) {
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>         ObjectNode envelopeFromCache = JacksonFunctions.stringToObjectNode(jsonString);
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>         <strong class="jxr_keyword">if</strong> (!envelopeFromCache.has(CACHE_METADATA_PROPERTY) || !envelopeFromCache.has(CACHE_CONTENT_PROPERTY)) {
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>           log.warn(<span class="jxr_string">"Ignoring cached document {}, because it doesn't have the expected metadata/content envelope."</span>, cacheKey);
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>         }
+<a class="jxr_linenumber" name="L422" href="#L422">422</a> 
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> CacheEnvelope(envelopeFromCache);
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>       }
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>       <strong class="jxr_keyword">catch</strong> (JsonPipelineInputException e) {
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>         log.warn(<span class="jxr_string">"Failed parse cached JSON document from "</span> + cacheKey, e);
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>       }
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>     }
+<a class="jxr_linenumber" name="L430" href="#L430">430</a> 
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L432" href="#L432">432</a> <em class="jxr_javadoccomment">     * Create a new CacheEnvelope to store in the couchbase cache</em>
+<a class="jxr_linenumber" name="L433" href="#L433">433</a> <em class="jxr_javadoccomment">     * @param contentNode Content node</em>
+<a class="jxr_linenumber" name="L434" href="#L434">434</a> <em class="jxr_javadoccomment">     * @param maxAge how many seconds 404 responses in cache should stay valid</em>
+<a class="jxr_linenumber" name="L435" href="#L435">435</a> <em class="jxr_javadoccomment">     * @param requests Requests</em>
+<a class="jxr_linenumber" name="L436" href="#L436">436</a> <em class="jxr_javadoccomment">     * @param cacheKey Cache key</em>
+<a class="jxr_linenumber" name="L437" href="#L437">437</a> <em class="jxr_javadoccomment">     * @param pipelineDescriptor Pipeline descriptor</em>
+<a class="jxr_linenumber" name="L438" href="#L438">438</a> <em class="jxr_javadoccomment">     * @param contextProperties Context properties</em>
+<a class="jxr_linenumber" name="L439" href="#L439">439</a> <em class="jxr_javadoccomment">     * @return the new CacheEnvelope instance</em>
+<a class="jxr_linenumber" name="L440" href="#L440">440</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> CacheEnvelope from200Response(JsonNode contentNode, <strong class="jxr_keyword">int</strong> maxAge, List&lt;CaravanHttpRequest&gt; requests, String cacheKey,
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>         String pipelineDescriptor, Map&lt;String, String&gt; contextProperties) {
+<a class="jxr_linenumber" name="L443" href="#L443">443</a> 
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>       ObjectNode envelope = createEnvelopeNode(contentNode, HttpStatus.SC_OK, maxAge, requests, cacheKey, pipelineDescriptor, <strong class="jxr_keyword">null</strong>, contextProperties);
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> CacheEnvelope(envelope);
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>     }
+<a class="jxr_linenumber" name="L447" href="#L447">447</a> 
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L449" href="#L449">449</a> <em class="jxr_javadoccomment">     * Create a new CacheEnvelope to store in the couchbase cache</em>
+<a class="jxr_linenumber" name="L450" href="#L450">450</a> <em class="jxr_javadoccomment">     * @param reason Reason</em>
+<a class="jxr_linenumber" name="L451" href="#L451">451</a> <em class="jxr_javadoccomment">     * @param maxAge how many seconds 404 responses in cache should stay valid</em>
+<a class="jxr_linenumber" name="L452" href="#L452">452</a> <em class="jxr_javadoccomment">     * @param requests Requests</em>
+<a class="jxr_linenumber" name="L453" href="#L453">453</a> <em class="jxr_javadoccomment">     * @param cacheKey Cache key</em>
+<a class="jxr_linenumber" name="L454" href="#L454">454</a> <em class="jxr_javadoccomment">     * @param pipelineDescriptor Pipeline descriptor</em>
+<a class="jxr_linenumber" name="L455" href="#L455">455</a> <em class="jxr_javadoccomment">     * @param contextProperties Context properties</em>
+<a class="jxr_linenumber" name="L456" href="#L456">456</a> <em class="jxr_javadoccomment">     * @return the new CacheEnvelope instance</em>
+<a class="jxr_linenumber" name="L457" href="#L457">457</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> CacheEnvelope from404Response(String reason, <strong class="jxr_keyword">int</strong> maxAge, List&lt;CaravanHttpRequest&gt; requests, String cacheKey,
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>         String pipelineDescriptor, Map&lt;String, String&gt; contextProperties) {
+<a class="jxr_linenumber" name="L460" href="#L460">460</a> 
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>       JsonNode contentNode = JacksonFunctions.emptyObject();
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>       <strong class="jxr_keyword">int</strong> statusCode = HttpStatus.SC_NOT_FOUND;
+<a class="jxr_linenumber" name="L463" href="#L463">463</a> 
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>       ObjectNode envelope = createEnvelopeNode(contentNode, statusCode, maxAge, requests, cacheKey, pipelineDescriptor, reason, contextProperties);
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> CacheEnvelope(envelope);
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>     }
+<a class="jxr_linenumber" name="L467" href="#L467">467</a> 
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>     <strong class="jxr_keyword">static</strong> CacheEnvelope fromContentString(String contentJson, <strong class="jxr_keyword">int</strong> age) {
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>       ObjectNode envelopeNode = createEnvelopeNode(JacksonFunctions.stringToObjectNode(contentJson), 200, 0, ImmutableList.of(),
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>           <span class="jxr_string">"Cache-Key"</span>, <span class="jxr_string">"Descriptor"</span>, <strong class="jxr_keyword">null</strong>, ImmutableMap.of());
+<a class="jxr_linenumber" name="L471" href="#L471">471</a> 
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>       CacheEnvelope envelope = <strong class="jxr_keyword">new</strong> CacheEnvelope(envelopeNode);
+<a class="jxr_linenumber" name="L473" href="#L473">473</a> 
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>       envelope.getMetadataNode().put(<span class="jxr_string">"generated"</span>, CacheDateUtils.formatRelativeTime(-age));
+<a class="jxr_linenumber" name="L475" href="#L475">475</a> 
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>       <strong class="jxr_keyword">return</strong> envelope;
+<a class="jxr_linenumber" name="L477" href="#L477">477</a>     }
+<a class="jxr_linenumber" name="L478" href="#L478">478</a> 
+<a class="jxr_linenumber" name="L479" href="#L479">479</a> 
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> ObjectNode createEnvelopeNode(JsonNode contentNode, <strong class="jxr_keyword">int</strong> statusCode, <strong class="jxr_keyword">int</strong> maxAge, List&lt;CaravanHttpRequest&gt; requests,
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>         String cacheKey, String pipelineDescriptor, String reason, Map&lt;String, String&gt; contextProperties) {
+<a class="jxr_linenumber" name="L482" href="#L482">482</a> 
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>       ObjectNode envelope = JacksonFunctions.emptyObject();
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>       ObjectNode metadata = envelope.putObject(CACHE_METADATA_PROPERTY);
+<a class="jxr_linenumber" name="L485" href="#L485">485</a> 
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>       metadata.put(<span class="jxr_string">"cacheKey"</span>, cacheKey);
+<a class="jxr_linenumber" name="L487" href="#L487">487</a>       metadata.set(<span class="jxr_string">"sources"</span>, JacksonFunctions.pojoToNode(getSourceServiceIds(requests)));
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>       metadata.put(<span class="jxr_string">"pipeline"</span>, pipelineDescriptor);
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>       metadata.put(<span class="jxr_string">"generated"</span>, CacheDateUtils.formatCurrentTime());
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>       <strong class="jxr_keyword">if</strong> (maxAge &gt; 0) {
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>         metadata.put(<span class="jxr_string">"expires"</span>, CacheDateUtils.formatRelativeTime(maxAge));
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>       }
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>       metadata.put(<span class="jxr_string">"statusCode"</span>, statusCode);
+<a class="jxr_linenumber" name="L494" href="#L494">494</a> 
+<a class="jxr_linenumber" name="L495" href="#L495">495</a>       List&lt;String&gt; sourcePaths = <strong class="jxr_keyword">new</strong> ArrayList&lt;String&gt;();
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>       <strong class="jxr_keyword">for</strong> (CaravanHttpRequest req : requests) {
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>         sourcePaths.add(StringUtils.substringBefore(req.getUrl(), <span class="jxr_string">"?"</span>));
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>       }
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>       metadata.set(<span class="jxr_string">"sourcePaths"</span>, JacksonFunctions.pojoToNode(sourcePaths));
+<a class="jxr_linenumber" name="L500" href="#L500">500</a> 
+<a class="jxr_linenumber" name="L501" href="#L501">501</a> 
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>       <strong class="jxr_keyword">if</strong> (StringUtils.isNotBlank(reason)) {
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>         metadata.put(<span class="jxr_string">"reason"</span>, reason);
+<a class="jxr_linenumber" name="L504" href="#L504">504</a>       }
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>       metadata.set(<span class="jxr_string">"contextProperties"</span>, JacksonFunctions.pojoToNode(contextProperties));
+<a class="jxr_linenumber" name="L506" href="#L506">506</a>       envelope.set(CACHE_CONTENT_PROPERTY, contentNode);
+<a class="jxr_linenumber" name="L507" href="#L507">507</a> 
+<a class="jxr_linenumber" name="L508" href="#L508">508</a>       <strong class="jxr_keyword">return</strong> envelope;
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>     }
+<a class="jxr_linenumber" name="L510" href="#L510">510</a> 
+<a class="jxr_linenumber" name="L511" href="#L511">511</a> 
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L513" href="#L513">513</a> <em class="jxr_javadoccomment">     * @return the full envelope (as JSON string) to be stored in the cache</em>
+<a class="jxr_linenumber" name="L514" href="#L514">514</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L515" href="#L515">515</a>     <strong class="jxr_keyword">public</strong> String getEnvelopeString() {
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>       <strong class="jxr_keyword">return</strong> JacksonFunctions.nodeToString(envelopeNode);
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>     }
+<a class="jxr_linenumber" name="L518" href="#L518">518</a> 
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>     JsonNode getContentNode() {
+<a class="jxr_linenumber" name="L520" href="#L520">520</a>       <strong class="jxr_keyword">return</strong> contentNode;
+<a class="jxr_linenumber" name="L521" href="#L521">521</a>     }
+<a class="jxr_linenumber" name="L522" href="#L522">522</a> 
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>     ObjectNode getMetadataNode() {
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>       <strong class="jxr_keyword">return</strong> metadataNode;
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>     }
+<a class="jxr_linenumber" name="L526" href="#L526">526</a> 
+<a class="jxr_linenumber" name="L527" href="#L527">527</a>     <strong class="jxr_keyword">int</strong> getStatusCode() {
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>       <strong class="jxr_keyword">return</strong> metadataNode.at(<span class="jxr_string">"/statusCode"</span>).asInt(HttpStatus.SC_OK);
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>     }
+<a class="jxr_linenumber" name="L530" href="#L530">530</a> 
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>     String getReasonString() {
+<a class="jxr_linenumber" name="L532" href="#L532">532</a>       <strong class="jxr_keyword">return</strong> metadataNode.at(<span class="jxr_string">"/reason"</span>).asText(<span class="jxr_string">"Not Found"</span>);
+<a class="jxr_linenumber" name="L533" href="#L533">533</a>     }
+<a class="jxr_linenumber" name="L534" href="#L534">534</a> 
+<a class="jxr_linenumber" name="L535" href="#L535">535</a>     String getSources() {
+<a class="jxr_linenumber" name="L536" href="#L536">536</a>       <strong class="jxr_keyword">return</strong> metadataNode.at(<span class="jxr_string">"/sources"</span>).toString();
+<a class="jxr_linenumber" name="L537" href="#L537">537</a>     }
+<a class="jxr_linenumber" name="L538" href="#L538">538</a> 
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>     <strong class="jxr_keyword">int</strong> getResponseAge() {
+<a class="jxr_linenumber" name="L540" href="#L540">540</a>       <strong class="jxr_keyword">return</strong> CacheDateUtils.getSecondsSince(getGeneratedDate());
+<a class="jxr_linenumber" name="L541" href="#L541">541</a>     }
+<a class="jxr_linenumber" name="L542" href="#L542">542</a> 
+<a class="jxr_linenumber" name="L543" href="#L543">543</a>     String getGeneratedDate() {
+<a class="jxr_linenumber" name="L544" href="#L544">544</a>       <strong class="jxr_keyword">return</strong> metadataNode.at(<span class="jxr_string">"/generated"</span>).asText();
+<a class="jxr_linenumber" name="L545" href="#L545">545</a>     }
+<a class="jxr_linenumber" name="L546" href="#L546">546</a> 
+<a class="jxr_linenumber" name="L547" href="#L547">547</a>     <strong class="jxr_keyword">int</strong> getExpirySeconds() {
+<a class="jxr_linenumber" name="L548" href="#L548">548</a>       <strong class="jxr_keyword">if</strong> (!metadataNode.has(<span class="jxr_string">"expires"</span>)) {
+<a class="jxr_linenumber" name="L549" href="#L549">549</a>         <strong class="jxr_keyword">return</strong> (<strong class="jxr_keyword">int</strong>)TimeUnit.DAYS.toSeconds(365);
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>       }
+<a class="jxr_linenumber" name="L551" href="#L551">551</a>       String expiryDate = metadataNode.at(<span class="jxr_string">"/expires"</span>).asText();
+<a class="jxr_linenumber" name="L552" href="#L552">552</a>       <strong class="jxr_keyword">return</strong> CacheDateUtils.getSecondsUntil(expiryDate);
+<a class="jxr_linenumber" name="L553" href="#L553">553</a>     }
+<a class="jxr_linenumber" name="L554" href="#L554">554</a> 
+<a class="jxr_linenumber" name="L555" href="#L555">555</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L556" href="#L556">556</a> <em class="jxr_javadoccomment">     * @param newDate Generated date</em>
+<a class="jxr_linenumber" name="L557" href="#L557">557</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L558" href="#L558">558</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setGeneratedDate(String newDate) {
+<a class="jxr_linenumber" name="L559" href="#L559">559</a>       metadataNode.put(<span class="jxr_string">"generated"</span>, newDate);
+<a class="jxr_linenumber" name="L560" href="#L560">560</a>     }
+<a class="jxr_linenumber" name="L561" href="#L561">561</a> 
+<a class="jxr_linenumber" name="L562" href="#L562">562</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L563" href="#L563">563</a> <em class="jxr_javadoccomment">     * @param newDate Expires date</em>
+<a class="jxr_linenumber" name="L564" href="#L564">564</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L565" href="#L565">565</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setExpiresDate(String newDate) {
+<a class="jxr_linenumber" name="L566" href="#L566">566</a>       metadataNode.put(<span class="jxr_string">"expires"</span>, newDate);
+<a class="jxr_linenumber" name="L567" href="#L567">567</a>     }
+<a class="jxr_linenumber" name="L568" href="#L568">568</a>   }
+<a class="jxr_linenumber" name="L569" href="#L569">569</a> }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2014&#x2013;2021 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</div>
+</body>
+</html>

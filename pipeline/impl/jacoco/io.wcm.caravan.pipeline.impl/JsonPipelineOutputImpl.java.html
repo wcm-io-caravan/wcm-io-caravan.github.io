@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonPipelineOutputImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Implementation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.impl</a> &gt; <span class="el_source">JsonPipelineOutputImpl.java</span></div><h1>JsonPipelineOutputImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.impl;
+
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.pipeline.JsonPipelineOutput;
+
+import java.util.Iterator;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+/**
+ * Implementation of JsonPipelineOutput
+ */
+public class JsonPipelineOutputImpl implements JsonPipelineOutput {
+
+  private final JsonPipelineMetadata metadata;
+  private final JsonNode payload;
+  private final List&lt;CaravanHttpRequest&gt; requests;
+
+  /**
+   * Creates pipeline output with the given payload
+   * @param payload
+   */
+<span class="fc" id="L43">  public JsonPipelineOutputImpl(JsonNode payload, List&lt;CaravanHttpRequest&gt; requests) {</span>
+<span class="fc" id="L44">    this.metadata = new JsonPipelineMetadata(200);</span>
+<span class="fc" id="L45">    this.payload = payload;</span>
+<span class="fc" id="L46">    this.requests = requests;</span>
+<span class="fc" id="L47">  }</span>
+
+<span class="fc" id="L49">  JsonPipelineOutputImpl(JsonPipelineMetadata metadata, JsonNode payload, List&lt;CaravanHttpRequest&gt; requests) {</span>
+<span class="fc" id="L50">    this.metadata = metadata;</span>
+<span class="fc" id="L51">    this.payload = payload;</span>
+<span class="fc" id="L52">    this.requests = requests;</span>
+<span class="fc" id="L53">  }</span>
+
+  JsonPipelineOutputImpl deepCopy() {
+<span class="fc" id="L56">    JsonPipelineOutputImpl copy = new JsonPipelineOutputImpl(payload, requests);</span>
+<span class="fc" id="L57">    copy.getMetadata().setMaxAge(getMaxAge());</span>
+<span class="fc" id="L58">    copy.getMetadata().setStatusCode(getStatusCode());</span>
+<span class="fc" id="L59">    return copy;</span>
+  }
+
+  @Override
+  public JsonNode getPayload() {
+<span class="fc" id="L64">    return payload;</span>
+  }
+
+  public JsonPipelineMetadata getMetadata() {
+<span class="fc" id="L68">    return metadata;</span>
+  }
+
+  @Override
+  public JsonPipelineOutput withPayload(JsonNode newPayload) {
+<span class="fc" id="L73">    return new JsonPipelineOutputImpl(metadata, newPayload, requests);</span>
+  }
+
+  @Override
+  public int getStatusCode() {
+<span class="fc" id="L78">    return metadata.getStatusCode();</span>
+  }
+
+  @Override
+  public JsonPipelineOutput withStatusCode(int statusCode) {
+<span class="fc" id="L83">    JsonPipelineOutputImpl copy = deepCopy();</span>
+<span class="fc" id="L84">    copy.getMetadata().setStatusCode(statusCode);</span>
+<span class="fc" id="L85">    return copy;</span>
+  }
+
+  @Override
+  public int getMaxAge() {
+<span class="fc" id="L90">    return metadata.getMaxAge();</span>
+  }
+
+  @Override
+  public JsonPipelineOutput withMaxAge(int expirySeconds) {
+<span class="fc" id="L95">    JsonPipelineOutputImpl copy = deepCopy();</span>
+<span class="fc" id="L96">    copy.getMetadata().setMaxAge(expirySeconds);</span>
+<span class="fc" id="L97">    return copy;</span>
+  }
+
+  @Override
+  public String getCorrelationId() {
+<span class="nc" id="L102">    Iterator&lt;CaravanHttpRequest&gt; requestIterator = requests.iterator();</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">    while (requestIterator.hasNext()) {</span>
+<span class="nc" id="L104">      String correlationId = requestIterator.next().getCorrelationId();</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">      if (correlationId != null) {</span>
+<span class="nc" id="L106">        return correlationId;</span>
+      }
+<span class="nc" id="L108">    }</span>
+<span class="nc" id="L109">    return null;</span>
+  }
+
+  @Override
+  public List&lt;CaravanHttpRequest&gt; getRequests() {
+<span class="nc" id="L114">    return requests;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

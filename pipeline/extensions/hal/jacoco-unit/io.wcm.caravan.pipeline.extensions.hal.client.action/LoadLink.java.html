@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoadLink.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Extension for HAL</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.extensions.hal.client.action</a> &gt; <span class="el_source">LoadLink.java</span></div><h1>LoadLink.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.extensions.hal.client.action;
+
+import static io.wcm.caravan.io.http.request.CaravanHttpRequest.CORRELATION_ID_HEADER_NAME;
+
+import java.util.Collection;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.methods.HttpGet;
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.google.common.collect.Multimap;
+
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.io.http.request.CaravanHttpRequestBuilder;
+import io.wcm.caravan.pipeline.JsonPipeline;
+import io.wcm.caravan.pipeline.JsonPipelineContext;
+import io.wcm.caravan.pipeline.JsonPipelineExceptionHandler;
+import io.wcm.caravan.pipeline.JsonPipelineOutput;
+import io.wcm.caravan.pipeline.cache.CacheControlUtils;
+import io.wcm.caravan.pipeline.cache.CacheStrategy;
+import io.wcm.caravan.pipeline.extensions.hal.client.ServiceIdExtractor;
+import rx.Observable;
+
+/**
+ * Action to load a HAL link.
+ */
+@ProviderType
+public final class LoadLink extends AbstractHalClientAction {
+
+  private final ServiceIdExtractor serviceId;
+  private final Link link;
+  private final Map&lt;String, Object&gt; parameters;
+<span class="pc" id="L54">  private String httpMethod = HttpGet.METHOD_NAME;</span>
+
+  /**
+   * @param serviceId Service ID
+   * @param link Link to load
+   * @param parameters URI parameters
+   */
+<span class="nc" id="L61">  public LoadLink(String serviceId, Link link, Map&lt;String, Object&gt; parameters) {</span>
+<span class="nc" id="L62">    this.serviceId = (path) -&gt; serviceId;</span>
+<span class="nc" id="L63">    this.link = link;</span>
+<span class="nc" id="L64">    this.parameters = parameters;</span>
+<span class="nc" id="L65">  }</span>
+
+  /**
+   * @param serviceId a function to extract the serviceid from a path
+   * @param link Link to load
+   * @param parameters URI parameters
+   */
+<span class="fc" id="L72">  public LoadLink(ServiceIdExtractor serviceId, Link link, Map&lt;String, Object&gt; parameters) {</span>
+<span class="fc" id="L73">    this.serviceId = serviceId;</span>
+<span class="fc" id="L74">    this.link = link;</span>
+<span class="fc" id="L75">    this.parameters = parameters;</span>
+<span class="fc" id="L76">  }</span>
+
+  @Override
+  public String getId() {
+<span class="fc" id="L80">    return &quot;LOAD-LINK(&quot; + httpMethod + &quot;-&quot; + serviceId.getServiceId(link.getHref()) + '-' + StringUtils.defaultIfBlank(link.getName(), &quot;&quot;) + '-'</span>
+<span class="fc" id="L81">        + parameters.hashCode() + &quot;)&quot;;</span>
+  }
+
+  @Override
+  public Observable&lt;JsonPipelineOutput&gt; execute(JsonPipelineOutput previousStepOutput, JsonPipelineContext pipelineContext) {
+
+<span class="fc" id="L87">    CaravanHttpRequest request = createRequest(previousStepOutput);</span>
+<span class="fc" id="L88">    JsonPipeline pipeline = createPipeline(pipelineContext, request);</span>
+<span class="fc" id="L89">    return pipeline.getOutput().map(jsonPipelineOutput -&gt; {</span>
+
+<span class="fc" id="L91">      int maxAge = CacheControlUtils.getLowestMaxAge(jsonPipelineOutput, previousStepOutput);</span>
+<span class="fc" id="L92">      return jsonPipelineOutput.withMaxAge(maxAge);</span>
+
+    });
+
+  }
+
+  /**
+   * @param httpMethodToUse the HTTP method to use when loading the link
+   * @return this
+   */
+  public HalClientAction withHttpMethod(String httpMethodToUse) {
+<span class="fc" id="L103">    this.httpMethod = httpMethodToUse;</span>
+<span class="fc" id="L104">    return this;</span>
+  }
+
+  private CaravanHttpRequest createRequest(JsonPipelineOutput previousStepOutput) {
+
+<span class="fc" id="L109">    CaravanHttpRequestBuilder builder = getRequestBuilder();</span>
+<span class="fc" id="L110">    builder = setCacheControlHeaderIfExists(builder, previousStepOutput);</span>
+<span class="fc" id="L111">    builder = setCorrelationIdIfExists(builder, previousStepOutput);</span>
+<span class="fc" id="L112">    builder = setAdditionalHttpHeadersIfExists(builder);</span>
+<span class="fc" id="L113">    builder = builder.method(httpMethod);</span>
+<span class="fc" id="L114">    return builder.build(parameters);</span>
+
+  }
+
+  private JsonPipeline createPipeline(JsonPipelineContext context, CaravanHttpRequest request) {
+
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">    if (hasLogger()) {</span>
+<span class="nc" id="L121">      getLogger().debug(&quot;Execute request: &quot; + request);</span>
+    }
+<span class="fc" id="L123">    JsonPipeline pipeline = context.getFactory().create(request, context.getProperties());</span>
+<span class="fc" id="L124">    pipeline = setCacheStrategyIfExists(pipeline);</span>
+<span class="fc" id="L125">    pipeline = addExceptionHandlers(pipeline);</span>
+<span class="fc" id="L126">    return pipeline;</span>
+
+  }
+
+  /**
+   * @return URL of the current link and parameters.
+   */
+  public String getUrl() {
+<span class="fc" id="L134">    return getRequestBuilder().build(parameters).getUrl();</span>
+  }
+
+  private CaravanHttpRequestBuilder getRequestBuilder() {
+<span class="fc" id="L138">    return new CaravanHttpRequestBuilder(serviceId.getServiceId(link.getHref())).append(link.getHref());</span>
+  }
+
+  /**
+   * Adds a cache point to the given JSON pipeline if provided and the http request method is GET.
+   * @param pipeline JSON pipeline
+   * @return JSON pipeline with or without cache point
+   */
+  private JsonPipeline setCacheStrategyIfExists(JsonPipeline pipeline) {
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">    if (!HttpGet.METHOD_NAME.equals(httpMethod)) {</span>
+<span class="nc" id="L148">      return pipeline;</span>
+    }
+    else {
+<span class="fc" id="L151">      CacheStrategy cacheStrategy = getCacheStrategy();</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">      return cacheStrategy == null ? pipeline : pipeline.addCachePoint(cacheStrategy);</span>
+    }
+  }
+
+  /**
+   * Sets the HTTP Cache-Control header to the given request builder if provided by the previous JSON pipeline output.
+   * @param builder HTTP request builder
+   * @param previousStepOutput Previous JSON output
+   * @return HTTP request builder with or without HTTP Cache-Control header
+   */
+  private CaravanHttpRequestBuilder setCacheControlHeaderIfExists(CaravanHttpRequestBuilder builder, JsonPipelineOutput previousStepOutput) {
+
+<span class="fc bfc" id="L164" title="All 2 branches covered.">    if (previousStepOutput.getRequests().isEmpty()) {</span>
+<span class="fc" id="L165">      return builder;</span>
+    }
+<span class="fc" id="L167">    CaravanHttpRequest previousRequest = previousStepOutput.getRequests().get(0);</span>
+<span class="fc" id="L168">    Collection&lt;String&gt; cacheControlHeader = previousRequest.getHeaders().get(&quot;Cache-Control&quot;);</span>
+<span class="pc bpc" id="L169" title="1 of 4 branches missed.">    if (cacheControlHeader == null || cacheControlHeader.isEmpty()) {</span>
+<span class="fc" id="L170">      return builder;</span>
+    }
+<span class="fc" id="L172">    return builder.header(&quot;Cache-Control&quot;, cacheControlHeader);</span>
+
+  }
+
+  /**
+   * Sets the {@code correlation-id} HTTP header to the given request builder if provided by the previous JSON pipeline
+   * output.
+   * @param builder HTTP request builder
+   * @param previousStepOutput Previous JSON output
+   * @return HTTP request builder with or without {@code correlation-id} HTTP header
+   */
+  private CaravanHttpRequestBuilder setCorrelationIdIfExists(CaravanHttpRequestBuilder builder, JsonPipelineOutput previousStepOutput) {
+<span class="fc bfc" id="L184" title="All 2 branches covered.">    return previousStepOutput.getCorrelationId() == null ? builder : builder.header(CORRELATION_ID_HEADER_NAME, previousStepOutput.getCorrelationId());</span>
+  }
+
+  /**
+   * Adds exception handler(s) to the given JSON pipeline if provided.
+   * @param pipeline JSON pipeline
+   * @return JSON pipeline with or without exception handler(s)
+   */
+  private JsonPipeline addExceptionHandlers(JsonPipeline pipeline) {
+
+<span class="fc" id="L194">    JsonPipeline newPipeline = pipeline;</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">    for (JsonPipelineExceptionHandler handler : getExceptionHandlers()) {</span>
+<span class="fc" id="L196">      newPipeline = newPipeline.handleException(handler);</span>
+<span class="fc" id="L197">    }</span>
+<span class="fc" id="L198">    return newPipeline;</span>
+
+  }
+
+  /**
+   * Sets additional HTTP headers to the given request builder if provided.
+   * @param builder HTTP request builder
+   * @return HTTP request builder with or without headers
+   */
+  private CaravanHttpRequestBuilder setAdditionalHttpHeadersIfExists(CaravanHttpRequestBuilder builder) {
+<span class="fc" id="L208">    getHttpHeaders().keySet().forEach(name -&gt; builder.header(name, getHttpHeaders().get(name)));</span>
+<span class="fc" id="L209">    return builder;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

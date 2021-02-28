@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>JSON Pipeline Extension for HAL - Checkstyle report</title>
+    <link>https://caravan.wcm.io/pipeline/extensions/hal/</link>
+    <description>JSON Pipeline Extension for HAL - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
+    <item>
+      <title>File: 40,
+             Errors: 0,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.action.AbstractEmbedLinks.java">io/wcm/caravan/pipeline/extensions/hal/client/action/AbstractEmbedLinks.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.filter.HalResourceFilters.java">io/wcm/caravan/pipeline/extensions/hal/filter/HalResourceFilters.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.action.LoadLink.java">io/wcm/caravan/pipeline/extensions/hal/client/action/LoadLink.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.filter.FilterEmbeddedHalResource.java">io/wcm/caravan/pipeline/extensions/hal/filter/FilterEmbeddedHalResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.action.RemoveAllProperties.java">io/wcm/caravan/pipeline/extensions/hal/action/RemoveAllProperties.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.crawler.StopCriteria.java">io/wcm/caravan/pipeline/extensions/hal/crawler/StopCriteria.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.action.LinkSelectionStrategy.java">io/wcm/caravan/pipeline/extensions/hal/client/action/LinkSelectionStrategy.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.crawler.package-info.java">io/wcm/caravan/pipeline/extensions/hal/crawler/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.action.EmbedLink.java">io/wcm/caravan/pipeline/extensions/hal/client/action/EmbedLink.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.crawler.UriParametersProvider.java">io/wcm/caravan/pipeline/extensions/hal/crawler/UriParametersProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.action.AbstractHalClientAction.java">io/wcm/caravan/pipeline/extensions/hal/client/action/AbstractHalClientAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.action.ModifyResource.java">io/wcm/caravan/pipeline/extensions/hal/action/ModifyResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.action.InlineEmbeddedCollection.java">io/wcm/caravan/pipeline/extensions/hal/action/InlineEmbeddedCollection.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.crawler.HalCrawler.java">io/wcm/caravan/pipeline/extensions/hal/crawler/HalCrawler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.action.package-info.java">io/wcm/caravan/pipeline/extensions/hal/action/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.action.RemoveAllLinks.java">io/wcm/caravan/pipeline/extensions/hal/action/RemoveAllLinks.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.HalClient.java">io/wcm/caravan/pipeline/extensions/hal/client/HalClient.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.crawler.UriParametersProviders.java">io/wcm/caravan/pipeline/extensions/hal/crawler/UriParametersProviders.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.crawler.StopCriterion.java">io/wcm/caravan/pipeline/extensions/hal/crawler/StopCriterion.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.ServiceIdExtractor.java">io/wcm/caravan/pipeline/extensions/hal/client/ServiceIdExtractor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.filter.ReportHalResourceFilters.java">io/wcm/caravan/pipeline/extensions/hal/filter/ReportHalResourceFilters.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.action.package-info.java">io/wcm/caravan/pipeline/extensions/hal/client/action/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.action.CreateResource.java">io/wcm/caravan/pipeline/extensions/hal/action/CreateResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.filter.package-info.java">io/wcm/caravan/pipeline/extensions/hal/filter/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.filter.HalResourcePredicate.java">io/wcm/caravan/pipeline/extensions/hal/filter/HalResourcePredicate.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.crawler.LinkExtractors.java">io/wcm/caravan/pipeline/extensions/hal/crawler/LinkExtractors.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.filter.HalPath.java">io/wcm/caravan/pipeline/extensions/hal/filter/HalPath.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.filter.HalResourceMatchers.java">io/wcm/caravan/pipeline/extensions/hal/filter/HalResourceMatchers.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.crawler.OutputProcessor.java">io/wcm/caravan/pipeline/extensions/hal/crawler/OutputProcessor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.action.HalClientAction.java">io/wcm/caravan/pipeline/extensions/hal/client/action/HalClientAction.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.action.FollowLink.java">io/wcm/caravan/pipeline/extensions/hal/client/action/FollowLink.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.action.StripHal.java">io/wcm/caravan/pipeline/extensions/hal/action/StripHal.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.crawler.LinkExtractor.java">io/wcm/caravan/pipeline/extensions/hal/crawler/LinkExtractor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.crawler.OutputProcessors.java">io/wcm/caravan/pipeline/extensions/hal/crawler/OutputProcessors.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.action.BuildResource.java">io/wcm/caravan/pipeline/extensions/hal/action/BuildResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.action.InlineEmbedded.java">io/wcm/caravan/pipeline/extensions/hal/action/InlineEmbedded.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.action.LinkSelectionStrategies.java">io/wcm/caravan/pipeline/extensions/hal/client/action/LinkSelectionStrategies.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.action.EmbedLinks.java">io/wcm/caravan/pipeline/extensions/hal/client/action/EmbedLinks.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.action.DeepEmbedLinks.java">io/wcm/caravan/pipeline/extensions/hal/client/action/DeepEmbedLinks.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/extensions/hal//checkstyle.html#io.wcm.caravan.pipeline.extensions.hal.client.package-info.java">io/wcm/caravan/pipeline/extensions/hal/client/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InlineEmbedded.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Extension for HAL</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.extensions.hal.action</a> &gt; <span class="el_source">InlineEmbedded.java</span></div><h1>InlineEmbedded.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.extensions.hal.action;
+
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.pipeline.JsonPipelineAction;
+import io.wcm.caravan.pipeline.JsonPipelineContext;
+import io.wcm.caravan.pipeline.JsonPipelineOutput;
+import rx.Observable;
+
+/**
+ * Moves the state of embedded resources into the state of the current resource.
+ * The embedded resources get and the self link of the current resource get deleted.
+ */
+@ProviderType
+public final class InlineEmbedded implements JsonPipelineAction {
+
+  private final String[] relations;
+
+  /**
+   * @param relations Relations of the embedded resources to embed
+   */
+<span class="fc" id="L48">  public InlineEmbedded(String... relations) {</span>
+<span class="fc" id="L49">    this.relations = relations;</span>
+<span class="fc" id="L50">  }</span>
+
+  @Override
+  public String getId() {
+<span class="fc" id="L54">    return &quot;INLINE-EMBEDDED(&quot; + StringUtils.join(relations, '-') + &quot;)&quot;;</span>
+  }
+
+  @Override
+  public Observable&lt;JsonPipelineOutput&gt; execute(JsonPipelineOutput previousStepOutput, JsonPipelineContext context) {
+<span class="fc" id="L59">    HalResource halResource = new HalResource(previousStepOutput.getPayload());</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">    for (String relation : relations) {</span>
+<span class="fc" id="L61">      moveEmbeddedResourceState(halResource, relation);</span>
+      // delete embedded resource
+<span class="fc" id="L63">      halResource.removeEmbedded(relation);</span>
+    }
+    // delete self-HREF for resource
+<span class="fc" id="L66">    halResource.removeLinks(&quot;self&quot;);</span>
+
+<span class="fc" id="L68">    return Observable.just(previousStepOutput);</span>
+  }
+
+  private void moveEmbeddedResourceState(HalResource halResource, String relation) {
+<span class="fc" id="L72">    List&lt;HalResource&gt; embeddedResources = halResource.getEmbedded(relation);</span>
+<span class="fc" id="L73">    ObjectNode model = halResource.getModel();</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">    if (embeddedResources.size() == 1) {</span>
+<span class="fc" id="L75">      model.set(relation, embeddedResources.get(0).removeEmbedded().removeLinks().getModel());</span>
+    }
+    else {
+<span class="fc" id="L78">      ArrayNode container = model.putArray(relation);</span>
+<span class="fc" id="L79">      embeddedResources.forEach(e -&gt; container.add(e.removeEmbedded().removeLinks().getModel()));</span>
+    }
+<span class="fc" id="L81">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

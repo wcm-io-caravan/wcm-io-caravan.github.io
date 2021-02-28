@@ -1,0 +1,5 @@
+io.wcm.caravan.pipeline.extensions.hal.action
+io.wcm.caravan.pipeline.extensions.hal.client
+io.wcm.caravan.pipeline.extensions.hal.client.action
+io.wcm.caravan.pipeline.extensions.hal.crawler
+io.wcm.caravan.pipeline.extensions.hal.filter

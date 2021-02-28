@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MergeTransformer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Implementation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.impl.operators</a> &gt; <span class="el_source">MergeTransformer.java</span></div><h1>MergeTransformer.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.impl.operators;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import io.wcm.caravan.pipeline.JsonPipeline;
+import io.wcm.caravan.pipeline.JsonPipelineOutput;
+import io.wcm.caravan.pipeline.JsonPipelineOutputException;
+
+import java.util.Iterator;
+import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import rx.Observable;
+import rx.Observable.Transformer;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+/**
+ * a transformer that merges the output of a secondary {@link JsonPipeline} into the output of the primary pipeline.
+ */
+public class MergeTransformer implements Transformer&lt;JsonPipelineOutput, JsonPipelineOutput&gt; {
+
+<span class="fc" id="L44">  private static final Logger log = LoggerFactory.getLogger(MergeTransformer.class);</span>
+
+  private final String primaryDescriptor;
+  private final Observable&lt;JsonPipelineOutput&gt; secondaryOutput;
+  private final String targetProperty;
+
+  /**
+   * @param primaryDescriptor the descriptor of the primary pipeline
+   * @param secondaryOutput the observable that emits the output of the secondary pipeline
+   * @param targetProperty the property that will be added to the primary pipeline'S output
+   */
+<span class="fc" id="L55">  public MergeTransformer(String primaryDescriptor, Observable&lt;JsonPipelineOutput&gt; secondaryOutput, String targetProperty) {</span>
+<span class="fc" id="L56">    this.primaryDescriptor = primaryDescriptor;</span>
+<span class="fc" id="L57">    this.secondaryOutput = secondaryOutput;</span>
+<span class="fc" id="L58">    this.targetProperty = targetProperty;</span>
+<span class="fc" id="L59">  }</span>
+
+  @Override
+  public Observable&lt;JsonPipelineOutput&gt; call(Observable&lt;JsonPipelineOutput&gt; primaryOutput) {
+<span class="fc" id="L63">    return primaryOutput.zipWith(secondaryOutput, (primaryModel, secondaryModel) -&gt; {</span>
+
+<span class="fc" id="L65">      log.debug(&quot;zipping object from secondary source into target property &quot; + targetProperty);</span>
+
+<span class="fc" id="L67">      JsonNode jsonFromPrimary = primaryModel.getPayload();</span>
+<span class="fc" id="L68">      JsonNode jsonFromSecondary = secondaryModel.getPayload();</span>
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">      if (!(jsonFromPrimary.isObject())) {</span>
+<span class="fc" id="L71">        throw new JsonPipelineOutputException(&quot;Only pipelines with JSON *Objects* can be used as a target for a merge operation, but response data for &quot;</span>
+<span class="fc" id="L72">            + primaryDescriptor + &quot; contained &quot; + jsonFromPrimary.getClass().getSimpleName());</span>
+      }
+
+      // start with cloning the the response of the primary pipeline
+<span class="fc" id="L76">      ObjectNode mergedObject = jsonFromPrimary.deepCopy();</span>
+
+      // if a target property is specified, the JSON to be merged is inserted into this property
+<span class="fc bfc" id="L79" title="All 2 branches covered.">      if (isNotBlank(targetProperty)) {</span>
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (!mergedObject.has(targetProperty)) {</span>
+          // the target property does not exist yet, so we just can set the property
+<span class="fc" id="L83">          mergedObject.set(targetProperty, jsonFromSecondary);</span>
+        }
+        else {
+
+          // the target property already exists - let's hope we can merge!
+<span class="fc" id="L88">          JsonNode targetNode = mergedObject.get(targetProperty);</span>
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">          if (!targetNode.isObject()) {</span>
+<span class="fc" id="L91">            throw new JsonPipelineOutputException(&quot;When merging two pipelines into the same target property, both most contain JSON *Object* responses&quot;);</span>
+          }
+
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">          if (!(jsonFromSecondary.isObject())) {</span>
+<span class="fc" id="L95">            throw new JsonPipelineOutputException(&quot;Only pipelines with JSON *Object* responses can be merged into an existing target property&quot;);</span>
+          }
+
+<span class="nc" id="L98">          mergeAllPropertiesInto((ObjectNode)jsonFromSecondary, (ObjectNode)targetNode);</span>
+<span class="nc" id="L99">        }</span>
+      }
+      else {
+
+        // if no target property is specified, all properties of the secondary pipeline are copied into the merged object
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        if (!(jsonFromSecondary.isObject())) {</span>
+<span class="fc" id="L105">          throw new JsonPipelineOutputException(&quot;Only pipelines with JSON *Object* responses can be merged without specify a target property&quot;);</span>
+        }
+
+<span class="fc" id="L108">        mergeAllPropertiesInto((ObjectNode)jsonFromSecondary, mergedObject);</span>
+      }
+
+<span class="fc" id="L111">      return primaryModel.withPayload(mergedObject).withMaxAge(Math.min(primaryModel.getMaxAge(), secondaryModel.getMaxAge()));</span>
+    });
+  }
+
+  private void mergeAllPropertiesInto(ObjectNode nodeToMerge, ObjectNode targetNode) {
+
+    // iterate over all properties of the given node
+<span class="fc" id="L118">    Iterator&lt;Entry&lt;String, JsonNode&gt;&gt; propertyIterator = nodeToMerge.fields();</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">    while (propertyIterator.hasNext()) {</span>
+<span class="fc" id="L120">      Entry&lt;String, JsonNode&gt; nextProperty = propertyIterator.next();</span>
+<span class="fc" id="L121">      String propertyName = nextProperty.getKey();</span>
+
+<span class="fc bfc" id="L123" title="All 2 branches covered.">      if (targetNode.has(propertyName)) {</span>
+        // what to do if the property already exists? for now, just throw an exception,
+<span class="fc" id="L125">        throw new JsonPipelineOutputException(&quot;Target pipeline &quot; + primaryDescriptor + &quot; already has a property named &quot; + propertyName);</span>
+      }
+
+<span class="fc" id="L128">      targetNode.set(propertyName, nextProperty.getValue());</span>
+<span class="fc" id="L129">    }</span>
+<span class="fc" id="L130">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalResourceFilters.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Extension for HAL</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.extensions.hal.filter</a> &gt; <span class="el_source">HalResourceFilters.java</span></div><h1>HalResourceFilters.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.extensions.hal.filter;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import rx.functions.Func1;
+
+/**
+ * Default filtering predicates for HAL resources.
+ */
+@ProviderType
+public final class HalResourceFilters {
+
+<span class="fc" id="L46">  private static final Configuration JSON_PATH_CONF = Configuration.defaultConfiguration().addOptions(Option.ALWAYS_RETURN_LIST, Option.SUPPRESS_EXCEPTIONS);</span>
+
+  /** JSON object mapper */
+<span class="fc" id="L49">  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()</span>
+<span class="fc" id="L50">      .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);</span>
+
+  private HalResourceFilters() {
+    // nothing to do
+  }
+
+  /**
+   * Executes all predicates and combines the result by logical {@code and}. If there are negative predicate results,
+   * remaining predicates will not get executed.
+   * @param predicates Predicates to check
+   * @return True if all predicates return true
+   */
+  public static HalResourcePredicate all(HalResourcePredicate... predicates) {
+<span class="fc" id="L63">    return new HalResourcePredicate() {</span>
+
+      @Override
+      public boolean apply(HalPath halPath, HalResource hal) {
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        for (HalResourcePredicate predicate : predicates) {</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">          if (!predicate.apply(halPath, hal)) {</span>
+<span class="fc" id="L70">            return false;</span>
+          }
+        }
+<span class="fc" id="L73">        return true;</span>
+
+      }
+
+      @Override
+      public String getId() {
+<span class="nc" id="L79">        List&lt;String&gt; ids = Stream.of(predicates)</span>
+<span class="nc" id="L80">            .map(matcher -&gt; matcher.getId())</span>
+<span class="nc" id="L81">            .collect(java.util.stream.Collectors.toList());</span>
+
+<span class="nc" id="L83">        return &quot;ALL(&quot; + StringUtils.join(ids, '+') + &quot;)&quot;;</span>
+      }
+    };
+  }
+
+  /**
+   * @param jsonPath JSON path to check
+   * @return True if model has field(s) for given JSON path and all values are not null
+   */
+  public static HalResourcePredicate hasPathNonNull(String jsonPath) {
+<span class="fc" id="L93">    JsonPath compiledPath = JsonPath.compile(jsonPath);</span>
+<span class="fc" id="L94">    return new HalResourcePredicate() {</span>
+
+      @Override
+      public String getId() {
+<span class="nc" id="L98">        return &quot;HAS(&quot; + jsonPath + &quot;)&quot;;</span>
+      }
+
+      @Override
+      public boolean apply(HalPath halPath, HalResource hal) {
+<span class="fc" id="L103">        ObjectNode json = hal.getModel();</span>
+<span class="fc" id="L104">        ArrayNode matches = compiledPath.read(json, JSON_PATH_CONF);</span>
+        // check for empty result list
+<span class="pc bpc" id="L106" title="1 of 4 branches missed.">        if (matches == null || matches.size() == 0) {</span>
+<span class="fc" id="L107">          return false;</span>
+        }
+        // check for null value
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        for (JsonNode match : matches) {</span>
+<span class="pc bpc" id="L111" title="1 of 4 branches missed.">          if (match == null || match.isNull()) {</span>
+<span class="fc" id="L112">            return false;</span>
+          }
+<span class="fc" id="L114">        }</span>
+<span class="fc" id="L115">        return true;</span>
+      }
+
+    };
+  }
+
+  /**
+   * @param fieldName JSON field name
+   * @return True if field exists and is not null
+   */
+  public static HalResourcePredicate hasNonNull(String fieldName) {
+<span class="fc" id="L126">    return new HalResourcePredicate() {</span>
+
+      @Override
+      public String getId() {
+<span class="nc" id="L130">        return &quot;HAS(&quot; + fieldName + &quot;)&quot;;</span>
+      }
+
+      @Override
+      public boolean apply(HalPath halPath, HalResource hal) {
+<span class="fc" id="L135">        return hal.getModel().hasNonNull(fieldName);</span>
+      }
+
+    };
+  }
+
+  /**
+   * @param relation Relation name of the embedded resource
+   * @return True if HAL resource has one or more embedded resources for the given relation name
+   */
+  public static HalResourcePredicate hasEmbedded(String relation) {
+<span class="fc" id="L146">    return new HalResourcePredicate() {</span>
+
+      @Override
+      public String getId() {
+<span class="nc" id="L150">        return &quot;HAS-EMBEDDED(&quot; + relation + &quot;)&quot;;</span>
+      }
+
+      @Override
+      public boolean apply(HalPath halPath, HalResource hal) {
+<span class="pc bpc" id="L155" title="1 of 4 branches missed.">        return hal.hasEmbedded(relation) &amp;&amp; !hal.getEmbedded(relation).isEmpty();</span>
+      }
+
+    };
+  }
+
+  /**
+   * Converts the state of the HAL resource to an object of the given type and applies the provided function.
+   * @param &lt;S&gt; Type of the HAL resource state
+   * @param clazz Class type of the HAL resource state
+   * @param function Function to apply on the object
+   * @return Return value of the executed function
+   */
+  public static &lt;S&gt; HalResourcePredicate object(Class&lt;S&gt; clazz, Func1&lt;S, Boolean&gt; function) {
+<span class="fc" id="L169">    return new HalResourcePredicate() {</span>
+
+      @Override
+      public String getId() {
+<span class="nc" id="L173">        return &quot;OBJECT(&quot; + clazz.getSimpleName() + &quot;)&quot;;</span>
+      }
+
+      @Override
+      public boolean apply(HalPath halPath, HalResource hal) {
+<span class="fc" id="L178">        S object = OBJECT_MAPPER.convertValue(hal.getModel(), clazz);</span>
+<span class="fc" id="L179">        return function.call(object);</span>
+      }
+
+    };
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

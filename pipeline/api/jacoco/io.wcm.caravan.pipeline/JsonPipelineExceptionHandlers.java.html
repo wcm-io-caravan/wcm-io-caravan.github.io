@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonPipelineExceptionHandlers.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline API</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline</a> &gt; <span class="el_source">JsonPipelineExceptionHandlers.java</span></div><h1>JsonPipelineExceptionHandlers.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline;
+
+import static rx.Observable.just;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+/**
+ * Contains some common exception handling strategies to be used with
+ * {@link JsonPipeline#handleException(JsonPipelineExceptionHandler)}
+ */
+@ProviderType
+public final class JsonPipelineExceptionHandlers {
+
+  private JsonPipelineExceptionHandlers() {
+    // no reason to instantiate
+  }
+
+  /**
+   * Creates an exception handling function that will throw a new {@link JsonPipelineInputException} with the given
+   * message if the exception being caught has a status code of 404
+   * @param msg the error message
+   * @return a function that will throw a new {@link JsonPipelineInputException} if status code is 404
+   */
+  public static JsonPipelineExceptionHandler rethrow404(String msg) {
+<span class="nc" id="L46">    return (defaultFallbackOutput, e) -&gt; {</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">      if (defaultFallbackOutput.getStatusCode() == 404) {</span>
+<span class="nc" id="L48">        throw new JsonPipelineInputException(404, msg, e);</span>
+      }
+<span class="nc" id="L50">      throw e;</span>
+    };
+  }
+
+  /**
+   * Creates an exception handling function that will throw the given exception if the exception being caught has a
+   * status code of 404 (and otherwise rethrow the original exception )
+   * @param exceptionToThrow the error message
+   * @return a function that will throw a new {@link JsonPipelineInputException} if status code is 404
+   */
+  public static JsonPipelineExceptionHandler rethrow404(RuntimeException exceptionToThrow) {
+<span class="nc" id="L61">    return (defaultFallbackOutput, e) -&gt; {</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">      if (defaultFallbackOutput.getStatusCode() == 404) {</span>
+<span class="nc" id="L63">        throw exceptionToThrow;</span>
+      }
+<span class="nc" id="L65">      throw e;</span>
+    };
+  }
+
+  /**
+   * Creates an exception handling function that will throw throw a new {@link JsonPipelineInputException} with the
+   * given message if the exception being caught has a status code in the 50x range
+   * @param msg the new error message
+   * @return a function that will throw a new {@link JsonPipelineInputException} if status code is in the 50x range
+   */
+  public static JsonPipelineExceptionHandler rethrow50x(String msg) {
+<span class="nc" id="L76">    return (defaultFallbackOutput, e) -&gt; {</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">      if (defaultFallbackOutput.getStatusCode() &gt;= 500) {</span>
+<span class="nc" id="L78">        throw new JsonPipelineInputException(defaultFallbackOutput.getStatusCode(), msg, e);</span>
+      }
+<span class="nc" id="L80">      throw e;</span>
+    };
+  }
+
+  /**
+   * Creates an exception handling function that will throw the given exception if the exception being caught has a
+   * status code &amp;gt;= 500 (and otherwise rethrow the original exception )
+   * @param exceptionToThrow the error message
+   * @return a function that will throw a new {@link JsonPipelineInputException} if status code is 404
+   */
+  public static JsonPipelineExceptionHandler rethrow50x(RuntimeException exceptionToThrow) {
+<span class="nc" id="L91">    return (defaultFallbackOutput, e) -&gt; {</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">      if (defaultFallbackOutput.getStatusCode() &gt;= 500) {</span>
+<span class="nc" id="L93">        throw exceptionToThrow;</span>
+      }
+<span class="nc" id="L95">      throw e;</span>
+    };
+  }
+
+
+  /**
+   * Creates an exception handling function that will provide static fallback content if the exception being caught has
+   * a status code of 404 (and otherwise rethrow the original exception )
+   * @param fallbackContent the fallback content to return
+   * @param timeToLive the duration in seconds for which the fallback response is allowed to be cached
+   * @return a function that will throw a new {@link JsonPipelineInputException} if status code is 404
+   */
+  public static JsonPipelineExceptionHandler fallbackFor404(JsonNode fallbackContent, int timeToLive) {
+<span class="nc" id="L108">    return (defaultFallbackOutput, e) -&gt; {</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">      if (defaultFallbackOutput.getStatusCode() != 404) {</span>
+<span class="nc" id="L110">        throw e;</span>
+      }
+<span class="nc" id="L112">      return just(defaultFallbackOutput</span>
+<span class="nc" id="L113">          .withStatusCode(200)</span>
+<span class="nc" id="L114">          .withPayload(fallbackContent)</span>
+<span class="nc" id="L115">          .withMaxAge(timeToLive));</span>
+    };
+  }
+
+  /**
+   * Creates an exception handling function that will provide static fallback content if the exception being caught has
+   * a status code &amp;gt; 500 (and otherwise rethrow the original exception )
+   * @param fallbackContent the fallback content to return
+   * @param timeToLive the duration in seconds for which the fallback response is allowed to be cached
+   * @return a function that will throw a new {@link JsonPipelineInputException} if status code is 404
+   */
+  public static JsonPipelineExceptionHandler fallbackFor50x(JsonNode fallbackContent, int timeToLive) {
+<span class="nc" id="L127">    return (defaultFallbackOutput, e) -&gt; {</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">      if (defaultFallbackOutput.getStatusCode() &lt; 500) {</span>
+<span class="nc" id="L129">        throw e;</span>
+      }
+<span class="nc" id="L131">      return just(defaultFallbackOutput</span>
+<span class="nc" id="L132">          .withStatusCode(200)</span>
+<span class="nc" id="L133">          .withPayload(fallbackContent)</span>
+<span class="nc" id="L134">          .withMaxAge(timeToLive));</span>
+    };
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

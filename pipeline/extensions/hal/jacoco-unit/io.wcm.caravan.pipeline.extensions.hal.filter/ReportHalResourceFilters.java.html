@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReportHalResourceFilters.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Extension for HAL</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.extensions.hal.filter</a> &gt; <span class="el_source">ReportHalResourceFilters.java</span></div><h1>ReportHalResourceFilters.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2015 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.extensions.hal.filter;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.google.common.collect.Lists;
+
+import io.wcm.caravan.hal.resource.HalResource;
+
+/**
+ * Collection of common reporting {@link HalResourcePredicate}s which write negative predicate results into a HAL
+ * document.
+ */
+public final class ReportHalResourceFilters {
+
+  private ReportHalResourceFilters() {
+    // nothing to do
+  }
+
+  /**
+   * Executes all delegated filters and creates a report with error messages for each failed filter. If there are
+   * negative predicate results, all further predicates still get executed.
+   * @param report report
+   * @param delegates Delegates
+   * @return Predicate
+   */
+  public static HalResourcePredicate all(HalResource report, HalResourcePredicate... delegates) {
+
+<span class="fc" id="L51">    return new HalResourcePredicate() {</span>
+
+      @Override
+      public String getId() {
+<span class="nc" id="L55">        List&lt;String&gt; ids = Stream.of(delegates).map(matcher -&gt; matcher.getId()).collect(java.util.stream.Collectors.toList());</span>
+<span class="nc" id="L56">        return &quot;ALL(&quot; + StringUtils.join(ids, '+') + &quot;)&quot;;</span>
+      }
+
+      @Override
+      public boolean apply(HalPath halPath, HalResource hal) {
+
+<span class="fc" id="L62">        List&lt;String&gt; errors = Stream.of(delegates)</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            .filter(delegate -&gt; !delegate.apply(halPath, hal))</span>
+<span class="fc" id="L64">            .map(delegate -&gt; delegate.getId())</span>
+<span class="fc" id="L65">            .collect(java.util.stream.Collectors.toList());</span>
+
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (!errors.isEmpty()) {</span>
+<span class="fc" id="L68">          report.addEmbedded(&quot;item&quot;, createReport(halPath, hal, errors));</span>
+        }
+<span class="fc" id="L70">        return errors.isEmpty();</span>
+
+      }
+
+    };
+
+  }
+
+  /**
+   * @param report Report to write to
+   * @param delegate Delegated filter
+   * @return Predicate
+   */
+  public static HalResourcePredicate report(HalResource report, HalResourcePredicate delegate) {
+
+<span class="fc" id="L85">    return new HalResourcePredicate() {</span>
+
+      @Override
+      public String getId() {
+<span class="nc" id="L89">        return delegate.getId();</span>
+      }
+
+      @Override
+      public boolean apply(HalPath halPath, HalResource hal) {
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (!delegate.apply(halPath, hal)) {</span>
+<span class="fc" id="L96">          report.addEmbedded(&quot;item&quot;, createReport(halPath, hal, Lists.newArrayList(delegate.getId())));</span>
+<span class="fc" id="L97">          return false;</span>
+        }
+<span class="fc" id="L99">        return true;</span>
+
+      }
+
+    };
+
+  }
+
+  private static HalResource createReport(HalPath halPath, HalResource hal, List&lt;String&gt; errors) {
+
+<span class="fc" id="L109">    HalResource filterReport = new HalResource(hal.getLink().getHref());</span>
+<span class="fc" id="L110">    filterReport.getModel().put(&quot;halPath&quot;, halPath.toString());</span>
+<span class="fc" id="L111">    ArrayNode errorContainer = filterReport.getModel().putArray(&quot;errors&quot;);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">    for (String error : errors) {</span>
+<span class="fc" id="L113">      errorContainer.add(error);</span>
+<span class="fc" id="L114">    }</span>
+
+<span class="fc" id="L116">    filterReport.getModel().set(&quot;copy&quot;, hal.getModel().deepCopy());</span>
+
+<span class="fc" id="L118">    return filterReport;</span>
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

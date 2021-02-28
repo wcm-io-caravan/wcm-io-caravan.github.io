@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CachePersistencyOptions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline API</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.cache</a> &gt; <span class="el_source">CachePersistencyOptions.java</span></div><h1>CachePersistencyOptions.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.cache;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import io.wcm.caravan.pipeline.JsonPipeline;
+import io.wcm.caravan.pipeline.cache.spi.CacheAdapter;
+
+/**
+ * Cache persistency options configure entry store requirements while read or write operations in {@link CacheAdapter}.
+ * Options specify cache response refresh interval, storage time and automatical extension of storage time per stored
+ * entry. See also {@link CacheStrategy}.
+ */
+@ProviderType
+public final class CachePersistencyOptions {
+
+  private final int refreshInterval;
+  private final int storageTime;
+  private final boolean extendStorageTimeOnGet;
+  private final boolean shouldUseTransientCaches;
+
+  /**
+   * Default constructor for complete initialization of cache persistency and transient options.
+   * @param refreshInterval cached response refresh interval in seconds
+   * @param storageTime time of response storing in seconds
+   * @param extendStorageTimeOnGet true if storage time should be extended
+   */
+<span class="fc" id="L46">  public CachePersistencyOptions(int refreshInterval, int storageTime, boolean extendStorageTimeOnGet) {</span>
+<span class="fc" id="L47">    this.refreshInterval = refreshInterval;</span>
+<span class="fc" id="L48">    this.storageTime = storageTime;</span>
+<span class="fc" id="L49">    this.extendStorageTimeOnGet = extendStorageTimeOnGet;</span>
+<span class="fc" id="L50">    this.shouldUseTransientCaches = true;</span>
+<span class="fc" id="L51">  }</span>
+
+  /**
+   * Default constructor for complete initialization of cache persistency and transient options.
+   * @param refreshInterval cached response refresh interval in seconds
+   * @param storageTime time of response storing in seconds
+   * @param extendStorageTimeOnGet true if storage time should be extended
+   * @param shouldUseTransientCaches true if transient cache adapters should be enabled, false if disabled
+   */
+<span class="nc" id="L60">  public CachePersistencyOptions(int refreshInterval, int storageTime, boolean extendStorageTimeOnGet, boolean shouldUseTransientCaches) {</span>
+<span class="nc" id="L61">    this.refreshInterval = refreshInterval;</span>
+<span class="nc" id="L62">    this.storageTime = storageTime;</span>
+<span class="nc" id="L63">    this.extendStorageTimeOnGet = extendStorageTimeOnGet;</span>
+<span class="nc" id="L64">    this.shouldUseTransientCaches = shouldUseTransientCaches;</span>
+<span class="nc" id="L65">  }</span>
+
+  /**
+   * Creates caching options specifying cache refresh interval and storing time per entry without next extension of
+   * storing time.
+   * @param refreshInterval cached response refresh interval in seconds
+   * @param storageTime time of response storing in seconds
+   * @return persistent and transient caching options without storage time extension
+   */
+  public static CachePersistencyOptions createPersistentAndTimeToLive(int refreshInterval, int storageTime) {
+<span class="fc" id="L75">    return new CachePersistencyOptions(refreshInterval, storageTime, false);</span>
+  }
+
+  /**
+   * Creates caching options specifying cache refresh interval and storing time per entry with next extension of
+   * storing time.
+   * @param refreshInterval cached response refresh interval in seconds
+   * @param storageTime time of response storing in seconds
+   * @return persistent and transient caching options with storage time extension
+   */
+  public static CachePersistencyOptions createPersistentAndTimeToIdle(int refreshInterval, int storageTime) {
+<span class="fc" id="L86">    return new CachePersistencyOptions(refreshInterval, storageTime, true);</span>
+  }
+
+  /**
+   * Creates caching options specifying cache refresh interval. No entry storing time is declared.
+   * @param refreshInterval cached response refresh interval in seconds
+   * @return transient caching options
+   */
+  public static CachePersistencyOptions createTransient(int refreshInterval) {
+<span class="fc" id="L95">    return new CachePersistencyOptions(refreshInterval, 0, false);</span>
+  }
+
+  /**
+   * Defines the time (in seconds) after which a cached response for the given request should be considered stale. After
+   * this time, the {@link JsonPipeline} will try to fetch a fresh response from the origin server, and will only use
+   * the stale content from cache as a fallback if this attempt fails.
+   * @return the duration in seconds until a cached response is considered stale, and should be re-validated
+   */
+  public int getRefreshInterval() {
+<span class="fc" id="L105">    return refreshInterval;</span>
+  }
+
+  /**
+   * Defines the time (in seconds) for which the response to the given request should be at least stored in the cache.
+   * The actual storage time can be longer if {@link #isExtendStorageTimeOnGet()} or for other technical reasons.
+   * @return the minimum duration in seconds to keep the response in the cache
+   */
+  public int getStorageTime() {
+<span class="fc" id="L114">    return storageTime;</span>
+  }
+
+  /**
+   * Determines whether to automatically extend the storage time (to the duration returned by {@link #getStorageTime()}
+   * whenever a response was successfully retrieved from cache, resulting in a &quot;time-to-idle&quot; cache behavior, where the
+   * total storage time is unlimited, but instead data is kept in the cache as long as it is still being requested.
+   * @return true if the storage value for this request should be extended on every cache hit
+   */
+  public boolean isExtendStorageTimeOnGet() {
+<span class="fc" id="L124">    return extendStorageTimeOnGet;</span>
+  }
+
+  /**
+   * Checks if the entry should be cached.
+   * @return true if refresh interval is specified (more than 0).
+   */
+  public boolean isCacheable() {
+<span class="fc bfc" id="L132" title="All 2 branches covered.">    return refreshInterval &gt; 0;</span>
+  }
+
+  /**
+   * Check if theentry should be cached by persistent cache implementation.
+   * A configuration to enable or disable cache operations by persistent adapters.
+   * @return true if persistent adapters should be supported (storage time is specified, more than 0).
+   * @deprecated Use {@link #shouldUsePersistentCaches()} instead of deprecated {@link #isPersistent()}.
+   */
+  @Deprecated
+  public boolean isPersistent() {
+<span class="nc bnc" id="L143" title="All 2 branches missed.">    return storageTime &gt; 0;</span>
+  }
+
+  /**
+   * Check if the entry should be cached by persistent cache implementation.
+   * A configuration to enable or disable cache operations by persistent adapters.
+   * @return true if persistent adapters should be supported (storage time is specified, more than 0).
+   */
+  public boolean shouldUsePersistentCaches() {
+<span class="fc bfc" id="L152" title="All 2 branches covered.">    return storageTime &gt; 0;</span>
+  }
+
+  /**
+   * Check if the entry should be cached by transient cache implementation.
+   * A configuration to enable or disable cache operations by transient adapters.
+   * @return true if transient adapter should be supported
+   */
+  public boolean shouldUseTransientCaches() {
+<span class="nc" id="L161">    return shouldUseTransientCaches;</span>
+
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L167">    return &quot;CachePersistencyOptions [refreshInterval=&quot; + this.refreshInterval + &quot;, storageTime=&quot; + this.storageTime + &quot;, extendStorageTimeOnGet=&quot;</span>
+        + this.extendStorageTimeOnGet + &quot;, shouldUseTransientCaches=&quot; + this.shouldUseTransientCaches + &quot;]&quot;;
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

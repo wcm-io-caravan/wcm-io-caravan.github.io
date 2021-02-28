@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonPipelineFactoryImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Implementation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.impl</a> &gt; <span class="el_source">JsonPipelineFactoryImpl.java</span></div><h1>JsonPipelineFactoryImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.impl;
+
+import io.wcm.caravan.io.http.CaravanHttpClient;
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.io.http.request.CaravanHttpRequestBuilder;
+import io.wcm.caravan.io.http.response.CaravanHttpResponse;
+import io.wcm.caravan.io.http.response.CaravanHttpResponseBuilder;
+import io.wcm.caravan.pipeline.JsonPipeline;
+import io.wcm.caravan.pipeline.JsonPipelineFactory;
+import io.wcm.caravan.pipeline.cache.spi.CacheAdapter;
+import io.wcm.caravan.pipeline.impl.cache.MultiLayerCacheAdapter;
+
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.commons.osgi.RankedServices;
+
+import rx.Observable;
+
+import com.codahale.metrics.MetricRegistry;
+import com.google.common.collect.ImmutableListMultimap;
+
+/**
+ * Default implementation of {@link JsonPipelineFactory}.
+ */
+@Component
+@Service(JsonPipelineFactory.class)
+public final class JsonPipelineFactoryImpl implements JsonPipelineFactory {
+
+  @Reference
+  private CaravanHttpClient transport;
+
+<span class="pc" id="L60">  @Reference(name = &quot;cacheAdapter&quot;, referenceInterface = CacheAdapter.class,</span>
+      cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+  private final RankedServices&lt;CacheAdapter&gt; cacheAdapters = new RankedServices&lt;&gt;();
+
+  @Reference
+  private MetricRegistry metricRegistry;
+
+  /** constructor used in a OSGi context */
+<span class="fc" id="L68">  public JsonPipelineFactoryImpl() {</span>
+    // empty constructor
+<span class="fc" id="L70">  }</span>
+
+  /**
+   * explicit dependency injection (to be used in unit-tests)
+   * @param transport the implementation to use to fetch responses
+   * @param metricRegistry for gathering monitoring statistics
+   */
+<span class="nc" id="L77">  public JsonPipelineFactoryImpl(CaravanHttpClient transport, MetricRegistry metricRegistry) {</span>
+<span class="nc" id="L78">    this.transport = transport;</span>
+<span class="nc" id="L79">    this.metricRegistry = metricRegistry;</span>
+<span class="nc" id="L80">  }</span>
+
+  @Override
+  public JsonPipeline create(final CaravanHttpRequest request) {
+<span class="fc" id="L84">    return create(request, Collections.emptyMap());</span>
+  }
+
+  @Override
+  public JsonPipeline create(final CaravanHttpRequest request, Map&lt;String, String&gt; contextProperties) {
+
+    // note that #execute will *not* actually start the request, but just create an observable that will initiate
+    // the request when #subscribe is called on the pipeline's output observable
+<span class="fc" id="L92">    Observable&lt;CaravanHttpResponse&gt; response = transport.execute(request);</span>
+
+<span class="fc" id="L94">    return new JsonPipelineImpl(request, response,</span>
+<span class="fc" id="L95">        new JsonPipelineContextImpl(this, createMultiLayerCacheAdapter(), metricRegistry, contextProperties));</span>
+  }
+
+  @Override
+  public JsonPipeline createEmpty() {
+<span class="fc" id="L100">    return createEmpty(Collections.emptyMap());</span>
+  }
+
+  @Override
+  public JsonPipeline createEmpty(Map&lt;String, String&gt; contextProperties) {
+
+<span class="fc" id="L106">    CaravanHttpRequest dummyRequest = new CaravanHttpRequestBuilder(&quot;&quot;).build();</span>
+
+    // make sure to set a Cache-Control header to mark the empty response as indefinitely cacheable,
+    // otherwise the default max-age value of zero would become effective
+<span class="fc" id="L110">    ImmutableListMultimap&lt;String, String&gt; headers = ImmutableListMultimap.of(&quot;Cache-Control&quot;, &quot;max-age=&quot; + Long.toString(TimeUnit.DAYS.toSeconds(365)));</span>
+
+<span class="fc" id="L112">    CaravanHttpResponse emptyJsonResponse = new CaravanHttpResponseBuilder()</span>
+<span class="fc" id="L113">    .status(200)</span>
+<span class="fc" id="L114">    .reason(&quot;OK&quot;)</span>
+<span class="fc" id="L115">    .headers(headers)</span>
+<span class="fc" id="L116">    .body(&quot;{}&quot;, Charset.forName(&quot;UTF-8&quot;))</span>
+<span class="fc" id="L117">    .build();</span>
+
+<span class="fc" id="L119">    return new JsonPipelineImpl(dummyRequest, Observable.just(emptyJsonResponse),</span>
+<span class="fc" id="L120">        new JsonPipelineContextImpl(this, createMultiLayerCacheAdapter(), metricRegistry, contextProperties));</span>
+  }
+
+  MultiLayerCacheAdapter createMultiLayerCacheAdapter() {
+<span class="fc" id="L124">    return new MultiLayerCacheAdapter(new ArrayList&lt;CacheAdapter&gt;(cacheAdapters.get()));</span>
+  }
+
+  void bindCacheAdapter(CacheAdapter service, Map&lt;String, Object&gt; props) {
+<span class="fc" id="L128">    cacheAdapters.bind(service, props);</span>
+<span class="fc" id="L129">  }</span>
+
+  void unbindCacheAdapter(CacheAdapter service, Map&lt;String, Object&gt; props) {
+<span class="nc" id="L132">    cacheAdapters.unbind(service, props);</span>
+<span class="nc" id="L133">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

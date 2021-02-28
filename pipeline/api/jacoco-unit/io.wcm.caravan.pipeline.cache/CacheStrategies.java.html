@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CacheStrategies.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline API</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.cache</a> &gt; <span class="el_source">CacheStrategies.java</span></div><h1>CacheStrategies.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.cache;
+
+import static java.util.concurrent.TimeUnit.DAYS;
+
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.pipeline.JsonPipeline;
+import io.wcm.caravan.pipeline.cache.spi.CacheAdapter;
+
+/**
+ * Default implementations of different cache strategies.
+ */
+@ProviderType
+public final class CacheStrategies {
+
+<span class="fc" id="L40">  private static final EnumSet SUPPORTED_TIME_UNITS = EnumSet.of(TimeUnit.SECONDS, TimeUnit.MINUTES,</span>
+      TimeUnit.HOURS, TimeUnit.DAYS);
+
+  private CacheStrategies() {
+    // static methods only
+  }
+
+  /**
+   * Invalidate item after a fixed time-to-live interval, using the same duration as storage time and
+   * revalidation-interval
+   * @param duration Time-to-live duration
+   * @param unit Time unit
+   * @return Cache strategy
+   */
+  public static CacheStrategy timeToLive(int duration, TimeUnit unit) {
+<span class="fc" id="L55">    int refreshInterval = toSeconds(duration, unit);</span>
+<span class="fc" id="L56">    int storageTime = toSeconds(duration, unit);</span>
+<span class="fc" id="L57">    return new CacheStrategy() {</span>
+
+      @Override
+      public CachePersistencyOptions getCachePersistencyOptions(Collection&lt;CaravanHttpRequest&gt; requests) {
+<span class="fc" id="L61">        return CachePersistencyOptions.createPersistentAndTimeToLive(refreshInterval, storageTime);</span>
+      }
+    };
+  }
+
+  /**
+   * Invalidate item after a time-to-idle interval: The content is considered immutable, and storage time will be
+   * extended to specified value on each get operation on this item, so it is kept in cache as long as it is requested
+   * @param duration Time-to-idle duration
+   * @param unit Time unit
+   * @return Cache strategy
+   */
+  public static CacheStrategy timeToIdle(int duration, TimeUnit unit) {
+<span class="fc" id="L74">    int refreshInterval = toSeconds(365, DAYS);</span>
+<span class="fc" id="L75">    int storageTime = toSeconds(duration, unit);</span>
+<span class="fc" id="L76">    return new CacheStrategy() {</span>
+
+      @Override
+      public CachePersistencyOptions getCachePersistencyOptions(Collection&lt;CaravanHttpRequest&gt; requests) {
+<span class="fc" id="L80">        return CachePersistencyOptions.createPersistentAndTimeToIdle(refreshInterval, storageTime);</span>
+      }
+    };
+  }
+  
+  /**
+   * Invalidate item after a time-to-idle interval: The content is considered immutable, and storage time will be
+   * extended to specified value on each get operation on this item, so it is kept in cache as long as it is requested.
+   * Cache operations should be ignored by transient adapters and passed to the persistent adapters only.
+   * @param duration Time-to-idle duration
+   * @param unit Time unit
+   * @return Cache strategy
+   */
+  public static CacheStrategy nonTransientAndTimeToIdle(int duration, TimeUnit unit) {
+<span class="nc" id="L94">    int refreshInterval = toSeconds(365, DAYS);</span>
+<span class="nc" id="L95">    int storageTime = toSeconds(duration, unit);</span>
+<span class="nc" id="L96">    return new CacheStrategy() {</span>
+
+      @Override
+      public CachePersistencyOptions getCachePersistencyOptions(Collection&lt;CaravanHttpRequest&gt; requests) {
+<span class="nc" id="L100">        return new CachePersistencyOptions(refreshInterval, storageTime, true, false);</span>
+      }
+    };
+  }
+
+  /**
+   * Stores items only in the local, non-persistent {@link CacheAdapter} for the given maximum duration.
+   * @param duration maximum Time-to-live
+   * @param unit Time unit
+   * @return Cache strategy
+   */
+  public static CacheStrategy temporary(int duration, TimeUnit unit) {
+<span class="nc" id="L112">    int refreshInterval = toSeconds(duration, unit);</span>
+<span class="nc" id="L113">    return new CacheStrategy() {</span>
+
+      @Override
+      public CachePersistencyOptions getCachePersistencyOptions(Collection&lt;CaravanHttpRequest&gt; requests) {
+<span class="nc" id="L117">        return CachePersistencyOptions.createTransient(refreshInterval);</span>
+      }
+    };
+  }
+
+  private static int toSeconds(int duration, TimeUnit unit) {
+<span class="fc bfc" id="L123" title="All 2 branches covered.">    if (!SUPPORTED_TIME_UNITS.contains(unit)) {</span>
+<span class="fc" id="L124">      throw new IllegalArgumentException(&quot;Unsupported time unit: &quot; + unit);</span>
+    }
+<span class="fc" id="L126">    long seconds = unit.toSeconds(duration);</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">    if (seconds &gt; Integer.MAX_VALUE) {</span>
+<span class="nc" id="L128">      throw new IllegalArgumentException(&quot;Duration is too long: &quot; + seconds + &quot; seconds&quot;);</span>
+    }
+<span class="fc" id="L130">    return (int)unit.toSeconds(duration);</span>
+  }
+
+  /**
+   * No caching. Can be used to disable caching in a {@link JsonPipeline} that already has some Cachepoints set.
+   * @return Cache strategy
+   */
+  public static CacheStrategy noCache() {
+<span class="fc" id="L138">    return new CacheStrategy() {</span>
+
+      @Override
+      public CachePersistencyOptions getCachePersistencyOptions(Collection&lt;CaravanHttpRequest&gt; requests) {
+<span class="fc" id="L142">        return CachePersistencyOptions.createTransient(0);</span>
+      }
+    };
+  }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

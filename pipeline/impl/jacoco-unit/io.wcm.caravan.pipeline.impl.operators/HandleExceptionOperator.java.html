@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HandleExceptionOperator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Pipeline Implementation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.pipeline.impl.operators</a> &gt; <span class="el_source">HandleExceptionOperator.java</span></div><h1>HandleExceptionOperator.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.pipeline.impl.operators;
+
+import io.wcm.caravan.io.http.IllegalResponseRuntimeException;
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.pipeline.JsonPipelineExceptionHandler;
+import io.wcm.caravan.pipeline.JsonPipelineInputException;
+import io.wcm.caravan.pipeline.JsonPipelineOutput;
+import io.wcm.caravan.pipeline.impl.JacksonFunctions;
+import io.wcm.caravan.pipeline.impl.JsonPipelineOutputImpl;
+
+import java.util.List;
+
+import rx.Observable;
+import rx.Observable.Operator;
+import rx.Subscriber;
+import rx.exceptions.Exceptions;
+
+/**
+ * An operator that delegates all non-fatal exception-handling to the given function, allowing the user of the
+ * pipeline to specify fallback content for certain expected exception scenarios.
+ */
+public class HandleExceptionOperator implements Operator&lt;JsonPipelineOutput, JsonPipelineOutput&gt; {
+
+  private final List&lt;CaravanHttpRequest&gt; requests;
+  private final JsonPipelineExceptionHandler handler;
+
+  /**
+   * @param requests the outgoing REST request(s)
+   * @param handler the function to call when an exception is caught
+   */
+<span class="fc" id="L50">  public HandleExceptionOperator(List&lt;CaravanHttpRequest&gt; requests, JsonPipelineExceptionHandler handler) {</span>
+<span class="fc" id="L51">    this.requests = requests;</span>
+<span class="fc" id="L52">    this.handler = handler;</span>
+<span class="fc" id="L53">  }</span>
+
+  @Override
+  public Subscriber&lt;? super JsonPipelineOutput&gt; call(Subscriber&lt;? super JsonPipelineOutput&gt; subscriber) {
+<span class="fc" id="L57">    return new Subscriber&lt;JsonPipelineOutput&gt;() {</span>
+
+      @Override
+      public void onCompleted() {
+<span class="fc" id="L61">        subscriber.onCompleted();</span>
+<span class="fc" id="L62">      }</span>
+
+      @Override
+      public void onError(Throwable e) {
+
+<span class="fc" id="L67">        Exceptions.throwIfFatal(e);</span>
+
+        // extract the HTTP status code from the exceptions known to contain such information
+<span class="fc" id="L70">        int statusCode = 500;</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (e instanceof JsonPipelineInputException) {</span>
+<span class="fc" id="L72">          statusCode = ((JsonPipelineInputException)e).getStatusCode();</span>
+        }
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        if (e instanceof IllegalResponseRuntimeException) {</span>
+<span class="nc" id="L75">          statusCode = ((IllegalResponseRuntimeException)e).getResponseStatusCode();</span>
+        }
+
+<span class="fc" id="L78">        JsonPipelineOutput defaultFallbackContent = new JsonPipelineOutputImpl(JacksonFunctions.emptyObject(), requests)</span>
+<span class="fc" id="L79">            .withStatusCode(statusCode)</span>
+<span class="fc" id="L80">            .withMaxAge(0);</span>
+
+        try {
+<span class="fc" id="L83">          Observable&lt;JsonPipelineOutput&gt; fallbackResponse = handler.call(defaultFallbackContent, (RuntimeException)e);</span>
+
+<span class="fc" id="L85">          fallbackResponse.subscribe(subscriber);</span>
+        }
+<span class="fc" id="L87">        catch (Throwable rethrown) {</span>
+<span class="fc" id="L88">          subscriber.onError(rethrown);</span>
+<span class="fc" id="L89">        }</span>
+<span class="fc" id="L90">      }</span>
+
+      @Override
+      public void onNext(JsonPipelineOutput output) {
+<span class="fc" id="L94">        subscriber.onNext(output);</span>
+<span class="fc" id="L95">      }</span>
+    };
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
