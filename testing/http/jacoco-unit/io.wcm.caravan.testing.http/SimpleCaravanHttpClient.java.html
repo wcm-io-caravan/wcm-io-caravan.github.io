@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SimpleCaravanHttpClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP Testing Support</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.testing.http</a> &gt; <span class="el_source">SimpleCaravanHttpClient.java</span></div><h1>SimpleCaravanHttpClient.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.testing.http;
+
+import io.wcm.caravan.io.http.CaravanHttpClient;
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.io.http.response.CaravanHttpResponse;
+import io.wcm.caravan.io.http.response.CaravanHttpResponseBuilder;
+
+import java.io.IOException;
+import java.net.URL;
+
+import org.apache.commons.io.IOUtils;
+import org.osgi.annotation.versioning.ProviderType;
+
+import rx.Observable;
+
+/**
+ * Very simple HTTP client only performing GET requests.
+ */
+@ProviderType
+<span class="fc" id="L39">public final class SimpleCaravanHttpClient implements CaravanHttpClient {</span>
+
+<span class="fc" id="L41">  private String host = &quot;http://localhost:8080&quot;;</span>
+
+
+  @Override
+  public Observable&lt;CaravanHttpResponse&gt; execute(CaravanHttpRequest request) {
+<span class="fc" id="L46">    String url = host + request.getUrl();</span>
+    try {
+<span class="fc" id="L48">      byte[] data = IOUtils.toByteArray(new URL(url));</span>
+<span class="fc" id="L49">      CaravanHttpResponse response = new CaravanHttpResponseBuilder()</span>
+<span class="fc" id="L50">      .status(200)</span>
+<span class="fc" id="L51">      .reason(&quot;OK&quot;)</span>
+<span class="fc" id="L52">      .body(data)</span>
+<span class="fc" id="L53">      .build();</span>
+<span class="fc" id="L54">      return Observable.just(response);</span>
+    }
+<span class="fc" id="L56">    catch (IOException ex) {</span>
+<span class="fc" id="L57">      throw new RuntimeException(ex);</span>
+    }
+  }
+
+  @Override
+  public Observable&lt;CaravanHttpResponse&gt; execute(CaravanHttpRequest request, Observable&lt;CaravanHttpResponse&gt; fallback) {
+<span class="fc" id="L63">    return execute(request);</span>
+  }
+
+  @Override
+  public boolean hasValidConfiguration(String serviceId) {
+<span class="fc" id="L68">    return true;</span>
+  }
+
+  /**
+   * @return the host
+   */
+  public String getHost() {
+<span class="fc" id="L75">    return this.host;</span>
+  }
+
+  /**
+   * @param host the host to set
+   */
+  public void setHost(String host) {
+<span class="fc" id="L82">    this.host = host;</span>
+<span class="fc" id="L83">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MockingCaravanHttpClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP Testing Support</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.testing.http</a> &gt; <span class="el_source">MockingCaravanHttpClient.java</span></div><h1>MockingCaravanHttpClient.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.testing.http;
+
+import io.wcm.caravan.io.http.CaravanHttpClient;
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.io.http.response.CaravanHttpResponse;
+import io.wcm.caravan.io.http.response.CaravanHttpResponseBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.http.HttpStatus;
+import org.osgi.annotation.versioning.ProviderType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import rx.Observable;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+
+/**
+ * Mocking implementation of {@link CaravanHttpClient} for tests. Use mockRequest methods to register a response.
+ * Returns a 404 NOT FOUND response if there is
+ * no response registered for the request.
+ */
+@ProviderType
+<span class="fc" id="L48">public final class MockingCaravanHttpClient implements CaravanHttpClient {</span>
+
+<span class="fc" id="L50">  private static final Logger LOGGER = LoggerFactory.getLogger(MockingCaravanHttpClient.class);</span>
+
+<span class="fc" id="L52">  private static final CaravanHttpResponse NOT_FOUND = new CaravanHttpResponseBuilder()</span>
+<span class="fc" id="L53">  .status(HttpStatus.SC_NOT_FOUND)</span>
+<span class="fc" id="L54">  .reason(&quot;Not Found&quot;)</span>
+<span class="fc" id="L55">  .build();</span>
+
+<span class="fc" id="L57">  private final List&lt;RequestMatcher&gt; requestMatchers = new ArrayList&lt;&gt;();</span>
+
+  private Boolean hasValidConfigurationAll;
+<span class="fc" id="L60">  private Map&lt;String, Boolean&gt; hasValidConfiguration = Maps.newConcurrentMap();</span>
+<span class="fc" id="L61">  private Map&lt;RequestMatcher, AtomicInteger&gt; matchingCounter = Maps.newHashMap();</span>
+
+  @Override
+  public Observable&lt;CaravanHttpResponse&gt; execute(final CaravanHttpRequest request) {
+<span class="fc" id="L65">    return execute(request, Observable.just(NOT_FOUND));</span>
+  }
+
+  @Override
+  public Observable&lt;CaravanHttpResponse&gt; execute(final CaravanHttpRequest request, final Observable&lt;CaravanHttpResponse&gt; fallback) {
+<span class="fc" id="L70">    String serviceId = request.getServiceId();</span>
+<span class="fc" id="L71">    String url = request.getUrl();</span>
+
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    for (RequestMatcher matcher : requestMatchers) {</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">      if (matcher.matches(serviceId, url)) {</span>
+<span class="fc" id="L75">        matchingCounter.get(matcher).incrementAndGet();</span>
+<span class="fc" id="L76">        return Observable.just(matcher.getResponse());</span>
+      }
+<span class="fc" id="L78">    }</span>
+
+<span class="fc" id="L80">    LOGGER.warn(&quot;No response registered for url: &quot; + url);</span>
+<span class="fc" id="L81">    return fallback;</span>
+  }
+
+  @Override
+  public boolean hasValidConfiguration(String serviceId) {
+<span class="fc" id="L86">    Boolean validConfig = hasValidConfiguration.get(serviceId);</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">    if (validConfig == null) {</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">      if (hasValidConfigurationAll != null) {</span>
+<span class="fc" id="L89">        return hasValidConfigurationAll.booleanValue();</span>
+      }
+      else {
+<span class="fc" id="L92">        return true;</span>
+      }
+    }
+    else {
+<span class="fc" id="L96">      return validConfig.booleanValue();</span>
+    }
+  }
+
+  /**
+   * Set valid configuration for a given service (if not set defaults to true)
+   * @param serviceId Service ID
+   * @param valid Configuration valid status
+   */
+  public void setValidConfiguration(String serviceId, boolean valid) {
+<span class="fc" id="L106">    hasValidConfiguration.put(serviceId, valid);</span>
+<span class="fc" id="L107">  }</span>
+
+  /**
+   * Set valid configuration for any service.
+   * @param valid Configuration valid status
+   */
+  public void setValidConfigurationAnyService(boolean valid) {
+<span class="fc" id="L114">    hasValidConfigurationAll = valid;</span>
+<span class="fc" id="L115">  }</span>
+
+  /**
+   * Define which request should be mocked with which response.
+   * @return Request matcher
+   */
+  public RequestMatcher mockRequest() {
+<span class="fc" id="L122">    RequestMatcher matcher = new RequestMatcher();</span>
+<span class="fc" id="L123">    requestMatchers.add(matcher);</span>
+<span class="fc" id="L124">    matchingCounter.put(matcher, new AtomicInteger(0));</span>
+<span class="fc" id="L125">    return matcher;</span>
+  }
+
+  /**
+   * @return Request Matcher counter
+   */
+  public Map&lt;RequestMatcher, AtomicInteger&gt; getMatchingCounter() {
+<span class="nc" id="L132">    return ImmutableMap.copyOf(matchingCounter);</span>
+  }
+
+  /**
+   * @return Returns the requestMatchers.
+   */
+  public List&lt;RequestMatcher&gt; getRequestMatchers() {
+<span class="nc" id="L139">    return this.requestMatchers;</span>
+  }
+
+  /**
+   * Returns the number of invocations for the first {@link RequestMatcher} fitting the given {@code serviceId} and
+   * {@code url}.
+   * @param serviceId Logical service name
+   * @param url (Partial) URL
+   * @return Number of invocations
+   */
+  public int getMatchingCount(String serviceId, String url) {
+
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">    for (RequestMatcher matcher : requestMatchers) {</span>
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">      if (matcher.matches(serviceId, url)) {</span>
+<span class="fc" id="L153">        return matchingCounter.get(matcher).get();</span>
+      }
+<span class="nc" id="L155">    }</span>
+<span class="nc" id="L156">    return 0;</span>
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
