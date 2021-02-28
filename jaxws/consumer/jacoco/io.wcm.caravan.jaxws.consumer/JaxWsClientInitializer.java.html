@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JaxWsClientInitializer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JAX-WS Consumer</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.jaxws.consumer</a> &gt; <span class="el_source">JaxWsClientInitializer.java</span></div><h1>JaxWsClientInitializer.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2016 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.jaxws.consumer;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
+import javax.xml.ws.BindingProvider;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.cxf.configuration.jsse.TLSClientParameters;
+import org.apache.cxf.configuration.security.ProxyAuthorizationPolicy;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientFactoryBean;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.interceptor.Fault;
+import org.apache.cxf.jaxws.JaxWsClientProxy;
+import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.apache.cxf.message.Message;
+import org.apache.cxf.phase.AbstractPhaseInterceptor;
+import org.apache.cxf.phase.Phase;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
+import org.apache.cxf.transports.http.configuration.ProxyServerType;
+import org.apache.cxf.ws.addressing.AddressingProperties;
+import org.apache.cxf.ws.addressing.AttributedURIType;
+import org.apache.cxf.ws.addressing.JAXWSAConstants;
+import org.apache.cxf.ws.addressing.WSAddressingFeature;
+import org.osgi.annotation.versioning.ConsumerType;
+
+import io.wcm.caravan.jaxws.consumer.impl.CertificateLoader;
+import io.wcm.caravan.jaxws.consumer.impl.OsgiAwareJaxWsClientFactoryBean;
+
+/**
+ * Default JAX-WS SOAP client initializer
+ */
+@ConsumerType
+<span class="fc" id="L59">public class JaxWsClientInitializer {</span>
+
+  // Use to disable jaxb default validation for CXF
+  private static final String JAXB_VALIDATION = &quot;set-jaxb-validation-event-handler&quot;;
+  private static final String SCHEMA_VALIDATION = &quot;schema-validation-enabled&quot;;
+
+  /**
+   * List of properties of this class that contain sensitive information which should not be logged.
+   */
+<span class="fc" id="L68">  public static final String[] SENSITIVE_PROPERTY_NAMES = new String[] {</span>
+      &quot;proxyPassword&quot;,
+      &quot;certstorePassword&quot;,
+      &quot;trustStorePassword&quot;
+  };
+
+  private int connectTimeout;
+  private int socketTimeout;
+  private String httpUser;
+  private String httpPassword;
+  private String proxyHost;
+  private int proxyPort;
+  private String proxyUser;
+  private String proxyPassword;
+<span class="fc" id="L82">  private String sslContextType = CertificateLoader.SSL_CONTEXT_TYPE_DEFAULT;</span>
+<span class="fc" id="L83">  private String keyManagerType = CertificateLoader.KEY_MANAGER_TYPE_DEFAULT;</span>
+<span class="fc" id="L84">  private String keyStoreType = CertificateLoader.KEY_STORE_TYPE_DEFAULT;</span>
+  private String keyStoreProvider;
+  private String keyStorePath;
+  private String keyStorePassword;
+<span class="fc" id="L88">  private String trustManagerType = CertificateLoader.TRUST_MANAGER_TYPE_DEFAULT;</span>
+<span class="fc" id="L89">  private String trustStoreType = CertificateLoader.TRUST_STORE_TYPE_DEFAULT;</span>
+  private String trustStoreProvider;
+  private String trustStorePath;
+  private String trustStorePassword;
+  private String wsAddressingToUri;
+  private boolean ignoreUnexpectedElements;
+<span class="fc" id="L95">  private boolean allowChunking = true;</span>
+
+  private transient TLSClientParameters tlsClientParameters;
+
+  /**
+   * Initialize JAXWS proxy factory bean
+   * @param factory JAXWS Proxy factory bean
+   */
+  public void initializeFactory(JaxWsProxyFactoryBean factory) {
+
+    // set outgoing security (username/password)
+<span class="nc bnc" id="L106" title="All 2 branches missed.">    if (StringUtils.isNotEmpty(getHttpUser())) {</span>
+<span class="nc" id="L107">      factory.setUsername(getHttpUser());</span>
+<span class="nc" id="L108">      factory.setPassword(getHttpPassword());</span>
+    }
+
+    // enable WS-addressing
+<span class="nc bnc" id="L112" title="All 2 branches missed.">    if (StringUtils.isNotEmpty(getWSAddressingToUri())) {</span>
+<span class="nc" id="L113">      factory.getFeatures().add(new WSAddressingFeature());</span>
+    }
+
+<span class="nc" id="L116">  }</span>
+
+  /**
+   * Initialize SOAP client pFactory and create SOAP client object instance.
+   * @param factory JAXWS proxy pFactory bean (has to be already initialized)
+   * @return SOAP client object
+   */
+  public Object createClient(JaxWsProxyFactoryBean factory) {
+    try {
+
+      // create port object
+<span class="nc" id="L127">      Object portObject = createPortObject(factory);</span>
+
+      // initialize endpiont client
+<span class="nc" id="L130">      Client endpointClient = ClientProxy.getClient(portObject);</span>
+<span class="nc" id="L131">      initializeEndpointClient(endpointClient);</span>
+
+      // set http settings
+<span class="nc" id="L134">      HTTPConduit httpConduit = (HTTPConduit)endpointClient.getConduit();</span>
+<span class="nc" id="L135">      initializeHttpConduit(httpConduit);</span>
+
+      // make sure request context is per thread local
+      // see http://cxf.apache.org/faq.html#FAQ-AreJAXWSclientproxiesthreadsafe%3F
+<span class="nc" id="L139">      ((BindingProvider)portObject).getRequestContext().put(JaxWsClientProxy.THREAD_LOCAL_REQUEST_CONTEXT, Boolean.TRUE);</span>
+
+      // ignore unexpected elements and attributes on data binding
+<span class="nc bnc" id="L142" title="All 2 branches missed.">      if (isIgnoreUnexpectedElements()) {</span>
+        // disable schema validation to be upward-compatible to future schema changes
+<span class="nc" id="L144">        ((BindingProvider)portObject).getRequestContext().put(JAXB_VALIDATION, false);</span>
+<span class="nc" id="L145">        ((BindingProvider)portObject).getRequestContext().put(SCHEMA_VALIDATION, false);</span>
+      }
+
+<span class="nc" id="L148">      return portObject;</span>
+    }
+<span class="nc" id="L150">    catch (Throwable ex) {</span>
+<span class="nc" id="L151">      throw new JaxWsClientInitializeException(&quot;SOAP client initialization failed &quot;</span>
+<span class="nc" id="L152">          + &quot;(&quot; + factory.getServiceClass().getName() + &quot;).&quot;, ex);</span>
+    }
+  }
+
+  /**
+   * Create port object
+   * @param factory JAXWS proxy factory bean
+   * @return Port object
+   */
+  protected Object createPortObject(JaxWsProxyFactoryBean factory) {
+<span class="nc" id="L162">    return factory.create();</span>
+  }
+
+  /**
+   * Initialize endpoint client
+   * @param endpointClient Endpoint client
+   */
+  protected void initializeEndpointClient(Client endpointClient) {
+
+    // set destination address for WS-addressing
+<span class="nc bnc" id="L172" title="All 2 branches missed.">    if (StringUtils.isNotEmpty(getWSAddressingToUri())) {</span>
+<span class="nc" id="L173">      endpointClient.getOutInterceptors().add(new AbstractPhaseInterceptor&lt;Message&gt;(Phase.SETUP) {</span>
+
+        @Override
+        public void handleMessage(Message pMessage) throws Fault {
+<span class="nc" id="L177">          AttributedURIType uri = new AttributedURIType();</span>
+<span class="nc" id="L178">          uri.setValue(getWSAddressingToUri());</span>
+
+<span class="nc" id="L180">          AddressingProperties maps = new AddressingProperties();</span>
+<span class="nc" id="L181">          maps.setTo(uri);</span>
+
+<span class="nc" id="L183">          pMessage.put(JAXWSAConstants.CLIENT_ADDRESSING_PROPERTIES, maps);</span>
+<span class="nc" id="L184">        }</span>
+
+      });
+    }
+
+    // add interceptors
+<span class="nc" id="L190">    addInterceptors(endpointClient);</span>
+
+<span class="nc" id="L192">  }</span>
+
+  /**
+   * Add interceptors (e.g. for request/response logging)
+   * @param endpointClient Endpoint client
+   */
+  protected void addInterceptors(Client endpointClient) {
+    // can be overridden by subclasses
+<span class="nc" id="L200">  }</span>
+
+  /**
+   * Initialize HTTP conduit
+   * @param httpConduit HTTP conduit
+   * @throws GeneralSecurityException security exception
+   * @throws IOException I/O exception
+   */
+  protected void initializeHttpConduit(HTTPConduit httpConduit) throws IOException, GeneralSecurityException {
+
+<span class="nc" id="L210">    HTTPClientPolicy clientPolicy = httpConduit.getClient();</span>
+<span class="nc" id="L211">    clientPolicy.setAllowChunking(isAllowChunking());</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">    if (getConnectTimeout() &gt; 0) {</span>
+<span class="nc" id="L213">      clientPolicy.setConnectionTimeout(getConnectTimeout());</span>
+    }
+<span class="nc bnc" id="L215" title="All 2 branches missed.">    if (getSocketTimeout() &gt; 0) {</span>
+<span class="nc" id="L216">      clientPolicy.setReceiveTimeout(getSocketTimeout());</span>
+    }
+
+    // optionally enable proxy server
+<span class="nc bnc" id="L220" title="All 4 branches missed.">    if (StringUtils.isNotEmpty(getProxyHost()) &amp;&amp; getProxyPort() &gt; 0) {</span>
+<span class="nc" id="L221">      clientPolicy.setProxyServerType(ProxyServerType.HTTP);</span>
+<span class="nc" id="L222">      clientPolicy.setProxyServer(getProxyHost());</span>
+<span class="nc" id="L223">      clientPolicy.setProxyServerPort(getProxyPort());</span>
+
+      // optionally define proxy authentication
+<span class="nc bnc" id="L226" title="All 2 branches missed.">      if (StringUtils.isNotEmpty(getProxyUser())) {</span>
+<span class="nc" id="L227">        ProxyAuthorizationPolicy proxyAuthentication = new ProxyAuthorizationPolicy();</span>
+<span class="nc" id="L228">        proxyAuthentication.setUserName(getProxyUser());</span>
+<span class="nc" id="L229">        proxyAuthentication.setPassword(getProxyPassword());</span>
+<span class="nc" id="L230">        httpConduit.setProxyAuthorization(proxyAuthentication);</span>
+      }
+    }
+
+    // setup TLS - enable certificate for WS access
+<span class="nc bnc" id="L235" title="All 4 branches missed.">    if (CertificateLoader.isSslKeyManagerEnabled(this) || CertificateLoader.isSslTrustStoreEnbaled(this)) {</span>
+<span class="nc" id="L236">      httpConduit.setTlsClientParameters(getTLSClientParameters());</span>
+    }
+
+<span class="nc" id="L239">  }</span>
+
+  /**
+   * Get JAX-WS client factory bean instance.
+   * @return Client factory bean.
+   */
+  public ClientFactoryBean createClientFactoryBean() {
+<span class="nc" id="L246">    return new OsgiAwareJaxWsClientFactoryBean();</span>
+  }
+
+  /**
+   * @return Connection timeout in ms.
+   */
+  public final int getConnectTimeout() {
+<span class="nc" id="L253">    return this.connectTimeout;</span>
+  }
+
+  /**
+   * @param value Connection timeout in ms.
+   */
+  public final void setConnectTimeout(int value) {
+<span class="nc" id="L260">    this.connectTimeout = value;</span>
+<span class="nc" id="L261">  }</span>
+
+  /**
+   * @return Response timeout in ms.
+   */
+  public final int getSocketTimeout() {
+<span class="nc" id="L267">    return this.socketTimeout;</span>
+  }
+
+  /**
+   * @param value Response timeout in ms.
+   */
+  public final void setSocketTimeout(int value) {
+<span class="nc" id="L274">    this.socketTimeout = value;</span>
+<span class="nc" id="L275">  }</span>
+
+  /**
+   * @return Http basic authentication user.
+   */
+  public final String getHttpUser() {
+<span class="nc" id="L281">    return this.httpUser;</span>
+  }
+
+  /**
+   * @param value Http basic authentication user.
+   */
+  public final void setHttpUser(String value) {
+<span class="nc" id="L288">    this.httpUser = value;</span>
+<span class="nc" id="L289">  }</span>
+
+  /**
+   * @return Http basic authentication password
+   */
+  public final String getHttpPassword() {
+<span class="nc" id="L295">    return this.httpPassword;</span>
+  }
+
+  /**
+   * @param value Http basic authentication password
+   */
+  public final void setHttpPassword(String value) {
+<span class="nc" id="L302">    this.httpPassword = value;</span>
+<span class="nc" id="L303">  }</span>
+
+  /**
+   * @return Proxy host name
+   */
+  public final String getProxyHost() {
+<span class="nc" id="L309">    return this.proxyHost;</span>
+  }
+
+  /**
+   * @param value Proxy host name
+   */
+  public final void setProxyHost(String value) {
+<span class="nc" id="L316">    this.proxyHost = value;</span>
+<span class="nc" id="L317">  }</span>
+
+  /**
+   * @return Proxy port
+   */
+  public final int getProxyPort() {
+<span class="nc" id="L323">    return this.proxyPort;</span>
+  }
+
+  /**
+   * @param value Proxy port
+   */
+  public final void setProxyPort(int value) {
+<span class="nc" id="L330">    this.proxyPort = value;</span>
+<span class="nc" id="L331">  }</span>
+
+  /**
+   * @return Proxy user name
+   */
+  public final String getProxyUser() {
+<span class="nc" id="L337">    return this.proxyUser;</span>
+  }
+
+  /**
+   * @param value Proxy user name
+   */
+  public final void setProxyUser(String value) {
+<span class="nc" id="L344">    this.proxyUser = value;</span>
+<span class="nc" id="L345">  }</span>
+
+  /**
+   * @return Proxy password
+   */
+  public final String getProxyPassword() {
+<span class="nc" id="L351">    return this.proxyPassword;</span>
+  }
+
+  /**
+   * @param value Proxy password
+   */
+  public final void setProxyPassword(String value) {
+<span class="nc" id="L358">    this.proxyPassword = value;</span>
+<span class="nc" id="L359">  }</span>
+
+  /**
+   * @return SSL context type (default: TLS)
+   */
+  public final String getSslContextType() {
+<span class="nc" id="L365">    return this.sslContextType;</span>
+  }
+
+  /**
+   * @param value SSL context type (default: TLS)
+   */
+  public final void setSslContextType(String value) {
+<span class="nc" id="L372">    this.sslContextType = value;</span>
+<span class="nc" id="L373">    this.tlsClientParameters = null;</span>
+<span class="nc" id="L374">  }</span>
+
+  /**
+   * @return Key manager type (default: SunX509)
+   */
+  public final String getKeyManagerType() {
+<span class="fc" id="L380">    return this.keyManagerType;</span>
+  }
+
+  /**
+   * @param value Key manager type (default: SunX509)
+   */
+  public final void setKeyManagerType(String value) {
+<span class="nc" id="L387">    this.keyManagerType = value;</span>
+<span class="nc" id="L388">    this.tlsClientParameters = null;</span>
+<span class="nc" id="L389">  }</span>
+
+  /**
+   * @return Key store type (default: PKCS12)
+   */
+  public final String getKeyStoreType() {
+<span class="fc" id="L395">    return this.keyStoreType;</span>
+  }
+
+  /**
+   * @param value Key store type (default: PKCS12)
+   */
+  public final void setKeyStoreType(String value) {
+<span class="fc" id="L402">    this.keyStoreType = value;</span>
+<span class="fc" id="L403">    this.tlsClientParameters = null;</span>
+<span class="fc" id="L404">  }</span>
+
+  /**
+   * @return Key store provider (default: null = use first matching security provider)
+   */
+  public String getKeyStoreProvider() {
+<span class="fc" id="L410">    return this.keyStoreProvider;</span>
+  }
+
+  /**
+   * @param value Key store provider (default: null = use first matching security provider)
+   */
+  public void setKeyStoreProvider(String value) {
+<span class="fc" id="L417">    this.keyStoreProvider = value;</span>
+<span class="fc" id="L418">    this.tlsClientParameters = null;</span>
+<span class="fc" id="L419">  }</span>
+
+  /**
+   * @return Key store file path
+   */
+  public final String getKeyStorePath() {
+<span class="fc" id="L425">    return this.keyStorePath;</span>
+  }
+
+  /**
+   * @param value Key store file path
+   */
+  public final void setKeyStorePath(String value) {
+<span class="fc" id="L432">    this.keyStorePath = value;</span>
+<span class="fc" id="L433">    this.tlsClientParameters = null;</span>
+<span class="fc" id="L434">  }</span>
+
+  /**
+   * @return Key store password
+   */
+  public final String getKeyStorePassword() {
+<span class="fc" id="L440">    return this.keyStorePassword;</span>
+  }
+
+  /**
+   * @param value Key store password
+   */
+  public final void setKeyStorePassword(String value) {
+<span class="fc" id="L447">    this.keyStorePassword = value;</span>
+<span class="fc" id="L448">    this.tlsClientParameters = null;</span>
+<span class="fc" id="L449">  }</span>
+
+  /**
+   * @return Trust manager type (default: SunX509)
+   */
+  public final String getTrustManagerType() {
+<span class="fc" id="L455">    return this.trustManagerType;</span>
+  }
+
+  /**
+   * @param value Trust manager type (default: SunX509)
+   */
+  public final void setTrustManagerType(String value) {
+<span class="nc" id="L462">    this.trustManagerType = value;</span>
+<span class="nc" id="L463">    this.tlsClientParameters = null;</span>
+<span class="nc" id="L464">  }</span>
+
+  /**
+   * @return Trust store type (default: JKS)
+   */
+  public final String getTrustStoreType() {
+<span class="fc" id="L470">    return this.trustStoreType;</span>
+  }
+
+  /**
+   * @param value Trust store type (default: JKS)
+   */
+  public final void setTrustStoreType(String value) {
+<span class="nc" id="L477">    this.trustStoreType = value;</span>
+<span class="nc" id="L478">    this.tlsClientParameters = null;</span>
+<span class="nc" id="L479">  }</span>
+
+  /**
+   * @return Trust store provider (default: null = use first matching security provider)
+   */
+  public String getTrustStoreProvider() {
+<span class="fc" id="L485">    return this.trustStoreProvider;</span>
+  }
+
+  /**
+   * @param value Trust store provider (default: null = use first matching security provider)
+   */
+  public void setTrustStoreProvider(String value) {
+<span class="fc" id="L492">    this.trustStoreProvider = value;</span>
+<span class="fc" id="L493">    this.tlsClientParameters = null;</span>
+<span class="fc" id="L494">  }</span>
+
+  /**
+   * @return Trust store file path
+   */
+  public final String getTrustStorePath() {
+<span class="fc" id="L500">    return this.trustStorePath;</span>
+  }
+
+  /**
+   * @param value Trust store file path
+   */
+  public final void setTrustStorePath(String value) {
+<span class="fc" id="L507">    this.trustStorePath = value;</span>
+<span class="fc" id="L508">    this.tlsClientParameters = null;</span>
+<span class="fc" id="L509">  }</span>
+
+  /**
+   * @return Trust store password
+   */
+  public final String getTrustStorePassword() {
+<span class="fc" id="L515">    return this.trustStorePassword;</span>
+  }
+
+  /**
+   * @param vaule Trust store password
+   */
+  public final void setTrustStorePassword(String vaule) {
+<span class="fc" id="L522">    this.trustStorePassword = vaule;</span>
+<span class="fc" id="L523">    this.tlsClientParameters = null;</span>
+<span class="fc" id="L524">  }</span>
+
+  /**
+   * Create TLS client parameters based on given certstore path/password parameters.
+   * Caches the parameter in member variable of this factory.
+   * @return TLS client parameters
+   * @throws IOException I/O exception
+   * @throws GeneralSecurityException General security exception
+   */
+  public final TLSClientParameters getTLSClientParameters() throws IOException, GeneralSecurityException {
+<span class="nc bnc" id="L534" title="All 2 branches missed.">    if (tlsClientParameters == null) {</span>
+<span class="nc" id="L535">      TLSClientParameters tlsCP = new TLSClientParameters();</span>
+
+      // initialize certstore
+<span class="nc bnc" id="L538" title="All 2 branches missed.">      if (CertificateLoader.isSslTrustStoreEnbaled(this)) {</span>
+        try {
+<span class="nc" id="L540">          KeyManagerFactory keyManagerFactory = CertificateLoader.getKeyManagerFactory(this);</span>
+<span class="nc" id="L541">          tlsCP.setKeyManagers(keyManagerFactory.getKeyManagers());</span>
+        }
+<span class="nc" id="L543">        catch (Throwable ex) {</span>
+<span class="nc" id="L544">          throw new RuntimeException(&quot;Unable to initialize certificate store for SOAP endpoint.\n&quot;</span>
+              + &quot;Please check configuration parameters 'certstorePath' and 'certstorePassword' in this config:\n&quot;
+<span class="nc" id="L546">              + this.toString(), ex);</span>
+<span class="nc" id="L547">        }</span>
+      }
+
+      // initialize trustStore
+<span class="nc bnc" id="L551" title="All 2 branches missed.">      if (CertificateLoader.isSslTrustStoreEnbaled(this)) {</span>
+        try {
+<span class="nc" id="L553">          TrustManagerFactory trustManagerFactory = CertificateLoader.getTrustManagerFactory(this);</span>
+<span class="nc" id="L554">          tlsCP.setTrustManagers(trustManagerFactory.getTrustManagers());</span>
+        }
+<span class="nc" id="L556">        catch (Throwable ex) {</span>
+<span class="nc" id="L557">          throw new RuntimeException(&quot;Unable to initialize trust store for SOAP endpoint.\n&quot;</span>
+              + &quot;Please check configuration parameters 'trustStorePath' and 'trustStorePassword' in this config:\n&quot;
+<span class="nc" id="L559">              + this.toString(), ex);</span>
+<span class="nc" id="L560">        }</span>
+      }
+
+<span class="nc" id="L563">      tlsClientParameters = tlsCP;</span>
+    }
+<span class="nc" id="L565">    return tlsClientParameters;</span>
+  }
+
+  /**
+   * @param value CXF TSL client parameters
+   */
+  public final void setTLSClientParameters(TLSClientParameters value) {
+<span class="nc" id="L572">    this.tlsClientParameters = value;</span>
+<span class="nc" id="L573">  }</span>
+
+  /**
+   * @return Addressing-To URI to be sent as WS-Adressing header
+   */
+  public final String getWSAddressingToUri() {
+<span class="nc" id="L579">    return this.wsAddressingToUri;</span>
+  }
+
+  /**
+   * @param value Addressing-To URI to be sent as WS-Adressing header
+   */
+  public final void setWSAddressingToUri(String value) {
+<span class="nc" id="L586">    this.wsAddressingToUri = value;</span>
+<span class="nc" id="L587">  }</span>
+
+  /**
+   * @return If true compatibility mode for WSDL/schema changes is activated.
+   *         If the SOAP server returns unknown XML element they are ignored during validation.
+   */
+  public final boolean isIgnoreUnexpectedElements() {
+<span class="nc" id="L594">    return this.ignoreUnexpectedElements;</span>
+  }
+
+  /**
+   * @param value If true compatibility mode for WSDL/schema changes is activated.
+   *          If the SOAP server returns unknown XML element they are ignored during validation.
+   */
+  public final void setIgnoreUnexpectedElements(boolean value) {
+<span class="nc" id="L602">    this.ignoreUnexpectedElements = value;</span>
+<span class="nc" id="L603">  }</span>
+
+  /**
+   * @return Allow HTTP 1.1 chunking
+   */
+  public final boolean isAllowChunking() {
+<span class="nc" id="L609">    return this.allowChunking;</span>
+  }
+
+  /**
+   * @param value Allow HTTP 1.1 chunking
+   */
+  public final void setAllowChunking(boolean value) {
+<span class="nc" id="L616">    this.allowChunking = value;</span>
+<span class="nc" id="L617">  }</span>
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L621">    return HashCodeBuilder.reflectionHashCode(this, false);</span>
+  }
+
+  @Override
+  public boolean equals(Object pObj) {
+<span class="nc" id="L626">    return EqualsBuilder.reflectionEquals(this, pObj, false);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

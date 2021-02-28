@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JaxWsClientInitializerHttpClientConfigImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JAX-WS Consumer HTTP Client</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.jaxws.consumer.httpclient.impl</a> &gt; <span class="el_source">JaxWsClientInitializerHttpClientConfigImpl.java</span></div><h1>JaxWsClientInitializerHttpClientConfigImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2016 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.jaxws.consumer.httpclient.impl;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.commons.osgi.ServiceUtil;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+
+import io.wcm.caravan.commons.httpclient.HttpClientConfig;
+import io.wcm.caravan.jaxws.consumer.JaxWsClientInitializer;
+import io.wcm.caravan.jaxws.consumer.httpclient.JaxWsClientInitializerHttpClientConfig;
+
+/**
+ * Implementation of {@link JaxWsClientInitializerHttpClientConfig}-
+ */
+@Component(immediate = true, service = JaxWsClientInitializerHttpClientConfig.class)
+<span class="fc" id="L42">public class JaxWsClientInitializerHttpClientConfigImpl implements JaxWsClientInitializerHttpClientConfig {</span>
+
+<span class="fc" id="L44">  @Reference(service = HttpClientConfig.class,</span>
+      cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
+      bind = &quot;bindHttpClientConfig&quot;, unbind = &quot;unbindHttpClientConfig&quot;)
+  private final Map&lt;Comparable&lt;Object&gt;, HttpClientConfig&gt; configItems = new ConcurrentSkipListMap&lt;&gt;();
+
+  protected void bindHttpClientConfig(HttpClientConfig httpClientConfig, Map&lt;String, Object&gt; config) {
+<span class="fc" id="L50">    configItems.put(ServiceUtil.getComparableForServiceRanking(config), httpClientConfig);</span>
+<span class="fc" id="L51">  }</span>
+
+  @SuppressWarnings(&quot;unused&quot;)
+  protected void unbindHttpClientConfig(HttpClientConfig httpClientConfig, Map&lt;String, Object&gt; config) {
+<span class="nc" id="L55">    configItems.remove(ServiceUtil.getComparableForServiceRanking(config));</span>
+<span class="nc" id="L56">  }</span>
+
+  @Override
+  public JaxWsClientInitializer get(String url) {
+<span class="fc" id="L60">    JaxWsClientInitializer jaxWsClientInitializer = new JaxWsClientInitializer();</span>
+<span class="fc" id="L61">    apply(jaxWsClientInitializer, url);</span>
+<span class="fc" id="L62">    return jaxWsClientInitializer;</span>
+  }
+
+  @Override
+  public void apply(JaxWsClientInitializer jaxWsClientInitializer, String url) {
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">    if (StringUtils.isBlank(url)) {</span>
+<span class="nc" id="L68">      throw new IllegalArgumentException(&quot;URL is missing&quot;);</span>
+    }
+    URI uri;
+    try {
+<span class="fc" id="L72">      uri = new URI(url);</span>
+    }
+<span class="nc" id="L74">    catch (URISyntaxException ex) {</span>
+<span class="nc" id="L75">      throw new IllegalArgumentException(&quot;Invalid URL: &quot; + ex.getMessage());</span>
+<span class="fc" id="L76">    }</span>
+
+<span class="fc bfc" id="L78" title="All 2 branches covered.">    for (HttpClientConfig configItem : configItems.values()) {</span>
+<span class="pc bpc" id="L79" title="2 of 4 branches missed.">      if (configItem.matchesHost(uri.getHost()) &amp;&amp; configItem.matchesPath(uri.getPath())</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">          &amp;&amp; configItem.matchesWsAddressingToUri(jaxWsClientInitializer.getWSAddressingToUri())) {</span>
+<span class="fc" id="L81">        apply(jaxWsClientInitializer, configItem);</span>
+<span class="fc" id="L82">        break;</span>
+      }
+<span class="nc" id="L84">    }</span>
+<span class="fc" id="L85">  }</span>
+
+  private void apply(JaxWsClientInitializer jaxws, HttpClientConfig config) {
+<span class="fc" id="L88">    jaxws.setConnectTimeout(config.getConnectTimeout());</span>
+<span class="fc" id="L89">    jaxws.setSocketTimeout(config.getSocketTimeout());</span>
+<span class="fc" id="L90">    jaxws.setHttpUser(config.getHttpUser());</span>
+<span class="fc" id="L91">    jaxws.setHttpPassword(config.getHttpPassword());</span>
+<span class="fc" id="L92">    jaxws.setProxyHost(config.getProxyHost());</span>
+<span class="fc" id="L93">    jaxws.setProxyPort(config.getProxyPort());</span>
+<span class="fc" id="L94">    jaxws.setProxyUser(config.getProxyUser());</span>
+<span class="fc" id="L95">    jaxws.setProxyPassword(config.getProxyPassword());</span>
+<span class="fc" id="L96">    jaxws.setSslContextType(config.getSslContextType());</span>
+<span class="fc" id="L97">    jaxws.setKeyManagerType(config.getKeyManagerType());</span>
+<span class="fc" id="L98">    jaxws.setKeyStoreType(config.getKeyStoreType());</span>
+<span class="fc" id="L99">    jaxws.setKeyStoreProvider(config.getKeyStoreProvider());</span>
+<span class="fc" id="L100">    jaxws.setKeyStorePath(config.getKeyStorePath());</span>
+<span class="fc" id="L101">    jaxws.setKeyStorePassword(config.getKeyStorePassword());</span>
+<span class="fc" id="L102">    jaxws.setTrustManagerType(config.getTrustManagerType());</span>
+<span class="fc" id="L103">    jaxws.setTrustStoreType(config.getTrustStoreType());</span>
+<span class="fc" id="L104">    jaxws.setTrustStoreProvider(config.getTrustStoreProvider());</span>
+<span class="fc" id="L105">    jaxws.setTrustStorePath(config.getTrustStorePath());</span>
+<span class="fc" id="L106">    jaxws.setTrustStorePassword(config.getTrustStorePassword());</span>
+<span class="fc" id="L107">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>JAX-WS Consumer - Checkstyle report</title>
+    <link>https://caravan.wcm.io/jaxws/consumer/</link>
+    <description>JAX-WS Consumer - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
+    <item>
+      <title>File: 9,
+             Errors: 0,
+             Warnings: 16,
+             Infos: 0
+      </title>
+            <link>https://caravan.wcm.io/jaxws/consumer//checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://caravan.wcm.io/jaxws/consumer//checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/jaxws/consumer//checkstyle.html#io.wcm.caravan.jaxws.consumer.impl.OsgiAwareJaxWsClientFactoryBean.java">io/wcm/caravan/jaxws/consumer/impl/OsgiAwareJaxWsClientFactoryBean.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/jaxws/consumer//checkstyle.html#io.wcm.caravan.jaxws.consumer.JaxWsClientInitializer.java">io/wcm/caravan/jaxws/consumer/JaxWsClientInitializer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/jaxws/consumer//checkstyle.html#io.wcm.caravan.jaxws.consumer.impl.JaxWsClientFactoryImpl.java">io/wcm/caravan/jaxws/consumer/impl/JaxWsClientFactoryImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/jaxws/consumer//checkstyle.html#io.wcm.caravan.jaxws.consumer.JaxWsClientFactory.java">io/wcm/caravan/jaxws/consumer/JaxWsClientFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/jaxws/consumer//checkstyle.html#io.wcm.caravan.jaxws.consumer.impl.OsgiAwareClientImpl.java">io/wcm/caravan/jaxws/consumer/impl/OsgiAwareClientImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/jaxws/consumer//checkstyle.html#io.wcm.caravan.jaxws.consumer.package-info.java">io/wcm/caravan/jaxws/consumer/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/jaxws/consumer//checkstyle.html#io.wcm.caravan.jaxws.consumer.impl.StoreProperties.java">io/wcm/caravan/jaxws/consumer/impl/StoreProperties.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/jaxws/consumer//checkstyle.html#io.wcm.caravan.jaxws.consumer.JaxWsClientInitializeException.java">io/wcm/caravan/jaxws/consumer/JaxWsClientInitializeException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/jaxws/consumer//checkstyle.html#io.wcm.caravan.jaxws.consumer.impl.CertificateLoader.java">io/wcm/caravan/jaxws/consumer/impl/CertificateLoader.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  13
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+
