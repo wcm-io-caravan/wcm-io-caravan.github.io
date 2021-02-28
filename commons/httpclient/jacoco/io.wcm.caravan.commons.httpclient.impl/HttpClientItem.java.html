@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HttpClientItem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Commons HTTP Client</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.commons.httpclient.impl</a> &gt; <span class="el_source">HttpClientItem.java</span></div><h1>HttpClientItem.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.commons.httpclient.impl;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+import javax.net.ssl.SSLContext;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.ProxyAuthenticationStrategy;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.wcm.caravan.commons.httpclient.HttpClientConfig;
+import io.wcm.caravan.commons.httpclient.impl.helpers.CertificateLoader;
+
+/**
+ * Item for {@link HttpClientFactoryImpl} for each {@link HttpClientConfig} configured.
+ */
+class HttpClientItem {
+
+  private final HttpClientConfig config;
+  private final PoolingHttpClientConnectionManager connectionManager;
+  private final CloseableHttpClient httpClient;
+
+<span class="fc" id="L59">  private static final Logger log = LoggerFactory.getLogger(HttpClientItem.class);</span>
+
+  /**
+   * @param config Http client configuration
+   */
+<span class="fc" id="L64">  HttpClientItem(HttpClientConfig config) {</span>
+<span class="fc" id="L65">    this.config = config;</span>
+
+    // optional SSL client certificate support
+    SSLContext sslContext;
+<span class="pc bpc" id="L69" title="1 of 4 branches missed.">    if (CertificateLoader.isSslKeyManagerEnabled(config) || CertificateLoader.isSslTrustStoreEnbaled(config)) {</span>
+      try {
+<span class="fc" id="L71">        sslContext = CertificateLoader.buildSSLContext(config);</span>
+      }
+<span class="nc" id="L73">      catch (IOException | GeneralSecurityException ex) {</span>
+<span class="nc" id="L74">        throw new IllegalArgumentException(&quot;Invalid SSL client certificate configuration.&quot;, ex);</span>
+<span class="fc" id="L75">      }</span>
+    }
+    else {
+<span class="fc" id="L78">      sslContext = CertificateLoader.createDefaultSSlContext();</span>
+    }
+
+<span class="fc" id="L81">    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();</span>
+    // optional proxy authentication
+<span class="fc bfc" id="L83" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getProxyUser())) {</span>
+<span class="fc" id="L84">      credentialsProvider.setCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()),</span>
+<span class="fc" id="L85">          new UsernamePasswordCredentials(config.getProxyUser(), config.getProxyPassword()));</span>
+    }
+    // optional http basic authentication support
+<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getHttpUser())) {</span>
+<span class="fc" id="L89">      credentialsProvider.setCredentials(AuthScope.ANY,</span>
+<span class="fc" id="L90">          new UsernamePasswordCredentials(config.getHttpUser(), config.getHttpPassword()));</span>
+    }
+
+    // build http clients
+<span class="fc" id="L94">    connectionManager = buildConnectionManager(config, sslContext);</span>
+<span class="fc" id="L95">    httpClient = buildHttpClient(config, connectionManager, credentialsProvider);</span>
+<span class="fc" id="L96">  }</span>
+
+  private static PoolingHttpClientConnectionManager buildConnectionManager(HttpClientConfig config,
+      SSLContext sslContext) {
+    // scheme configuration
+<span class="fc" id="L101">    ConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext);</span>
+<span class="fc" id="L102">    Registry&lt;ConnectionSocketFactory&gt; schemeRegistry = RegistryBuilder.&lt;ConnectionSocketFactory&gt;create()</span>
+<span class="fc" id="L103">        .register(&quot;http&quot;, PlainConnectionSocketFactory.getSocketFactory())</span>
+<span class="fc" id="L104">        .register(&quot;https&quot;, sslSocketFactory)</span>
+<span class="fc" id="L105">        .build();</span>
+
+    // pooling settings
+<span class="fc" id="L108">    PoolingHttpClientConnectionManager conmgr = new PoolingHttpClientConnectionManager(schemeRegistry);</span>
+<span class="fc" id="L109">    conmgr.setMaxTotal(config.getMaxTotalConnections());</span>
+<span class="fc" id="L110">    conmgr.setDefaultMaxPerRoute(config.getMaxConnectionsPerHost());</span>
+<span class="fc" id="L111">    return conmgr;</span>
+  }
+
+  private static CloseableHttpClient buildHttpClient(HttpClientConfig config,
+      PoolingHttpClientConnectionManager connectionManager, CredentialsProvider credentialsProvider) {
+
+    // prepare HTTPClient builder
+<span class="fc" id="L118">    HttpClientBuilder httpClientBuilder = HttpClientBuilder.create()</span>
+<span class="fc" id="L119">        .setConnectionManager(connectionManager);</span>
+
+<span class="fc" id="L121">    httpClientBuilder.setDefaultRequestConfig(RequestConfig.custom()</span>
+        // timeout settings
+<span class="fc" id="L123">        .setConnectionRequestTimeout(config.getConnectionRequestTimeout())</span>
+<span class="fc" id="L124">        .setConnectTimeout(config.getConnectTimeout())</span>
+<span class="fc" id="L125">        .setSocketTimeout(config.getSocketTimeout())</span>
+        // apply standard cookie policy to support all expire headers (see https://issues.apache.org/jira/browse/HTTPCLIENT-1763)
+<span class="fc" id="L127">        .setCookieSpec(CookieSpecs.STANDARD)</span>
+<span class="fc" id="L128">        .build());</span>
+
+<span class="fc" id="L130">    httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);</span>
+
+    // optional proxy support
+<span class="fc bfc" id="L133" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getProxyHost())) {</span>
+<span class="fc" id="L134">      httpClientBuilder.setProxy(new HttpHost(config.getProxyHost(), config.getProxyPort()));</span>
+
+      // optional proxy authentication
+<span class="fc bfc" id="L137" title="All 2 branches covered.">      if (StringUtils.isNotEmpty(config.getProxyUser())) {</span>
+<span class="fc" id="L138">        httpClientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());</span>
+      }
+    }
+
+<span class="fc" id="L142">    return httpClientBuilder.build();</span>
+  }
+
+  /**
+   * @return Http client instance (synchronous)
+   */
+  public CloseableHttpClient getHttpClient() {
+<span class="fc" id="L149">    return httpClient;</span>
+  }
+
+  /**
+   * @param hostName Host name
+   * @param wsAddressingToURI WS addressing &quot;to&quot; URI
+   * @param path Path part of URI
+   * @param isWsCall indicates if the call is a soap webservice call
+   * @return true if host name is associated with this http client config
+   */
+  public boolean matches(String hostName, String wsAddressingToURI, String path, boolean isWsCall) {
+<span class="fc bfc" id="L160" title="All 2 branches covered.">    if (isWsCall) {</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">      return config.isEnabled()</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path)</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">          &amp;&amp; config.matchesWsAddressingToUri(wsAddressingToURI);</span>
+    }
+    else {
+<span class="fc bfc" id="L167" title="All 2 branches covered.">      return config.isEnabled()</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path);</span>
+    }
+  }
+
+  /**
+   * Close underlying http clients.
+   */
+  public void close() {
+    try {
+<span class="fc" id="L178">      httpClient.close();</span>
+    }
+<span class="nc" id="L180">    catch (IOException ex) {</span>
+<span class="nc" id="L181">      log.warn(&quot;Error closing HTTP client.&quot;, ex);</span>
+<span class="fc" id="L182">    }</span>
+<span class="fc" id="L183">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L187">    return &quot;HttpClientItem[&quot; + config.toString() + &quot;]&quot;;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

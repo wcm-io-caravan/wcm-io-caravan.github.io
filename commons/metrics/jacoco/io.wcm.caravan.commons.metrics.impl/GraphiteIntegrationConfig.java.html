@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GraphiteIntegrationConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Commons Metrics</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.commons.metrics.impl</a> &gt; <span class="el_source">GraphiteIntegrationConfig.java</span></div><h1>GraphiteIntegrationConfig.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.commons.metrics.impl;
+
+
+import java.util.Map;
+
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.ConfigurationPolicy;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.commons.osgi.PropertiesUtil;
+
+/**
+ * Configuration for integrating the metrics to graphite server(Carbon) via TCP socket connection.
+ */
+@Component(immediate = true, metatype = true,
+    label = &quot;wcm.io Caravan Resilient Http Graphite Integration Configuration&quot;,
+    description = &quot;Configure to integrate the metrics to a graphite server(Carbon) via TCP socket connection&quot;,
+    policy = ConfigurationPolicy.OPTIONAL)
+@Service(GraphiteIntegrationConfig.class)
+<span class="nc" id="L40">public class GraphiteIntegrationConfig {</span>
+
+  @Property(label = &quot;Graphite host name&quot;,
+      description = &quot;Send metrics to the graphite server, if the graphite server host and port is set. Otherwise do nothing.&quot;)
+  private static final String HOST_NAME = &quot;hostName&quot;;
+
+  @Property(label = &quot;Carbon tcp port to receive the metrics&quot;,
+      description = &quot;Send metrics to the graphite server, if the graphite server host and port is set. Otherwise do nothing.&quot;,
+      intValue = GraphiteIntegrationConfig.DEFAULT_PORT)
+  private static final String PORT = &quot;port&quot;;
+  private static final int DEFAULT_PORT = 0;
+
+  @Property(label = &quot;Time interval in seconds to push metrics to graphite server&quot;,
+      description = &quot;How often(in seconds) should the metrics be pushed to the graphite server.&quot;,
+      intValue = GraphiteIntegrationConfig.DEFAULT_PUSH_INTERVAL)
+  private static final String PUSH_METRICS_INTERVAL = &quot;pushInterval&quot;;
+  private static final int DEFAULT_PUSH_INTERVAL = 5;
+
+  @Property(label = &quot;Enable the graphte integration.&quot;,
+      description = &quot;Enable the graphte integration. Metrics will be send to the graphite server&quot;,
+      boolValue = GraphiteIntegrationConfig.DEFAULT_ENABLED)
+  private static final String ENABLED = &quot;enabled&quot;;
+  private static final boolean DEFAULT_ENABLED = false;
+
+  @Property(label = &quot;Prefix&quot;, description = &quot;Prefix of metrics to differentiate server or environment.&quot;)
+  private static final String METRIC_PREFIX = &quot;prefix&quot;;
+
+  private String graphiteHostName;
+  private int graphiteSocketPort;
+  private int pushInterval;
+  private boolean enabled;
+  private String prefix;
+
+  @Activate
+  void activate(Map&lt;String, Object&gt; config) {
+<span class="nc" id="L75">    enabled = PropertiesUtil.toBoolean(config.get(ENABLED), DEFAULT_ENABLED);</span>
+<span class="nc" id="L76">    graphiteHostName = PropertiesUtil.toString(config.get(HOST_NAME), null);</span>
+<span class="nc" id="L77">    prefix = PropertiesUtil.toString(config.get(METRIC_PREFIX), null);</span>
+<span class="nc" id="L78">    graphiteSocketPort = PropertiesUtil.toInteger(config.get(PORT), DEFAULT_PORT);</span>
+<span class="nc" id="L79">    pushInterval = PropertiesUtil.toInteger(config.get(PUSH_METRICS_INTERVAL), DEFAULT_PUSH_INTERVAL);</span>
+<span class="nc" id="L80">  }</span>
+
+  public boolean isEnabled() {
+<span class="nc" id="L83">    return enabled;</span>
+  }
+
+  public String getGraphiteHostName() {
+<span class="nc" id="L87">    return graphiteHostName;</span>
+  }
+
+  public int getGraphiteSocketPort() {
+<span class="nc" id="L91">    return graphiteSocketPort;</span>
+  }
+
+  public int getPushInterval() {
+<span class="nc" id="L95">    return pushInterval;</span>
+  }
+
+  public String getPrefix() {
+<span class="nc" id="L99">    return prefix;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

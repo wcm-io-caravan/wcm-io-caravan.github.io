@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PerformanceMetrics.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Commons Performance Metrics</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.common.performance</a> &gt; <span class="el_source">PerformanceMetrics.java</span></div><h1>PerformanceMetrics.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.common.performance;
+
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import rx.functions.Action0;
+import rx.functions.Action1;
+
+/**
+ * Performance metrics aid to collect time spent for execution of operation, including any sub operations, which results
+ * could be expected before the actual operation takes place. Each operation could be traced by key
+ * and level. Key should stay the same for all dependent measurements, when the level should vary depends on the step of
+ * measured sub operation.
+ */
+public final class PerformanceMetrics {
+
+  /**
+   * Provides unique identifier per metrics story
+   */
+<span class="fc" id="L39">  private static final AtomicInteger KEY_GEN = new AtomicInteger(0);</span>
+
+  private Integer key;
+  private Integer level;
+  private String action;
+  private Class actionClass;
+  private String descriptor;
+  private String correlationId;
+  private Long startTime;
+  private Long operationTime;
+  private Long endTime;
+  private Long totalTakenTimeByStep;
+  private Long takenTimeByStepStart;
+  private Long takenTimeByStepOperation;
+  private PerformanceMetrics previous;
+
+<span class="fc" id="L55">  private PerformanceMetrics(Integer key, Integer level, String action, Class actionClass, String descriptor, String correlationId) {</span>
+<span class="fc" id="L56">    this.key = key;</span>
+<span class="fc" id="L57">    this.level = level;</span>
+<span class="fc" id="L58">    this.action = action;</span>
+<span class="fc" id="L59">    this.actionClass = actionClass;</span>
+<span class="fc" id="L60">    this.descriptor = descriptor;</span>
+<span class="fc" id="L61">    this.correlationId = correlationId;</span>
+<span class="fc" id="L62">  }</span>
+
+  /**
+   * Creates new instance of performance metrics. Generates new metrics key and assigns zero level.
+   * @param action a short name of measured operation, typically a first prefix of descriptor
+   * @param descriptor a full description of measured operation
+   * @param correlationId a reference to the request, which caused the operation
+   * @return PerformanceMetrics a new instance of performance metrics
+   */
+  public static PerformanceMetrics createNew(String action, String descriptor, String correlationId) {
+<span class="fc" id="L72">    return new PerformanceMetrics(KEY_GEN.getAndIncrement(), 0, action, null, descriptor, correlationId);</span>
+  }
+
+  /**
+   * Creates new instance of performance metrics. Stores the key and correlation id of the parent metrics instance.
+   * Assigns next level.
+   * @param nextAction a short name of measured operation, typically a first prefix of descriptor
+   * @param nextDescriptor a full description of measured operation
+   * @return PerformanceMetrics a new instance of performance metrics with stored key and correlationId from the parent
+   *         metrics and assigned next level
+   */
+  public PerformanceMetrics createNext(String nextAction, String nextDescriptor) {
+<span class="fc" id="L84">    return createNext(nextAction, nextDescriptor, null);</span>
+  }
+
+  /**
+   * Creates new instance of performance metrics. Stores the key and correlation id of the parent metrics instance.
+   * Assigns next level.
+   * @param nextAction a short name of measured operation, typically a first prefix of descriptor
+   * @param nextActionClass a class which implements the action
+   * @param nextDescriptor a full description of measured operation
+   * @return PerformanceMetrics a new instance of performance metrics with stored key and correlationId from the parent
+   *         metrics and assigned next level
+   */
+  public PerformanceMetrics createNext(String nextAction, String nextDescriptor, Class nextActionClass) {
+<span class="fc" id="L97">    PerformanceMetrics next = new PerformanceMetrics(key, level + 1, nextAction, nextActionClass, nextDescriptor, correlationId);</span>
+<span class="fc" id="L98">    next.previous = this;</span>
+<span class="fc" id="L99">    return next;</span>
+  }
+
+  /**
+   * When called, start action sets time stamp to identify start time of operation.
+   * @return Action0
+   */
+  public Action0 getStartAction() {
+<span class="fc" id="L107">    return new Action0() {</span>
+      @Override
+      public void call() {
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        if (startTime == null) {</span>
+<span class="fc" id="L111">          startTime = new Date().getTime();</span>
+        }
+<span class="fc" id="L113">      }</span>
+    };
+  }
+
+  /**
+   * When called, end action sets time stamp to identify end time of operation and logs the metrics.
+   * @return Action0
+   */
+  public Action0 getEndAction() {
+<span class="fc" id="L122">    return new Action0() {</span>
+      @Override
+      public void call() {
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        if (endTime == null) {</span>
+<span class="fc" id="L126">          endTime = new Date().getTime();</span>
+<span class="fc" id="L127">          PerformanceLogger.log(PerformanceMetrics.this);</span>
+        }
+<span class="fc" id="L129">      }</span>
+    };
+  }
+
+  /**
+   * When called, end action sets time stamp to identify end time of operation and logs the metrics.
+   * @return Action0
+   * @param &lt;T&gt; Any type
+   */
+  public &lt;T&gt; Action1&lt;T&gt; getOnNextAction() {
+<span class="nc" id="L139">    return new Action1&lt;T&gt;() {</span>
+      @Override
+      public void call(T objectt) {
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (operationTime == null) {</span>
+<span class="nc" id="L143">          operationTime = new Date().getTime();</span>
+        }
+<span class="nc" id="L145">      }</span>
+    };
+  }
+
+  /**
+   * Set time stamp of operation start.
+   */
+  public void setStartTimestamp() {
+<span class="fc" id="L153">    startTime = new Date().getTime();</span>
+<span class="fc" id="L154">  }</span>
+
+  /**
+   * Set time stamp of operation delegation.
+   */
+  public void setOperationTimestamp() {
+<span class="fc" id="L160">    operationTime = new Date().getTime();</span>
+<span class="fc" id="L161">  }</span>
+
+  /**
+   * Set time stamp of operation end.
+   */
+  public void setEndTimestamp() {
+<span class="fc" id="L167">    endTime = new Date().getTime();</span>
+<span class="fc" id="L168">  }</span>
+
+  /**
+   * @return true if start and end time of measured operation are set
+   */
+  public boolean isCharged() {
+<span class="pc bpc" id="L174" title="1 of 6 branches missed.">    return endTime != null &amp;&amp; operationTime != null &amp;&amp; startTime != null;</span>
+  }
+
+  /**
+   * @return true if there is a sub operation, which start and end time are set
+   */
+  public boolean isPreviousCharged() {
+<span class="fc bfc" id="L181" title="All 4 branches covered.">    return previous != null &amp;&amp; previous.isCharged();</span>
+  }
+
+  public PerformanceMetrics getPrevious() {
+<span class="nc" id="L185">    return this.previous;</span>
+  }
+
+
+  public Integer getKey() {
+<span class="nc" id="L190">    return this.key;</span>
+  }
+
+
+  public Integer getLevel() {
+<span class="nc" id="L195">    return this.level;</span>
+  }
+
+
+  public String getAction() {
+<span class="nc" id="L200">    return this.action;</span>
+  }
+
+  public Class getActionClass() {
+<span class="nc" id="L204">    return this.actionClass;</span>
+  }
+
+  public String getDescriptor() {
+<span class="nc" id="L208">    return this.descriptor;</span>
+  }
+
+  public String getCorrelationId() {
+<span class="nc" id="L212">    return this.correlationId;</span>
+  }
+
+  public Long getStartTime() {
+<span class="fc" id="L216">    return this.startTime;</span>
+  }
+
+  public Long getOperationTime() {
+<span class="nc" id="L220">    return this.operationTime;</span>
+  }
+
+  public Long getEndTime() {
+<span class="fc" id="L224">    return this.endTime;</span>
+  }
+
+  /**
+   * @return time in milliseconds taken by actual operation, excludes time taken by any measured sub operation
+   */
+  public Long getTakenTimeByStep() {
+<span class="pc bpc" id="L231" title="1 of 4 branches missed.">    if (this.isCharged() &amp;&amp; this.totalTakenTimeByStep == null) {</span>
+<span class="fc bfc" id="L232" title="All 2 branches covered.">      this.totalTakenTimeByStep = isPreviousCharged() ? getTakenTimeByStepStart() + getTakenTimeByStepOperation() : this.endTime</span>
+<span class="fc" id="L233">          - this.startTime;</span>
+    }
+<span class="fc" id="L235">    return this.totalTakenTimeByStep;</span>
+  }
+
+  /**
+   * @return time in milliseconds spent by operation before sub operation was called
+   */
+  public Long getTakenTimeByStepStart() {
+<span class="fc bfc" id="L242" title="All 6 branches covered.">    if (this.takenTimeByStepStart == null &amp;&amp; this.isCharged() &amp;&amp; this.isPreviousCharged()) {</span>
+<span class="fc" id="L243">      this.takenTimeByStepStart = this.previous.startTime - this.startTime;</span>
+    }
+<span class="fc" id="L245">    return this.takenTimeByStepStart;</span>
+  }
+
+  /**
+   * @return time in milliseconds spent by operation after sub operation was released
+   */
+  public Long getTakenTimeByStepOperation() {
+<span class="fc bfc" id="L252" title="All 6 branches covered.">    if (this.takenTimeByStepOperation == null &amp;&amp; this.isCharged() &amp;&amp; this.isPreviousCharged()) {</span>
+<span class="fc" id="L253">      this.takenTimeByStepOperation = this.operationTime - this.previous.operationTime;</span>
+    }
+<span class="fc" id="L255">    return this.takenTimeByStepOperation;</span>
+  }
+
+  /**
+   * @return integer a count of metric entities from the first till the last one in the whole story
+   */
+  public int size() {
+<span class="nc bnc" id="L262" title="All 2 branches missed.">    return isPreviousCharged() ? previous.size() + 1 : 1;</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L267">    return &quot;PerformanceMetrics [key=&quot; + this.key + &quot;, level=&quot; + this.level + &quot;, action=&quot; + this.action + &quot;, actionClass=&quot; + this.actionClass + &quot;, descriptor=&quot;</span>
+        + this.descriptor + &quot;, correlationId=&quot; + this.correlationId + &quot;, startTime=&quot; + this.startTime + &quot;, operationTime=&quot; + this.operationTime + &quot;, endTime=&quot;
+        + this.endTime + &quot;, totalTakenTimeByStep=&quot; + this.totalTakenTimeByStep + &quot;, takenTimeByStepStart=&quot; + this.takenTimeByStepStart
+        + &quot;, takenTimeByStepOperation=&quot; + this.takenTimeByStepOperation + &quot;, previous=&quot; + this.previous + &quot;]&quot;;
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
