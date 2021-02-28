@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompositeHalApiTypeSupport.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - Core Framework</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.reflection</a> &gt; <span class="el_source">CompositeHalApiTypeSupport.java</span></div><h1>CompositeHalApiTypeSupport.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2020 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl.reflection;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import com.google.common.collect.ImmutableList;
+
+import io.reactivex.rxjava3.core.Observable;
+
+/**
+ * Combines the functionality of multiple {@link HalApiTypeSupport} instances
+ */
+public class CompositeHalApiTypeSupport implements HalApiTypeSupport {
+
+  private final List&lt;HalApiTypeSupport&gt; delegates;
+
+  /**
+   * @param delegates the {@link HalApiTypeSupport} instances to combine
+   */
+<span class="fc" id="L42">  public CompositeHalApiTypeSupport(Iterable&lt;HalApiTypeSupport&gt; delegates) {</span>
+
+<span class="fc" id="L44">    this.delegates = ImmutableList.copyOf(delegates);</span>
+<span class="fc" id="L45">  }</span>
+
+  private boolean anyMatch(Predicate&lt;? super HalApiTypeSupport&gt; predicate) {
+
+<span class="fc" id="L49">    return delegates.stream().anyMatch(predicate);</span>
+  }
+
+  private &lt;T&gt; T firstNonNull(Function&lt;? super HalApiTypeSupport, ? extends T&gt; func) {
+
+<span class="fc" id="L54">    return delegates.stream().map(func).filter(Objects::nonNull).findFirst().orElse(null);</span>
+  }
+
+  @Override
+  public boolean isHalApiInterface(Class&lt;?&gt; interfaze) {
+
+<span class="fc" id="L60">    return anyMatch(delegate -&gt; delegate.isHalApiInterface(interfaze));</span>
+  }
+
+  @Override
+  public String getContentType(Class&lt;?&gt; halApiInterface) {
+
+<span class="fc" id="L66">    return firstNonNull(delegate -&gt; delegate.getContentType(halApiInterface));</span>
+  }
+
+  @Override
+  public boolean isResourceLinkMethod(Method method) {
+
+<span class="fc" id="L72">    return anyMatch(delegate -&gt; delegate.isResourceLinkMethod(method));</span>
+  }
+
+  @Override
+  public boolean isResourceRepresentationMethod(Method method) {
+
+<span class="fc" id="L78">    return anyMatch(delegate -&gt; delegate.isResourceRepresentationMethod(method));</span>
+  }
+
+  @Override
+  public boolean isRelatedResourceMethod(Method method) {
+
+<span class="fc" id="L84">    return anyMatch(delegate -&gt; delegate.isRelatedResourceMethod(method));</span>
+  }
+
+  @Override
+  public boolean isResourceStateMethod(Method method) {
+
+<span class="fc" id="L90">    return anyMatch(delegate -&gt; delegate.isResourceStateMethod(method));</span>
+  }
+
+  @Override
+  public String getRelation(Method method) {
+
+<span class="fc" id="L96">    return firstNonNull(delegate -&gt; delegate.getRelation(method));</span>
+  }
+
+  @Override
+  public &lt;T&gt; Function&lt;Observable, T&gt; convertFromObservable(Class&lt;T&gt; targetType) {
+
+<span class="fc" id="L102">    return firstNonNull(delegate -&gt; delegate.convertFromObservable(targetType));</span>
+  }
+
+  @Override
+  public Function&lt;? super Object, Observable&lt;?&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType) {
+
+<span class="fc" id="L108">    return firstNonNull(delegate -&gt; delegate.convertToObservable(sourceType));</span>
+  }
+
+  List&lt;HalApiTypeSupport&gt; getDelegates() {
+<span class="fc" id="L112">    return delegates;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

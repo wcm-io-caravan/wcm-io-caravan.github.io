@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AsyncHalResourceRendererImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - Core Framework</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.renderer</a> &gt; <span class="el_source">AsyncHalResourceRendererImpl.java</span></div><h1>AsyncHalResourceRendererImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2017 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl.renderer;
+
+import static io.wcm.caravan.rhyme.impl.reflection.HalApiReflectionUtils.findHalApiInterface;
+import static io.wcm.caravan.rhyme.impl.reflection.HalApiReflectionUtils.getClassAndMethodName;
+import static io.wcm.caravan.rhyme.impl.reflection.HalApiReflectionUtils.getSimpleClassName;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
+
+import io.reactivex.rxjava3.core.Single;
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.impl.metadata.EmissionStopwatch;
+import io.wcm.caravan.rhyme.impl.reflection.HalApiReflectionUtils;
+import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
+import io.wcm.caravan.rhyme.impl.reflection.RxJavaReflectionUtils;
+import io.wcm.caravan.rhyme.impl.renderer.RelatedResourcesRendererImpl.RelationRenderResult;
+
+/**
+ * Full implementation of {@link AsyncHalResourceRenderer} that will collect detailed performance information
+ * while rendering the {@link HalResource}
+ */
+public final class AsyncHalResourceRendererImpl implements AsyncHalResourceRenderer {
+
+<span class="fc" id="L54">  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();</span>
+
+  private final RelatedResourcesRendererImpl relatedRenderer;
+  private final RequestMetricsCollector metrics;
+  private final HalApiTypeSupport typeSupport;
+
+  /**
+   * Create a new renderer to use (only) for the current incoming request
+   * @param metrics an instance of {@link RequestMetricsCollector} to collect performance and caching information for
+   *          the current incoming request
+   * @param typeSupport the strategy to detect HAL API annotations and perform type conversions
+   */
+<span class="fc" id="L66">  public AsyncHalResourceRendererImpl(RequestMetricsCollector metrics, HalApiTypeSupport typeSupport) {</span>
+<span class="fc" id="L67">    this.relatedRenderer = new RelatedResourcesRendererImpl(this::renderLinkedOrEmbeddedResource, metrics, typeSupport);</span>
+<span class="fc" id="L68">    this.metrics = metrics;</span>
+<span class="fc" id="L69">    this.typeSupport = typeSupport;</span>
+<span class="fc" id="L70">  }</span>
+
+  @Override
+  public Single&lt;HalResource&gt; renderResource(LinkableResource resourceImpl) {
+
+<span class="fc" id="L75">    return renderLinkedOrEmbeddedResource(resourceImpl);</span>
+  }
+
+  Single&lt;HalResource&gt; renderLinkedOrEmbeddedResource(Object resourceImplInstance) {
+
+<span class="fc" id="L80">    Stopwatch assemblyTime = Stopwatch.createStarted();</span>
+
+<span class="fc" id="L82">    Preconditions.checkNotNull(resourceImplInstance, &quot;Cannot create a HalResource from a null reference&quot;);</span>
+
+    // find the interface annotated with @HalApiInterface
+<span class="fc" id="L85">    Class&lt;?&gt; apiInterface = findHalApiInterface(resourceImplInstance, typeSupport);</span>
+
+    // get the JSON resource state from the method annotated with @ResourceState
+<span class="fc" id="L88">    Single&lt;ObjectNode&gt; rxState = renderResourceState(apiInterface, resourceImplInstance);</span>
+
+    // render links and embedded resources for each method annotated with @RelatedResource
+<span class="fc" id="L91">    Single&lt;List&lt;RelationRenderResult&gt;&gt; rxRelated = relatedRenderer.renderRelated(apiInterface, resourceImplInstance);</span>
+
+<span class="fc" id="L93">    String simpleClassName = getSimpleClassName(resourceImplInstance, typeSupport);</span>
+    // wait until all this is available...
+<span class="fc" id="L95">    Single&lt;HalResource&gt; rxHalResource = Single.zip(rxState, rxRelated,</span>
+        // ...and then create the HalResource instance
+<span class="fc" id="L97">        (stateNode, listOfRelated) -&gt; createHalResource(resourceImplInstance, stateNode, listOfRelated))</span>
+        // and measure the time of the emissions
+<span class="fc" id="L99">        .compose(EmissionStopwatch.collectMetrics(&quot;rendering &quot; + simpleClassName + &quot; instances&quot;, metrics));</span>
+
+<span class="fc" id="L101">    metrics.onMethodInvocationFinished(AsyncHalResourceRenderer.class,</span>
+        &quot;calling #renderLinkedOrEmbeddedResource with &quot; + simpleClassName,
+<span class="fc" id="L103">        assemblyTime.elapsed(TimeUnit.MICROSECONDS));</span>
+
+<span class="fc" id="L105">    return rxHalResource;</span>
+  }
+
+  Single&lt;ObjectNode&gt; renderResourceState(Class&lt;?&gt; apiInterface, Object resourceImplInstance) {
+
+<span class="fc" id="L110">    Single&lt;ObjectNode&gt; emptyObject = Single.fromCallable(() -&gt; JsonNodeFactory.instance.objectNode());</span>
+
+    // find the first method annotated with @ResourceState (and return an empty object if there is none)
+<span class="fc" id="L113">    Optional&lt;Method&gt; method = HalApiReflectionUtils.findResourceStateMethod(apiInterface, typeSupport);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">    if (!method.isPresent()) {</span>
+<span class="fc" id="L115">      return emptyObject;</span>
+    }
+
+    // invoke the method to get the state observable
+<span class="fc" id="L119">    return RxJavaReflectionUtils.invokeMethodAndReturnObservable(resourceImplInstance, method.get(), metrics, typeSupport)</span>
+        // convert the emitted state instance to a JSON object node
+<span class="fc" id="L121">        .map(object -&gt; OBJECT_MAPPER.convertValue(object, ObjectNode.class))</span>
+        // or use an empty object if the method returned an empty Maybe or Observable
+<span class="fc" id="L123">        .singleElement()</span>
+<span class="fc" id="L124">        .switchIfEmpty(emptyObject)</span>
+        // and measure the total time of the emissions
+<span class="fc" id="L126">        .compose(</span>
+<span class="fc" id="L127">            EmissionStopwatch.collectMetrics(&quot;rendering state emited by &quot; + getClassAndMethodName(resourceImplInstance, method.get(), typeSupport), metrics));</span>
+  }
+
+  HalResource createHalResource(Object resourceImplInstance, ObjectNode stateNode, List&lt;RelationRenderResult&gt; listOfRelated) {
+
+<span class="fc" id="L132">    HalResource hal = new HalResource(stateNode);</span>
+
+<span class="fc bfc" id="L134" title="All 2 branches covered.">    if (resourceImplInstance instanceof LinkableResource) {</span>
+<span class="fc" id="L135">      Stopwatch sw = Stopwatch.createStarted();</span>
+<span class="fc" id="L136">      Link selfLink = ((LinkableResource)resourceImplInstance).createLink();</span>
+
+<span class="fc" id="L138">      metrics.onMethodInvocationFinished(AsyncHalResourceRenderer.class,</span>
+<span class="fc" id="L139">          &quot;calling #createLink of &quot; + getSimpleClassName(resourceImplInstance, typeSupport),</span>
+<span class="fc" id="L140">          sw.elapsed(TimeUnit.MICROSECONDS));</span>
+
+<span class="fc" id="L142">      hal.setLink(selfLink);</span>
+    }
+
+<span class="fc bfc" id="L145" title="All 2 branches covered.">    for (RelationRenderResult related : listOfRelated) {</span>
+<span class="fc" id="L146">      hal.addLinks(related.getRelation(), related.getLinks());</span>
+<span class="fc" id="L147">      hal.addEmbedded(related.getRelation(), related.getEmbedded());</span>
+<span class="fc" id="L148">    }</span>
+
+<span class="fc" id="L150">    return hal;</span>
+  }
+
+  public HalApiTypeSupport getTypeSupport() {
+<span class="fc" id="L154">    return typeSupport;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

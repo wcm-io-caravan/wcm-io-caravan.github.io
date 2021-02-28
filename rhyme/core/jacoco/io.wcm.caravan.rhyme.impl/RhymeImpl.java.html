@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RhymeImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - Core Framework</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl</a> &gt; <span class="el_source">RhymeImpl.java</span></div><h1>RhymeImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2020 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl;
+
+import java.time.Duration;
+import java.util.concurrent.CompletionStage;
+
+import io.reactivex.rxjava3.core.Single;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.Rhyme;
+import io.wcm.caravan.rhyme.api.RhymeBuilder;
+import io.wcm.caravan.rhyme.api.client.HalApiClient;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
+import io.wcm.caravan.rhyme.api.server.VndErrorResponseRenderer;
+import io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy;
+import io.wcm.caravan.rhyme.api.spi.JsonResourceLoader;
+import io.wcm.caravan.rhyme.impl.client.HalApiClientImpl;
+import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
+import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRenderer;
+import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRendererImpl;
+import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResponseRendererImpl;
+
+final class RhymeImpl implements Rhyme {
+
+<span class="fc" id="L46">  private final RequestMetricsCollector metrics = RequestMetricsCollector.create();</span>
+
+  private final String requestUri;
+  private final JsonResourceLoader jsonLoader;
+  private final ExceptionStatusAndLoggingStrategy exceptionStrategy;
+
+  private final HalApiClient client;
+  private final AsyncHalResponseRenderer renderer;
+
+<span class="fc" id="L55">  RhymeImpl(String requestUri, JsonResourceLoader jsonLoader, ExceptionStatusAndLoggingStrategy exceptionStrategy, HalApiTypeSupport typeSupport) {</span>
+<span class="fc" id="L56">    this.requestUri = requestUri;</span>
+<span class="fc" id="L57">    this.jsonLoader = jsonLoader;</span>
+<span class="fc" id="L58">    this.exceptionStrategy = exceptionStrategy;</span>
+<span class="fc" id="L59">    this.client = createHalApiClient(typeSupport);</span>
+<span class="fc" id="L60">    this.renderer = createResponseRenderer(typeSupport);</span>
+<span class="fc" id="L61">  }</span>
+
+  private HalApiClient createHalApiClient(HalApiTypeSupport typeSupport) {
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (jsonLoader == null) {</span>
+<span class="fc" id="L66">      return new HalApiClient() {</span>
+
+        @Override
+        public &lt;T&gt; T getEntryPoint(String uri, Class&lt;T&gt; halApiInterface) {
+<span class="fc" id="L70">          throw new HalApiDeveloperException(&quot;#getEntryPoint can only be used if you have provided a &quot; + JsonResourceLoader.class.getSimpleName()</span>
+<span class="fc" id="L71">              + &quot; when constructing your &quot; + RhymeBuilder.class.getSimpleName());</span>
+        }
+      };
+    }
+
+<span class="fc" id="L76">    return new HalApiClientImpl(jsonLoader, metrics, typeSupport);</span>
+  }
+
+  private AsyncHalResponseRenderer createResponseRenderer(HalApiTypeSupport typeSupport) {
+
+<span class="fc" id="L81">    AsyncHalResourceRenderer resourceRenderer = new AsyncHalResourceRendererImpl(metrics, typeSupport);</span>
+
+<span class="fc" id="L83">    return new AsyncHalResponseRendererImpl(resourceRenderer, metrics, exceptionStrategy, typeSupport);</span>
+  }
+
+  @Override
+  public &lt;T&gt; T getUpstreamEntryPoint(String uri, Class&lt;T&gt; halApiInterface) {
+
+<span class="fc" id="L89">    return client.getEntryPoint(uri, halApiInterface);</span>
+  }
+
+  @Override
+  public void setResponseMaxAge(Duration duration) {
+
+<span class="fc" id="L95">    metrics.setResponseMaxAge(duration);</span>
+<span class="fc" id="L96">  }</span>
+
+  @Override
+  public CompletionStage&lt;HalResponse&gt; renderResponseAsync(LinkableResource resourceImpl) {
+
+<span class="fc" id="L101">    return respondWith(resourceImpl).toCompletionStage();</span>
+  }
+
+  @Override
+  public HalResponse renderResponse(LinkableResource resourceImpl) {
+
+<span class="fc" id="L107">    return respondWith(resourceImpl).blockingGet();</span>
+  }
+
+  @Override
+  public HalResponse renderVndErrorResponse(Throwable error) {
+
+<span class="fc" id="L113">    VndErrorResponseRenderer errorRenderer = VndErrorResponseRenderer.create(exceptionStrategy);</span>
+
+<span class="fc" id="L115">    LinkableResource resourceImpl = new LinkableResource() {</span>
+
+      @Override
+      public Link createLink() {
+<span class="fc" id="L119">        return null;</span>
+      }
+    };
+
+<span class="fc" id="L123">    return errorRenderer.renderError(requestUri, resourceImpl, error, metrics);</span>
+  }
+
+  private Single&lt;HalResponse&gt; respondWith(LinkableResource resourceImpl) {
+<span class="fc" id="L127">    return renderer.renderResponse(requestUri, resourceImpl);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

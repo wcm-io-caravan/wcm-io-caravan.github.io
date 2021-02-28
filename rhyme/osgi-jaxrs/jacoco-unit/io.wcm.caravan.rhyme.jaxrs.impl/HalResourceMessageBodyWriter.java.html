@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalResourceMessageBodyWriter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - OSGi/JAX-RS Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.jaxrs.impl</a> &gt; <span class="el_source">HalResourceMessageBodyWriter.java</span></div><h1>HalResourceMessageBodyWriter.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2017 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.jaxrs.impl;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.MessageBodyWriter;
+import javax.ws.rs.ext.Provider;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.jaxrs.whiteboard.propertytypes.JaxrsApplicationSelect;
+import org.osgi.service.jaxrs.whiteboard.propertytypes.JaxrsExtension;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.wcm.caravan.hal.resource.HalResource;
+
+/**
+ * A MessageBodyWriter that allows JAX-RS service functions to write {@link HalResource} objects to the response
+ */
+@Component(service = MessageBodyWriter.class)
+@JaxrsExtension
+@JaxrsApplicationSelect(&quot;(osgi.jaxrs.name=*)&quot;)
+@Provider
+@Produces({ HalResource.CONTENT_TYPE, MediaType.WILDCARD })
+<span class="fc" id="L52">public class HalResourceMessageBodyWriter implements MessageBodyWriter&lt;HalResource&gt; {</span>
+
+<span class="fc" id="L54">  private final ObjectMapper objectMapper = new ObjectMapper();</span>
+<span class="fc" id="L55">  private final JsonFactory jsonFactory = new JsonFactory(objectMapper);</span>
+
+  @Override
+  public boolean isWriteable(Class&lt;?&gt; type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+<span class="fc" id="L59">    return HalResource.class.isAssignableFrom(type);</span>
+  }
+
+  @Override
+  public long getSize(HalResource t, Class&lt;?&gt; type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+<span class="fc" id="L64">    return -1;</span>
+  }
+
+  @Override
+  public void writeTo(HalResource t, Class&lt;?&gt; type, Type genericType, Annotation[] annotations, MediaType mediaType,
+      MultivaluedMap&lt;String, Object&gt; httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+
+<span class="fc" id="L71">    JsonGenerator generator = jsonFactory.createGenerator(entityStream);</span>
+
+<span class="fc" id="L73">    generator.writeTree(t.getModel());</span>
+<span class="fc" id="L74">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

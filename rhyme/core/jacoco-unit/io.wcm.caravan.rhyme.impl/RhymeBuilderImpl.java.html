@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RhymeBuilderImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - Core Framework</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl</a> &gt; <span class="el_source">RhymeBuilderImpl.java</span></div><h1>RhymeBuilderImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2020 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.wcm.caravan.rhyme.api.Rhyme;
+import io.wcm.caravan.rhyme.api.RhymeBuilder;
+import io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy;
+import io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport;
+import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
+import io.wcm.caravan.rhyme.api.spi.JsonResourceLoader;
+import io.wcm.caravan.rhyme.impl.reflection.CompositeHalApiTypeSupport;
+import io.wcm.caravan.rhyme.impl.reflection.DefaultHalApiTypeSupport;
+import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
+import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupportAdapter;
+import io.wcm.caravan.rhyme.impl.renderer.CompositeExceptionStatusAndLoggingStrategy;
+
+/**
+ * Implementation of the {@link RhymeBuilder} interface that allows to configure and create {@link Rhyme} instances
+ */
+public class RhymeBuilderImpl implements RhymeBuilder {
+
+  private final JsonResourceLoader jsonLoader;
+<span class="fc" id="L43">  private final List&lt;HalApiTypeSupport&gt; registeredTypeSupports = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L45">  private final List&lt;ExceptionStatusAndLoggingStrategy&gt; exceptionStrategies = new ArrayList&lt;&gt;();</span>
+
+  /**
+   * @param jsonLoader to be used to load upstream-resource (or null if not needed)
+   */
+<span class="fc" id="L50">  public RhymeBuilderImpl(JsonResourceLoader jsonLoader) {</span>
+
+<span class="fc" id="L52">    this.jsonLoader = jsonLoader;</span>
+
+<span class="fc" id="L54">    this.registeredTypeSupports.add(new DefaultHalApiTypeSupport());</span>
+<span class="fc" id="L55">  }</span>
+
+  @Override
+  public RhymeBuilder withReturnTypeSupport(HalApiReturnTypeSupport additionalTypeSupport) {
+
+<span class="fc" id="L60">    registeredTypeSupports.add(new HalApiTypeSupportAdapter(additionalTypeSupport));</span>
+<span class="fc" id="L61">    return this;</span>
+  }
+
+  @Override
+  public RhymeBuilder withAnnotationTypeSupport(HalApiAnnotationSupport additionalTypeSupport) {
+
+<span class="fc" id="L67">    registeredTypeSupports.add(new HalApiTypeSupportAdapter(additionalTypeSupport));</span>
+<span class="fc" id="L68">    return this;</span>
+  }
+
+  private HalApiTypeSupport getEffectiveTypeSupport() {
+
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (registeredTypeSupports.size() == 1) {</span>
+<span class="fc" id="L74">      return registeredTypeSupports.get(0);</span>
+    }
+
+<span class="fc" id="L77">    return new CompositeHalApiTypeSupport(registeredTypeSupports);</span>
+  }
+
+  @Override
+  public RhymeBuilder withExceptionStrategy(ExceptionStatusAndLoggingStrategy customStrategy) {
+
+<span class="fc" id="L83">    exceptionStrategies.add(customStrategy);</span>
+<span class="fc" id="L84">    return this;</span>
+  }
+
+  private ExceptionStatusAndLoggingStrategy getEffectiveExceptionStrategy() {
+
+<span class="fc bfc" id="L89" title="All 2 branches covered.">    if (exceptionStrategies.isEmpty()) {</span>
+<span class="fc" id="L90">      return null;</span>
+    }
+<span class="fc bfc" id="L92" title="All 2 branches covered.">    if (exceptionStrategies.size() == 1) {</span>
+<span class="fc" id="L93">      return exceptionStrategies.get(0);</span>
+    }
+
+<span class="fc" id="L96">    return new CompositeExceptionStatusAndLoggingStrategy(exceptionStrategies);</span>
+  }
+
+  @Override
+  public Rhyme buildForRequestTo(String incomingRequestUri) {
+
+<span class="fc" id="L102">    HalApiTypeSupport typeSupport = getEffectiveTypeSupport();</span>
+<span class="fc" id="L103">    ExceptionStatusAndLoggingStrategy exceptionStrategy = getEffectiveExceptionStrategy();</span>
+
+<span class="fc" id="L105">    return new RhymeImpl(incomingRequestUri, jsonLoader, exceptionStrategy, typeSupport);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

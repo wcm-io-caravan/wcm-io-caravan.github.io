@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JaxRsBundleInfoImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - OSGi/JAX-RS Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.jaxrs.impl</a> &gt; <span class="el_source">JaxRsBundleInfoImpl.java</span></div><h1>JaxRsBundleInfoImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2019 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.jaxrs.impl;
+
+import javax.ws.rs.core.Application;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
+import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
+
+import io.wcm.caravan.rhyme.jaxrs.api.JaxRsBundleInfo;
+
+/**
+ * OSGi DS component that implements {@link JaxRsBundleInfo}
+ */
+@Component(service = JaxRsBundleInfo.class, scope = ServiceScope.BUNDLE)
+<span class="fc" id="L38">public class JaxRsBundleInfoImpl implements JaxRsBundleInfo {</span>
+
+  private String applicationPath;
+  private String bundleVersion;
+
+  @Activate
+  void activate(ComponentContext componentCtx) {
+
+<span class="fc" id="L46">    Bundle usingBundle = componentCtx.getUsingBundle();</span>
+
+<span class="fc" id="L48">    applicationPath = findApplicationBasePath(usingBundle);</span>
+
+<span class="fc" id="L50">    bundleVersion = findBundleVersion(usingBundle);</span>
+<span class="fc" id="L51">  }</span>
+
+  private String findApplicationBasePath(Bundle bundle) {
+
+<span class="fc" id="L55">    ServiceReference&lt;Application&gt; serviceRef = bundle.getBundleContext().getServiceReference(Application.class);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    if (serviceRef == null) {</span>
+<span class="fc" id="L57">      throw new RuntimeException(&quot;No component extending JAX-RS Application was found in the bundle &quot; + bundle.getSymbolicName());</span>
+    }
+
+<span class="fc" id="L60">    Object applicationBaseProperty = serviceRef.getProperty(JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    if (applicationBaseProperty == null) {</span>
+<span class="fc" id="L62">      Application app = bundle.getBundleContext().getService(serviceRef);</span>
+<span class="fc" id="L63">      throw new RuntimeException(&quot;No @JaxrsApplicationBase annotation present on the &quot; + app.getClass().getName() + &quot; class&quot;);</span>
+    }
+
+<span class="fc" id="L66">    return applicationBaseProperty.toString();</span>
+  }
+
+  private String findBundleVersion(Bundle bundle) {
+
+<span class="fc" id="L71">    String version = bundle.getVersion().toString();</span>
+
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (!version.endsWith(&quot;SNAPSHOT&quot;)) {</span>
+<span class="fc" id="L74">      return version;</span>
+    }
+
+<span class="fc" id="L77">    return version + &quot;-&quot; + bundle.getHeaders().get(&quot;Bnd-LastModified&quot;);</span>
+  }
+
+  @Override
+  public String getApplicationPath() {
+<span class="fc" id="L82">    return applicationPath;</span>
+  }
+
+  @Override
+  public String getBundleVersion() {
+<span class="fc" id="L87">    return bundleVersion;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
