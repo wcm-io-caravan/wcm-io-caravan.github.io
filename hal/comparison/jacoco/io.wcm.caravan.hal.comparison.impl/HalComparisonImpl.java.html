@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalComparisonImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Comparison</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.comparison.impl</a> &gt; <span class="el_source">HalComparisonImpl.java</span></div><h1>HalComparisonImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2018 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.comparison.impl;
+
+import org.osgi.service.component.annotations.Component;
+
+import io.wcm.caravan.hal.comparison.HalComparison;
+import io.wcm.caravan.hal.comparison.HalComparisonSource;
+import io.wcm.caravan.hal.comparison.HalComparisonStrategy;
+import io.wcm.caravan.hal.comparison.HalDifference;
+import io.wcm.caravan.hal.comparison.impl.context.HalComparisonContextImpl;
+import io.wcm.caravan.hal.comparison.impl.embedded.EmbeddedProcessing;
+import io.wcm.caravan.hal.comparison.impl.embedded.EmbeddedProcessingImpl;
+import io.wcm.caravan.hal.comparison.impl.links.LinkProcessing;
+import io.wcm.caravan.hal.comparison.impl.links.LinkProcessingImpl;
+import io.wcm.caravan.hal.comparison.impl.properties.PropertyDiffDetector;
+import io.wcm.caravan.hal.comparison.impl.properties.PropertyProcessing;
+import io.wcm.caravan.hal.resource.HalResource;
+import rx.Observable;
+import rx.Single;
+
+/**
+ * Implementation of the {@link HalComparison} OSGi service that glues the other implementation classes together,
+ * loads the API entry points and starts the recursive comparison.
+ * @see HalComparisonRecursionImpl
+ * @see PropertyDiffDetector
+ * @see EmbeddedProcessingImpl
+ * @see LinkProcessingImpl
+ */
+@Component(service = HalComparison.class)
+<span class="fc" id="L48">public class HalComparisonImpl implements HalComparison {</span>
+
+  @Override
+  public Observable&lt;HalDifference&gt; compare(HalComparisonSource expected, HalComparisonSource actual, HalComparisonStrategy strategy) {
+
+<span class="fc" id="L53">    HalComparisonRecursionImpl recursion = wireImplementationClasses(expected, actual, strategy);</span>
+
+<span class="fc" id="L55">    HalComparisonContextImpl context = createContextForEntryPoint(expected, actual, strategy);</span>
+
+<span class="fc" id="L57">    return loadEntryPointsAndStartRecursion(recursion, context, expected, actual);</span>
+  }
+
+  private HalComparisonRecursionImpl wireImplementationClasses(HalComparisonSource expected, HalComparisonSource actual, HalComparisonStrategy strategy) {
+
+<span class="fc" id="L62">    PropertyProcessing propertyProcessing = new PropertyDiffDetector();</span>
+<span class="fc" id="L63">    EmbeddedProcessing embeddedProcessing = new EmbeddedProcessingImpl(strategy);</span>
+<span class="fc" id="L64">    LinkProcessing linkProcessing = new LinkProcessingImpl(strategy);</span>
+
+<span class="fc" id="L66">    return new HalComparisonRecursionImpl(expected, actual, propertyProcessing, embeddedProcessing, linkProcessing);</span>
+  }
+
+  private HalComparisonContextImpl createContextForEntryPoint(HalComparisonSource expected, HalComparisonSource actual, HalComparisonStrategy strategy) {
+
+<span class="fc" id="L71">    String expectedUrl = expected.getEntryPointUrl();</span>
+<span class="fc" id="L72">    String actualUrl = actual.getEntryPointUrl();</span>
+
+<span class="fc" id="L74">    return new HalComparisonContextImpl(expectedUrl, actualUrl);</span>
+  }
+
+  private Observable&lt;HalDifference&gt; loadEntryPointsAndStartRecursion(HalComparisonRecursionImpl recursion, HalComparisonContextImpl context,
+      HalComparisonSource expected, HalComparisonSource actual) {
+
+<span class="fc" id="L80">    Single&lt;HalResource&gt; expectedEntryPoint = expected.resolveLink(context.getExpectedUrl());</span>
+<span class="fc" id="L81">    Single&lt;HalResource&gt; actualEntryPoint = actual.resolveLink(context.getActualUrl());</span>
+
+    // wait until both entry points are loaded before starting the comparison
+<span class="fc" id="L84">    return expectedEntryPoint.zipWith(actualEntryPoint, (e, a) -&gt; recursion.compareRecursively(context, e, a))</span>
+        // flatten the Single&lt;Observable&lt;HalDifference&gt;&gt; returned by zipWith
+<span class="fc" id="L86">        .flatMapObservable(r -&gt; r);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

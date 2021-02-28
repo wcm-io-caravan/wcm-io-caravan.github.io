@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmbeddedAdditionRemovalReorderingDetection.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Comparison</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.comparison.impl.embedded.steps</a> &gt; <span class="el_source">EmbeddedAdditionRemovalReorderingDetection.java</span></div><h1>EmbeddedAdditionRemovalReorderingDetection.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2018 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.comparison.impl.embedded.steps;
+
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
+import java.util.List;
+import java.util.function.Function;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.wcm.caravan.hal.comparison.HalComparisonContext;
+import io.wcm.caravan.hal.comparison.HalComparisonStrategy;
+import io.wcm.caravan.hal.comparison.HalDifference;
+import io.wcm.caravan.hal.comparison.impl.context.HalComparisonContextImpl;
+import io.wcm.caravan.hal.comparison.impl.difference.HalDifferenceListBuilder;
+import io.wcm.caravan.hal.comparison.impl.embedded.EmbeddedProcessingStep;
+import io.wcm.caravan.hal.comparison.impl.matching.MatchingAlgorithm;
+import io.wcm.caravan.hal.comparison.impl.matching.MatchingResult;
+import io.wcm.caravan.hal.comparison.impl.matching.SimpleIdMatchingAlgorithm;
+import io.wcm.caravan.hal.resource.HalResource;
+
+/**
+ * Determines if embedded resources have been added/removed/reordered, and ensures that the following steps
+ * will only find pairs of matching expected/actual resources in their lists.
+ */
+public class EmbeddedAdditionRemovalReorderingDetection implements EmbeddedProcessingStep {
+
+<span class="fc" id="L48">  private final DefaultIdProvider defaultIdProvider = new DefaultIdProvider();</span>
+
+  private final HalComparisonStrategy strategy;
+
+  /**
+   * @param strategy that defines equivalence for specific hal resources
+   */
+<span class="fc" id="L55">  public EmbeddedAdditionRemovalReorderingDetection(HalComparisonStrategy strategy) {</span>
+<span class="fc" id="L56">    this.strategy = strategy;</span>
+<span class="fc" id="L57">  }</span>
+
+  @Override
+  public List&lt;HalDifference&gt; apply(HalComparisonContextImpl context, List&lt;HalResource&gt; expected, List&lt;HalResource&gt; actual) {
+
+<span class="fc" id="L62">    MatchingResult&lt;HalResource&gt; matchingResult = applyMatchingAlgorithm(context, expected, actual);</span>
+
+    // collect the re-ordering, addition and removal differences
+<span class="fc" id="L65">    HalDifferenceListBuilder diffs = findDifferences(context, expected, actual, matchingResult);</span>
+
+    // all following processing steps should only process the embedded resources that were successfully
+    // matched (and re-ordered), so the given lists will be completely replaced with the ones from the
+    // matching result
+<span class="fc" id="L70">    replaceItems(expected, matchingResult.getMatchedExpected());</span>
+<span class="fc" id="L71">    replaceItems(actual, matchingResult.getMatchedActual());</span>
+
+<span class="fc" id="L73">    return diffs.build();</span>
+  }
+
+  private MatchingResult&lt;HalResource&gt; applyMatchingAlgorithm(HalComparisonContext context, List&lt;HalResource&gt; expected, List&lt;HalResource&gt; actual) {
+
+<span class="fc" id="L78">    Function&lt;HalResource, String&gt; idProvider = defaultIfNull(strategy.getIdProvider(context), defaultIdProvider);</span>
+
+<span class="fc" id="L80">    MatchingAlgorithm&lt;HalResource&gt; algorithm = new SimpleIdMatchingAlgorithm&lt;HalResource&gt;(idProvider);</span>
+
+<span class="fc" id="L82">    return algorithm.findMatchingItems(expected, actual);</span>
+  }
+
+  private HalDifferenceListBuilder findDifferences(HalComparisonContextImpl context, List&lt;HalResource&gt; expected, List&lt;HalResource&gt; actual,
+      MatchingResult&lt;HalResource&gt; matchingResult) {
+
+<span class="fc" id="L88">    HalDifferenceListBuilder diffs = new HalDifferenceListBuilder(context);</span>
+<span class="fc" id="L89">    String relation = context.getLastRelation();</span>
+<span class="fc" id="L90">    boolean reorderingRequired = matchingResult.areMatchesReordered();</span>
+
+<span class="fc bfc" id="L92" title="All 2 branches covered.">    if (reorderingRequired) {</span>
+<span class="fc" id="L93">      String msg = &quot;The embedded &quot; + relation + &quot; resources have a different order in the actual resource&quot;;</span>
+<span class="fc" id="L94">      diffs.reportReorderedEmbedded(msg, expected, actual);</span>
+    }
+
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    for (HalResource removed : matchingResult.getRemovedExpected()) {</span>
+<span class="fc" id="L98">      String msg = &quot;An embedded &quot; + relation + getResourceTitle(removed) + &quot;is missing in the actual resource&quot;;</span>
+<span class="fc" id="L99">      diffs.reportMissingEmbedded(msg, removed, expected.indexOf(removed));</span>
+<span class="fc" id="L100">    }</span>
+
+<span class="fc bfc" id="L102" title="All 2 branches covered.">    for (HalResource added : matchingResult.getAddedActual()) {</span>
+<span class="fc" id="L103">      String msg = &quot;An additional embedded &quot; + relation + getResourceTitle(added) + &quot;is present in the actual resource&quot;;</span>
+<span class="fc" id="L104">      diffs.reportAdditionalEmbedded(msg, added, actual.indexOf(added));</span>
+<span class="fc" id="L105">    }</span>
+
+<span class="fc" id="L107">    return diffs;</span>
+  }
+
+  private static String getResourceTitle(HalResource hal) {
+<span class="fc" id="L111">    ObjectNode removedJson = hal.getModel();</span>
+<span class="fc" id="L112">    String title = StringUtils.defaultIfEmpty(removedJson.path(&quot;title&quot;).asText(), removedJson.path(&quot;name&quot;).asText());</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">    String label = StringUtils.isNotBlank(title) ? &quot; '&quot; + title + &quot;' &quot; : &quot; &quot;;</span>
+<span class="fc" id="L114">    return label;</span>
+  }
+
+  private static void replaceItems(List&lt;HalResource&gt; original, List&lt;HalResource&gt; remaining) {
+<span class="fc" id="L118">    original.clear();</span>
+
+<span class="fc" id="L120">    original.addAll(remaining);</span>
+<span class="fc" id="L121">  }</span>
+
+  /**
+   * If {@link HalComparisonStrategy#getIdProvider(HalComparisonContext)} is not implemented by the consumer,
+   * the default behaviour is to identify embedded resources by their title property
+   */
+<span class="fc" id="L127">  static class DefaultIdProvider implements Function&lt;HalResource, String&gt; {</span>
+
+    @Override
+    public String apply(HalResource resource) {
+<span class="fc" id="L131">      return resource.getModel().path(&quot;title&quot;).asText();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

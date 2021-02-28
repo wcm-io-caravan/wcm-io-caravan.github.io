@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>HAL Interface Documentation - Checkstyle report</title>
+    <link>https://caravan.wcm.io/hal/docs/</link>
+    <description>HAL Interface Documentation - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
+    <item>
+      <title>File: 21,
+             Errors: 0,
+             Warnings: 7,
+             Infos: 0
+      </title>
+            <link>https://caravan.wcm.io/hal/docs//checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://caravan.wcm.io/hal/docs//checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.TemplateRenderer.java">io/wcm/caravan/hal/docs/impl/TemplateRenderer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.reader.ServiceModelReader.java">io/wcm/caravan/hal/docs/impl/reader/ServiceModelReader.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.model.Service.java">io/wcm/caravan/hal/docs/impl/model/Service.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.model.LinkRelation.java">io/wcm/caravan/hal/docs/impl/model/LinkRelation.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.augmenter.CurieAugmenter.java">io/wcm/caravan/hal/docs/impl/augmenter/CurieAugmenter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.HalDocsAugmenter.java">io/wcm/caravan/hal/docs/HalDocsAugmenter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.HalDocsAugmenterFactory.java">io/wcm/caravan/hal/docs/HalDocsAugmenterFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.augmenter.HalDocsAugmenterFactoryImpl.java">io/wcm/caravan/hal/docs/impl/augmenter/HalDocsAugmenterFactoryImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.model.ResourceRef.java">io/wcm/caravan/hal/docs/impl/model/ResourceRef.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.HalDocsServlet.java">io/wcm/caravan/hal/docs/impl/HalDocsServlet.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.HalDocsBundleTracker.java">io/wcm/caravan/hal/docs/impl/HalDocsBundleTracker.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.augmenter.DocsMetadata.java">io/wcm/caravan/hal/docs/impl/augmenter/DocsMetadata.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.DocsPath.java">io/wcm/caravan/hal/docs/impl/DocsPath.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.JsonSchemaBundleTracker.java">io/wcm/caravan/hal/docs/impl/JsonSchemaBundleTracker.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.reader.ServiceJson.java">io/wcm/caravan/hal/docs/impl/reader/ServiceJson.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.model.LinkRelationRef.java">io/wcm/caravan/hal/docs/impl/model/LinkRelationRef.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.augmenter.CurieUtil.java">io/wcm/caravan/hal/docs/impl/augmenter/CurieUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.augmenter.LinkRelationTitleAugmenter.java">io/wcm/caravan/hal/docs/impl/augmenter/LinkRelationTitleAugmenter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.HttpContextWrapper.java">io/wcm/caravan/hal/docs/impl/HttpContextWrapper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.package-info.java">io/wcm/caravan/hal/docs/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.augmenter.HalDocsAugmenterImpl.java">io/wcm/caravan/hal/docs/impl/augmenter/HalDocsAugmenterImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalDocsServlet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Interface Documentation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.docs.impl</a> &gt; <span class="el_source">HalDocsServlet.java</span></div><h1>HalDocsServlet.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2015 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.docs.impl;
+
+import java.io.IOException;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.CharEncoding;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.osgi.framework.Bundle;
+import org.osgi.service.component.ComponentContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.wcm.caravan.hal.docs.impl.model.LinkRelation;
+import io.wcm.caravan.hal.docs.impl.reader.ServiceModelReader;
+
+/**
+ * Serves HAL documentation pages generated from JSON service documentation models with handlebars.
+ */
+@Component(factory = HalDocsServlet.FACTORY)
+@Service(Servlet.class)
+<span class="nc" id="L53">public class HalDocsServlet extends HttpServlet {</span>
+
+  private static final long serialVersionUID = 1L;
+
+  static final String FACTORY = &quot;caravan.haldocs.servlet.factory&quot;;
+  static final String PROPERTY_BUNDLE = &quot;caravan.haldocs.relatedBundle&quot;;
+
+  private io.wcm.caravan.hal.docs.impl.model.Service serviceModel;
+
+  @Reference
+  private TemplateRenderer templateRenderer;
+
+<span class="nc" id="L65">  private static final Logger log = LoggerFactory.getLogger(HalDocsServlet.class);</span>
+
+  @Activate
+  void activate(ComponentContext componentContext) {
+    // bundle which contains the JAX-RS services
+<span class="nc" id="L70">    Bundle bundle = (Bundle)componentContext.getProperties().get(PROPERTY_BUNDLE);</span>
+<span class="nc" id="L71">    serviceModel = ServiceModelReader.read(bundle);</span>
+<span class="nc" id="L72">  }</span>
+
+  @Deactivate
+  void deactivate(ComponentContext componentContext) {
+<span class="nc" id="L76">    serviceModel = null;</span>
+<span class="nc" id="L77">  }</span>
+
+  @Override
+  public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+<span class="nc" id="L81">    HttpServletRequest request = (HttpServletRequest)servletRequest;</span>
+<span class="nc" id="L82">    HttpServletResponse response = (HttpServletResponse)servletResponse;</span>
+
+<span class="nc bnc" id="L84" title="All 2 branches missed.">    if (serviceModel != null) {</span>
+      try {
+<span class="nc" id="L86">        String uri = StringUtils.defaultString(request.getPathInfo());</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (StringUtils.equals(uri, &quot;/&quot;)) {</span>
+<span class="nc" id="L88">          sendMarkup(templateRenderer.renderServiceHtml(serviceModel), response);</span>
+<span class="nc" id="L89">          return;</span>
+        }
+        else {
+<span class="nc" id="L92">          String rel = StringUtils.substringAfter(uri, &quot;/&quot;);</span>
+<span class="nc" id="L93">          LinkRelation linkRelation = serviceModel.getLinkRelations().stream()</span>
+<span class="nc" id="L94">              .filter(item -&gt; StringUtils.equals(item.getRel(), rel))</span>
+<span class="nc" id="L95">              .findFirst().orElse(null);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">          if (linkRelation != null) {</span>
+<span class="nc" id="L97">            sendMarkup(templateRenderer.renderLinkRelationHtml(serviceModel, linkRelation), response);</span>
+<span class="nc" id="L98">            return;</span>
+          }
+        }
+      }
+<span class="nc" id="L102">      catch (Throwable ex) {</span>
+<span class="nc" id="L103">        log.error(&quot;Error rendering HAL docs for &quot; + serviceModel.getServiceId() + &quot;: &quot; + request.getPathInfo(), ex);</span>
+<span class="nc" id="L104">        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());</span>
+<span class="nc" id="L105">      }</span>
+    }
+
+<span class="nc" id="L108">    response.sendError(HttpServletResponse.SC_NOT_FOUND);</span>
+<span class="nc" id="L109">  }</span>
+
+  private void sendMarkup(String markup, HttpServletResponse response) throws IOException {
+<span class="nc" id="L112">    byte[] data = markup.getBytes(CharEncoding.UTF_8);</span>
+<span class="nc" id="L113">    response.setContentType(HttpContextWrapper.MIMETYPE_HTML);</span>
+<span class="nc" id="L114">    response.setContentLength(data.length);</span>
+<span class="nc" id="L115">    response.getOutputStream().write(data);</span>
+<span class="nc" id="L116">  }</span>
+
+  @Override
+  public void init() throws ServletException {
+    // nothing to do
+<span class="nc" id="L121">  }</span>
+
+  @Override
+  public void init(ServletConfig config) throws ServletException {
+    // nothing to do
+<span class="nc" id="L126">  }</span>
+
+  @Override
+  public void destroy() {
+    // nothing to do
+<span class="nc" id="L131">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

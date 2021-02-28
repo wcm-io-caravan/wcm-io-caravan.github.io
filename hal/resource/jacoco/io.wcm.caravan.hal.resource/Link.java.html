@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Link.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Resource</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.resource</a> &gt; <span class="el_source">Link.java</span></div><h1>Link.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.resource;
+
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ListMultimap;
+
+/**
+ * Bean representation of a HAL link.
+ */
+@ProviderType
+public final class Link implements HalObject {
+
+  /**
+   * Pattern that will hit an RFC 6570 URI template.
+   */
+<span class="fc" id="L41">  private static final Pattern URI_TEMPLATE_PATTERN = Pattern.compile(&quot;\\{.+\\}&quot;);</span>
+
+  private final ObjectNode model;
+
+  private HalResource context;
+
+  /**
+   * @param model JSON model
+   */
+<span class="fc" id="L50">  public Link(JsonNode model) {</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">    if (!(model instanceof ObjectNode)) {</span>
+<span class="nc" id="L52">      throw new IllegalArgumentException(&quot;the given model must be of type ObjectNode&quot;);</span>
+    }
+<span class="fc" id="L54">    this.model = (ObjectNode)model;</span>
+<span class="fc" id="L55">  }</span>
+
+  /**
+   * @param model JSON model
+   */
+<span class="fc" id="L60">  public Link(ObjectNode model) {</span>
+<span class="fc" id="L61">    this.model = model;</span>
+<span class="fc" id="L62">  }</span>
+
+  /**
+   * Creates a link with a new model that only contains the given URI
+   * @param href the URI to put in the &quot;href&quot; property
+   */
+<span class="fc" id="L68">  public Link(String href) {</span>
+<span class="fc" id="L69">    this.model = JsonNodeFactory.instance.objectNode();</span>
+
+<span class="fc" id="L71">    this.setHref(href);</span>
+<span class="fc" id="L72">  }</span>
+
+  @Override
+  public ObjectNode getModel() {
+<span class="fc" id="L76">    return model;</span>
+  }
+
+  /**
+   * @return the type
+   */
+  public String getType() {
+<span class="nc" id="L83">    return model.path(&quot;type&quot;).asText(null);</span>
+  }
+
+  /**
+   * @param type the type to set
+   * @return Link
+   */
+  public Link setType(String type) {
+<span class="nc" id="L91">    model.put(&quot;type&quot;, type);</span>
+<span class="nc" id="L92">    return this;</span>
+  }
+
+  /**
+   * @return the deprecation
+   */
+  public String getDeprecation() {
+<span class="nc" id="L99">    return model.path(&quot;deprecation&quot;).asText(null);</span>
+  }
+
+  /**
+   * @param deprecation the deprecation to set
+   * @return Link
+   */
+  public Link setDeprecation(String deprecation) {
+<span class="nc" id="L107">    model.put(&quot;deprecation&quot;, deprecation);</span>
+<span class="nc" id="L108">    return this;</span>
+  }
+
+  /**
+   * @return the name
+   */
+  public String getName() {
+<span class="fc" id="L115">    return model.path(&quot;name&quot;).asText(null);</span>
+  }
+
+  /**
+   * @param name the name to set
+   * @return Link
+   */
+  public Link setName(String name) {
+<span class="fc" id="L123">    model.put(&quot;name&quot;, name);</span>
+<span class="fc" id="L124">    return this;</span>
+  }
+
+  /**
+   * @return the profile
+   */
+  public String getProfile() {
+<span class="nc" id="L131">    return model.path(&quot;profile&quot;).asText(null);</span>
+  }
+
+  /**
+   * @param profile the profile to set
+   * @return Link
+   */
+  public Link setProfile(String profile) {
+<span class="nc" id="L139">    model.put(&quot;profile&quot;, profile);</span>
+<span class="nc" id="L140">    return this;</span>
+  }
+
+  /**
+   * @return the title
+   */
+  public String getTitle() {
+<span class="fc" id="L147">    return model.path(&quot;title&quot;).asText(null);</span>
+  }
+
+  /**
+   * @param title the title to set
+   * @return Link
+   */
+  public Link setTitle(String title) {
+<span class="fc" id="L155">    model.put(&quot;title&quot;, title);</span>
+<span class="fc" id="L156">    return this;</span>
+  }
+
+  /**
+   * @return the hreflang
+   */
+  public String getHreflang() {
+<span class="nc" id="L163">    return model.path(&quot;hreflang&quot;).asText(null);</span>
+  }
+
+  /**
+   * @param hreflang the hreflang to set
+   * @return Link
+   */
+  public Link setHreflang(String hreflang) {
+<span class="nc" id="L171">    model.put(&quot;hreflang&quot;, hreflang);</span>
+<span class="nc" id="L172">    return this;</span>
+  }
+
+  /**
+   * @return the href
+   */
+  public String getHref() {
+<span class="fc" id="L179">    return model.path(&quot;href&quot;).asText(null);</span>
+  }
+
+  /**
+   * @param href the href to set
+   * @return Link
+   */
+  public Link setHref(String href) {
+
+<span class="fc" id="L188">    model.put(&quot;href&quot;, href);</span>
+
+<span class="fc bfc" id="L190" title="All 4 branches covered.">    if (href != null &amp;&amp; URI_TEMPLATE_PATTERN.matcher(href).find()) {</span>
+<span class="fc" id="L191">      setTemplated(true);</span>
+    }
+
+<span class="fc" id="L194">    return this;</span>
+  }
+
+  /**
+   * @return is templated
+   */
+  public boolean isTemplated() {
+<span class="fc" id="L201">    return model.path(&quot;templated&quot;).asBoolean();</span>
+  }
+
+  /**
+   * @param templated the templated to set
+   * @return Link
+   */
+  public Link setTemplated(boolean templated) {
+<span class="fc" id="L209">    model.put(&quot;templated&quot;, templated);</span>
+<span class="fc" id="L210">    return this;</span>
+  }
+
+  /**
+   * Removes this link from its context resource's JSON representation
+   * @throws IllegalStateException if this link was never added to a resource, or has already been removed
+   */
+  public void remove() {
+
+<span class="fc bfc" id="L219" title="All 2 branches covered.">    if (context == null) {</span>
+<span class="fc" id="L220">      throw new IllegalStateException(&quot;link with href=&quot; + getHref() + &quot; can not be removed, because it's not part of a HAL resource tree&quot;);</span>
+    }
+
+    // iterate over all links grouped by relation (because for removal we need to know the relation)
+<span class="fc" id="L224">    ListMultimap&lt;String, Link&gt; allLinks = context.getLinks();</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">    for (String relation : allLinks.keySet()) {</span>
+<span class="fc" id="L226">      List&lt;Link&gt; links = allLinks.get(relation);</span>
+
+      // use an indexed for-loop, because we need to know the index to properly remove the link
+<span class="fc bfc" id="L229" title="All 2 branches covered.">      for (int i = 0; i &lt; links.size(); i++) {</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">        if (links.get(i).getModel() == model) {</span>
+<span class="fc" id="L231">          context.removeLink(relation, i);</span>
+<span class="fc" id="L232">          context = null;</span>
+<span class="fc" id="L233">          return;</span>
+        }
+      }
+<span class="fc" id="L236">    }</span>
+
+<span class="fc" id="L238">    throw new IllegalStateException(&quot;the last known context resource of link with href=&quot; + getHref() + &quot; no longer contains this link&quot;);</span>
+  }
+
+  /**
+   * @param contextResource the HAL resource that contains this link
+   */
+  void setContext(HalResource contextResource) {
+<span class="fc" id="L245">    context = contextResource;</span>
+<span class="fc" id="L246">  }</span>
+
+  @Override
+  public int hashCode() {
+<span class="fc" id="L250">    return model.toString().hashCode();</span>
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+<span class="pc bpc" id="L255" title="1 of 2 branches missed.">    if (!(obj instanceof Link)) {</span>
+<span class="nc" id="L256">      return false;</span>
+    }
+    else {
+<span class="fc" id="L259">      return model.toString().equals(((Link)obj).model.toString());</span>
+    }
+  }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

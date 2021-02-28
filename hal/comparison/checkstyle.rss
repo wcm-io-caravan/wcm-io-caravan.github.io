@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>HAL Comparison - Checkstyle report</title>
+    <link>https://caravan.wcm.io/hal/comparison/</link>
+    <description>HAL Comparison - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
+    <item>
+      <title>File: 32,
+             Errors: 0,
+             Warnings: 18,
+             Infos: 0
+      </title>
+            <link>https://caravan.wcm.io/hal/comparison//checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.links.LinkProcessingImpl.java">io/wcm/caravan/hal/comparison/impl/links/LinkProcessingImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.ProcessingResult.java">io/wcm/caravan/hal/comparison/impl/ProcessingResult.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.HalComparison.java">io/wcm/caravan/hal/comparison/HalComparison.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.HalComparisonException.java">io/wcm/caravan/hal/comparison/impl/HalComparisonException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.embedded.steps.EmbeddedAdditionRemovalReorderingDetection.java">io/wcm/caravan/hal/comparison/impl/embedded/steps/EmbeddedAdditionRemovalReorderingDetection.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.embedded.EmbeddedProcessingStep.java">io/wcm/caravan/hal/comparison/impl/embedded/EmbeddedProcessingStep.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.embedded.steps.EmbeddedRelationBlackList.java">io/wcm/caravan/hal/comparison/impl/embedded/steps/EmbeddedRelationBlackList.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.links.steps.LinkAdditionRemovalReorderingDetection.java">io/wcm/caravan/hal/comparison/impl/links/steps/LinkAdditionRemovalReorderingDetection.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.matching.SimpleIdMatchingAlgorithm.java">io/wcm/caravan/hal/comparison/impl/matching/SimpleIdMatchingAlgorithm.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.HalComparisonSource.java">io/wcm/caravan/hal/comparison/HalComparisonSource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.difference.HalDifferenceImpl.java">io/wcm/caravan/hal/comparison/impl/difference/HalDifferenceImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.context.HalPathImpl.java">io/wcm/caravan/hal/comparison/impl/context/HalPathImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.embedded.EmbeddedProcessingImpl.java">io/wcm/caravan/hal/comparison/impl/embedded/EmbeddedProcessingImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.PairWithRelation.java">io/wcm/caravan/hal/comparison/impl/PairWithRelation.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.links.steps.LinkTemplateProcessor.java">io/wcm/caravan/hal/comparison/impl/links/steps/LinkTemplateProcessor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.HalComparisonImpl.java">io/wcm/caravan/hal/comparison/impl/HalComparisonImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.matching.MatchingResult.java">io/wcm/caravan/hal/comparison/impl/matching/MatchingResult.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.properties.PropertyProcessing.java">io/wcm/caravan/hal/comparison/impl/properties/PropertyProcessing.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.HalComparisonStrategy.java">io/wcm/caravan/hal/comparison/HalComparisonStrategy.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.difference.HalDifferenceListBuilder.java">io/wcm/caravan/hal/comparison/impl/difference/HalDifferenceListBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.links.steps.LinkRelationBlackList.java">io/wcm/caravan/hal/comparison/impl/links/steps/LinkRelationBlackList.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.matching.MatchingAlgorithm.java">io/wcm/caravan/hal/comparison/impl/matching/MatchingAlgorithm.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.links.LinkProcessingStep.java">io/wcm/caravan/hal/comparison/impl/links/LinkProcessingStep.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.HalComparisonContext.java">io/wcm/caravan/hal/comparison/HalComparisonContext.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.links.LinkProcessing.java">io/wcm/caravan/hal/comparison/impl/links/LinkProcessing.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.context.HalComparisonContextImpl.java">io/wcm/caravan/hal/comparison/impl/context/HalComparisonContextImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.HalComparisonRecursionImpl.java">io/wcm/caravan/hal/comparison/impl/HalComparisonRecursionImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.util.HalJsonConversion.java">io/wcm/caravan/hal/comparison/impl/util/HalJsonConversion.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.package-info.java">io/wcm/caravan/hal/comparison/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.HalDifference.java">io/wcm/caravan/hal/comparison/HalDifference.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.properties.PropertyDiffDetector.java">io/wcm/caravan/hal/comparison/impl/properties/PropertyDiffDetector.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.embedded.EmbeddedProcessing.java">io/wcm/caravan/hal/comparison/impl/embedded/EmbeddedProcessing.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

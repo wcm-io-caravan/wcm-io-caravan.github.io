@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SimpleIdMatchingAlgorithm.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Comparison</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.comparison.impl.matching</a> &gt; <span class="el_source">SimpleIdMatchingAlgorithm.java</span></div><h1>SimpleIdMatchingAlgorithm.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2018 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.comparison.impl.matching;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+
+/**
+ * An algorithm that finds matching items by comparing an id.
+ */
+public class SimpleIdMatchingAlgorithm&lt;T&gt; implements MatchingAlgorithm&lt;T&gt; {
+
+  private final Function&lt;T, String&gt; idProvider;
+
+  /**
+   * @param idProvider the function to generate/extract an id for a given item
+   */
+<span class="fc" id="L40">  public SimpleIdMatchingAlgorithm(Function&lt;T, String&gt; idProvider) {</span>
+<span class="fc" id="L41">    this.idProvider = idProvider;</span>
+<span class="fc" id="L42">  }</span>
+
+  @Override
+  public MatchingResult&lt;T&gt; findMatchingItems(List&lt;T&gt; expectedList, List&lt;T&gt; actualList) {
+
+<span class="fc" id="L47">    MatchingResultImpl&lt;T&gt; result = new MatchingResultImpl&lt;T&gt;();</span>
+
+<span class="fc" id="L49">    IndexedItemList&lt;T&gt; remainingExpected = new IndexedItemList&lt;T&gt;(expectedList, idProvider);</span>
+<span class="fc" id="L50">    IndexedItemList&lt;T&gt; remainingActual = new IndexedItemList&lt;T&gt;(actualList, idProvider);</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">    while (remainingExpected.hasMoreItems()) {</span>
+<span class="fc" id="L53">      ItemWithIdAndIndex&lt;T&gt; nextExpected = remainingExpected.getAndRemoveNextItem();</span>
+<span class="fc" id="L54">      String nextId = nextExpected.getId();</span>
+
+<span class="fc bfc" id="L56" title="All 2 branches covered.">      if (remainingActual.hasItemWithId(nextId)) {</span>
+<span class="fc" id="L57">        ItemWithIdAndIndex&lt;T&gt; matchingActual = remainingActual.getAndRemoveItemWithId(nextId);</span>
+<span class="fc" id="L58">        result.addMatched(nextExpected, matchingActual);</span>
+<span class="fc" id="L59">      }</span>
+      else {
+<span class="fc" id="L61">        result.addRemoved(nextExpected);</span>
+      }
+<span class="fc" id="L63">    }</span>
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">    while (remainingActual.hasMoreItems()) {</span>
+<span class="fc" id="L66">      result.addAdded(remainingActual.getAndRemoveNextItem());</span>
+    }
+
+<span class="fc" id="L69">    return result;</span>
+  }
+
+<span class="fc" id="L72">  private static class MatchingResultImpl&lt;T&gt; implements MatchingResult&lt;T&gt; {</span>
+
+<span class="fc" id="L74">    private final List&lt;ItemWithIdAndIndex&lt;T&gt;&gt; matchedExpected = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L75">    private final List&lt;ItemWithIdAndIndex&lt;T&gt;&gt; matchedActual = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L77">    private final List&lt;ItemWithIdAndIndex&lt;T&gt;&gt; removedExpected = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L78">    private final List&lt;ItemWithIdAndIndex&lt;T&gt;&gt; addedActual = new ArrayList&lt;&gt;();</span>
+
+    void addMatched(ItemWithIdAndIndex&lt;T&gt; expected, ItemWithIdAndIndex&lt;T&gt; actual) {
+<span class="fc" id="L81">      matchedExpected.add(expected);</span>
+<span class="fc" id="L82">      matchedActual.add(actual);</span>
+<span class="fc" id="L83">    }</span>
+
+    void addRemoved(ItemWithIdAndIndex&lt;T&gt; removed) {
+<span class="fc" id="L86">      this.removedExpected.add(removed);</span>
+<span class="fc" id="L87">    }</span>
+
+    void addAdded(ItemWithIdAndIndex&lt;T&gt; added) {
+<span class="fc" id="L90">      this.addedActual.add(added);</span>
+<span class="fc" id="L91">    }</span>
+
+    @Override
+    public boolean areMatchesReordered() {
+<span class="fc" id="L95">      int lastIndex = -1;</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">      for (ItemWithIdAndIndex actual : matchedActual) {</span>
+<span class="fc" id="L97">        int nextIndex = actual.getIndex();</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        if (nextIndex &lt; lastIndex) {</span>
+<span class="fc" id="L99">          return true;</span>
+        }
+<span class="fc" id="L101">        lastIndex = nextIndex;</span>
+<span class="fc" id="L102">      }</span>
+<span class="fc" id="L103">      return false;</span>
+    }
+
+    private List&lt;T&gt; extractItems(List&lt;ItemWithIdAndIndex&lt;T&gt;&gt; list) {
+<span class="fc" id="L107">      return list.stream()</span>
+<span class="fc" id="L108">          .map(ItemWithIdAndIndex&lt;T&gt;::getItem)</span>
+<span class="fc" id="L109">          .collect(Collectors.toList());</span>
+    }
+
+    @Override
+    public List&lt;T&gt; getMatchedExpected() {
+<span class="fc" id="L114">      return extractItems(matchedExpected);</span>
+    }
+
+    @Override
+    public List&lt;T&gt; getMatchedActual() {
+<span class="fc" id="L119">      return extractItems(matchedActual);</span>
+    }
+
+    @Override
+    public List&lt;T&gt; getRemovedExpected() {
+<span class="fc" id="L124">      return extractItems(removedExpected);</span>
+    }
+
+    @Override
+    public List&lt;T&gt; getAddedActual() {
+<span class="fc" id="L129">      return extractItems(addedActual);</span>
+    }
+  }
+
+  private static class ItemWithIdAndIndex&lt;T&gt; {
+
+    private final T item;
+    private final int index;
+    private final String id;
+
+<span class="fc" id="L139">    ItemWithIdAndIndex(T item, int index, String id) {</span>
+<span class="fc" id="L140">      this.item = item;</span>
+<span class="fc" id="L141">      this.index = index;</span>
+<span class="fc" id="L142">      this.id = id;</span>
+<span class="fc" id="L143">    }</span>
+
+    public T getItem() {
+<span class="fc" id="L146">      return this.item;</span>
+    }
+
+    public int getIndex() {
+<span class="fc" id="L150">      return this.index;</span>
+    }
+
+    public String getId() {
+<span class="fc" id="L154">      return this.id;</span>
+    }
+
+    static &lt;T&gt; List&lt;ItemWithIdAndIndex&lt;T&gt;&gt; createListFrom(Iterable&lt;T&gt; items, Function&lt;T, String&gt; idProvider) {
+<span class="fc" id="L158">      List&lt;ItemWithIdAndIndex&lt;T&gt;&gt; itemList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L160">      int index = 0;</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">      for (T item : items) {</span>
+<span class="fc" id="L162">        itemList.add(new ItemWithIdAndIndex&lt;T&gt;(item, index++, idProvider.apply(item)));</span>
+<span class="fc" id="L163">      }</span>
+
+<span class="fc" id="L165">      return itemList;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L170">      return &quot;{index=&quot; + index + &quot;, id=&quot; + id + &quot;}&quot;;</span>
+    }
+  }
+
+  private static class IndexedItemList&lt;T&gt; {
+
+    private final List&lt;ItemWithIdAndIndex&lt;T&gt;&gt; itemList;
+<span class="fc" id="L177">    private final Multimap&lt;String, ItemWithIdAndIndex&lt;T&gt;&gt; idItemMap = LinkedListMultimap.create();</span>
+
+<span class="fc" id="L179">    IndexedItemList(Iterable&lt;T&gt; resources, Function&lt;T, String&gt; idProvider) {</span>
+<span class="fc" id="L180">      this.itemList = ItemWithIdAndIndex.createListFrom(resources, idProvider);</span>
+
+<span class="fc bfc" id="L182" title="All 2 branches covered.">      for (ItemWithIdAndIndex&lt;T&gt; item : itemList) {</span>
+<span class="fc" id="L183">        idItemMap.put(item.getId(), item);</span>
+<span class="fc" id="L184">      }</span>
+<span class="fc" id="L185">    }</span>
+
+    boolean hasMoreItems() {
+<span class="fc bfc" id="L188" title="All 2 branches covered.">      return itemList.size() &gt; 0;</span>
+    }
+
+    ItemWithIdAndIndex&lt;T&gt; getAndRemoveNextItem() {
+<span class="fc" id="L192">      ItemWithIdAndIndex&lt;T&gt; item = itemList.remove(0);</span>
+<span class="fc" id="L193">      idItemMap.remove(item.getId(), item);</span>
+<span class="fc" id="L194">      return item;</span>
+    }
+
+    boolean hasItemWithId(String id) {
+<span class="fc" id="L198">      return idItemMap.containsKey(id);</span>
+    }
+
+    ItemWithIdAndIndex&lt;T&gt; getAndRemoveItemWithId(String id) {
+<span class="fc" id="L202">      ItemWithIdAndIndex&lt;T&gt; item = idItemMap.get(id).iterator().next();</span>
+<span class="fc" id="L203">      itemList.remove(item);</span>
+<span class="fc" id="L204">      idItemMap.remove(id, item);</span>
+<span class="fc" id="L205">      return item;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L210">      return itemList.toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

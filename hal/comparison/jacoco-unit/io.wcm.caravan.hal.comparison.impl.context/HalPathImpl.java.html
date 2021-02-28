@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalPathImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Comparison</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.comparison.impl.context</a> &gt; <span class="el_source">HalPathImpl.java</span></div><h1>HalPathImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2018 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.comparison.impl.context;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+
+import io.wcm.caravan.hal.comparison.HalComparisonContext;
+
+/**
+ * Immutable implementation of {@link HalComparisonContext} interface
+ */
+public class HalPathImpl {
+
+  private final List&lt;Token&gt; halTokens;
+  private final List&lt;Token&gt; jsonTokens;
+
+  /**
+   * Constructor to use for the entry points.
+   */
+<span class="fc" id="L42">  public HalPathImpl() {</span>
+<span class="fc" id="L43">    this.halTokens = ImmutableList.of();</span>
+<span class="fc" id="L44">    this.jsonTokens = ImmutableList.of();</span>
+<span class="fc" id="L45">  }</span>
+
+<span class="fc" id="L47">  private HalPathImpl(List&lt;Token&gt; halTokens, List&lt;Token&gt; jsonPathTokens) {</span>
+<span class="fc" id="L48">    this.halTokens = ImmutableList.copyOf(halTokens);</span>
+<span class="fc" id="L49">    this.jsonTokens = ImmutableList.copyOf(jsonPathTokens);</span>
+<span class="fc" id="L50">  }</span>
+
+  /**
+   * @param relation of the link/embedded resource
+   * @param index optional index (to be used if there are multiple links/embedded resources with the same relation)
+   * @param name optional name (used only for links)
+   * @return a new instance with an updated location
+   */
+  public HalPathImpl append(String relation, Integer index, String name) {
+<span class="fc" id="L59">    List&lt;Token&gt; newTokens = new ArrayList&lt;&gt;(halTokens);</span>
+<span class="fc" id="L60">    newTokens.add(new Token(relation, index, name));</span>
+<span class="fc" id="L61">    return new HalPathImpl(newTokens, jsonTokens);</span>
+  }
+
+  /**
+   * @param fieldName the name of a JSON property
+   * @return a new instance with an updated JSON path suffix
+   */
+  public HalPathImpl appendJsonPath(String fieldName) {
+<span class="fc" id="L69">    List&lt;Token&gt; newTokens = new ArrayList&lt;&gt;(jsonTokens);</span>
+<span class="fc" id="L70">    newTokens.add(new Token(fieldName, null, null));</span>
+<span class="fc" id="L71">    return new HalPathImpl(halTokens, newTokens);</span>
+  }
+
+  /**
+   * @param index of an element within an array
+   * @return a new instance with an updated HAL path suffix
+   */
+  public HalPathImpl replaceHalPathIndex(int index) {
+<span class="fc" id="L79">    List&lt;Token&gt; newTokens = new ArrayList&lt;&gt;(halTokens);</span>
+<span class="fc" id="L80">    Token lastToken = newTokens.remove(newTokens.size() - 1);</span>
+<span class="fc" id="L81">    newTokens.add(new Token(lastToken.getName(), index, lastToken.identifier));</span>
+<span class="fc" id="L82">    return new HalPathImpl(newTokens, jsonTokens);</span>
+  }
+
+  /**
+   * @param index of an element within an array
+   * @return a new instance with an updated JSON path suffix
+   */
+  public HalPathImpl replaceJsonPathIndex(int index) {
+<span class="fc" id="L90">    List&lt;Token&gt; newTokens = new ArrayList&lt;&gt;(jsonTokens);</span>
+<span class="fc" id="L91">    Token lastToken = newTokens.remove(newTokens.size() - 1);</span>
+<span class="fc" id="L92">    newTokens.add(new Token(lastToken.getName(), index, null));</span>
+<span class="fc" id="L93">    return new HalPathImpl(halTokens, newTokens);</span>
+  }
+
+  private static String getLastOf(List&lt;Token&gt; tokens) {
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (tokens.isEmpty()) {</span>
+<span class="fc" id="L98">      return &quot;&quot;;</span>
+    }
+<span class="fc" id="L100">    return Iterables.getLast(tokens).getName();</span>
+  }
+
+  private static List&lt;String&gt; getAllOf(List&lt;Token&gt; tokens) {
+<span class="fc" id="L104">    return tokens.stream()</span>
+<span class="fc" id="L105">        .map(Token::getName)</span>
+<span class="fc" id="L106">        .collect(Collectors.toList());</span>
+  }
+
+  String getLastRelation() {
+<span class="fc" id="L110">    return getLastOf(halTokens);</span>
+  }
+
+  List&lt;String&gt; getAllRelations() {
+<span class="fc" id="L114">    return getAllOf(halTokens);</span>
+  }
+
+  String getLastProperyName() {
+<span class="fc" id="L118">    return getLastOf(jsonTokens);</span>
+  }
+
+  List&lt;String&gt; getAllPropertyNames() {
+<span class="fc" id="L122">    return getAllOf(jsonTokens);</span>
+  }
+
+  @Override
+  public String toString() {
+
+<span class="fc" id="L128">    String jsonPath = &quot;&quot;;</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">    if (!jsonTokens.isEmpty()) {</span>
+<span class="fc" id="L130">      jsonPath = jsonTokens.stream()</span>
+<span class="fc" id="L131">          .map(Token::toString)</span>
+<span class="fc" id="L132">          .collect(Collectors.joining(&quot;.&quot;, &quot;$.&quot;, &quot;&quot;));</span>
+    }
+
+<span class="fc" id="L135">    return halTokens.stream()</span>
+<span class="fc" id="L136">        .map(Token::toString)</span>
+<span class="fc" id="L137">        .collect(Collectors.joining(&quot;/&quot;, &quot;/&quot;, jsonPath));</span>
+  }
+
+  private static class Token {
+
+    private final String name;
+    private final Integer index;
+    private final String identifier;
+
+<span class="fc" id="L146">    Token(String name, Integer index, String identifier) {</span>
+<span class="fc" id="L147">      this.name = name;</span>
+<span class="fc" id="L148">      this.index = index;</span>
+<span class="fc" id="L149">      this.identifier = identifier;</span>
+<span class="fc" id="L150">    }</span>
+
+    String getName() {
+<span class="fc" id="L153">      return this.name;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L158">      StringBuilder sb = new StringBuilder(name);</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">      if (identifier != null) {</span>
+<span class="fc" id="L160">        sb.append(&quot;['&quot; + identifier + &quot;']&quot;);</span>
+      }
+<span class="fc bfc" id="L162" title="All 2 branches covered.">      else if (index != null) {</span>
+<span class="fc" id="L163">        sb.append(&quot;[&quot; + index + &quot;]&quot;);</span>
+      }
+<span class="fc" id="L165">      return sb.toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalComparisonContextImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Comparison</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.comparison.impl.context</a> &gt; <span class="el_source">HalComparisonContextImpl.java</span></div><h1>HalComparisonContextImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2018 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.comparison.impl.context;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ImmutableMap;
+
+import io.wcm.caravan.hal.comparison.HalComparisonContext;
+import io.wcm.caravan.hal.comparison.impl.PairWithRelation;
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+
+/**
+ * An immutable object that specifies in which part of the tree the comparison is currently being executed.
+ */
+public class HalComparisonContextImpl implements HalComparisonContext {
+
+  private final HalPathImpl halPath;
+
+  private final String expectedUrl;
+  private final String actualUrl;
+
+  private final Map&lt;HalPathImpl, HalResource&gt; parentResources;
+
+  /**
+   * This constructor shouldn't be used except for creating the initial context for the entry point. From then on, use
+   * the #withXyz methods to build a new context
+   * @param expectedUrl
+   * @param actualUrl
+   */
+<span class="fc" id="L54">  public HalComparisonContextImpl(String expectedUrl, String actualUrl) {</span>
+<span class="fc" id="L55">    this.halPath = new HalPathImpl();</span>
+<span class="fc" id="L56">    this.expectedUrl = expectedUrl;</span>
+<span class="fc" id="L57">    this.actualUrl = actualUrl;</span>
+<span class="fc" id="L58">    this.parentResources = Collections.emptyMap();</span>
+<span class="fc" id="L59">  }</span>
+
+<span class="fc" id="L61">  private HalComparisonContextImpl(HalPathImpl halPath, String expectedUrl, String actualUrl, Map&lt;HalPathImpl, HalResource&gt; parentResources) {</span>
+<span class="fc" id="L62">    this.halPath = halPath;</span>
+<span class="fc" id="L63">    this.expectedUrl = expectedUrl;</span>
+<span class="fc" id="L64">    this.actualUrl = actualUrl;</span>
+<span class="fc" id="L65">    this.parentResources = ImmutableMap.copyOf(parentResources);</span>
+<span class="fc" id="L66">  }</span>
+
+  @Override
+  public String getExpectedUrl() {
+<span class="fc" id="L70">    return this.expectedUrl;</span>
+  }
+
+  @Override
+  public String getActualUrl() {
+<span class="fc" id="L75">    return this.actualUrl;</span>
+  }
+
+  /**
+   * @param relation of the linked or embedded resource that is about to be processed
+   * @return a new instance with an updated {@link HalPathImpl}
+   */
+  public HalComparisonContextImpl withAppendedHalPath(String relation, HalResource contextResource) {
+
+<span class="fc" id="L84">    HalPathImpl newHalPath = halPath.append(relation, null, null);</span>
+<span class="fc" id="L85">    return new HalComparisonContextImpl(newHalPath, expectedUrl, actualUrl, createNewParentResourceMap(contextResource));</span>
+  }
+
+  private Map&lt;HalPathImpl, HalResource&gt; createNewParentResourceMap(HalResource contextResource) {
+<span class="fc" id="L89">    Map&lt;HalPathImpl, HalResource&gt; newParents = new HashMap&lt;&gt;(parentResources);</span>
+<span class="fc" id="L90">    newParents.put(halPath, contextResource);</span>
+<span class="fc" id="L91">    return newParents;</span>
+  }
+
+  /**
+   * @param pair of resources that is about to be compared
+   * @param contextResource the resource from the expected tree that embeds the resource to be compared
+   * @return a new instance with an updated {@link HalPathImpl} that adds array indices if required
+   */
+  public HalComparisonContextImpl withHalPathOfEmbeddedResource(PairWithRelation&lt;HalResource&gt; pair, HalResource contextResource) {
+
+<span class="fc" id="L101">    String relation = pair.getRelation();</span>
+<span class="fc" id="L102">    List&lt;HalResource&gt; originalEmbedded = contextResource.getEmbedded(relation);</span>
+
+<span class="fc" id="L104">    Integer originalIndex = null;</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">    if (originalEmbedded.size() &gt; 1) {</span>
+<span class="fc" id="L106">      originalIndex = findOriginalIndex(pair, originalEmbedded);</span>
+    }
+
+<span class="fc" id="L109">    HalPathImpl newHalPath = halPath.append(relation, originalIndex, null);</span>
+<span class="fc" id="L110">    return new HalComparisonContextImpl(newHalPath, expectedUrl, actualUrl, createNewParentResourceMap(contextResource));</span>
+  }
+
+
+  private Integer findOriginalIndex(PairWithRelation&lt;HalResource&gt; pair, List&lt;HalResource&gt; originalEmbedded) {
+<span class="fc bfc" id="L115" title="All 2 branches covered.">    for (int i = 0; i &lt; originalEmbedded.size(); i++) {</span>
+<span class="fc" id="L116">      ObjectNode originalModel = originalEmbedded.get(i).getModel();</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">      if (originalModel == pair.getExpected().getModel()) {</span>
+<span class="fc" id="L118">        return i;</span>
+      }
+    }
+<span class="fc" id="L121">    throw new IllegalArgumentException(&quot;The resource from the given pair is not actually embedded in the context resource&quot;);</span>
+  }
+
+  /**
+   * @param pair of links that are about to be followed and compared
+   * @param contextResource the resource from the expected tree that contains the links
+   * @return a new instance with an updated {@link HalPathImpl} that adds array indices if required
+   */
+  public HalComparisonContextImpl withHalPathOfLinkedResource(PairWithRelation&lt;Link&gt; pair, HalResource contextResource) {
+
+<span class="fc" id="L131">    String relation = pair.getRelation();</span>
+<span class="fc" id="L132">    List&lt;Link&gt; originalLinks = contextResource.getLinks(relation);</span>
+
+<span class="fc" id="L134">    Integer originalIndex = null;</span>
+<span class="fc" id="L135">    String name = pair.getExpected().getName();</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">    if (originalLinks.size() &gt; 1) {</span>
+<span class="fc" id="L137">      originalIndex = originalLinks.indexOf(pair.getExpected());</span>
+    }
+
+<span class="fc" id="L140">    HalPathImpl newHalPath = halPath.append(relation, originalIndex, name);</span>
+<span class="fc" id="L141">    Map&lt;HalPathImpl, HalResource&gt; newParents = new HashMap&lt;&gt;(parentResources);</span>
+<span class="fc" id="L142">    newParents.put(halPath, contextResource);</span>
+<span class="fc" id="L143">    return new HalComparisonContextImpl(newHalPath, expectedUrl, actualUrl, createNewParentResourceMap(contextResource));</span>
+  }
+
+  /**
+   * @param indexInArray the index of the next array entry to be compared
+   * @return a new instance with an updated {@link HalPathImpl} that contains array indices
+   */
+  public HalComparisonContextImpl withHalPathIndex(int indexInArray) {
+<span class="fc" id="L151">    HalPathImpl newHalPath = halPath.replaceHalPathIndex(indexInArray);</span>
+<span class="fc" id="L152">    return new HalComparisonContextImpl(newHalPath, expectedUrl, actualUrl, parentResources);</span>
+  }
+
+  /**
+   * @param fieldName the name of the JSON property to be compared
+   * @return a new instance with an updated {@link HalPathImpl}
+   */
+  public HalComparisonContextImpl withAppendedJsonPath(String fieldName) {
+<span class="fc" id="L160">    HalPathImpl newHalPath = halPath.appendJsonPath(fieldName);</span>
+<span class="fc" id="L161">    return new HalComparisonContextImpl(newHalPath, expectedUrl, actualUrl, parentResources);</span>
+  }
+
+  /**
+   * @param indexInArray the index of the next array entry to be compared
+   * @return a new instance with an updated {@link HalPathImpl} that contains array indices
+   */
+  public HalComparisonContextImpl withJsonPathIndex(int indexInArray) {
+<span class="fc" id="L169">    HalPathImpl newHalPath = halPath.replaceJsonPathIndex(indexInArray);</span>
+<span class="fc" id="L170">    return new HalComparisonContextImpl(newHalPath, expectedUrl, actualUrl, parentResources);</span>
+  }
+
+  /**
+   * @param newUrl of the expected resource that is about to be loaded
+   * @return a new instance with an updated {@link #getExpectedUrl()} value
+   */
+  public HalComparisonContextImpl withNewExpectedUrl(String newUrl) {
+<span class="fc" id="L178">    return new HalComparisonContextImpl(halPath, newUrl, actualUrl, parentResources);</span>
+  }
+
+  /**
+   * @param newUrl of the actual resource that is about to be loaded
+   * @return a new instance with an updated {@link #getActualUrl()} value
+   */
+  public HalComparisonContextImpl withNewActualUrl(String newUrl) {
+<span class="fc" id="L186">    return new HalComparisonContextImpl(halPath, expectedUrl, newUrl, parentResources);</span>
+  }
+
+  @Override
+  public String getLastRelation() {
+<span class="fc" id="L191">    return halPath.getLastRelation();</span>
+  }
+
+  @Override
+  public List&lt;String&gt; getAllRelations() {
+<span class="fc" id="L196">    return halPath.getAllRelations();</span>
+  }
+
+  @Override
+  public String getLastProperyName() {
+<span class="fc" id="L201">    return halPath.getLastProperyName();</span>
+  }
+
+  @Override
+  public List&lt;String&gt; getAllPropertyNames() {
+<span class="fc" id="L206">    return halPath.getAllPropertyNames();</span>
+  }
+
+  @Override
+  public HalResource getParentResourceWithRelation(String relation) {
+<span class="fc" id="L211">    return parentResources.entrySet().stream()</span>
+<span class="fc" id="L212">        .filter(entry -&gt; entry.getKey().getLastRelation().equals(relation))</span>
+<span class="fc" id="L213">        .sorted(HalComparisonContextImpl::longestHalPathFirstComparator)</span>
+<span class="fc" id="L214">        .map(Entry::getValue)</span>
+<span class="fc" id="L215">        .findFirst()</span>
+<span class="fc" id="L216">        .orElse(null);</span>
+  }
+
+  private static int longestHalPathFirstComparator(Entry&lt;HalPathImpl, HalResource&gt; entry1, Entry&lt;HalPathImpl, HalResource&gt; entry2) {
+<span class="fc" id="L220">    String firstHalPath = entry1.getKey().toString();</span>
+<span class="fc" id="L221">    String secondHalPath = entry2.getKey().toString();</span>
+
+<span class="fc" id="L223">    return -Integer.compare(firstHalPath.length(), secondHalPath.length());</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="fc" id="L228">    return halPath.toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

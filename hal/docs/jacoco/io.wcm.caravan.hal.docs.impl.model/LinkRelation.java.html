@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LinkRelation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Interface Documentation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.docs.impl.model</a> &gt; <span class="el_source">LinkRelation.java</span></div><h1>LinkRelation.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2015 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.docs.impl.model;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.commons.lang3.StringUtils;
+
+/**
+ * Describes a HAL link relation.
+ */
+<span class="fc" id="L33">public class LinkRelation implements Comparable&lt;LinkRelation&gt; {</span>
+
+  private String rel;
+  private String shortDescription;
+  private String descriptionMarkup;
+  private String jsonSchemaRef;
+<span class="fc" id="L39">  private List&lt;ResourceRef&gt; resourceRefs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L40">  private SortedSet&lt;LinkRelationRef&gt; linkRelationRefs = new TreeSet&lt;&gt;();</span>
+
+  public String getRel() {
+<span class="fc" id="L43">    return this.rel;</span>
+  }
+
+  public void setRel(String rel) {
+<span class="fc" id="L47">    this.rel = rel;</span>
+<span class="fc" id="L48">  }</span>
+
+  public String getShortDescription() {
+<span class="fc" id="L51">    return this.shortDescription;</span>
+  }
+
+  public void setShortDescription(String shortDescription) {
+<span class="fc" id="L55">    this.shortDescription = shortDescription;</span>
+<span class="fc" id="L56">  }</span>
+
+  public String getDescriptionMarkup() {
+<span class="nc" id="L59">    return this.descriptionMarkup;</span>
+  }
+
+  public void setDescriptionMarkup(String descriptionMarkup) {
+<span class="fc" id="L63">    this.descriptionMarkup = descriptionMarkup;</span>
+<span class="fc" id="L64">  }</span>
+
+  public String getJsonSchemaRef() {
+<span class="nc" id="L67">    return this.jsonSchemaRef;</span>
+  }
+
+  public void setJsonSchemaRef(String jsonSchemaRef) {
+<span class="fc" id="L71">    this.jsonSchemaRef = jsonSchemaRef;</span>
+<span class="fc" id="L72">  }</span>
+
+  /**
+   * @return Get embedded resoruces
+   */
+  public Collection&lt;ResourceRef&gt; getResourceRefs() {
+<span class="nc" id="L78">    return resourceRefs;</span>
+  }
+
+  /**
+   * @param refName Resource name
+   * @param refDescription Resource description
+   * @param refJsonSchemaRef JSON schema reference
+   */
+  public void addResourceRef(String refName, String refDescription, String refJsonSchemaRef) {
+<span class="fc" id="L87">    ResourceRef ref = new ResourceRef();</span>
+<span class="fc" id="L88">    ref.setName(refName);</span>
+<span class="fc" id="L89">    ref.setShortDescription(refDescription);</span>
+<span class="fc" id="L90">    ref.setJsonSchemaRef(refJsonSchemaRef);</span>
+<span class="fc" id="L91">    this.resourceRefs.add(ref);</span>
+<span class="fc" id="L92">  }</span>
+
+  /**
+   * @return Get contained link relations
+   */
+  public Collection&lt;LinkRelationRef&gt; getLinkRelationRefs() {
+<span class="nc" id="L98">    return linkRelationRefs;</span>
+  }
+
+  /**
+   * @param refRel Link relation name.
+   * @param refDescription Optional description for describing the link relation in context of the parent link relation.
+   */
+  public void addLinkRelationRef(String refRel, String refDescription) {
+<span class="fc" id="L106">    LinkRelationRef ref = new LinkRelationRef();</span>
+<span class="fc" id="L107">    ref.setRel(refRel);</span>
+<span class="fc" id="L108">    ref.setShortDescription(refDescription);</span>
+<span class="fc" id="L109">    this.linkRelationRefs.add(ref);</span>
+<span class="fc" id="L110">  }</span>
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L114">    return rel.hashCode();</span>
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">    if (!(obj instanceof LinkRelation)) {</span>
+<span class="nc" id="L120">      return false;</span>
+    }
+<span class="fc" id="L122">    return StringUtils.equals(rel, ((LinkRelation)obj).rel);</span>
+  }
+
+  @Override
+  public int compareTo(LinkRelation o) {
+<span class="fc" id="L127">    return StringUtils.defaultString(rel).compareTo(o.getRel());</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

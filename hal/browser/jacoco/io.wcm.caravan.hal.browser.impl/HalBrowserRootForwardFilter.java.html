@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalBrowserRootForwardFilter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Browser</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.browser.impl</a> &gt; <span class="el_source">HalBrowserRootForwardFilter.java</span></div><h1>HalBrowserRootForwardFilter.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2015 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.browser.impl;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Service;
+
+/**
+ * Filter that returns the content of the /halbrowser/browser.html
+ */
+@Component(immediate = true)
+@Service(Filter.class)
+@Property(name = &quot;pattern&quot;, value = HalBrowserHttpServiceMounter.HALBROWSER_URI_PREFIX + &quot;(/)?&quot;)
+<span class="fc" id="L44">public class HalBrowserRootForwardFilter implements Filter {</span>
+
+  private static final String INDEX_PAGE_PATH = &quot;/halbrowser-webapp/browser.html&quot;;
+
+  private byte[] indexPageContent;
+
+  @Override
+  public void init(FilterConfig value) throws ServletException {
+<span class="fc" id="L52">    try (InputStream is = getClass().getResourceAsStream(INDEX_PAGE_PATH)) {</span>
+<span class="fc" id="L53">      String markup = IOUtils.toString(is, &quot;UTF-8&quot;);</span>
+
+      // inject base element to ensure correct loading of referenced resources
+<span class="fc" id="L56">      markup = markup.replaceFirst(&quot;&lt;head&gt;&quot;,</span>
+          &quot;&lt;head&gt;&lt;base href=\&quot;&quot; + HalBrowserHttpServiceMounter.HALBROWSER_URI_PREFIX + &quot;/browser.html\&quot;&gt;&quot;);
+
+<span class="fc" id="L59">      indexPageContent = markup.getBytes(&quot;UTF-8&quot;);</span>
+    }
+<span class="nc" id="L61">    catch (IOException ex) {</span>
+<span class="nc" id="L62">      throw new ServletException(&quot;Unable to get content from: &quot; + INDEX_PAGE_PATH, ex);</span>
+<span class="fc" id="L63">    }</span>
+<span class="fc" id="L64">  }</span>
+
+  @Override
+  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
+<span class="fc" id="L68">    HttpServletResponse response = (HttpServletResponse)servletResponse;</span>
+
+<span class="fc" id="L70">    response.setStatus(HttpServletResponse.SC_OK);</span>
+<span class="fc" id="L71">    response.setContentType(&quot;text/html&quot;);</span>
+<span class="fc" id="L72">    response.setContentLength(indexPageContent.length);</span>
+<span class="fc" id="L73">    response.getOutputStream().write(indexPageContent);</span>
+<span class="fc" id="L74">  }</span>
+
+  @Override
+  public void destroy() {
+    // nothing to do
+<span class="nc" id="L79">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

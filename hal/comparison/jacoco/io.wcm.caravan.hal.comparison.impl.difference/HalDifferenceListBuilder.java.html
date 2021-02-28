@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalDifferenceListBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Comparison</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.comparison.impl.difference</a> &gt; <span class="el_source">HalDifferenceListBuilder.java</span></div><h1>HalDifferenceListBuilder.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2018 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.comparison.impl.difference;
+
+import static io.wcm.caravan.hal.comparison.impl.util.HalJsonConversion.asJson;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableList;
+
+import io.wcm.caravan.hal.comparison.HalComparisonContext;
+import io.wcm.caravan.hal.comparison.HalDifference;
+import io.wcm.caravan.hal.comparison.HalDifference.ChangeType;
+import io.wcm.caravan.hal.comparison.HalDifference.EntityType;
+import io.wcm.caravan.hal.comparison.impl.context.HalComparisonContextImpl;
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+
+/**
+ * Simplifies creating properly initialised {@link HalDifferenceImpl} instances.
+ */
+public class HalDifferenceListBuilder {
+
+<span class="fc" id="L43">  private final List&lt;HalDifference&gt; differences = new ArrayList&lt;&gt;();</span>
+  private final HalComparisonContextImpl context;
+
+  /**
+   * @param context specifies in which part of the tree the comparison is currently being executed
+   */
+<span class="fc" id="L49">  public HalDifferenceListBuilder(HalComparisonContextImpl context) {</span>
+<span class="fc" id="L50">    this.context = context;</span>
+<span class="fc" id="L51">  }</span>
+
+  /**
+   * @return the list of differences that were previously reported to this instance
+   */
+  public List&lt;HalDifference&gt; build() {
+<span class="fc" id="L57">    return ImmutableList.copyOf(differences);</span>
+  }
+
+  /**
+   * Clear the list of differences that were previously reported to this instance
+   */
+  public void clearPreviouslyReported() {
+<span class="fc" id="L64">    differences.clear();</span>
+<span class="fc" id="L65">  }</span>
+
+  /**
+   * Merges the differences reported to this and another builder
+   * @param other another builder
+   */
+  public void addAllFrom(HalDifferenceListBuilder other) {
+<span class="fc" id="L72">    differences.addAll(other.build());</span>
+<span class="fc" id="L73">  }</span>
+
+  /**
+   * Merges the differences reported to this and another builder
+   * @param other list of results
+   */
+  public void addAll(List&lt;HalDifference&gt; other) {
+<span class="fc" id="L80">    differences.addAll(other);</span>
+<span class="fc" id="L81">  }</span>
+
+  private void addDifference(HalDifference.ChangeType changeType, HalDifference.EntityType entityType,
+      String description, JsonNode expectedJson, JsonNode actualJson) {
+
+<span class="fc" id="L86">    HalDifference diff = new HalDifferenceImpl(context,</span>
+        changeType, entityType,
+        expectedJson, actualJson, description);
+
+<span class="fc" id="L90">    differences.add(diff);</span>
+<span class="fc" id="L91">  }</span>
+
+  private void addDifferenceWithNewContext(HalComparisonContext newContext, HalDifference.ChangeType changeType, HalDifference.EntityType entityType,
+      String description, JsonNode expectedJson, JsonNode actualJson) {
+
+<span class="fc" id="L96">    HalDifference diff = new HalDifferenceImpl(newContext,</span>
+        changeType, entityType,
+        expectedJson, actualJson, description);
+
+<span class="fc" id="L100">    differences.add(diff);</span>
+<span class="fc" id="L101">  }</span>
+
+  /**
+   * @param description
+   * @param actual the link that was added
+   * @param index within the actual array
+   */
+  public void reportAdditionalLink(String description, Link actual, int index) {
+<span class="fc" id="L109">    HalComparisonContext newContext = context.withHalPathIndex(index);</span>
+<span class="fc" id="L110">    addDifferenceWithNewContext(newContext, ChangeType.ADDITIONAL, EntityType.LINK, description, null, asJson(actual));</span>
+<span class="fc" id="L111">  }</span>
+
+  /**
+   * @param description
+   * @param expected the link that was removed
+   * @param index within the expected array
+   */
+  public void reportMissingLink(String description, Link expected, int index) {
+<span class="fc" id="L119">    HalComparisonContext newContext = context.withHalPathIndex(index);</span>
+<span class="fc" id="L120">    addDifferenceWithNewContext(newContext, ChangeType.MISSING, EntityType.LINK, description, asJson(expected), null);</span>
+<span class="fc" id="L121">  }</span>
+
+  /**
+   * @param description
+   * @param expected the link found in the ground truth resource
+   * @param actual the link that was found instead
+   */
+  public void reportModifiedLink(String description, Link expected, Link actual) {
+<span class="fc" id="L129">    addDifference(ChangeType.MODIFIED, EntityType.LINK, description, asJson(expected), asJson(actual));</span>
+<span class="fc" id="L130">  }</span>
+
+  /**
+   * @param description
+   * @param expected the links in their original order
+   * @param actual the links in their new order
+   */
+  public void reportReorderedLinks(String description, Iterable&lt;Link&gt; expected, Iterable&lt;Link&gt; actual) {
+<span class="fc" id="L138">    addDifference(ChangeType.REORDERED, EntityType.LINK, description, asJson(expected), asJson(actual));</span>
+<span class="fc" id="L139">  }</span>
+
+  /**
+   * @param description
+   * @param actual the embedded resource that was added
+   * @param index within the actual array
+   */
+  public void reportAdditionalEmbedded(String description, HalResource actual, int index) {
+<span class="fc" id="L147">    HalComparisonContext newContext = context.withHalPathIndex(index);</span>
+<span class="fc" id="L148">    addDifferenceWithNewContext(newContext, ChangeType.ADDITIONAL, EntityType.EMBEDDED, description, null, asJson(actual));</span>
+<span class="fc" id="L149">  }</span>
+
+  /**
+   * @param description
+   * @param expected the embedded resource that was removed
+   * @param index within the actual array
+   */
+  public void reportMissingEmbedded(String description, HalResource expected, int index) {
+<span class="fc" id="L157">    HalComparisonContext newContext = context.withHalPathIndex(index);</span>
+<span class="fc" id="L158">    addDifferenceWithNewContext(newContext, ChangeType.MISSING, EntityType.EMBEDDED, description, asJson(expected), null);</span>
+<span class="fc" id="L159">  }</span>
+
+  /**
+   * @param description
+   * @param expected the embedded resource in the ground truth resource
+   * @param actual the embedded resource that was found instead
+   */
+  public void reportModifiedEmbedded(String description, HalResource expected, HalResource actual) {
+<span class="fc" id="L167">    addDifference(ChangeType.MODIFIED, EntityType.EMBEDDED, description, asJson(expected), asJson(actual));</span>
+<span class="fc" id="L168">  }</span>
+
+  /**
+   * @param description
+   * @param expected the embedded resources in their original order
+   * @param actual the embedded resources in their new order
+   */
+  public void reportReorderedEmbedded(String description, Iterable&lt;HalResource&gt; expected, Iterable&lt;HalResource&gt; actual) {
+<span class="fc" id="L176">    addDifference(ChangeType.REORDERED, EntityType.EMBEDDED, description, asJson(expected), asJson(actual));</span>
+<span class="fc" id="L177">  }</span>
+
+  /**
+   * @param description
+   * @param actual the property that was added
+   */
+  public void reportAdditionalProperty(String description, JsonNode actual) {
+<span class="fc" id="L184">    addDifference(ChangeType.ADDITIONAL, EntityType.PROPERTY, description, null, actual);</span>
+<span class="fc" id="L185">  }</span>
+
+  /**
+   * @param description
+   * @param actual the property that was added
+   * @param index within the actual array
+   */
+  public void reportAdditionalProperty(String description, JsonNode actual, int index) {
+<span class="fc" id="L193">    HalComparisonContext newContext = context.withJsonPathIndex(index);</span>
+<span class="fc" id="L194">    addDifferenceWithNewContext(newContext, ChangeType.ADDITIONAL, EntityType.PROPERTY, description, null, actual);</span>
+<span class="fc" id="L195">  }</span>
+
+  /**
+   * @param description
+   * @param expected the property that was removed
+   */
+  public void reportMissingProperty(String description, JsonNode expected) {
+<span class="fc" id="L202">    addDifference(ChangeType.MISSING, EntityType.PROPERTY, description, expected, null);</span>
+<span class="fc" id="L203">  }</span>
+
+  /**
+   * @param description
+   * @param expected the property that was removed
+   * @param index within the expected array
+   */
+  public void reportMissingProperty(String description, JsonNode expected, int index) {
+<span class="fc" id="L211">    HalComparisonContext newContext = context.withJsonPathIndex(index);</span>
+<span class="fc" id="L212">    addDifferenceWithNewContext(newContext, ChangeType.MISSING, EntityType.PROPERTY, description, expected, null);</span>
+<span class="fc" id="L213">  }</span>
+
+  /**
+   * @param description
+   * @param expected the property from the ground truth resource
+   * @param actual the property that was found instead
+   */
+  public void reportModifiedProperty(String description, JsonNode expected, JsonNode actual) {
+<span class="fc" id="L221">    addDifference(ChangeType.MODIFIED, EntityType.PROPERTY, description, expected, actual);</span>
+<span class="fc" id="L222">  }</span>
+
+  /**
+   * @param description
+   * @param expected the properties in their original order
+   * @param actual the properties in their new order
+   */
+  public void reportReorderedProperty(String description, JsonNode expected, JsonNode actual) {
+<span class="fc" id="L230">    addDifference(ChangeType.REORDERED, EntityType.PROPERTY, description, expected, actual);</span>
+<span class="fc" id="L231">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

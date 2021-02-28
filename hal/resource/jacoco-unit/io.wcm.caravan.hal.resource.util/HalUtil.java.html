@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Resource</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.resource.util</a> &gt; <span class="el_source">HalUtil.java</span></div><h1>HalUtil.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.resource.util;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableListMultimap.Builder;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
+
+/**
+ * Utility class for HAL resources.
+ */
+@ProviderType
+public final class HalUtil {
+
+  private HalUtil() {
+    // static methods only
+  }
+
+  /**
+   * Returns all links in a HAL resource and its embedded resourcess except CURI links.
+   * @param hal HAL resource
+   * @return Map of Relations and Links
+   */
+  public static ListMultimap&lt;String, Link&gt; getAllLinks(HalResource hal) {
+<span class="fc" id="L53">    return getAllLinks(hal, &quot;self&quot;, null);</span>
+  }
+
+  /**
+   * Returns all links in a HAL resource and its embedded resources except CURI links fitting the given predicate.
+   * @param hal HAL resource
+   * @param predicate Predicate to filter
+   * @return Map of Relations and Links
+   */
+  public static ListMultimap&lt;String, Link&gt; getAllLinks(HalResource hal, Predicate&lt;Pair&lt;String, Link&gt;&gt; predicate) {
+<span class="fc" id="L63">    return getAllLinks(hal, &quot;self&quot;, predicate);</span>
+  }
+
+  private static ListMultimap&lt;String, Link&gt; getAllLinks(HalResource hal, String embeddedRelation, Predicate&lt;Pair&lt;String, Link&gt;&gt; predicate) {
+
+<span class="fc" id="L68">    Builder&lt;String, Link&gt; builder = ImmutableListMultimap.builder();</span>
+    // load links for resource
+<span class="fc" id="L70">    hal.getLinks().keySet().stream()</span>
+        // filter curies
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        .filter(relation -&gt; !&quot;curies&quot;.equals(relation))</span>
+        // group relation and links
+<span class="fc" id="L74">        .&lt;Pair&lt;String, Link&gt;&gt;flatMap(relation -&gt; hal.getLinks(relation).stream().map(link -&gt; Pair.of(relation, link)))</span>
+        // filter by predicate
+<span class="fc bfc" id="L76" title="All 4 branches covered.">        .filter(pair -&gt; predicate == null || predicate.apply(pair))</span>
+        // add to map
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        .forEach(pair -&gt; builder.put(&quot;self&quot;.equals(pair.getKey()) ? embeddedRelation : pair.getKey(), pair.getValue()));</span>
+
+    // load links for embedded resources
+<span class="fc" id="L81">    hal.getEmbedded().entries().stream()</span>
+<span class="fc" id="L82">        .map(entry -&gt; getAllLinks(entry.getValue(), entry.getKey(), predicate))</span>
+<span class="fc" id="L83">        .forEach(embeddedLinks -&gt; builder.putAll(embeddedLinks));</span>
+
+<span class="fc" id="L85">    return builder.build();</span>
+  }
+
+  /**
+   * Returns all links in a HAL resource and its embedded resources fitting the supplied relation.
+   * @param hal HAL resource
+   * @param relation Link relation
+   * @return List of all fitting links
+   */
+  public static List&lt;Link&gt; getAllLinksForRelation(HalResource hal, String relation) {
+
+<span class="fc" id="L96">    List&lt;Link&gt; links = Lists.newArrayList(hal.getLinks(relation));</span>
+<span class="fc" id="L97">    List&lt;Link&gt; embeddedLinks = hal.getEmbedded().values().stream()</span>
+<span class="fc" id="L98">        .flatMap(embedded -&gt; getAllLinksForRelation(embedded, relation).stream())</span>
+<span class="fc" id="L99">        .collect(Collectors.toList());</span>
+<span class="fc" id="L100">    links.addAll(embeddedLinks);</span>
+<span class="fc" id="L101">    return links;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

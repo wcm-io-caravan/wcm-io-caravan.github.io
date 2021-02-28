@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalResource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Resource</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.resource</a> &gt; <span class="el_source">HalResource.java</span></div><h1>HalResource.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.resource;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableListMultimap.Builder;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.ListMultimap;
+
+/**
+ * Bean representation of a HAL resource.
+ */
+@ProviderType
+public final class HalResource implements HalObject {
+
+  /**
+   * The mime content type
+   */
+  public static final String CONTENT_TYPE = &quot;application/hal+json&quot;;
+  /**
+   * JSON object mapper
+   */
+<span class="fc" id="L57">  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()</span>
+<span class="fc" id="L58">      .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);</span>
+
+  private final ObjectNode model;
+
+  /**
+   * Create an empty HAL resource, with no object state or links
+   */
+  public HalResource() {
+<span class="fc" id="L66">    this(JsonNodeFactory.instance.objectNode());</span>
+<span class="fc" id="L67">  }</span>
+
+  /**
+   * Create a HAL resource with empty state that only contains a self link with the given URI
+   * @param uri the URI under which this resource can be retrieved
+   */
+  public HalResource(String uri) {
+<span class="fc" id="L74">    this();</span>
+<span class="fc" id="L75">    setLink(new Link(uri));</span>
+<span class="fc" id="L76">  }</span>
+
+  /**
+   * Create a new HalResource with the state from the given JSON object
+   * @param model JSON model - must be an ObjectNode
+   * @throws IllegalArgumentException if model is not an object node
+   */
+<span class="fc" id="L83">  public HalResource(JsonNode model) {</span>
+<span class="fc" id="L84">    Preconditions.checkArgument(model instanceof ObjectNode, &quot;Model is not an ObjectNode&quot;);</span>
+<span class="fc" id="L85">    this.model = (ObjectNode)model;</span>
+<span class="fc" id="L86">  }</span>
+
+  /**
+   * Create a new HalResource with the state from the given JSON object
+   * @param model JSON model - must be an ObjectNode
+   * @throws IllegalArgumentException if model is not an object node
+   */
+<span class="fc" id="L93">  public HalResource(ObjectNode model) {</span>
+<span class="fc" id="L94">    this.model = model;</span>
+<span class="fc" id="L95">  }</span>
+
+  /**
+   * Create a new HalResource with the state from the given POJO
+   * @param pojo a simple java object that will be mapped by a standard jackson {@link ObjectMapper}
+   * @throws IllegalArgumentException if the object can not be converted to a Jackson JSON object
+   */
+<span class="fc" id="L102">  public HalResource(Object pojo) {</span>
+<span class="fc" id="L103">    this.model = OBJECT_MAPPER.convertValue(pojo, ObjectNode.class);</span>
+<span class="fc" id="L104">  }</span>
+
+  /**
+   * Create a new HalResource with the state from the given JSON object
+   * @param model JSON model - must be an ObjectNode
+   * @throws IllegalArgumentException if model is not an object node
+   */
+  public HalResource(JsonNode model, String uri) {
+<span class="fc" id="L112">    this(model);</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">    if (uri != null) {</span>
+<span class="fc" id="L114">      setLink(new Link(uri));</span>
+    }
+<span class="fc" id="L116">  }</span>
+
+  /**
+   * Create a new HalResource with the state from the given POJO
+   * @param pojo a simple java object that will be mapped by a standard jackson {@link ObjectMapper}
+   * @param uri the URI under which this resource can be retrieved
+   * @throws IllegalArgumentException if the object can not be converted to a Jackson JSON object
+   */
+<span class="nc" id="L124">  public HalResource(Object pojo, String uri) {</span>
+<span class="nc" id="L125">    this.model = OBJECT_MAPPER.convertValue(pojo, ObjectNode.class);</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">    if (uri != null) {</span>
+<span class="nc" id="L127">      setLink(new Link(uri));</span>
+    }
+<span class="nc" id="L129">  }</span>
+
+  @Override
+  public ObjectNode getModel() {
+<span class="fc" id="L133">    return model;</span>
+  }
+
+  /**
+   * @param &lt;T&gt; return type
+   * @param type a class that matches the structure of this resource's model
+   * @return a new instance of the given class, populated with the properties of this resource's model
+   */
+  public &lt;T&gt; T adaptTo(Class&lt;T&gt; type) {
+<span class="fc" id="L142">    return OBJECT_MAPPER.convertValue(model, type);</span>
+  }
+
+  /**
+   * @param relation Link relation
+   * @return True if has link for the given relation
+   */
+  public boolean hasLink(String relation) {
+<span class="fc" id="L150">    return hasResource(HalResourceType.LINKS, relation);</span>
+  }
+
+  /**
+   * @param relation Embedded resource relation
+   * @return True if has embedded resource for the given relation
+   */
+  public boolean hasEmbedded(String relation) {
+<span class="fc" id="L158">    return hasResource(HalResourceType.EMBEDDED, relation);</span>
+  }
+
+  private boolean hasResource(HalResourceType type, String relation) {
+<span class="fc bfc" id="L162" title="All 2 branches covered.">    return !model.at(&quot;/&quot; + type + &quot;/&quot; + relation).isMissingNode();</span>
+  }
+
+  /**
+   * @return Self link for the resource. Can be null
+   */
+  public Link getLink() {
+<span class="fc" id="L169">    return getLink(&quot;self&quot;);</span>
+  }
+
+  /**
+   * @return All links
+   */
+  public ListMultimap&lt;String, Link&gt; getLinks() {
+<span class="fc" id="L176">    return getResources(Link.class, HalResourceType.LINKS);</span>
+  }
+
+  /**
+   * @return All embedded resources
+   */
+  public ListMultimap&lt;String, HalResource&gt; getEmbedded() {
+<span class="fc" id="L183">    return getResources(HalResource.class, HalResourceType.EMBEDDED);</span>
+  }
+
+  private &lt;X extends HalObject&gt; ListMultimap&lt;String, X&gt; getResources(Class&lt;X&gt; clazz, HalResourceType type) {
+<span class="fc bfc" id="L187" title="All 2 branches covered.">    if (!model.has(type.toString())) {</span>
+<span class="fc" id="L188">      return ImmutableListMultimap.of();</span>
+    }
+<span class="fc" id="L190">    Builder&lt;String, X&gt; resources = ImmutableListMultimap.builder();</span>
+<span class="fc" id="L191">    model.get(type.toString())</span>
+<span class="fc" id="L192">    .fieldNames()</span>
+<span class="fc" id="L193">    .forEachRemaining(field -&gt; resources.putAll(field, getResources(clazz, type, field)));</span>
+<span class="fc" id="L194">    return resources.build();</span>
+  }
+
+  /**
+   * @param relation Link relation
+   * @return Link for the given relation
+   */
+  public Link getLink(String relation) {
+<span class="fc bfc" id="L202" title="All 2 branches covered.">    return hasLink(relation) ? getLinks(relation).get(0) : null;</span>
+  }
+
+  /**
+   * @param relation Link relation
+   * @return All links for the given relation
+   */
+  public List&lt;Link&gt; getLinks(String relation) {
+<span class="fc" id="L210">    return getResources(Link.class, HalResourceType.LINKS, relation);</span>
+  }
+
+  /**
+   * recursively collects links within this resource and all embedded resources
+   * @param rel the relation your interested in
+   * @return a list of all links
+   */
+  public List&lt;Link&gt; collectLinks(String rel) {
+<span class="fc" id="L219">    return collectResources(Link.class, HalResourceType.LINKS, rel);</span>
+  }
+
+  private &lt;X extends HalObject&gt; List&lt;X&gt; collectResources(Class&lt;X&gt; clazz, HalResourceType type, String relation) {
+<span class="fc" id="L223">    ImmutableList.Builder&lt;X&gt; builder = ImmutableList.&lt;X&gt;builder().addAll(getResources(clazz, type, relation));</span>
+<span class="fc" id="L224">    getEmbedded().values().stream()</span>
+<span class="fc" id="L225">    .map(embedded -&gt; embedded.collectResources(clazz, type, relation))</span>
+<span class="fc" id="L226">    .forEach(embeddedResources -&gt; builder.addAll(embeddedResources));</span>
+<span class="fc" id="L227">    return builder.build();</span>
+  }
+
+  /**
+   * @param relation Embedded resource relation
+   * @return Embedded resources for the given relation
+   */
+  public HalResource getEmbeddedResource(String relation) {
+<span class="fc bfc" id="L235" title="All 2 branches covered.">    return hasEmbedded(relation) ? getEmbedded(relation).get(0) : null;</span>
+  }
+
+  /**
+   * @param relation Embedded resource relation
+   * @return All embedded resources for the given relation
+   */
+  public List&lt;HalResource&gt; getEmbedded(String relation) {
+<span class="fc" id="L243">    return getResources(HalResource.class, HalResourceType.EMBEDDED, relation);</span>
+  }
+
+  /**
+   * recursively collects embedded resources of a specific rel
+   * @param rel the relation your interested in
+   * @return a list of all embedded resources
+   */
+  public List&lt;HalResource&gt; collectEmbedded(String rel) {
+<span class="fc" id="L252">    return collectResources(HalResource.class, HalResourceType.EMBEDDED, rel);</span>
+  }
+
+  private &lt;X extends HalObject&gt; List&lt;X&gt; getResources(Class&lt;X&gt; clazz, HalResourceType type, String relation) {
+<span class="fc bfc" id="L256" title="All 2 branches covered.">    if (!hasResource(type, relation)) {</span>
+<span class="fc" id="L257">      return ImmutableList.of();</span>
+    }
+<span class="fc" id="L259">    JsonNode resources = model.at(&quot;/&quot; + type + &quot;/&quot; + relation);</span>
+
+    List&lt;X&gt; halObjects;
+    try {
+<span class="fc" id="L263">      Constructor&lt;X&gt; constructor = clazz.getConstructor(JsonNode.class);</span>
+<span class="fc bfc" id="L264" title="All 2 branches covered.">      if (resources instanceof ObjectNode) {</span>
+<span class="fc" id="L265">        halObjects = ImmutableList.of(constructor.newInstance(resources));</span>
+      }
+      else {
+<span class="fc" id="L268">        ImmutableList.Builder&lt;X&gt; result = ImmutableList.builder();</span>
+<span class="fc bfc" id="L269" title="All 2 branches covered.">        for (JsonNode resource : resources) {</span>
+<span class="pc bpc" id="L270" title="1 of 2 branches missed.">          if (resource instanceof ObjectNode) {</span>
+<span class="fc" id="L271">            result.add(constructor.newInstance(resource));</span>
+          }
+<span class="fc" id="L273">        }</span>
+<span class="fc" id="L274">        halObjects = result.build();</span>
+      }
+
+<span class="fc" id="L277">      updateContextResource(halObjects);</span>
+
+<span class="fc" id="L279">      return halObjects;</span>
+    }
+<span class="nc" id="L281">    catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException</span>
+        | InvocationTargetException ex) {
+<span class="nc" id="L283">      throw new RuntimeException(ex);</span>
+    }
+  }
+
+  /**
+   * Sets link for the {@code self} relation. Overwrites existing one.
+   * @param link Link to set
+   * @return HAL resource
+   */
+  public HalResource setLink(Link link) {
+<span class="fc" id="L293">    return setLink(&quot;self&quot;, link);</span>
+  }
+
+  /**
+   * Sets link for the given relation. Overwrites existing one. If {@code link} is {@code null} it gets ignored.
+   * @param relation Link relation
+   * @param link Link to add
+   * @return HAL resource
+   */
+  public HalResource setLink(String relation, Link link) {
+<span class="fc bfc" id="L303" title="All 2 branches covered.">    if (link == null) {</span>
+<span class="fc" id="L304">      return this;</span>
+    }
+<span class="fc" id="L306">    return addResources(HalResourceType.LINKS, relation, false, new Link[] {</span>
+        link
+    });
+  }
+
+  /**
+   * Adds links for the given relation
+   * @param relation Link relation
+   * @param links Links to add
+   * @return HAL resource
+   */
+  public HalResource addLinks(String relation, Link... links) {
+<span class="fc" id="L318">    return addResources(HalResourceType.LINKS, relation, true, links);</span>
+  }
+
+  /**
+   * Adds links for the given relation
+   * @param relation Link relation
+   * @param links Links to add
+   * @return HAL resource
+   */
+  public HalResource addLinks(String relation, Iterable&lt;Link&gt; links) {
+<span class="fc" id="L328">    return addLinks(relation, Iterables.toArray(links, Link.class));</span>
+  }
+
+  /**
+   * Embed resource for the given relation. Overwrites existing one.
+   * @param relation Embedded resource relation
+   * @param resource Resource to embed
+   * @return HAL resource
+   */
+  public HalResource setEmbedded(String relation, HalResource resource) {
+<span class="fc bfc" id="L338" title="All 2 branches covered.">    if (resource == null) {</span>
+<span class="fc" id="L339">      return this;</span>
+    }
+<span class="fc" id="L341">    return addResources(HalResourceType.EMBEDDED, relation, false, new HalResource[] {</span>
+        resource
+    });
+  }
+
+  /**
+   * Embed resources for the given relation
+   * @param relation Embedded resource relation
+   * @param resources Resources to embed
+   * @return HAL resource
+   */
+  public HalResource addEmbedded(String relation, HalResource... resources) {
+<span class="fc" id="L353">    return addResources(HalResourceType.EMBEDDED, relation, true, resources);</span>
+  }
+
+  /**
+   * Embed resources for the given relation
+   * @param relation Embedded resource relation
+   * @param resources Resources to embed
+   * @return HAL resource
+   */
+  public HalResource addEmbedded(String relation, Iterable&lt;HalResource&gt; resources) {
+<span class="fc" id="L363">    return addEmbedded(relation, Iterables.toArray(resources, HalResource.class));</span>
+  }
+
+  private &lt;X extends HalObject&gt; HalResource addResources(HalResourceType type, String relation, boolean asArray, X[] newResources) {
+<span class="fc bfc" id="L367" title="All 2 branches covered.">    if (newResources.length == 0) {</span>
+<span class="fc" id="L368">      return this;</span>
+    }
+<span class="fc bfc" id="L370" title="All 2 branches covered.">    ObjectNode resources = model.has(type.toString()) ? (ObjectNode)model.get(type.toString()) : model.putObject(type.toString());</span>
+
+<span class="fc bfc" id="L372" title="All 2 branches covered.">    if (asArray) {</span>
+<span class="fc" id="L373">      ArrayNode container = getArrayNodeContainer(type, relation, resources);</span>
+<span class="fc" id="L374">      Arrays.stream(newResources).forEach(link -&gt; container.add(link.getModel()));</span>
+<span class="fc" id="L375">    }</span>
+    else {
+<span class="fc" id="L377">      resources.set(relation, newResources[0].getModel());</span>
+    }
+
+<span class="fc" id="L380">    updateContextResource(Arrays.asList(newResources));</span>
+
+<span class="fc" id="L382">    return this;</span>
+  }
+
+  private &lt;X extends HalObject&gt; void updateContextResource(Iterable&lt;X&gt; halObjects) {
+
+<span class="fc bfc" id="L387" title="All 2 branches covered.">    for (X halObject : halObjects) {</span>
+<span class="fc bfc" id="L388" title="All 2 branches covered.">      if (halObject instanceof Link) {</span>
+<span class="fc" id="L389">        ((Link)halObject).setContext(this);</span>
+      }
+<span class="fc" id="L391">    }</span>
+<span class="fc" id="L392">  }</span>
+
+  private ArrayNode getArrayNodeContainer(HalResourceType type, String relation, ObjectNode resources) {
+<span class="fc bfc" id="L395" title="All 2 branches covered.">    if (hasResource(type, relation)) {</span>
+<span class="fc bfc" id="L396" title="All 2 branches covered.">      if (resources.get(relation).isArray()) {</span>
+<span class="fc" id="L397">        return (ArrayNode)resources.get(relation);</span>
+      }
+      else {
+<span class="fc" id="L400">        JsonNode temp = resources.get(relation);</span>
+<span class="fc" id="L401">        return resources.putArray(relation).add(temp);</span>
+      }
+    }
+    else {
+<span class="fc" id="L405">      return resources.putArray(relation);</span>
+    }
+  }
+
+  /**
+   * Removes all links for the given relation.
+   * @param relation Link relation
+   * @return HAL resource
+   */
+  public HalResource removeLinks(String relation) {
+<span class="fc" id="L415">    return removeResource(HalResourceType.LINKS, relation);</span>
+  }
+
+  /**
+   * Removes all embedded resources for the given relation.
+   * @param relation Embedded resource relation
+   * @return HAL resource
+   */
+  public HalResource removeEmbedded(String relation) {
+<span class="fc" id="L424">    return removeResource(HalResourceType.EMBEDDED, relation);</span>
+  }
+
+  private HalResource removeResource(HalResourceType type, String relation) {
+<span class="fc bfc" id="L428" title="All 2 branches covered.">    if (hasResource(type, relation)) {</span>
+<span class="fc" id="L429">      ((ObjectNode)model.get(type.toString())).remove(relation);</span>
+    }
+<span class="fc" id="L431">    return this;</span>
+  }
+
+  /**
+   * Removes one link for the given relation and index.
+   * @param relation Link relation
+   * @param index Array index
+   * @return HAL resource
+   */
+  public HalResource removeLink(String relation, int index) {
+<span class="fc" id="L441">    return removeResource(HalResourceType.LINKS, relation, index);</span>
+  }
+
+
+  /**
+   * Remove the link with the given relation and href
+   * @param relation Link relation
+   * @param href to identify the link to remove
+   * @return this HAL resource
+   */
+  public HalResource removeLinkWithHref(String relation, String href) {
+
+<span class="nc" id="L453">    List&lt;Link&gt; links = getLinks(relation);</span>
+<span class="nc bnc" id="L454" title="All 2 branches missed.">    for (int i = 0; i &lt; links.size(); i++) {</span>
+<span class="nc bnc" id="L455" title="All 2 branches missed.">      if (href.equals(links.get(i).getHref())) {</span>
+<span class="nc" id="L456">        return removeLink(relation, i);</span>
+      }
+    }
+
+<span class="nc" id="L460">    return this;</span>
+  }
+
+  /**
+   * Removes one embedded resource for the given relation and index.
+   * @param relation Embedded resource relation
+   * @param index Array index
+   * @return HAL resource
+   */
+  public HalResource removeEmbedded(String relation, int index) {
+<span class="fc" id="L470">    return removeResource(HalResourceType.EMBEDDED, relation, index);</span>
+  }
+
+  private HalResource removeResource(HalResourceType type, String relation, int index) {
+<span class="fc bfc" id="L474" title="All 2 branches covered.">    if (hasResource(type, relation)) {</span>
+<span class="fc" id="L475">      JsonNode resources = model.at(&quot;/&quot; + type + &quot;/&quot; + relation);</span>
+<span class="fc bfc" id="L476" title="All 4 branches covered.">      if (resources instanceof ObjectNode || resources.size() &lt;= 1) {</span>
+<span class="fc" id="L477">        ((ObjectNode)model.get(type.toString())).remove(relation);</span>
+      }
+      else {
+<span class="fc" id="L480">        ((ArrayNode)resources).remove(index);</span>
+      }
+    }
+<span class="fc" id="L483">    return this;</span>
+  }
+
+  /**
+   * Removes all links.
+   * @return HAL resource
+   */
+  public HalResource removeLinks() {
+<span class="fc" id="L491">    return removeResources(HalResourceType.LINKS);</span>
+  }
+
+  /**
+   * Removes all embedded resources.
+   * @return HAL resource
+   */
+  public HalResource removeEmbedded() {
+<span class="fc" id="L499">    return removeResources(HalResourceType.EMBEDDED);</span>
+  }
+
+  /**
+   * Changes the rel of embedded resources
+   * @param relToRename the rel that you want to change
+   * @param newRel the new rel for all embedded items
+   * @return HAL resource
+   */
+  public HalResource renameEmbedded(String relToRename, String newRel) {
+<span class="fc" id="L509">    List&lt;HalResource&gt; resources = getEmbedded(relToRename);</span>
+<span class="fc" id="L510">    return removeEmbedded(relToRename).addEmbedded(newRel, resources);</span>
+  }
+
+  private HalResource removeResources(HalResourceType type) {
+<span class="fc" id="L514">    model.remove(type.toString());</span>
+<span class="fc" id="L515">    return this;</span>
+  }
+
+  /**
+   * Adds state to the resource.
+   * @param state Resource state
+   * @return HAL resource
+   */
+  public HalResource addState(ObjectNode state) {
+<span class="fc" id="L524">    state.fields().forEachRemaining(entry -&gt; model.set(entry.getKey(), entry.getValue()));</span>
+<span class="fc" id="L525">    return this;</span>
+  }
+
+  /**
+   * @return JSON field names for the state object
+   */
+  public List&lt;String&gt; getStateFieldNames() {
+<span class="fc" id="L532">    Iterable&lt;String&gt; iterable = () -&gt; model.fieldNames();</span>
+<span class="fc" id="L533">    return StreamSupport.stream(iterable.spliterator(), false)</span>
+<span class="fc bfc" id="L534" title="All 4 branches covered.">        .filter(field -&gt; !&quot;_links&quot;.equals(field) &amp;&amp; !&quot;_embedded&quot;.equals(field))</span>
+<span class="fc" id="L535">        .collect(Collectors.toList());</span>
+  }
+
+  /**
+   * Removes all state attributes
+   * @return HAL resource
+   */
+  public HalResource removeState() {
+<span class="fc" id="L543">    getStateFieldNames().forEach(field -&gt; model.remove(field));</span>
+<span class="fc" id="L544">    return this;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

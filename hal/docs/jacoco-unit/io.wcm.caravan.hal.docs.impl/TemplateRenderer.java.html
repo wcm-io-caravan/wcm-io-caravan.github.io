@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TemplateRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Interface Documentation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.docs.impl</a> &gt; <span class="el_source">TemplateRenderer.java</span></div><h1>TemplateRenderer.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2015 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.docs.impl;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Map;
+
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
+import org.osgi.framework.Bundle;
+import org.osgi.service.component.ComponentContext;
+
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.AbstractTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateSource;
+import com.github.jknack.handlebars.io.URLTemplateSource;
+import com.google.common.collect.ImmutableMap;
+
+import io.wcm.caravan.hal.docs.impl.model.LinkRelation;
+
+/**
+ * Renders HTML views for HAL documentation.
+ */
+@Component(immediate = true)
+@Service(TemplateRenderer.class)
+<span class="nc" id="L47">public class TemplateRenderer {</span>
+
+  private static final String CLASSPATH_TEMPLATES = &quot;HALDOCS-TEMPLATE-INF/templates&quot;;
+
+  private Handlebars handlebars;
+  private Template serviceTemplate;
+  private Template linkRelationTemplate;
+
+  @Activate
+  void activate(ComponentContext componentContext) throws IOException {
+<span class="nc" id="L57">    Bundle bundle = componentContext.getBundleContext().getBundle();</span>
+<span class="nc" id="L58">    this.handlebars = new Handlebars(new BundleTemplateLoader(bundle));</span>
+<span class="nc" id="L59">    this.serviceTemplate = handlebars.compile(&quot;service.html.hbs&quot;);</span>
+<span class="nc" id="L60">    this.linkRelationTemplate = handlebars.compile(&quot;linkRelation.html.hbs&quot;);</span>
+<span class="nc" id="L61">  }</span>
+
+  /**
+   * Generate HTML file for service.
+   * @param service Service
+   * @return Rendered markup
+   * @throws IOException
+   */
+  public String renderServiceHtml(io.wcm.caravan.hal.docs.impl.model.Service service) throws IOException {
+<span class="nc" id="L70">    Map&lt;String, Object&gt; model = ImmutableMap.&lt;String, Object&gt;builder()</span>
+<span class="nc" id="L71">        .put(&quot;service&quot;, service)</span>
+<span class="nc" id="L72">        .build();</span>
+<span class="nc" id="L73">    return render(service, model, serviceTemplate);</span>
+  }
+
+  /**
+   * Generate HTML file for link relation.
+   * @param service Service
+   * @param linkRelation Link relation
+   * @return Rendered markup
+   * @throws IOException
+   */
+  public String renderLinkRelationHtml(io.wcm.caravan.hal.docs.impl.model.Service service, LinkRelation linkRelation)
+      throws IOException {
+<span class="nc" id="L85">    Map&lt;String, Object&gt; model = ImmutableMap.&lt;String, Object&gt;builder()</span>
+<span class="nc" id="L86">        .put(&quot;service&quot;, service)</span>
+<span class="nc" id="L87">        .put(&quot;linkRelation&quot;, linkRelation)</span>
+<span class="nc" id="L88">        .build();</span>
+<span class="nc" id="L89">    return render(service, model, linkRelationTemplate);</span>
+  }
+
+  /**
+   * Generate templated file with handlebars
+   * @param model Model
+   * @param template Template
+   * @return Rendered markup
+   */
+  private String render(io.wcm.caravan.hal.docs.impl.model.Service service, Map&lt;String, Object&gt; model,
+      Template template) throws IOException {
+<span class="nc" id="L100">    Map&lt;String, Object&gt; mergedModel = ImmutableMap.&lt;String, Object&gt;builder()</span>
+<span class="nc" id="L101">        .putAll(model)</span>
+<span class="nc" id="L102">        .put(&quot;docsContext&quot;, ImmutableMap.&lt;String, Object&gt;builder()</span>
+<span class="nc" id="L103">            .put(&quot;baseUrl&quot;, DocsPath.get(service.getServiceId()) + &quot;/&quot;)</span>
+<span class="nc" id="L104">            .put(&quot;resourcesPath&quot;, HalDocsBundleTracker.DOCS_RESOURCES_URI_PREFIX)</span>
+<span class="nc" id="L105">            .build())</span>
+<span class="nc" id="L106">        .build();</span>
+<span class="nc" id="L107">    return template.apply(mergedModel);</span>
+  }
+
+  /**
+   * Loads Handlebars templates from bundle.
+   */
+  private static class BundleTemplateLoader extends AbstractTemplateLoader {
+
+    private final Bundle bundle;
+
+<span class="nc" id="L117">    BundleTemplateLoader(Bundle bundle) {</span>
+<span class="nc" id="L118">      this.bundle = bundle;</span>
+<span class="nc" id="L119">    }</span>
+
+    @Override
+    public TemplateSource sourceAt(String location) throws IOException {
+<span class="nc" id="L123">      URL resource = bundle.getResource(CLASSPATH_TEMPLATES + &quot;/&quot; + location);</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">      if (resource == null) {</span>
+<span class="nc" id="L125">        throw new FileNotFoundException(location);</span>
+      }
+<span class="nc" id="L127">      return new URLTemplateSource(location, resource);</span>
+    }
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

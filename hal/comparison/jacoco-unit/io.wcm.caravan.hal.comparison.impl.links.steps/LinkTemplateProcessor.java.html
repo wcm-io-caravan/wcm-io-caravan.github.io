@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LinkTemplateProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Comparison</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.comparison.impl.links.steps</a> &gt; <span class="el_source">LinkTemplateProcessor.java</span></div><h1>LinkTemplateProcessor.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2018 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.comparison.impl.links.steps;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.damnhandy.uri.template.UriTemplate;
+import com.google.common.collect.Sets;
+
+import io.wcm.caravan.hal.comparison.HalComparisonContext;
+import io.wcm.caravan.hal.comparison.HalComparisonStrategy;
+import io.wcm.caravan.hal.comparison.HalDifference;
+import io.wcm.caravan.hal.comparison.impl.context.HalComparisonContextImpl;
+import io.wcm.caravan.hal.comparison.impl.difference.HalDifferenceListBuilder;
+import io.wcm.caravan.hal.comparison.impl.links.LinkProcessingStep;
+import io.wcm.caravan.hal.resource.Link;
+
+/**
+ * Detects if the available in a pair of link templates is different, and filteres all link-templates so they are not
+ * being followed in the recursive comparison.
+ */
+public class LinkTemplateProcessor implements LinkProcessingStep {
+
+  private final HalComparisonStrategy strategy;
+
+  /**
+   * @param strategy that defines which relations should be ignored
+   */
+<span class="fc" id="L54">  public LinkTemplateProcessor(HalComparisonStrategy strategy) {</span>
+<span class="fc" id="L55">    this.strategy = strategy;</span>
+<span class="fc" id="L56">  }</span>
+
+  @Override
+  public List&lt;HalDifference&gt; apply(HalComparisonContextImpl context, List&lt;Link&gt; expected, List&lt;Link&gt; actual) {
+
+<span class="fc" id="L61">    HalDifferenceListBuilder diffs = new HalDifferenceListBuilder(context);</span>
+
+<span class="fc" id="L63">    List&lt;Link&gt; expectedExpandedTemplates = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L64">    List&lt;Link&gt; actualExpandedTemplates = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L66">    Iterator&lt;Link&gt; expectedIt = expected.iterator();</span>
+<span class="fc" id="L67">    Iterator&lt;Link&gt; actualIt = actual.iterator();</span>
+<span class="fc bfc" id="L68" title="All 4 branches covered.">    while (expectedIt.hasNext() &amp;&amp; actualIt.hasNext()) {</span>
+<span class="fc" id="L69">      Link expectedLink = expectedIt.next();</span>
+<span class="fc" id="L70">      Link actualLink = actualIt.next();</span>
+
+      // whenever one of the links is templated...
+<span class="fc bfc" id="L73" title="All 4 branches covered.">      if (expectedLink.isTemplated() || actualLink.isTemplated()) {</span>
+
+        // return a result when there is a difference in the template parameters
+<span class="fc" id="L76">        findTemplateDifferences(context, expectedLink, actualLink, diffs);</span>
+
+        // expand the templates if the strategy provides a map of variables for them
+<span class="fc" id="L79">        List&lt;Map&lt;String, Object&gt;&gt; variables = strategy.getVariablesToExpandLinkTemplate(context, expectedLink, actualLink);</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (variables != null) {</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">          for (Map&lt;String, Object&gt; map : variables) {</span>
+<span class="fc" id="L82">            expectedExpandedTemplates.add(createExpandedLink(expectedLink, map));</span>
+<span class="fc" id="L83">            actualExpandedTemplates.add(createExpandedLink(actualLink, map));</span>
+<span class="fc" id="L84">          }</span>
+        }
+
+        // and finally remove the links from the list of links to compare
+<span class="fc" id="L88">        expectedIt.remove();</span>
+<span class="fc" id="L89">        actualIt.remove();</span>
+      }
+<span class="fc" id="L91">    }</span>
+
+    // there could be more expected than actual links (or vice versa)
+<span class="fc" id="L94">    filterTemplatesFromRemaining(expectedIt);</span>
+<span class="fc" id="L95">    filterTemplatesFromRemaining(actualIt);</span>
+
+<span class="fc" id="L97">    expected.addAll(expectedExpandedTemplates);</span>
+<span class="fc" id="L98">    actual.addAll(actualExpandedTemplates);</span>
+
+<span class="fc" id="L100">    return diffs.build();</span>
+  }
+
+  private static Link createExpandedLink(Link linkTemplate, Map&lt;String, Object&gt; variables) {
+
+<span class="fc" id="L105">    UriTemplate template = UriTemplate.fromTemplate(linkTemplate.getHref());</span>
+<span class="fc" id="L106">    String expandedUrl = template.expand(variables);</span>
+
+<span class="fc" id="L108">    Link expandedLink = new Link(expandedUrl);</span>
+<span class="fc" id="L109">    expandedLink.setName(StringUtils.trimToEmpty(linkTemplate.getName()) + variables.toString());</span>
+
+<span class="fc" id="L111">    return expandedLink;</span>
+  }
+
+  private static void filterTemplatesFromRemaining(Iterator&lt;Link&gt; remainingIt) {
+<span class="fc bfc" id="L115" title="All 2 branches covered.">    while (remainingIt.hasNext()) {</span>
+<span class="fc" id="L116">      Link link = remainingIt.next();</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">      if (link.isTemplated()) {</span>
+<span class="fc" id="L118">        remainingIt.remove();</span>
+      }
+<span class="fc" id="L120">    }</span>
+<span class="fc" id="L121">  }</span>
+
+  private static String formatNames(Collection&lt;String&gt; items) {
+<span class="fc" id="L124">    return items.stream()</span>
+<span class="fc" id="L125">        .collect(Collectors.joining(&quot;, &quot;, &quot;[&quot;, &quot;]&quot;));</span>
+  }
+
+  private static String formatTemplateVariables(Link link) {
+<span class="fc" id="L129">    Set&lt;String&gt; variables = Sets.newHashSet(UriTemplate.fromTemplate(link.getHref()).getVariables());</span>
+<span class="fc" id="L130">    return formatNames(variables);</span>
+  }
+
+  private static void findTemplateDifferences(HalComparisonContext context, Link expected, Link actual, HalDifferenceListBuilder diffs) {
+
+<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (expected.isTemplated() != actual.isTemplated()) {</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">      String msg = expected.isTemplated()</span>
+<span class="fc" id="L137">          ? &quot;Expected templated link with variables &quot; + formatTemplateVariables(expected) + &quot;, but found resolved link&quot;</span>
+<span class="fc" id="L138">          : &quot;Expected resolved link, but found template with variables &quot; + formatTemplateVariables(actual);</span>
+<span class="fc" id="L139">      diffs.reportModifiedLink(msg, expected, actual);</span>
+<span class="fc" id="L140">      return;</span>
+    }
+
+<span class="fc" id="L143">    UriTemplate expectedTemplate = UriTemplate.fromTemplate(expected.getHref());</span>
+<span class="fc" id="L144">    UriTemplate actualTemplate = UriTemplate.fromTemplate(actual.getHref());</span>
+
+<span class="fc" id="L146">    Set&lt;String&gt; expectedVariables = Sets.newHashSet(expectedTemplate.getVariables());</span>
+<span class="fc" id="L147">    Set&lt;String&gt; actualVariables = Sets.newHashSet(actualTemplate.getVariables());</span>
+
+<span class="fc" id="L149">    Set&lt;String&gt; missingVariables = Sets.difference(expectedVariables, actualVariables);</span>
+<span class="fc" id="L150">    Set&lt;String&gt; additionalVariables = Sets.difference(actualVariables, expectedVariables);</span>
+
+<span class="fc bfc" id="L152" title="All 4 branches covered.">    if (!missingVariables.isEmpty() || !additionalVariables.isEmpty()) {</span>
+<span class="fc" id="L153">      String msg = &quot;Expected template parameters to be &quot; + formatNames(expectedVariables) + &quot;,&quot;</span>
+<span class="fc" id="L154">          + &quot; but found &quot; + formatNames(actualVariables);</span>
+<span class="fc" id="L155">      diffs.reportModifiedLink(msg, expected, actual);</span>
+    }
+<span class="fc" id="L157">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

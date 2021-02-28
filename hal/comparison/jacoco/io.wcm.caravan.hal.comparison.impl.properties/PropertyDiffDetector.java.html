@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PropertyDiffDetector.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">HAL Comparison</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.hal.comparison.impl.properties</a> &gt; <span class="el_source">PropertyDiffDetector.java</span></div><h1>PropertyDiffDetector.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2018 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.hal.comparison.impl.properties;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
+
+import io.wcm.caravan.hal.comparison.HalDifference;
+import io.wcm.caravan.hal.comparison.impl.context.HalComparisonContextImpl;
+import io.wcm.caravan.hal.comparison.impl.difference.HalDifferenceListBuilder;
+import io.wcm.caravan.hal.comparison.impl.matching.MatchingResult;
+import io.wcm.caravan.hal.comparison.impl.matching.SimpleIdMatchingAlgorithm;
+import io.wcm.caravan.hal.comparison.impl.util.HalJsonConversion;
+import io.wcm.caravan.hal.resource.HalResource;
+
+/**
+ * Implements the comparison of a {@link HalResource} *state* (i.e. all nested JSON properties, except for _links or
+ * _embedded)
+ */
+<span class="fc" id="L47">public class PropertyDiffDetector implements PropertyProcessing {</span>
+
+  @Override
+  public List&lt;HalDifference&gt; process(HalComparisonContextImpl context, HalResource expected, HalResource actual) {
+
+<span class="fc" id="L52">    ObjectNode expectedJson = HalJsonConversion.cloneAndStripHalProperties(expected);</span>
+<span class="fc" id="L53">    ObjectNode actualJson = HalJsonConversion.cloneAndStripHalProperties(actual);</span>
+
+<span class="fc" id="L55">    HalDifferenceListBuilder diffs = new HalDifferenceListBuilder(context);</span>
+
+<span class="fc" id="L57">    AtomicInteger nodeCounter = new AtomicInteger();</span>
+<span class="fc" id="L58">    compareObjects(context, expectedJson, actualJson, nodeCounter, diffs);</span>
+
+    // if there only a few differences in the individual properties, one HalDifference is emitted for each difference
+<span class="fc" id="L61">    int numPropertyDifferences = diffs.build().size();</span>
+<span class="pc bpc" id="L62" title="1 of 4 branches missed.">    if (numPropertyDifferences &lt; 3 || numPropertyDifferences &lt;= nodeCounter.get() / 2) {</span>
+<span class="fc" id="L63">      return diffs.build();</span>
+    }
+
+    // if there are more differences, then it might be a completely different object,
+    // so just a single HalDifference is emitted
+<span class="fc" id="L68">    diffs.clearPreviouslyReported();</span>
+
+<span class="fc" id="L70">    String msg = numPropertyDifferences + &quot; of &quot; + nodeCounter.get() + &quot; JSON nodes are different&quot;;</span>
+<span class="fc" id="L71">    diffs.reportModifiedProperty(msg, expectedJson, actualJson);</span>
+<span class="fc" id="L72">    return diffs.build();</span>
+  }
+
+  private void compareObjects(HalComparisonContextImpl context, ObjectNode expectedJson, ObjectNode actualJson, AtomicInteger nodeCounter,
+      HalDifferenceListBuilder diffs) {
+
+<span class="fc" id="L78">    Set&lt;String&gt; comparedFieldNames = new HashSet&lt;&gt;();</span>
+
+<span class="fc" id="L80">    Iterator&lt;String&gt; fieldNameIt = expectedJson.fieldNames();</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">    while (fieldNameIt.hasNext()) {</span>
+<span class="fc" id="L82">      String fieldName = fieldNameIt.next();</span>
+
+<span class="fc" id="L84">      HalComparisonContextImpl newContext = context.withAppendedJsonPath(fieldName);</span>
+<span class="fc" id="L85">      JsonNode expectedValue = expectedJson.path(fieldName);</span>
+<span class="fc" id="L86">      JsonNode actualValue = actualJson.path(fieldName);</span>
+
+<span class="fc" id="L88">      HalDifferenceListBuilder newDiffs = new HalDifferenceListBuilder(newContext);</span>
+<span class="fc" id="L89">      compareValues(newContext, expectedValue, actualValue, nodeCounter, newDiffs);</span>
+<span class="fc" id="L90">      diffs.addAllFrom(newDiffs);</span>
+
+<span class="fc" id="L92">      comparedFieldNames.add(fieldName);</span>
+<span class="fc" id="L93">    }</span>
+
+<span class="fc" id="L95">    Iterator&lt;String&gt; actualFieldNameIt = actualJson.fieldNames();</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">    while (actualFieldNameIt.hasNext()) {</span>
+<span class="fc" id="L97">      String fieldName = actualFieldNameIt.next();</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">      if (!comparedFieldNames.contains(fieldName)) {</span>
+<span class="fc" id="L99">        HalComparisonContextImpl newContext = context.withAppendedJsonPath(fieldName);</span>
+<span class="fc" id="L100">        HalDifferenceListBuilder newDiffs = new HalDifferenceListBuilder(newContext);</span>
+
+<span class="fc" id="L102">        newDiffs.reportAdditionalProperty(&quot;An additional property &quot; + fieldName + &quot; was found in the actual resource&quot;, actualJson.get(fieldName));</span>
+<span class="fc" id="L103">        diffs.addAllFrom(newDiffs);</span>
+      }
+<span class="fc" id="L105">    }</span>
+
+<span class="fc" id="L107">  }</span>
+
+  private void compareValues(HalComparisonContextImpl context, JsonNode expectedValue, JsonNode actualValue, AtomicInteger nodeCounter,
+      HalDifferenceListBuilder diffs) {
+
+<span class="fc" id="L112">    nodeCounter.incrementAndGet();</span>
+
+<span class="fc bfc" id="L114" title="All 2 branches covered.">    if (actualValue.isMissingNode()) {</span>
+<span class="fc" id="L115">      diffs.reportMissingProperty(&quot;Expected property is missing&quot;, expectedValue);</span>
+    }
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    else if (actualValue.getNodeType() != expectedValue.getNodeType()) {</span>
+<span class="fc" id="L118">      String msg = &quot;Expected property of type &quot; + expectedValue.getNodeType().name() + &quot;, but found &quot; + actualValue.getNodeType().name();</span>
+<span class="fc" id="L119">      diffs.reportModifiedProperty(msg, expectedValue, actualValue);</span>
+<span class="fc" id="L120">    }</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">    else if (expectedValue.isObject()) {</span>
+<span class="fc" id="L122">      compareObjects(context, (ObjectNode)expectedValue, (ObjectNode)actualValue, nodeCounter, diffs);</span>
+    }
+<span class="fc bfc" id="L124" title="All 2 branches covered.">    else if (expectedValue.isArray()) {</span>
+<span class="fc" id="L125">      List&lt;HalDifference&gt; diffWithMatching = compareArrayValuesWithMatching(context, expectedValue, actualValue);</span>
+<span class="fc" id="L126">      List&lt;HalDifference&gt; diffInplace = compareArrayValuesInplace(context, expectedValue, actualValue, nodeCounter);</span>
+
+<span class="fc bfc" id="L128" title="All 2 branches covered.">      if (diffWithMatching.size() &lt; diffInplace.size()) {</span>
+<span class="fc" id="L129">        diffs.addAll(diffWithMatching);</span>
+      }
+      else {
+<span class="fc" id="L132">        diffs.addAll(diffInplace);</span>
+      }
+<span class="fc" id="L134">    }</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">    else if (!expectedValue.equals(actualValue)) {</span>
+<span class="fc" id="L136">      String msg = &quot;Expected value '&quot; + StringUtils.abbreviate(expectedValue.asText(), 40) + &quot;',&quot;</span>
+<span class="fc" id="L137">          + &quot; but found '&quot; + StringUtils.abbreviate(actualValue.asText(), 40) + &quot;'&quot;;</span>
+<span class="fc" id="L138">      diffs.reportModifiedProperty(msg, expectedValue, actualValue);</span>
+    }
+<span class="fc" id="L140">  }</span>
+
+  private List&lt;HalDifference&gt; compareArrayValuesInplace(HalComparisonContextImpl context, JsonNode expectedValue, JsonNode actualValue,
+      AtomicInteger nodeCounter) {
+
+<span class="fc" id="L145">    HalDifferenceListBuilder diffs = new HalDifferenceListBuilder(context);</span>
+<span class="fc" id="L146">    int numExpected = expectedValue.size();</span>
+<span class="fc" id="L147">    int numActual = actualValue.size();</span>
+
+<span class="fc bfc" id="L149" title="All 4 branches covered.">    for (int i = 0; i &lt; numExpected &amp;&amp; i &lt; numActual; i++) {</span>
+<span class="fc" id="L150">      HalComparisonContextImpl newContext = context.withJsonPathIndex(i);</span>
+<span class="fc" id="L151">      HalDifferenceListBuilder newDiffs = new HalDifferenceListBuilder(newContext);</span>
+<span class="fc" id="L152">      compareValues(newContext, expectedValue.get(i), actualValue.get(i), nodeCounter, newDiffs);</span>
+<span class="fc" id="L153">      diffs.addAllFrom(newDiffs);</span>
+    }
+
+<span class="fc bfc" id="L156" title="All 2 branches covered.">    if (numExpected != numActual) {</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">      if (numExpected &gt; numActual) {</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        for (int i = numActual; i &lt; numExpected; i++) {</span>
+<span class="fc" id="L159">          reportMissingArrayElement(context, diffs, expectedValue.get(i), i);</span>
+        }
+      }
+      else {
+<span class="fc bfc" id="L163" title="All 2 branches covered.">        for (int i = numExpected; i &lt; numActual; i++) {</span>
+<span class="fc" id="L164">          reportAdditionalArrayElement(context, diffs, actualValue.get(i), i);</span>
+        }
+      }
+    }
+
+<span class="fc" id="L169">    return diffs.build();</span>
+  }
+
+  private List&lt;HalDifference&gt; compareArrayValuesWithMatching(HalComparisonContextImpl context, JsonNode expected, JsonNode actual) {
+
+<span class="fc" id="L174">    HalDifferenceListBuilder diffs = new HalDifferenceListBuilder(context);</span>
+
+<span class="fc" id="L176">    SimpleIdMatchingAlgorithm&lt;JsonNode&gt; algorithm = new SimpleIdMatchingAlgorithm&lt;&gt;(json -&gt; json.toString());</span>
+
+<span class="fc" id="L178">    ArrayList&lt;JsonNode&gt; expectedList = Lists.newArrayList(expected);</span>
+<span class="fc" id="L179">    ArrayList&lt;JsonNode&gt; actualList = Lists.newArrayList(actual);</span>
+
+<span class="fc" id="L181">    MatchingResult&lt;JsonNode&gt; matchingResult = algorithm.findMatchingItems(expectedList, actualList);</span>
+
+<span class="fc" id="L183">    boolean reorderingRequired = matchingResult.areMatchesReordered();</span>
+
+<span class="fc bfc" id="L185" title="All 2 branches covered.">    if (reorderingRequired) {</span>
+<span class="fc" id="L186">      String msg = &quot;The array elements have a different order in the actual resource&quot;;</span>
+<span class="fc" id="L187">      diffs.reportReorderedProperty(msg, expected, actual);</span>
+    }
+
+<span class="fc bfc" id="L190" title="All 2 branches covered.">    for (JsonNode removed : matchingResult.getRemovedExpected()) {</span>
+<span class="fc" id="L191">      int index = expectedList.indexOf(removed);</span>
+<span class="fc" id="L192">      reportMissingArrayElement(context, diffs, removed, index);</span>
+<span class="fc" id="L193">    }</span>
+
+<span class="fc bfc" id="L195" title="All 2 branches covered.">    for (JsonNode added : matchingResult.getAddedActual()) {</span>
+<span class="fc" id="L196">      int index = actualList.indexOf(added);</span>
+<span class="fc" id="L197">      reportAdditionalArrayElement(context, diffs, added, index);</span>
+<span class="fc" id="L198">    }</span>
+
+<span class="fc" id="L200">    return diffs.build();</span>
+  }
+
+  private static void reportAdditionalArrayElement(HalComparisonContextImpl context, HalDifferenceListBuilder diffs, JsonNode added, int index) {
+<span class="fc" id="L204">    String msg = &quot;An additional array element &quot; + added.toString() + &quot; is present in the actual resource&quot;;</span>
+<span class="fc" id="L205">    diffs.reportAdditionalProperty(msg, added, index);</span>
+<span class="fc" id="L206">  }</span>
+
+  private static void reportMissingArrayElement(HalComparisonContextImpl context, HalDifferenceListBuilder diffs, JsonNode removed, int index) {
+<span class="fc" id="L209">    String msg = &quot;An array element &quot; + removed.toString() + &quot; is missing in the actual resource&quot;;</span>
+<span class="fc" id="L210">    diffs.reportMissingProperty(msg, removed, index);</span>
+<span class="fc" id="L211">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
