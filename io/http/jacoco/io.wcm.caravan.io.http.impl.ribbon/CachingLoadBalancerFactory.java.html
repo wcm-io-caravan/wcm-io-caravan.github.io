@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CachingLoadBalancerFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.http.impl.ribbon</a> &gt; <span class="el_source">CachingLoadBalancerFactory.java</span></div><h1>CachingLoadBalancerFactory.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2015 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.http.impl.ribbon;
+
+import java.util.concurrent.ConcurrentMap;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+
+import com.google.common.collect.Maps;
+import com.netflix.loadbalancer.ILoadBalancer;
+
+/**
+ * Caching implementation for the Ribbon load balancer factory storing items in a {@link ConcurrentMap}. Offers the
+ * ability to remove a load balancer from cache store.
+ */
+@Component
+@Service(LoadBalancerFactory.class)
+@Property(name = &quot;type&quot;, value = LoadBalancerFactory.CACHING)
+<span class="fc" id="L40">public class CachingLoadBalancerFactory implements LoadBalancerFactory {</span>
+
+  @Reference(target = &quot;(type=&quot; + LoadBalancerFactory.SIMPLE + &quot;)&quot;)
+  private LoadBalancerFactory delegate;
+
+<span class="fc" id="L45">  private final ConcurrentMap&lt;String, ILoadBalancer&gt; store = Maps.newConcurrentMap();</span>
+
+  @Override
+  public ILoadBalancer getLoadBalancer(String serviceId) {
+
+<span class="fc bfc" id="L50" title="All 2 branches covered.">    if (store.containsKey(serviceId)) {</span>
+<span class="fc" id="L51">      return store.get(serviceId);</span>
+    }
+
+<span class="fc" id="L54">    ILoadBalancer loadBalancer = delegate.getLoadBalancer(serviceId);</span>
+<span class="fc" id="L55">    ILoadBalancer old = store.putIfAbsent(serviceId, loadBalancer);</span>
+<span class="fc" id="L56">    return ObjectUtils.defaultIfNull(old, loadBalancer);</span>
+
+  }
+
+  /**
+   * Removes the load balancer for the service ID from the cache store.
+   * @param serviceId Logical name of the HTTP service
+   */
+  public void unregister(String serviceId) {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (serviceId != null) {</span>
+<span class="fc" id="L66">      store.remove(serviceId);</span>
+    }
+<span class="fc" id="L68">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

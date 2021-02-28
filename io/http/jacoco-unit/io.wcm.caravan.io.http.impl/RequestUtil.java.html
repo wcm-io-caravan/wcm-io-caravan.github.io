@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RequestUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.http.impl</a> &gt; <span class="el_source">RequestUtil.java</span></div><h1>RequestUtil.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.http.impl;
+
+import java.util.Arrays;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
+
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+import com.netflix.loadbalancer.Server;
+
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+
+/**
+ * Utility methods for preparing a request for execution.
+ */
+public final class RequestUtil {
+
+  /**
+   * Choose protocol automatically.
+   */
+  public static final String PROTOCOL_AUTO = &quot;auto&quot;;
+  /**
+   * Non secure protocol.
+   */
+  public static final String PROTOCOL_HTTP = &quot;http&quot;;
+  /**
+   * Secure protocol.
+   */
+  public static final String PROTOCOL_HTTPS = &quot;https&quot;;
+
+  private RequestUtil() {
+    // static methods only
+  }
+
+  /**
+   * @param server Server
+   * @return URL prefix with scheme, hostname and port
+   */
+  public static String buildUrlPrefix(Server server, String protocol) {
+<span class="fc" id="L69">    StringBuilder urlPrefix = new StringBuilder();</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">    if (StringUtils.equals(protocol, PROTOCOL_HTTP)) {</span>
+<span class="fc" id="L71">      urlPrefix.append(&quot;http://&quot;);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">      if (server.getPort() == 80) {</span>
+<span class="fc" id="L73">        urlPrefix.append(server.getHost());</span>
+      }
+      else {
+<span class="fc" id="L76">        urlPrefix.append(server.getHost()).append(&quot;:&quot;).append(server.getPort());</span>
+      }
+    }
+<span class="fc bfc" id="L79" title="All 2 branches covered.">    else if (StringUtils.equals(protocol, PROTOCOL_HTTPS)) {</span>
+<span class="fc" id="L80">      urlPrefix.append(&quot;https://&quot;);</span>
+<span class="fc bfc" id="L81" title="All 4 branches covered.">      if (server.getPort() == 443 || server.getPort() == 80) {</span>
+<span class="fc" id="L82">        urlPrefix.append(server.getHost());</span>
+      }
+      else {
+<span class="fc" id="L85">        urlPrefix.append(server.getHost()).append(&quot;:&quot;).append(server.getPort());</span>
+      }
+    }
+    else {
+<span class="fc bfc" id="L89" title="All 4 branches covered.">      if (server.getPort() == 443 || server.getPort() == 8443) {</span>
+<span class="fc" id="L90">        urlPrefix.append(&quot;https&quot;);</span>
+      }
+      else {
+<span class="fc" id="L93">        urlPrefix.append(&quot;http&quot;);</span>
+      }
+<span class="fc" id="L95">      urlPrefix.append(&quot;://&quot;).append(server.getHost());</span>
+<span class="fc bfc" id="L96" title="All 4 branches covered.">      if (server.getPort() != 80 &amp;&amp; server.getPort() != 443) {</span>
+<span class="fc" id="L97">        urlPrefix.append(':').append(server.getPort());</span>
+      }
+    }
+<span class="fc" id="L100">    return urlPrefix.toString();</span>
+  }
+
+  /**
+   * @param request Requset
+   * @return HTTP client request object
+   */
+  public static HttpUriRequest buildHttpRequest(CaravanHttpRequest request) {
+
+    // http method
+    HttpUriRequest httpRequest;
+<span class="fc" id="L111">    String method = StringUtils.upperCase(request.getMethod());</span>
+<span class="fc bfc" id="L112" title="All 5 branches covered.">    switch (method) {</span>
+      case HttpGet.METHOD_NAME:
+<span class="fc" id="L114">        httpRequest = new HttpGet(request.getUrl());</span>
+<span class="fc" id="L115">        break;</span>
+      case HttpPost.METHOD_NAME:
+<span class="fc" id="L117">        httpRequest = new HttpPost(request.getUrl());</span>
+<span class="fc" id="L118">        break;</span>
+      case HttpPut.METHOD_NAME:
+<span class="fc" id="L120">        httpRequest = new HttpPut(request.getUrl());</span>
+<span class="fc" id="L121">        break;</span>
+      case HttpDelete.METHOD_NAME:
+<span class="fc" id="L123">        httpRequest = new HttpDelete(request.getUrl());</span>
+<span class="fc" id="L124">        break;</span>
+      default:
+<span class="fc" id="L126">        throw new IllegalArgumentException(&quot;Unsupported HTTP method type: &quot; + request.getMethod());</span>
+    }
+
+    // headers
+<span class="fc" id="L130">    request.getHeaders().entries().forEach(e -&gt; httpRequest.addHeader(e.getKey(), e.getValue()));</span>
+
+    // body
+<span class="pc bpc" id="L133" title="1 of 4 branches missed.">    if ((httpRequest instanceof HttpEntityEnclosingRequest) &amp;&amp; request.getBody() != null) {</span>
+<span class="fc" id="L134">      HttpEntityEnclosingRequest entityHttpRequest = (HttpEntityEnclosingRequest)httpRequest;</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">      if (request.getCharset() != null) {</span>
+<span class="fc" id="L136">        entityHttpRequest.setEntity(new StringEntity(new String(request.getBody(), request.getCharset()), request.getCharset()));</span>
+      }
+      else {
+<span class="fc" id="L139">        entityHttpRequest.setEntity(new ByteArrayEntity(request.getBody()));</span>
+      }
+    }
+
+<span class="fc" id="L143">    return httpRequest;</span>
+  }
+
+  /**
+   * @param headerArray Http-client header array
+   * @return Map with header values
+   */
+  public static Multimap&lt;String, String&gt; toHeadersMap(Header... headerArray) {
+<span class="fc" id="L151">    LinkedHashMultimap&lt;String, String&gt; headerMap = LinkedHashMultimap.create();</span>
+<span class="fc" id="L152">    Arrays.stream(headerArray).forEach(h -&gt; headerMap.put(h.getName(), h.getValue()));</span>
+<span class="fc" id="L153">    return ImmutableListMultimap.copyOf(headerMap);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

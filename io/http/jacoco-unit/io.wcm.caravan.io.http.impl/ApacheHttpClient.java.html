@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApacheHttpClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.http.impl</a> &gt; <span class="el_source">ApacheHttpClient.java</span></div><h1>ApacheHttpClient.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2015 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.http.impl;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Stopwatch;
+import com.netflix.hystrix.HystrixCommandProperties.ExecutionIsolationStrategy;
+
+import io.wcm.caravan.commons.httpasyncclient.HttpAsyncClientFactory;
+import io.wcm.caravan.commons.httpclient.HttpClientFactory;
+import io.wcm.caravan.io.http.CaravanHttpClient;
+import io.wcm.caravan.io.http.IllegalResponseRuntimeException;
+import io.wcm.caravan.io.http.RequestFailedRuntimeException;
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.io.http.response.CaravanHttpResponse;
+import io.wcm.caravan.io.http.response.CaravanHttpResponseBuilder;
+import rx.Observable;
+import rx.Subscriber;
+
+/**
+ * Simple implementation just executing the Apache HTTP client. Does not support a fallback.
+ */
+@Component(immediate = true)
+@Service(ApacheHttpClient.class)
+<span class="fc" id="L62">public class ApacheHttpClient implements CaravanHttpClient {</span>
+
+<span class="fc" id="L64">  private static final Logger LOG = LoggerFactory.getLogger(ApacheHttpClient.class);</span>
+
+  @Reference
+  private HttpClientFactory httpClientFactory;
+
+  @Reference
+  private HttpAsyncClientFactory httpAsyncClientFactory;
+
+  @Override
+  public Observable&lt;CaravanHttpResponse&gt; execute(CaravanHttpRequest request) {
+<span class="fc" id="L74">    return Observable.create(new Observable.OnSubscribe&lt;CaravanHttpResponse&gt;() {</span>
+
+      @Override
+      public void call(final Subscriber&lt;? super CaravanHttpResponse&gt; subscriber) {
+<span class="fc" id="L78">        HttpUriRequest httpRequest = RequestUtil.buildHttpRequest(request);</span>
+
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if (LOG.isTraceEnabled()) {</span>
+<span class="nc" id="L81">          LOG.trace(&quot;Initiating request for {},\n{},\n{}&quot;, httpRequest.getURI(), request.toString(), request.getCorrelationId());</span>
+        }
+
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        if (HttpHystrixCommand.getIsolationStrategy(request) == ExecutionIsolationStrategy.THREAD) {</span>
+<span class="fc" id="L85">          executeBlocking(subscriber, httpRequest);</span>
+        }
+        else {
+<span class="fc" id="L88">          executeAsync(subscriber, httpRequest);</span>
+        }
+<span class="fc" id="L90">      }</span>
+
+      private void executeBlocking(final Subscriber&lt;? super CaravanHttpResponse&gt; subscriber, HttpUriRequest httpRequest) {
+
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        if (LOG.isTraceEnabled()) {</span>
+<span class="nc" id="L95">          LOG.trace(&quot;Obtaining blocking http client to request &quot; + httpRequest.getURI()</span>
+          + &quot;, because a hystrixThreadPoolKeyOverride is configured for this serviceId&quot;);
+        }
+
+<span class="fc" id="L99">        CloseableHttpClient httpClient = (CloseableHttpClient)httpClientFactory.get(httpRequest.getURI());</span>
+
+<span class="fc" id="L101">        Stopwatch stopwatch = Stopwatch.createStarted();</span>
+<span class="fc" id="L102">        try (CloseableHttpResponse result = httpClient.execute(httpRequest)) {</span>
+<span class="fc" id="L103">          LOG.debug(&quot;Received response from {} in {} ms\n{}&quot;, httpRequest.getURI().toString(), stopwatch.elapsed(MILLISECONDS), request.getCorrelationId());</span>
+
+<span class="fc" id="L105">          processResponse(httpRequest, subscriber, result);</span>
+
+        }
+<span class="nc" id="L108">        catch (Throwable ex) {</span>
+<span class="nc" id="L109">          LOG.info(&quot;Caught exception requesting {} after {} ms\n{}&quot;, httpRequest.getURI().toString(), stopwatch.elapsed(MILLISECONDS),</span>
+<span class="nc" id="L110">              request.getCorrelationId());</span>
+
+<span class="nc" id="L112">          processExeption(httpRequest, subscriber, ex);</span>
+<span class="fc" id="L113">        }</span>
+<span class="fc" id="L114">      }</span>
+
+      private void executeAsync(final Subscriber&lt;? super CaravanHttpResponse&gt; subscriber, HttpUriRequest httpRequest) {
+
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">        if (LOG.isTraceEnabled()) {</span>
+<span class="nc" id="L119">          LOG.trace(&quot;Obtaining async http client to request &quot; + httpRequest.getURI()</span>
+          + &quot;, because a hystrixThreadPoolKeyOverride is *not* configured for this serviceId&quot;);
+        }
+
+<span class="fc" id="L123">        CloseableHttpAsyncClient httpClient = (CloseableHttpAsyncClient)httpAsyncClientFactory.get(httpRequest.getURI());</span>
+
+<span class="fc" id="L125">        Stopwatch stopwatch = Stopwatch.createStarted();</span>
+
+<span class="fc" id="L127">        httpClient.execute(httpRequest, new FutureCallback&lt;HttpResponse&gt;() {</span>
+
+          @Override
+          public void completed(HttpResponse result) {
+<span class="fc" id="L131">            LOG.debug(&quot;Received response from {} in {} ms\n{}&quot;, httpRequest.getURI().toString(), stopwatch.elapsed(MILLISECONDS), request.getCorrelationId());</span>
+
+<span class="fc" id="L133">            processResponse(httpRequest, subscriber, result);</span>
+
+<span class="fc" id="L135">          }</span>
+
+          @Override
+          public void failed(Exception ex) {
+<span class="nc" id="L139">            LOG.info(&quot;Caught exception requesting {} after {} ms\n{}&quot;, httpRequest.getURI().toString(), stopwatch.elapsed(MILLISECONDS),</span>
+<span class="nc" id="L140">                request.getCorrelationId());</span>
+
+<span class="nc" id="L142">            processExeption(httpRequest, subscriber, ex);</span>
+<span class="nc" id="L143">          }</span>
+
+          @Override
+          public void cancelled() {
+<span class="nc" id="L147">            LOG.warn(&quot;Cancelled request for {} after {} ms\n{}&quot;, httpRequest.getURI().toString(), stopwatch.elapsed(MILLISECONDS), request.getCorrelationId());</span>
+
+<span class="nc" id="L149">            subscriber.onError(</span>
+<span class="nc" id="L150">                new RequestFailedRuntimeException(request, &quot;The request was unexpectedly cancelled after &quot; + stopwatch.elapsed(MILLISECONDS) + &quot;ms&quot;, null));</span>
+<span class="nc" id="L151">          }</span>
+
+        });
+<span class="fc" id="L154">      }</span>
+
+      void processExeption(HttpUriRequest httpRequest, Subscriber&lt;? super CaravanHttpResponse&gt; subscriber, Throwable ex) {
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (ex instanceof SocketTimeoutException) {</span>
+<span class="nc" id="L158">          subscriber.onError(new IOException(&quot;Socket timeout requesting '&quot; + httpRequest.getURI(), ex));</span>
+        }
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        else if (ex instanceof IOException) {</span>
+<span class="nc" id="L161">          subscriber.onError(new IOException(&quot;Connection to '&quot; + httpRequest.getURI() + &quot;' failed&quot;, ex));</span>
+        }
+        else {
+<span class="nc" id="L164">          subscriber.onError(new IOException(&quot;Requesting '&quot; + httpRequest.getURI() + &quot;' failed&quot;, ex));</span>
+        }
+<span class="nc" id="L166">      }</span>
+
+      void processResponse(HttpUriRequest httpRequest, final Subscriber&lt;? super CaravanHttpResponse&gt; subscriber, HttpResponse result) {
+
+        try {
+<span class="fc" id="L171">          StatusLine status = result.getStatusLine();</span>
+<span class="fc" id="L172">          HttpEntity entity = new BufferedHttpEntity(result.getEntity());</span>
+<span class="fc" id="L173">          EntityUtils.consume(entity);</span>
+
+<span class="fc" id="L175">          boolean throwExceptionForStatus500 = CaravanHttpServiceConfigValidator.throwExceptionForStatus500(request.getServiceId());</span>
+<span class="pc bpc" id="L176" title="1 of 4 branches missed.">          if (status.getStatusCode() &gt;= 500 &amp;&amp; throwExceptionForStatus500) {</span>
+<span class="fc" id="L177">            IllegalResponseRuntimeException illegalResponseRuntimeException = new IllegalResponseRuntimeException(request,</span>
+<span class="fc" id="L178">                httpRequest.getURI().toString(),</span>
+<span class="fc" id="L179">                status.getStatusCode(),</span>
+<span class="fc" id="L180">                EntityUtils.toString(entity),</span>
+<span class="fc" id="L181">                &quot;Executing '&quot; + httpRequest.getURI() + &quot;' failed: &quot; + result.getStatusLine());</span>
+
+<span class="fc" id="L183">            subscriber.onError(illegalResponseRuntimeException);</span>
+<span class="fc" id="L184">            EntityUtils.consumeQuietly(entity);</span>
+<span class="fc" id="L185">          }</span>
+          else {
+
+<span class="fc" id="L188">            CaravanHttpResponse response = new CaravanHttpResponseBuilder()</span>
+<span class="fc" id="L189">                .status(status.getStatusCode())</span>
+<span class="fc" id="L190">                .reason(status.getReasonPhrase())</span>
+<span class="fc" id="L191">                .headers(RequestUtil.toHeadersMap(result.getAllHeaders()))</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">                .body(entity.getContent(), entity.getContentLength() &gt; 0 ? (int)entity.getContentLength() : null)</span>
+<span class="fc" id="L193">                .build();</span>
+
+<span class="fc" id="L195">            subscriber.onNext(response);</span>
+<span class="fc" id="L196">            subscriber.onCompleted();</span>
+          }
+        }
+<span class="nc" id="L199">        catch (IOException ex) {</span>
+<span class="nc" id="L200">          subscriber.onError(new IOException(&quot;Reading response of '&quot; + httpRequest.getURI() + &quot;' failed&quot;, ex));</span>
+        }
+        // CHECKSTYLE:OFF - yes we really wan to catch all exceptions here
+<span class="nc" id="L203">        catch (Exception ex) {</span>
+          // CHECKSTYLE:ON
+<span class="nc" id="L205">          subscriber.onError(new IOException(&quot;Processing response of '&quot; + httpRequest.getURI() + &quot;' failed&quot;, ex));</span>
+<span class="pc" id="L206">        }</span>
+<span class="fc" id="L207">      }</span>
+
+    });
+  }
+
+  @Override
+  public Observable&lt;CaravanHttpResponse&gt; execute(CaravanHttpRequest request, Observable&lt;CaravanHttpResponse&gt; fallback) {
+<span class="nc" id="L214">    return execute(request);</span>
+  }
+
+  @Override
+  public boolean hasValidConfiguration(String serviceId) {
+<span class="nc" id="L219">    return true;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

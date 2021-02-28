@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CaravanHttpResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.http.response</a> &gt; <span class="el_source">CaravanHttpResponse.java</span></div><h1>CaravanHttpResponse.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.http.response;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+
+import io.wcm.caravan.io.http.impl.CaravanHttpHelper;
+
+/**
+ * An immutable response to an http invocation which only returns string content.
+ */
+@ProviderType
+public final class CaravanHttpResponse {
+
+  private final int status;
+  private final String reason;
+  private final Multimap&lt;String, String&gt; headers;
+  private final Body body;
+
+<span class="fc" id="L49">  CaravanHttpResponse(int status, String reason, Multimap&lt;String, String&gt; headers, Body body) {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">    checkState(status &gt;= 200, &quot;Invalid status code: %s&quot;, status);</span>
+<span class="fc" id="L51">    this.status = status;</span>
+<span class="fc" id="L52">    this.reason = checkNotNull(reason, &quot;reason&quot;);</span>
+<span class="fc" id="L53">    Multimap&lt;String, String&gt; copyOf = LinkedHashMultimap.create(checkNotNull(headers, &quot;headers&quot;));</span>
+<span class="fc" id="L54">    this.headers = ImmutableMultimap.copyOf(copyOf);</span>
+<span class="fc" id="L55">    this.body = body; // nullable</span>
+<span class="fc" id="L56">  }</span>
+
+  /**
+   * status code. ex {@code 200} See &lt;a href=&quot;http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html&quot; &gt;rfc2616&lt;/a&gt;
+   * @return HTTP status code
+   */
+  public int status() {
+<span class="fc" id="L63">    return status;</span>
+  }
+
+  /**
+   * @return HTTP status reason
+   */
+  public String reason() {
+<span class="fc" id="L70">    return reason;</span>
+  }
+
+  /**
+   * @return HTTP headers
+   */
+  public Multimap&lt;String, String&gt; headers() {
+<span class="fc" id="L77">    return headers;</span>
+  }
+
+  /**
+   * Collects all &quot;Cache-Control&quot; directives from the response headers into a single map. The keys in the map are the
+   * directive names (e.g. &quot;max-age&quot;, &quot;no-cache&quot;), and everything after the &quot;=&quot; is taken as value. For directives that
+   * don't have a value &quot;true&quot; is used as a value instead.
+   * @return the map of Cache-Control directice
+   */
+  public Map&lt;String, String&gt; getCacheControl() {
+
+    // http headers are case-insensitive, and even if we write all our headers in upper-case,
+    // any proxy in-between can turn them into lower-case variants.
+    // We need to make sure that we don't miss the lower-case variants here
+<span class="fc" id="L91">    List&lt;String&gt; cacheControlHeaders = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L92">    cacheControlHeaders.addAll(headers.get(&quot;Cache-Control&quot;));</span>
+<span class="fc" id="L93">    cacheControlHeaders.addAll(headers.get(&quot;cache-control&quot;));</span>
+
+<span class="fc" id="L95">    return CaravanHttpHelper.convertMultiValueHeaderToMap(cacheControlHeaders);</span>
+  }
+
+  /**
+   * if present, the response had a body
+   * @return HTTP body
+   */
+  public Body body() {
+<span class="fc" id="L103">    return body;</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="fc" id="L108">    StringBuilder builder = new StringBuilder();</span>
+<span class="fc" id="L109">    builder.append(&quot;HTTP/1.1 &quot;).append(status).append(' ').append(reason).append('\n');</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">    for (String field : headers.keySet()) {</span>
+<span class="fc" id="L111">      builder.append(field).append(&quot;: &quot;).append(Joiner.on(&quot;, &quot;).join(headers.get(field))).append('\n');</span>
+<span class="fc" id="L112">    }</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">    if (body != null) {</span>
+<span class="fc" id="L114">      builder.append('\n').append(body);</span>
+    }
+<span class="fc" id="L116">    return builder.toString();</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

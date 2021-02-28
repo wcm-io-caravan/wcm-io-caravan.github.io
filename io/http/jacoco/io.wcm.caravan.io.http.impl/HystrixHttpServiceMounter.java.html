@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HystrixHttpServiceMounter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.http.impl</a> &gt; <span class="el_source">HystrixHttpServiceMounter.java</span></div><h1>HystrixHttpServiceMounter.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.http.impl;
+
+import javax.servlet.ServletException;
+
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Reference;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
+
+import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
+
+/**
+ * Registers hystrix dashboard and metrix stream in HTTP service.
+ */
+@Component
+<span class="nc" id="L37">public class HystrixHttpServiceMounter {</span>
+
+  private static final String HYSTRIX_URI_PREFIX = &quot;/system/hystrix&quot;;
+  private static final String HYSTRIX_DASHBOARD_URI = HYSTRIX_URI_PREFIX + &quot;/dashboard&quot;;
+  private static final String HYSTRIX_METRICS_STREAM_URI = HYSTRIX_URI_PREFIX + &quot;/metricsStream&quot;;
+
+  @Reference
+  private HttpService httpService;
+
+  @Activate
+  protected void activate() throws NamespaceException, ServletException {
+    // Mount some static resources from classpath of this bundle.
+<span class="nc" id="L49">    httpService.registerResources(HYSTRIX_DASHBOARD_URI, &quot;/hystrix-dashboard&quot;, null);</span>
+
+    // Mount hystrix metrix stream servlet to be used by hystrix dashboard.
+<span class="nc" id="L52">    httpService.registerServlet(HYSTRIX_METRICS_STREAM_URI, new HystrixMetricsStreamServlet(), null, null);</span>
+<span class="nc" id="L53">  }</span>
+
+  @Deactivate
+  protected void deactivate() {
+<span class="nc" id="L57">    httpService.unregister(HYSTRIX_DASHBOARD_URI);</span>
+<span class="nc" id="L58">    httpService.unregister(HYSTRIX_METRICS_STREAM_URI);</span>
+<span class="nc" id="L59">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

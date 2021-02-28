@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CaravanHttpHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.http.impl</a> &gt; <span class="el_source">CaravanHttpHelper.java</span></div><h1>CaravanHttpHelper.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.http.impl;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.base.Charsets;
+
+/**
+ * Helper class for standard URL tasks.
+ */
+public final class CaravanHttpHelper {
+
+  private CaravanHttpHelper() {
+    // nothing to do
+  }
+
+  /**
+   * @param token Token to decode
+   * @return Decoded token
+   */
+  public static String urlDecode(final String token) {
+    try {
+<span class="fc" id="L48">      return URLDecoder.decode(token, Charsets.UTF_8.name());</span>
+    }
+<span class="nc" id="L50">    catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L51">      throw new RuntimeException(e);</span>
+    }
+  }
+
+  /**
+   * @param token Token to encode
+   * @return Encoded token
+   */
+  public static String urlEncode(final Object token) {
+    try {
+<span class="fc" id="L61">      return URLEncoder.encode(String.valueOf(token), Charsets.UTF_8.name());</span>
+    }
+<span class="nc" id="L63">    catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L64">      throw new RuntimeException(e);</span>
+    }
+  }
+
+  /**
+   * Constructs a Map from a multi-value header (i.e. one that can have multiple values that either split up into
+   * multiple lines with the same name, or given as a comma-separated list of values in a single header line)
+   * For example, see the following header:
+   *
+   * &lt;pre&gt;
+   * Cache-Control: public, max-age=120
+   * &lt;/pre&gt;
+   *
+   * That will return a map with two entries: (&quot;public&quot; -&amp;gt; &quot;true&quot;, &quot;max-age&quot; -&amp;gt; &quot;120&quot;)
+   * The following header will result in the same map.
+   *
+   * &lt;pre&gt;
+   * Cache-Control: public
+   * Cache-Control: max-age=120
+   * &lt;/pre&gt;
+   * @param header the collection of header values (one entry for each line)
+   * @return Header map
+   */
+  public static Map&lt;String, String&gt; convertMultiValueHeaderToMap(final Collection&lt;String&gt; header) {
+    // we use linked hash map, because the order of entries is important
+<span class="fc" id="L89">    Map&lt;String, String&gt; headerMap = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">    for (String line : header) {</span>
+<span class="fc" id="L91">      String[] tokens = StringUtils.split(line, ',');</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">      for (String token : tokens) {</span>
+<span class="fc" id="L93">        String[] keyValue = StringUtils.split(token, '=');</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        headerMap.put(StringUtils.trim(keyValue[0]), keyValue.length == 1 ? &quot;true&quot; : StringUtils.trim(keyValue[1]));</span>
+      }
+<span class="fc" id="L96">    }</span>
+<span class="fc" id="L97">    return headerMap;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

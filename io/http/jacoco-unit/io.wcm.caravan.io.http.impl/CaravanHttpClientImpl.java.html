@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CaravanHttpClientImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.http.impl</a> &gt; <span class="el_source">CaravanHttpClientImpl.java</span></div><h1>CaravanHttpClientImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.http.impl;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.netflix.client.ClientException;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
+
+import io.wcm.caravan.common.performance.PerformanceMetrics;
+import io.wcm.caravan.io.http.CaravanHttpClient;
+import io.wcm.caravan.io.http.IllegalResponseRuntimeException;
+import io.wcm.caravan.io.http.RequestFailedRuntimeException;
+import io.wcm.caravan.io.http.impl.ribbon.RibbonHttpClient;
+import io.wcm.caravan.io.http.impl.servletclient.NotSupportedByRequestMapperException;
+import io.wcm.caravan.io.http.impl.servletclient.ServletHttpClient;
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.io.http.response.CaravanHttpResponse;
+import rx.Observable;
+import rx.Observable.Operator;
+import rx.Scheduler;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
+
+/**
+ * Default implementation of {@link CaravanHttpClient}.
+ */
+@Component(immediate = true)
+@Service(CaravanHttpClient.class)
+<span class="fc" id="L54">public class CaravanHttpClientImpl implements CaravanHttpClient {</span>
+
+<span class="fc" id="L56">  private static final Logger LOG = LoggerFactory.getLogger(CaravanHttpClientImpl.class);</span>
+
+  @Reference
+  private CaravanHttpClientConfig config;
+  @Reference
+  private ServletHttpClient servletClient;
+  @Reference
+  private RibbonHttpClient ribbonClient;
+  @Reference
+  private ApacheHttpClient apacheHttpClient;
+
+  private CaravanHttpCallbackExecutor callbackExecutor;
+  private Scheduler callbackScheduler;
+
+  @Activate
+  void activate() {
+<span class="fc" id="L72">    callbackExecutor = new CaravanHttpCallbackExecutor();</span>
+<span class="fc" id="L73">    callbackScheduler = Schedulers.from(callbackExecutor);</span>
+<span class="fc" id="L74">  }</span>
+
+  @Deactivate
+  void deactivate() {
+<span class="fc" id="L78">    callbackExecutor.shutdownNow();</span>
+<span class="fc" id="L79">  }</span>
+
+  @Override
+  public Observable&lt;CaravanHttpResponse&gt; execute(CaravanHttpRequest request) {
+<span class="fc" id="L83">    Context ctx = new Context(request, null);</span>
+<span class="fc" id="L84">    return execute(ctx)</span>
+<span class="fc" id="L85">        .observeOn(callbackScheduler);</span>
+  }
+
+  @Override
+  public Observable&lt;CaravanHttpResponse&gt; execute(CaravanHttpRequest request, Observable&lt;CaravanHttpResponse&gt; fallback) {
+<span class="fc" id="L90">    Context ctx = new Context(request, fallback);</span>
+<span class="fc" id="L91">    return execute(ctx)</span>
+<span class="fc" id="L92">        .observeOn(callbackScheduler);</span>
+  }
+
+  private Observable&lt;CaravanHttpResponse&gt; execute(Context ctx) {
+
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (isRequestWithoutServiceId(ctx)) {</span>
+<span class="fc" id="L98">      return createApacheResponse(ctx);</span>
+    }
+
+<span class="fc" id="L101">    Observable&lt;CaravanHttpResponse&gt; ribbonResponse = createRibbonResponse(ctx);</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">    if (isServletClientPossible(ctx)) {</span>
+<span class="fc" id="L103">      return createServletClientResponse(ctx, ribbonResponse);</span>
+    }
+<span class="fc" id="L105">    return ribbonResponse;</span>
+  }
+
+  private boolean isRequestWithoutServiceId(Context ctx) {
+<span class="fc" id="L109">    return StringUtils.isEmpty(ctx.request.getServiceId());</span>
+  }
+
+  private Observable&lt;CaravanHttpResponse&gt; createApacheResponse(Context ctx) {
+<span class="fc" id="L113">    Observable&lt;CaravanHttpResponse&gt; response = apacheHttpClient.execute(ctx.request);</span>
+<span class="fc" id="L114">    return addHystrixAndErrorMapperAndMetrics(ctx, response);</span>
+  }
+
+  private Observable&lt;CaravanHttpResponse&gt; createRibbonResponse(Context ctx) {
+<span class="fc" id="L118">    Observable&lt;CaravanHttpResponse&gt; response = ribbonClient.execute(ctx.request);</span>
+<span class="fc" id="L119">    return addHystrixAndErrorMapperAndMetrics(ctx, response);</span>
+  }
+
+  private boolean isServletClientPossible(Context ctx) {
+<span class="fc" id="L123">    boolean isGetRequest = &quot;GET&quot;.equalsIgnoreCase(ctx.request.getMethod());</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">    return isGetRequest</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        &amp;&amp; config.isServletClientEnabled()</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        &amp;&amp; servletClient.hasValidConfiguration(ctx.request.getServiceId());</span>
+  }
+
+  private Observable&lt;CaravanHttpResponse&gt; createServletClientResponse(Context ctx, Observable&lt;CaravanHttpResponse&gt; ribbonResponse) {
+<span class="fc" id="L130">    Observable&lt;CaravanHttpResponse&gt; localhostResponse = servletClient.execute(ctx.request)</span>
+<span class="fc" id="L131">        .lift(new ErrorDisassembleroperator(ctx, ribbonResponse));</span>
+<span class="fc" id="L132">    return addHystrixAndErrorMapperAndMetrics(ctx, localhostResponse);</span>
+  }
+
+  private Observable&lt;CaravanHttpResponse&gt; addHystrixAndErrorMapperAndMetrics(Context requestAndFallback,
+      Observable&lt;CaravanHttpResponse&gt; clientResponse) {
+<span class="fc" id="L137">    Observable&lt;CaravanHttpResponse&gt; hystrixResponse = wrapWithHystrix(requestAndFallback, clientResponse);</span>
+<span class="fc" id="L138">    Observable&lt;CaravanHttpResponse&gt; exceptionMapperResponse = wrapWithExceptionMapper(requestAndFallback, hystrixResponse);</span>
+<span class="fc" id="L139">    return addMetrics(requestAndFallback, exceptionMapperResponse);</span>
+  }
+
+  private Observable&lt;CaravanHttpResponse&gt; wrapWithHystrix(Context ctx, Observable&lt;CaravanHttpResponse&gt; response) {
+
+<span class="fc" id="L144">    return new HttpHystrixCommand(ctx.request, response, ctx.fallback).toObservable();</span>
+  }
+
+  private Observable&lt;CaravanHttpResponse&gt; wrapWithExceptionMapper(Context ctx, Observable&lt;CaravanHttpResponse&gt; response) {
+<span class="fc" id="L148">    return response.onErrorResumeNext(ex -&gt; Observable.&lt;CaravanHttpResponse&gt;error(mapToKnownException(ctx.request, ex)));</span>
+  }
+
+  private Throwable mapToKnownException(CaravanHttpRequest request, Throwable ex) {
+<span class="pc bpc" id="L152" title="1 of 4 branches missed.">    if (ex instanceof RequestFailedRuntimeException || ex instanceof IllegalResponseRuntimeException) {</span>
+<span class="fc" id="L153">      return ex;</span>
+    }
+<span class="fc bfc" id="L155" title="All 6 branches covered.">    if ((ex instanceof HystrixRuntimeException || ex instanceof ClientException) &amp;&amp; ex.getCause() != null) {</span>
+<span class="fc" id="L156">      return mapToKnownException(request, ex.getCause());</span>
+    }
+<span class="fc" id="L158">    throw new RequestFailedRuntimeException(request, StringUtils.defaultString(ex.getMessage(), ex.getClass().getSimpleName()), ex);</span>
+  }
+
+  private Observable&lt;CaravanHttpResponse&gt; addMetrics(Context ctx, Observable&lt;CaravanHttpResponse&gt; response) {
+<span class="fc" id="L162">    PerformanceMetrics metrics = ctx.request.getPerformanceMetrics();</span>
+<span class="fc" id="L163">    return response.doOnSubscribe(metrics.getStartAction())</span>
+<span class="fc" id="L164">        .doOnNext(metrics.getOnNextAction())</span>
+<span class="fc" id="L165">        .doOnTerminate(metrics.getEndAction());</span>
+  }
+
+  @Override
+  public boolean hasValidConfiguration(String serviceId) {
+<span class="fc" id="L170">    return CaravanHttpServiceConfigValidator.hasValidConfiguration(serviceId);</span>
+  }
+
+  private class Context {
+
+    private final CaravanHttpRequest request;
+    private final Observable&lt;CaravanHttpResponse&gt; fallback;
+
+<span class="fc" id="L178">    Context(CaravanHttpRequest request, Observable&lt;CaravanHttpResponse&gt; fallback) {</span>
+<span class="fc" id="L179">      this.request = request;</span>
+<span class="fc" id="L180">      this.fallback = fallback;</span>
+<span class="fc" id="L181">    }</span>
+
+  }
+
+  private class ErrorDisassembleroperator implements Operator&lt;CaravanHttpResponse, CaravanHttpResponse&gt; {
+
+    private final Context ctx;
+    private final Observable&lt;CaravanHttpResponse&gt; nonLocalResponse;
+
+<span class="fc" id="L190">    ErrorDisassembleroperator(Context ctx, Observable&lt;CaravanHttpResponse&gt; nonLocalResponse) {</span>
+<span class="fc" id="L191">      this.ctx = ctx;</span>
+<span class="fc" id="L192">      this.nonLocalResponse = nonLocalResponse;</span>
+<span class="fc" id="L193">    }</span>
+
+    @Override
+    public Subscriber&lt;? super CaravanHttpResponse&gt; call(Subscriber&lt;? super CaravanHttpResponse&gt; subscriber) {
+<span class="fc" id="L197">      return new Subscriber&lt;CaravanHttpResponse&gt;() {</span>
+
+        @Override
+        public void onCompleted() {
+<span class="fc" id="L201">          subscriber.onCompleted();</span>
+<span class="fc" id="L202">        }</span>
+
+        @Override
+        public void onError(Throwable ex) {
+<span class="fc bfc" id="L206" title="All 2 branches covered.">          if (ex instanceof NotSupportedByRequestMapperException) {</span>
+<span class="fc" id="L207">            LOG.warn(&quot;Could not execute request with localhost client for service &quot; + ctx.request.getServiceId());</span>
+<span class="fc" id="L208">            nonLocalResponse.subscribe(subscriber);</span>
+          }
+          else {
+<span class="fc" id="L211">            subscriber.onError(ex);</span>
+          }
+<span class="fc" id="L213">        }</span>
+
+        @Override
+        public void onNext(CaravanHttpResponse next) {
+<span class="fc" id="L217">          subscriber.onNext(next);</span>
+<span class="fc" id="L218">        }</span>
+
+      };
+    }
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

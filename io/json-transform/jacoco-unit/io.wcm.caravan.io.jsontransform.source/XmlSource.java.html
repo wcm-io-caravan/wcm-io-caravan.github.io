@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XmlSource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Transformation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.jsontransform.source</a> &gt; <span class="el_source">XmlSource.java</span></div><h1>XmlSource.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.jsontransform.source;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Queue;
+import java.util.Stack;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.commons.lang3.StringUtils;
+import org.osgi.annotation.versioning.ProviderType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Lists;
+
+import io.wcm.caravan.io.jsontransform.element.JsonElement;
+
+/**
+ * Parses the SOAP response and transforms into JSON elements.
+ */
+@ProviderType
+public final class XmlSource implements Source {
+
+<span class="fc" id="L47">  private static final Logger LOG = LoggerFactory.getLogger(XmlSource.class);</span>
+
+  private static final char XPATH_SEPARATOR = '/';
+
+  private static final String JSON_KEY_FOR_VALUES_WITHOUT_NAME = &quot;value&quot;;
+
+<span class="fc" id="L53">  private static final XMLInputFactory INPUT_FACTORY = XMLInputFactory.newInstance();</span>
+
+  private final XMLStreamReader reader;
+  private final String[] roots;
+
+<span class="fc" id="L58">  private final Queue&lt;JsonElement&gt; outputBuffer = Lists.newLinkedList();</span>
+<span class="fc" id="L59">  private final Stack&lt;String&gt; breadCrumb = new Stack&lt;String&gt;();</span>
+
+  private boolean nextHasBeenExecutedBefore;
+<span class="fc" id="L62">  private boolean uncapitalizeProperties = true;</span>
+
+<span class="fc" id="L64">  private JsonElement firstElement = JsonElement.DEFAULT_START_OBJECT;</span>
+<span class="fc" id="L65">  private JsonElement lastElement = JsonElement.DEFAULT_END_OBJECT;</span>
+
+  static {
+<span class="fc" id="L68">    INPUT_FACTORY.setProperty(XMLInputFactory.IS_COALESCING, true);</span>
+<span class="fc" id="L69">  }</span>
+
+  /**
+   * @param input The input stream
+   * @param roots Possible XML roots
+   * @throws XMLStreamException XML read error
+   */
+  public XmlSource(final InputStream input, final String... roots)
+<span class="fc" id="L77">      throws XMLStreamException {</span>
+<span class="fc" id="L78">    reader = INPUT_FACTORY.createXMLStreamReader(input);</span>
+<span class="fc" id="L79">    this.roots = roots;</span>
+<span class="fc" id="L80">  }</span>
+
+  @Override
+  public boolean hasNext() {
+<span class="nc" id="L84">    fillOutputBufferIfNeeded();</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    return !outputBuffer.isEmpty();</span>
+  }
+
+  @Override
+  public JsonElement next() {
+<span class="fc" id="L90">    fillOutputBufferIfNeeded();</span>
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">    return outputBuffer.isEmpty() ? null : outputBuffer.poll();</span>
+  }
+
+  /**
+   * @return true if all JSON property names should be converted to start with a lower-case letter
+   */
+  public boolean isUncapitalizeProperties() {
+<span class="fc" id="L98">    return this.uncapitalizeProperties;</span>
+  }
+
+  /**
+   * @param uncapitalizeProperties true if all JSON property names should be converted to start with a lower-case letter
+   */
+  public void setUncapitalizeProperties(boolean uncapitalizeProperties) {
+<span class="fc" id="L105">    this.uncapitalizeProperties = uncapitalizeProperties;</span>
+<span class="fc" id="L106">  }</span>
+
+  private void fillOutputBufferIfNeeded() {
+<span class="fc bfc" id="L109" title="All 2 branches covered.">    if (outputBuffer.isEmpty()) {</span>
+<span class="fc" id="L110">      handleElement();</span>
+<span class="fc" id="L111">      addLastElementToOutputBufferIfNeeded();</span>
+    }
+<span class="fc" id="L113">  }</span>
+
+  private void handleElement() {
+<span class="fc" id="L116">    seekToNextElementIfNeeded();</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    if (reader.isStartElement()) {</span>
+<span class="fc" id="L118">      handleStartElement();</span>
+    }
+<span class="fc bfc" id="L120" title="All 2 branches covered.">    else if (reader.isEndElement()) {</span>
+<span class="fc" id="L121">      addToOutputBuffer(JsonElement.DEFAULT_END_OBJECT);</span>
+    }
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">    else if (reader.isCharacters()) {</span>
+<span class="nc" id="L124">      addToOutputBuffer(createValueElement(JSON_KEY_FOR_VALUES_WITHOUT_NAME, reader.getText()));</span>
+    }
+<span class="fc" id="L126">  }</span>
+
+  private void seekToNextElementIfNeeded() {
+    try {
+<span class="fc bfc" id="L130" title="All 2 branches covered.">      if (nextHasBeenExecutedBefore) {</span>
+<span class="fc" id="L131">        nextHasBeenExecutedBefore = false;</span>
+      }
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">      else if (reader.hasNext()) {</span>
+        int eventType;
+        do {
+<span class="fc" id="L136">          eventType = reader.next();</span>
+        }
+<span class="fc bfc" id="L138" title="All 4 branches covered.">        while (reader.hasNext() &amp;&amp; !isRelevantElement(eventType));</span>
+      }
+    }
+<span class="nc" id="L141">    catch (XMLStreamException ex) {</span>
+<span class="nc" id="L142">      LOG.error(&quot;Error reading XML source&quot;, ex);</span>
+<span class="fc" id="L143">    }</span>
+<span class="fc" id="L144">  }</span>
+
+  private boolean isRelevantElement(int eventType) {
+<span class="pc bpc" id="L147" title="1 of 4 branches missed.">    if (reader.isWhiteSpace() || eventType == XMLStreamConstants.COMMENT) {</span>
+<span class="fc" id="L148">      return false;</span>
+    }
+<span class="fc" id="L150">    String xpath = getXPath();</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">    if (reader.isStartElement()) {</span>
+<span class="fc" id="L152">      breadCrumb.add(reader.getLocalName());</span>
+<span class="fc" id="L153">      xpath = getXPath();</span>
+    }
+<span class="fc bfc" id="L155" title="All 2 branches covered.">    else if (reader.isEndElement()) {</span>
+<span class="fc" id="L156">      breadCrumb.pop();</span>
+    }
+<span class="fc" id="L158">    return isInOneRoot(xpath);</span>
+  }
+
+  private boolean isInOneRoot(final String xpath) {
+<span class="pc bpc" id="L162" title="1 of 2 branches missed.">    if (roots.length == 0) {</span>
+<span class="nc" id="L163">      return true;</span>
+    }
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">    for (String root : roots) {</span>
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">      if (xpath.startsWith(root)) {</span>
+<span class="fc" id="L167">        return true;</span>
+      }
+    }
+<span class="nc" id="L170">    return false;</span>
+  }
+
+  private void handleStartElement() {
+<span class="fc" id="L174">    String name = reader.getLocalName();</span>
+<span class="fc" id="L175">    String key = convertName(name);</span>
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">    if (reader.getAttributeCount() &gt; 0) {</span>
+<span class="nc" id="L177">      addToOutputBuffer(JsonElement.startObject(key));</span>
+<span class="nc" id="L178">      addAttributesToOutputBuffer();</span>
+    }
+    else {
+<span class="fc" id="L181">      seekToNextElementIfNeeded();</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">      if (reader.isStartElement()) {</span>
+<span class="fc" id="L183">        nextHasBeenExecutedBefore = true;</span>
+<span class="fc" id="L184">        addToOutputBuffer(JsonElement.startObject(key));</span>
+      }
+<span class="pc bpc" id="L186" title="1 of 2 branches missed.">      else if (reader.isEndElement()) {</span>
+<span class="nc" id="L187">        addToOutputBuffer(JsonElement.nullValue(key));</span>
+      }
+      else {
+<span class="fc" id="L190">        addToOutputBuffer(createValueElement(key, reader.getText()));</span>
+<span class="fc" id="L191">        seekToNextElementIfNeeded();</span>
+      }
+    }
+<span class="fc" id="L194">  }</span>
+
+  private void addToOutputBuffer(JsonElement element) {
+<span class="fc" id="L197">    addFirstElementToOutputBufferIfNeeded();</span>
+<span class="fc" id="L198">    outputBuffer.add(element);</span>
+<span class="fc" id="L199">  }</span>
+
+  private void addFirstElementToOutputBufferIfNeeded() {
+<span class="fc bfc" id="L202" title="All 2 branches covered.">    if (firstElement != null) {</span>
+<span class="fc" id="L203">      outputBuffer.add(firstElement);</span>
+<span class="fc" id="L204">      firstElement = null;</span>
+    }
+<span class="fc" id="L206">  }</span>
+
+  private void addAttributesToOutputBuffer() {
+<span class="nc bnc" id="L209" title="All 2 branches missed.">    for (int i = 0; i &lt; reader.getAttributeCount(); i++) {</span>
+<span class="nc" id="L210">      addToOutputBuffer(JsonElement.value(convertName(reader.getAttributeLocalName(i)), reader.getAttributeValue(i)));</span>
+    }
+<span class="nc" id="L212">  }</span>
+
+  private String convertName(final String name) {
+<span class="fc bfc" id="L215" title="All 2 branches covered.">    if (uncapitalizeProperties) {</span>
+<span class="fc" id="L216">      return StringUtils.uncapitalize(name);</span>
+    }
+<span class="fc" id="L218">    return name;</span>
+  }
+
+  private JsonElement createValueElement(final String key, final String value) {
+<span class="fc" id="L222">    return JsonElement.value(key, value);</span>
+  }
+
+  private void addLastElementToOutputBufferIfNeeded() {
+<span class="pc bpc" id="L226" title="2 of 6 branches missed.">    if (outputBuffer.isEmpty() &amp;&amp; firstElement == null &amp;&amp; lastElement != null) {</span>
+<span class="fc" id="L227">      outputBuffer.add(lastElement);</span>
+<span class="fc" id="L228">      lastElement = null;</span>
+    }
+<span class="fc" id="L230">  }</span>
+
+  private String getXPath() {
+<span class="fc" id="L233">    return StringUtils.join(breadCrumb, XPATH_SEPARATOR);</span>
+  }
+
+  @Override
+  public void close() throws IOException {
+    try {
+<span class="fc" id="L239">      reader.close();</span>
+    }
+<span class="nc" id="L241">    catch (XMLStreamException ex) {</span>
+<span class="nc" id="L242">      throw new IOException(ex);</span>
+<span class="fc" id="L243">    }</span>
+<span class="fc" id="L244">  }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

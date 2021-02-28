@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractPathProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Transformation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.jsontransform.processor</a> &gt; <span class="el_source">AbstractPathProcessor.java</span></div><h1>AbstractPathProcessor.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.jsontransform.processor;
+
+import org.osgi.annotation.versioning.ConsumerType;
+
+import io.wcm.caravan.io.jsontransform.element.JsonElement;
+import io.wcm.caravan.io.jsontransform.element.JsonPath;
+import io.wcm.caravan.io.jsontransform.element.JsonPathCreator;
+import io.wcm.caravan.io.jsontransform.source.Source;
+
+/**
+ * Helping abstract class recording the bread crumb of passed JSON stream elements
+ */
+@ConsumerType
+public abstract class AbstractPathProcessor extends AbstractBufferingProcessor {
+
+<span class="fc" id="L35">  private final JsonPathCreator pathCreator = new JsonPathCreator();</span>
+
+  /**
+   * @param source The JSON stream source to process
+   */
+  public AbstractPathProcessor(final Source source) {
+<span class="fc" id="L41">    super(source);</span>
+<span class="fc" id="L42">  }</span>
+
+  /**
+   * @param path The current JSON path
+   * @param element The current JSON stream element
+   * @return True if process with the given parameter should get called
+   */
+  protected abstract boolean isProcessable(JsonPath path, JsonElement element);
+
+  /**
+   * Processes the current JSON stream element
+   * @param path The current JSON path
+   * @param element The current JSON stream element
+   */
+  protected abstract void process(JsonPath path, JsonElement element);
+
+  @Override
+  protected void process(final JsonElement element) {
+<span class="fc" id="L60">    JsonPath path = pathCreator.getJsonPathForElement(element);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    if (isProcessable(path, element)) {</span>
+<span class="fc" id="L62">      process(path, element);</span>
+    }
+    else {
+<span class="fc" id="L65">      outputBuffer.add(element);</span>
+    }
+<span class="fc" id="L67">  }</span>
+
+  /**
+   * Requests the next JSON stream elements from the source until the bread crumb matches the given JSON path. Passed
+   * elements don't get processed or stored in the output buffer. They get lost! Calls the &lt;code&gt;contains&lt;/code&gt;
+   * function to evaluate the query.
+   * @param path JSON path query
+   * @return The JSON stream element matching the query
+   */
+  protected JsonElement seekToPath(final String path) {
+<span class="nc bnc" id="L77" title="All 2 branches missed.">    while (source.hasNext()) {</span>
+<span class="nc" id="L78">      JsonElement element = source.next();</span>
+<span class="nc" id="L79">      JsonPath currentPath = pathCreator.getJsonPathForElement(element);</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">      if (currentPath.contains(path)) {</span>
+<span class="nc" id="L81">        return element;</span>
+      }
+<span class="nc" id="L83">    }</span>
+<span class="nc" id="L84">    return null;</span>
+  }
+
+  /**
+   * Requests the next JSON stream element.
+   * @return The next JSON stream element
+   */
+  protected JsonElement seekToNext() {
+<span class="nc" id="L92">    return seekToNext(1);</span>
+  }
+
+  /**
+   * Request x times the next JSON stream element defined by the &lt;code&gt;steps&lt;/code&gt; parameter. Passed
+   * elements don't get processed or stored in the output buffer. They get lost!
+   * @param steps Number of steps to execute next; must be larger then zero
+   * @return Null if source has no more elements
+   */
+  protected JsonElement seekToNext(final int steps) {
+<span class="nc" id="L102">    JsonElement element = null;</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">    for (int i = 0; i &lt; steps; i++) {</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">      if (!source.hasNext()) {</span>
+<span class="nc" id="L105">        return null;</span>
+      }
+<span class="nc" id="L107">      element = source.next();</span>
+<span class="nc" id="L108">      pathCreator.getJsonPathForElement(element);</span>
+    }
+<span class="nc" id="L110">    return element;</span>
+  }
+
+  /**
+   * Requests the next JSON stream elements from the source until the bread crumb matches the given JSON path. Passed
+   * elements don't get processed but stored in the output buffer. Calls the &lt;code&gt;contains&lt;/code&gt; function to evaluate
+   * the query.
+   * @param path JSON path query
+   * @return The JSON stream element matching the query
+   */
+  protected JsonElement processToPath(final String path) {
+<span class="nc bnc" id="L121" title="All 2 branches missed.">    while (source.hasNext()) {</span>
+<span class="nc" id="L122">      JsonElement element = source.next();</span>
+<span class="nc" id="L123">      JsonPath currentPath = pathCreator.getJsonPathForElement(element);</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">      if (currentPath.contains(path)) {</span>
+<span class="nc" id="L125">        return element;</span>
+      }
+      else {
+<span class="nc" id="L128">        outputBuffer.add(element);</span>
+      }
+<span class="nc" id="L130">    }</span>
+<span class="nc" id="L131">    return null;</span>
+  }
+
+  /**
+   * @return The current JSON path
+   */
+  protected JsonPath getCurrentJsonPath() {
+<span class="nc" id="L138">    return pathCreator.getJsonPath();</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

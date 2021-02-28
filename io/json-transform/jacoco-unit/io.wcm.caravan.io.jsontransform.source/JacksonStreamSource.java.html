@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JacksonStreamSource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Transformation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.jsontransform.source</a> &gt; <span class="el_source">JacksonStreamSource.java</span></div><h1>JacksonStreamSource.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.jsontransform.source;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+
+import org.osgi.annotation.versioning.ProviderType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+
+import io.wcm.caravan.io.jsontransform.element.JsonElement;
+
+/**
+ * JSON source using the Jackson streaming parser.
+ */
+@ProviderType
+public final class JacksonStreamSource implements Source {
+
+<span class="fc" id="L43">  private static final Logger LOG = LoggerFactory.getLogger(JacksonStreamSource.class);</span>
+
+<span class="fc" id="L45">  private static final JsonFactory JSON_FACTORY = new JsonFactory();</span>
+  private final JsonParser parser;
+
+  private JsonElement current;
+
+  /**
+   * @param input The input stream
+   * @throws JsonParseException Error reading json
+   * @throws IOException Error reading stream
+   */
+<span class="fc" id="L55">  public JacksonStreamSource(final InputStream input) throws JsonParseException, IOException {</span>
+<span class="fc" id="L56">    parser = JSON_FACTORY.createParser(input);</span>
+<span class="fc" id="L57">  }</span>
+
+  @Override
+  public boolean hasNext() {
+<span class="fc" id="L61">    parseJsonElementIfNeeded();</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">    return current != null;</span>
+  }
+
+  @Override
+  public JsonElement next() {
+<span class="fc" id="L67">    parseJsonElementIfNeeded();</span>
+<span class="fc" id="L68">    JsonElement next = current;</span>
+<span class="fc" id="L69">    current = null;</span>
+<span class="fc" id="L70">    return next;</span>
+  }
+
+  private void parseJsonElementIfNeeded() {
+<span class="fc bfc" id="L74" title="All 2 branches covered.">    if (current == null) {</span>
+      try {
+<span class="fc" id="L76">        JsonToken token = parser.nextToken();</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (token != null) {</span>
+<span class="fc" id="L78">          current = parseJsonElement(token);</span>
+        }
+      }
+<span class="nc" id="L81">      catch (IOException ex) {</span>
+<span class="nc" id="L82">        LOG.error(&quot;Error reading JSON stream&quot;, ex);</span>
+<span class="fc" id="L83">      }</span>
+    }
+<span class="fc" id="L85">  }</span>
+
+  private JsonElement parseJsonElement(final JsonToken token) throws IOException {
+<span class="fc" id="L88">    String key = parser.getCurrentName();</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">    if (JsonToken.START_OBJECT.equals(token)) {</span>
+<span class="fc" id="L90">      return JsonElement.DEFAULT_START_OBJECT;</span>
+    }
+<span class="fc bfc" id="L92" title="All 2 branches covered.">    else if (JsonToken.END_OBJECT.equals(token)) {</span>
+<span class="fc" id="L93">      return JsonElement.DEFAULT_END_OBJECT;</span>
+    }
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">    else if (JsonToken.START_ARRAY.equals(token)) {</span>
+<span class="nc" id="L96">      return JsonElement.DEFAULT_START_ARRAY;</span>
+    }
+<span class="fc bfc" id="L98" title="All 2 branches covered.">    else if (JsonToken.END_ARRAY.equals(token)) {</span>
+<span class="fc" id="L99">      return JsonElement.DEFAULT_END_ARRAY;</span>
+    }
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    else if (JsonToken.FIELD_NAME.equals(token)) {</span>
+<span class="fc" id="L102">      return handleFieldName(key);</span>
+    }
+<span class="fc" id="L104">    return JsonElement.value(key, parseValue(token));</span>
+  }
+
+  private JsonElement handleFieldName(String key) throws IOException, JsonParseException {
+<span class="fc" id="L108">    JsonToken next = parser.nextToken();</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">    if (JsonToken.START_OBJECT.equals(next)) {</span>
+<span class="fc" id="L110">      return JsonElement.startObject(key);</span>
+    }
+<span class="fc bfc" id="L112" title="All 2 branches covered.">    else if (JsonToken.START_ARRAY.equals(next)) {</span>
+<span class="fc" id="L113">      return JsonElement.startArray(key);</span>
+    }
+    else {
+<span class="fc" id="L116">      return JsonElement.value(key, parseValue(next));</span>
+    }
+  }
+
+  private Object parseValue(final JsonToken token) throws IOException {
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">    if (token.isBoolean()) {</span>
+<span class="nc" id="L122">      return parser.getBooleanValue();</span>
+    }
+<span class="fc bfc" id="L124" title="All 2 branches covered.">    else if (token.isNumeric()) {</span>
+<span class="fc" id="L125">      return new BigDecimal(parser.getText());</span>
+    }
+    else {
+<span class="fc" id="L128">      return parser.getText();</span>
+    }
+  }
+
+  @Override
+  public void close() throws IOException {
+<span class="nc" id="L134">    parser.close();</span>
+<span class="nc" id="L135">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

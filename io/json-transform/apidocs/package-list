@@ -1,0 +1,4 @@
+io.wcm.caravan.io.jsontransform.element
+io.wcm.caravan.io.jsontransform.processor
+io.wcm.caravan.io.jsontransform.sink
+io.wcm.caravan.io.jsontransform.source

@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>Resilient HTTP - Checkstyle report</title>
+    <link>https://caravan.wcm.io/io/http/</link>
+    <description>Resilient HTTP - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
+    <item>
+      <title>File: 40,
+             Errors: 0,
+             Warnings: 3,
+             Infos: 0
+      </title>
+            <link>https://caravan.wcm.io/io/http//checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://caravan.wcm.io/io/http//checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.servletclient.ServletHttpClient.java">io/wcm/caravan/io/http/impl/servletclient/ServletHttpClient.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.servletclient.HttpServletRequestMapper.java">io/wcm/caravan/io/http/impl/servletclient/HttpServletRequestMapper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpHelper.java">io/wcm/caravan/io/http/impl/CaravanHttpHelper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ribbon.LoadBalancerCommandFactory.java">io/wcm/caravan/io/http/impl/ribbon/LoadBalancerCommandFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.HystrixMetricsMounter.java">io/wcm/caravan/io/http/impl/HystrixMetricsMounter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpServiceConfig.java">io/wcm/caravan/io/http/impl/CaravanHttpServiceConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ribbon.SimpleLoadBalancerFactory.java">io/wcm/caravan/io/http/impl/ribbon/SimpleLoadBalancerFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ArchaiusConfig.java">io/wcm/caravan/io/http/impl/ArchaiusConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.CaravanHttpClient.java">io/wcm/caravan/io/http/CaravanHttpClient.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ribbon.RibbonHttpClient.java">io/wcm/caravan/io/http/impl/ribbon/RibbonHttpClient.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ribbon.CachingLoadBalancerFactory.java">io/wcm/caravan/io/http/impl/ribbon/CachingLoadBalancerFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ApacheHttpClient.java">io/wcm/caravan/io/http/impl/ApacheHttpClient.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.servletclient.HttpServletResponseMapper.java">io/wcm/caravan/io/http/impl/servletclient/HttpServletResponseMapper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.package-info.java">io/wcm/caravan/io/http/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.ByteArrayBody.java">io/wcm/caravan/io/http/response/ByteArrayBody.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.RequestInstantiationRuntimeException.java">io/wcm/caravan/io/http/RequestInstantiationRuntimeException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.HystrixHttpServiceMounter.java">io/wcm/caravan/io/http/impl/HystrixHttpServiceMounter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpServiceConfigValidator.java">io/wcm/caravan/io/http/impl/CaravanHttpServiceConfigValidator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.RequestUtil.java">io/wcm/caravan/io/http/impl/RequestUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.servletclient.NotSupportedByRequestMapperException.java">io/wcm/caravan/io/http/impl/servletclient/NotSupportedByRequestMapperException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpClientImpl.java">io/wcm/caravan/io/http/impl/CaravanHttpClientImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.Body.java">io/wcm/caravan/io/http/response/Body.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.CaravanHttpResponse.java">io/wcm/caravan/io/http/response/CaravanHttpResponse.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.IllegalResponseRuntimeException.java">io/wcm/caravan/io/http/IllegalResponseRuntimeException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.CaravanHttpResponseBuilder.java">io/wcm/caravan/io/http/response/CaravanHttpResponseBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#hystrix-dashboard.WEB-INF.classes.log4j.properties">hystrix-dashboard/WEB-INF/classes/log4j.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpClientConfig.java">io/wcm/caravan/io/http/impl/CaravanHttpClientConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.BundleActivator.java">io/wcm/caravan/io/http/impl/BundleActivator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.InputStreamBody.java">io/wcm/caravan/io/http/response/InputStreamBody.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.request.package-info.java">io/wcm/caravan/io/http/request/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#config.properties">config.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpThreadPoolConfig.java">io/wcm/caravan/io/http/impl/CaravanHttpThreadPoolConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.package-info.java">io/wcm/caravan/io/http/response/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpCallbackExecutor.java">io/wcm/caravan/io/http/impl/CaravanHttpCallbackExecutor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.HttpHystrixCommand.java">io/wcm/caravan/io/http/impl/HttpHystrixCommand.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ribbon.LoadBalancerFactory.java">io/wcm/caravan/io/http/impl/ribbon/LoadBalancerFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ribbon.CaravanLoadBalancerRetryHandler.java">io/wcm/caravan/io/http/impl/ribbon/CaravanLoadBalancerRetryHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.request.CaravanHttpRequestBuilder.java">io/wcm/caravan/io/http/request/CaravanHttpRequestBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.RequestFailedRuntimeException.java">io/wcm/caravan/io/http/RequestFailedRuntimeException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.request.CaravanHttpRequest.java">io/wcm/caravan/io/http/request/CaravanHttpRequest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

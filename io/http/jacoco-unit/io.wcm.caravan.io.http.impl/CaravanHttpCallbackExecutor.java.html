@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CaravanHttpCallbackExecutor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.http.impl</a> &gt; <span class="el_source">CaravanHttpCallbackExecutor.java</span></div><h1>CaravanHttpCallbackExecutor.java</h1><pre class="source lang-java linenums">/* Copyright (c) pro!vision GmbH. All rights reserved. */
+package io.wcm.caravan.io.http.impl;
+
+import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import rx.schedulers.Schedulers;
+
+/**
+ * A thread pool executor that is used to do perform all callbacks to the subscribers of Observables returned by
+ * {@link CaravanHttpClientImpl#execute(io.wcm.caravan.io.http.request.CaravanHttpRequest)}. This is desired to avoid
+ * the threads that actually execute the HTTP request are being blocked by client code. This thread pool has a core size
+ * of just four threads, but if all of these threads are used by slow callback code, additional threads are
+ * automatically spawned on demand.
+ */
+public class CaravanHttpCallbackExecutor extends ThreadPoolExecutor {
+
+<span class="fc" id="L25">  private static final Logger LOG = LoggerFactory.getLogger(CaravanHttpCallbackExecutor.class);</span>
+
+  static final String THREAD_GROUP_NAME = &quot;Caravan-Http-Callbacks&quot;;
+
+<span class="fc" id="L29">  private static final AtomicInteger THREAD_INDEX_COUNTER = new AtomicInteger();</span>
+
+  private static final int THREAD_POOL_CORE_SIZE = 4;
+  private static final int THREAD_POOL_MAX_SIZE = 1000;
+  private static final int IDLE_THREAD_KEEP_ALIVE_SECONDS = 10;
+
+  private static final int WATCHDOG_INTERVAL_SECONDS = 1;
+
+  private final rx.Scheduler.Worker watchdogWorker;
+
+  CaravanHttpCallbackExecutor() {
+    // by using a LinkedBlockingQueue, the ThreadPoolExecutor will not automatically spawn any new threads when all core threads are in use,
+    // instead, additional tasks will be queued up. If this happens, the periodically called ::increaseCoreSizeIfJobsAreQeueued method will adjust the core size
+<span class="fc" id="L42">    super(THREAD_POOL_CORE_SIZE, THREAD_POOL_MAX_SIZE, IDLE_THREAD_KEEP_ALIVE_SECONDS, TimeUnit.SECONDS, new LinkedBlockingQueue&lt;Runnable&gt;(),</span>
+        new RejectionHandler());
+
+
+<span class="fc" id="L46">    watchdogWorker = Schedulers.computation().createWorker();</span>
+<span class="fc" id="L47">    watchdogWorker.schedulePeriodically(this::increaseCoreSizeIfJobsAreQeueued, 5, WATCHDOG_INTERVAL_SECONDS, TimeUnit.SECONDS);</span>
+
+<span class="fc" id="L49">    setThreadFactory(runnable -&gt; new Thread(runnable, THREAD_GROUP_NAME + &quot;-&quot; + THREAD_INDEX_COUNTER.getAndIncrement()));</span>
+<span class="fc" id="L50">  }</span>
+
+  @Override
+  public void shutdown() {
+
+<span class="fc" id="L55">    watchdogWorker.unsubscribe();</span>
+
+<span class="fc" id="L57">    super.shutdown();</span>
+<span class="fc" id="L58">  }</span>
+
+  @Override
+  public List&lt;Runnable&gt; shutdownNow() {
+
+<span class="fc" id="L63">    watchdogWorker.unsubscribe();</span>
+
+<span class="fc" id="L65">    return super.shutdownNow();</span>
+  }
+
+  private void increaseCoreSizeIfJobsAreQeueued() {
+
+    // This is based on &quot;Idea #2&quot; described in the following comment
+    // http://stackoverflow.com/questions/9622599/java-threadpoolexecutor-strategy-direct-handoff-with-queue#answer-9623100
+
+    // the idea is that we don't allow ThreadPoolExecutor to decide when to spawn new thread on its own, as this could lead to a huge threadpool if many
+    // http requests are initiated at once. As long as the callbacks are executed fast, the system should work well by just using the core threadpool
+
+<span class="nc" id="L76">    int queueSize = getQueue().size();</span>
+<span class="nc" id="L77">    int currentPoolSize = getPoolSize();</span>
+<span class="nc" id="L78">    int corePoolSize = getCorePoolSize();</span>
+<span class="nc" id="L79">    int activeCount = getActiveCount();</span>
+    try {
+
+<span class="nc bnc" id="L82" title="All 2 branches missed.">      if (LOG.isTraceEnabled()) {</span>
+<span class="nc" id="L83">        LOG.trace(</span>
+            &quot;Checking if threadool core size should be adjusted: queueSize=&quot; + queueSize + &quot;. poolSize=&quot; + currentPoolSize + &quot;, activeCount=&quot; + activeCount);
+      }
+
+<span class="nc bnc" id="L87" title="All 6 branches missed.">      if (queueSize &gt; 0 &amp;&amp; activeCount == currentPoolSize &amp;&amp; currentPoolSize &lt; getMaximumPoolSize()) {</span>
+<span class="nc" id="L88">        int newCoreSize = Math.min(currentPoolSize + queueSize, getMaximumPoolSize());</span>
+<span class="nc" id="L89">        LOG.warn(</span>
+            &quot;Increasing thread pool core size to &quot; + newCoreSize + &quot;, because there are &quot; + queueSize + &quot; callbacks waiting in the queue, and all of &quot;
+                + currentPoolSize + &quot; threads are blocked.&quot;);
+
+<span class="nc" id="L93">        setCorePoolSize(newCoreSize);</span>
+<span class="nc" id="L94">      }</span>
+<span class="nc bnc" id="L95" title="All 6 branches missed.">      else if (queueSize == 0 &amp;&amp; activeCount &lt; currentPoolSize &amp;&amp; corePoolSize &gt; THREAD_POOL_CORE_SIZE) {</span>
+<span class="nc" id="L96">        int newCoreSize = corePoolSize - 1;</span>
+
+<span class="nc" id="L98">        LOG.info(</span>
+            &quot;Decreasing thread pool core size to &quot; + newCoreSize + &quot;, because there are no callbacks waiting in the queue, and only &quot; + activeCount + &quot; of &quot;
+                + currentPoolSize + &quot; threads are blocked.&quot;);
+
+<span class="nc" id="L102">        setCorePoolSize(newCoreSize);</span>
+      }
+    }
+<span class="nc" id="L105">    catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L106">      LOG.error(&quot;Failed to adjust core size queueSize=&quot; + queueSize + &quot;. poolSize=&quot; + currentPoolSize + &quot;, activeCount=&quot; + activeCount, ex);</span>
+<span class="nc" id="L107">    }</span>
+
+<span class="nc" id="L109">  }</span>
+
+  @Override
+  protected void beforeExecute(Thread t, Runnable r) {
+
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">    if (LOG.isTraceEnabled()) {</span>
+<span class="nc" id="L115">      LOG.trace(&quot;Executing HTTP callback on thread &quot; + t + &quot;, current pool size is &quot; + getPoolSize());</span>
+    }
+
+<span class="fc" id="L118">    super.beforeExecute(t, r);</span>
+<span class="fc" id="L119">  }</span>
+
+
+  private static class RejectionHandler implements RejectedExecutionHandler {
+
+    @Override
+    public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+<span class="nc" id="L126">      LOG.error(&quot;Rejected to execute async http callback &quot; + r.toString() + &quot; because the maximum number of threads (&quot; + executor.getMaximumPoolSize()</span>
+      + &quot;) has been reached&quot;);
+<span class="nc" id="L128">    }</span>
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

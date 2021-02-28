@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ArrayProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Transformation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.jsontransform.processor</a> &gt; <span class="el_source">ArrayProcessor.java</span></div><h1>ArrayProcessor.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.jsontransform.processor;
+
+import java.util.Set;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import io.wcm.caravan.io.jsontransform.element.JsonElement;
+import io.wcm.caravan.io.jsontransform.element.JsonPath;
+import io.wcm.caravan.io.jsontransform.source.Source;
+
+/**
+ * Converts elements identified by passed keys to JSON array elements and the children into JSON array values.
+ */
+@ProviderType
+public final class ArrayProcessor extends AbstractPathProcessor {
+
+  private final Set&lt;String&gt; keys;
+
+  /**
+   * @param source The JSON stream source to process
+   * @param keys Name of the elements to convert
+   */
+  public ArrayProcessor(final Source source, final Set&lt;String&gt; keys) {
+<span class="fc" id="L43">    super(source);</span>
+<span class="fc" id="L44">    this.keys = keys;</span>
+<span class="fc" id="L45">  }</span>
+
+  @Override
+  protected boolean isProcessable(final JsonPath path, final JsonElement element) {
+<span class="fc bfc" id="L49" title="All 4 branches covered.">    return isParentElement(path, element) || isChildElement(path);</span>
+  }
+
+  private boolean isParentElement(final JsonPath path, final JsonElement element) {
+<span class="fc bfc" id="L53" title="All 4 branches covered.">    return keys.contains(element.getKey()) || keys.contains(path.getLast().getKey());</span>
+  }
+
+  private boolean isChildElement(final JsonPath path) {
+<span class="fc bfc" id="L57" title="All 4 branches covered.">    return path.size() &gt; 1 &amp;&amp; keys.contains(path.getLast(1).getKey());</span>
+  }
+
+  @Override
+  protected void process(final JsonPath path, final JsonElement element) {
+<span class="fc bfc" id="L62" title="All 2 branches covered.">    if (isParentElement(path, element)) {</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">      outputBuffer.add(element.isStartingElement() ? JsonElement.startArray(element.getKey()) : JsonElement.DEFAULT_END_ARRAY);</span>
+    }
+    else {
+<span class="fc" id="L66">      outputBuffer.add(new JsonElement(null, element.getValue(), element.getType()));</span>
+    }
+<span class="fc" id="L68">  }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

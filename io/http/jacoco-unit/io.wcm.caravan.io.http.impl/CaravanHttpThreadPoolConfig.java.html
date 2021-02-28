@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CaravanHttpThreadPoolConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.http.impl</a> &gt; <span class="el_source">CaravanHttpThreadPoolConfig.java</span></div><h1>CaravanHttpThreadPoolConfig.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.http.impl;
+
+import java.util.Map;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.ConfigurationPolicy;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.sling.commons.osgi.PropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Configures thread pool options for the transport layer.
+ * The configuration is mapped to archaius configuration internally.
+ */
+@Component(immediate = true, metatype = true,
+label = &quot;wcm.io Caravan Resilient Http Thread Pool Configuration&quot;,
+description = &quot; Configures thread pool options for the transport layer.&quot;,
+configurationFactory = true, policy = ConfigurationPolicy.REQUIRE)
+@Property(name = &quot;webconsole.configurationFactory.nameHint&quot;, value = &quot;{threadPoolName}: {hystrixThreadpoolCoresize}&quot;)
+<span class="fc" id="L44">public class CaravanHttpThreadPoolConfig {</span>
+
+<span class="fc" id="L46">  private static final Logger log = LoggerFactory.getLogger(CaravanHttpThreadPoolConfig.class);</span>
+
+  /**
+   * Thread Pool Name
+   */
+  @Property(label = &quot;Thread Pool Name&quot;, description = &quot;Internal thread pool name.&quot;)
+  public static final String THREAD_POOL_NAME_PROPERTY = &quot;threadPoolName&quot;;
+
+  /**
+   * Threadpool size
+   */
+  @Property(label = &quot;Threadpool size&quot;,
+      description = &quot;Hystrix: Maximum number of HystrixCommands that can execute concurrently.&quot;)
+  public static final String HYSTRIX_THREADPOOL_CORESIZE_PROPERTY = &quot;hystrixThreadpoolCoresize&quot;;
+  static final int HYSTRIX_THREADPOOL_CORESIZE_DEFAULT = 10;
+
+  /**
+   * Max. Threadpool Queue Size
+   */
+  @Property(label = &quot;Max. Threadpool Queue Size&quot;,
+      description = &quot;Hystrix: Maximum queue size at which rejections will occur. Note: This property only applies at initialization time.&quot;)
+  public static final String HYSTRIX_THREADPOOL_MAXQUEUESIZE_PROPERTY = &quot;hystrixThreadpoolMaxqueuesize&quot;;
+  static final int HYSTRIX_THREADPOOL_MAXQUEUESIZE_DEFAULT = 4096;
+
+  /**
+   * Dynamic Threadpool Queue Size
+   */
+  @Property(label = &quot;Dynamic Threadpool Queue Size&quot;,
+      description = &quot;Hystrix: Artificial maximum queue size at which rejections will occur even if hystrixThreadpoolDefaultMaxqueuesize has not been reached.&quot;)
+  public static final String HYSTRIX_THREADPOOL_QUEUESIZEREJECTIONTHRESHOLD_PROPERTY = &quot;hystrixThreadpoolQueuesizerejectionthreshold&quot;;
+  static final int HYSTRIX_THREADPOOL_QUEUESIZEREJECTIONTHRESHOLD_DEFAULT = 4096;
+
+  private static final String HYSTRIX_THREADPOOL_PREFIX = &quot;hystrix.threadpool.&quot;;
+  private static final String HYSTRIX_PARAM_THREADPOOL_CORESIZE = &quot;.coreSize&quot;;
+  private static final String HYSTRIX_PARAM_THREADPOOL_MAXQUEUESIZE = &quot;.maxQueueSize&quot;;
+  private static final String HYSTRIX_PARAM_THREADPOOL_QUEUESIZEREJECTIONTHRESHOLD = &quot;.queueSizeRejectionThreshold&quot;;
+
+  @Activate
+  protected void activate(Map&lt;String, Object&gt; config) {
+<span class="fc" id="L85">    String threadPoolName = getThreadPoolName(config);</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">    if (validateConfig(threadPoolName, config)) {</span>
+<span class="fc" id="L87">      setArchiausProperties(threadPoolName, config);</span>
+    }
+<span class="fc" id="L89">  }</span>
+
+  @Deactivate
+  protected void deactivate(Map&lt;String, Object&gt; config) {
+    // clear configuration by writing empty properties
+<span class="fc" id="L94">    String threadPoolName = getThreadPoolName(config);</span>
+<span class="fc" id="L95">    clearArchiausProperties(threadPoolName);</span>
+<span class="fc" id="L96">  }</span>
+
+  private String getThreadPoolName(Map&lt;String, Object&gt; config) {
+<span class="fc" id="L99">    return PropertiesUtil.toString(config.get(THREAD_POOL_NAME_PROPERTY), null);</span>
+  }
+
+  /**
+   * Validates configuration
+   * @param threadPoolName Thread pool name
+   * @param config OSGi config
+   */
+  private boolean validateConfig(String threadPoolName, Map&lt;String, Object&gt; config) {
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">    if (StringUtils.isBlank(threadPoolName)) {</span>
+<span class="nc" id="L109">      log.warn(&quot;Invalid http thread pool configuration without thread pool name, ignoring.&quot;, threadPoolName);</span>
+<span class="nc" id="L110">      return false;</span>
+    }
+<span class="fc" id="L112">    return true;</span>
+  }
+
+  /**
+   * Writes OSGi configuration to archaius configuration.
+   * @param threadPoolName Thread pool name
+   * @param config OSGi config
+   */
+  private void setArchiausProperties(String threadPoolName, Map&lt;String, Object&gt; config) {
+<span class="fc" id="L121">    Configuration archaiusConfig = ArchaiusConfig.getConfiguration();</span>
+    // thread pool size
+<span class="fc" id="L123">    archaiusConfig.setProperty(HYSTRIX_THREADPOOL_PREFIX + threadPoolName + HYSTRIX_PARAM_THREADPOOL_CORESIZE,</span>
+<span class="fc" id="L124">        PropertiesUtil.toInteger(config.get(HYSTRIX_THREADPOOL_CORESIZE_PROPERTY), HYSTRIX_THREADPOOL_CORESIZE_DEFAULT));</span>
+    // maximum thread queue size
+<span class="fc" id="L126">    archaiusConfig.setProperty(HYSTRIX_THREADPOOL_PREFIX + threadPoolName + HYSTRIX_PARAM_THREADPOOL_MAXQUEUESIZE,</span>
+<span class="fc" id="L127">        PropertiesUtil.toInteger(config.get(HYSTRIX_THREADPOOL_MAXQUEUESIZE_PROPERTY), HYSTRIX_THREADPOOL_MAXQUEUESIZE_DEFAULT));</span>
+    // dynamic thread queue size
+<span class="fc" id="L129">    archaiusConfig.setProperty(HYSTRIX_THREADPOOL_PREFIX + threadPoolName + HYSTRIX_PARAM_THREADPOOL_QUEUESIZEREJECTIONTHRESHOLD,</span>
+<span class="fc" id="L130">        PropertiesUtil.toInteger(config.get(HYSTRIX_THREADPOOL_QUEUESIZEREJECTIONTHRESHOLD_PROPERTY), HYSTRIX_THREADPOOL_QUEUESIZEREJECTIONTHRESHOLD_DEFAULT));</span>
+<span class="fc" id="L131">  }</span>
+
+  /**
+   * Removes OSGi configuration from archaius configuration.
+   * @param threadPoolName Thread pool name
+   */
+  private void clearArchiausProperties(String threadPoolName) {
+<span class="fc" id="L138">    Configuration archaiusConfig = ArchaiusConfig.getConfiguration();</span>
+<span class="fc" id="L139">    archaiusConfig.clearProperty(HYSTRIX_THREADPOOL_PREFIX + threadPoolName + HYSTRIX_PARAM_THREADPOOL_CORESIZE);</span>
+<span class="fc" id="L140">    archaiusConfig.clearProperty(HYSTRIX_THREADPOOL_PREFIX + threadPoolName + HYSTRIX_PARAM_THREADPOOL_MAXQUEUESIZE);</span>
+<span class="fc" id="L141">    archaiusConfig.clearProperty(HYSTRIX_THREADPOOL_PREFIX + threadPoolName + HYSTRIX_PARAM_THREADPOOL_QUEUESIZEREJECTIONTHRESHOLD);</span>
+<span class="fc" id="L142">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

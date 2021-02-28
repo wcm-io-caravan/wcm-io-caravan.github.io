@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CaravanHttpRequestBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.http.request</a> &gt; <span class="el_source">CaravanHttpRequestBuilder.java</span></div><h1>CaravanHttpRequestBuilder.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.http.request;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.methods.HttpGet;
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.damnhandy.uri.template.UriTemplate;
+import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
+
+import io.wcm.caravan.io.http.impl.CaravanHttpHelper;
+
+/**
+ * UriTemplate using HTTP request builder.
+ */
+@ProviderType
+public final class CaravanHttpRequestBuilder {
+
+  private final String serviceId;
+<span class="fc" id="L54">  private String method = HttpGet.METHOD_NAME;</span>
+<span class="fc" id="L55">  private StringBuilder path = new StringBuilder();</span>
+<span class="fc" id="L56">  private Set&lt;String&gt; queryNames = Sets.newHashSet();</span>
+<span class="fc" id="L57">  private Map&lt;String, Object&gt; values = Maps.newHashMap();</span>
+<span class="fc" id="L58">  private final Multimap&lt;String, String&gt; headers = ArrayListMultimap.create();</span>
+  private Charset charset;
+  private byte[] body;
+  private String bodyTemplate;
+
+  /**
+   * Default constructor.
+   */
+<span class="fc" id="L66">  public CaravanHttpRequestBuilder() {</span>
+<span class="fc" id="L67">    serviceId = null;</span>
+<span class="fc" id="L68">  }</span>
+
+  /**
+   * @param serviceId Logical service ID. Can be null.
+   */
+<span class="fc" id="L73">  public CaravanHttpRequestBuilder(String serviceId) {</span>
+<span class="fc" id="L74">    this.serviceId = serviceId;</span>
+<span class="fc" id="L75">  }</span>
+
+  /**
+   * @param correlationId Correlation Id. Can be null.
+   * @return Builder
+   */
+  public CaravanHttpRequestBuilder correlationId(String correlationId) {
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">    if (correlationId != null) {</span>
+<span class="fc" id="L83">      header(CaravanHttpRequest.CORRELATION_ID_HEADER_NAME, ImmutableList.of(correlationId));</span>
+    }
+<span class="fc" id="L85">    return this;</span>
+  }
+
+  /**
+   * @see CaravanHttpRequest#getMethod()
+   * @param newMethod HTTP method
+   * @return Builder
+   */
+  public CaravanHttpRequestBuilder method(String newMethod) {
+<span class="fc" id="L94">    this.method = checkNotNull(newMethod, &quot;method&quot;);</span>
+<span class="fc" id="L95">    return this;</span>
+  }
+
+  /**
+   * Adds a header to the HTTP request
+   * @see CaravanHttpRequest#getHeaders()
+   * @param name Header name
+   * @param value Header value
+   * @return Builder
+   */
+  public CaravanHttpRequestBuilder header(String name, String value) {
+<span class="fc" id="L106">    headers.put(name, value);</span>
+<span class="fc" id="L107">    return this;</span>
+  }
+
+  /**
+   * Sets and replaces a header for the HTTP request
+   * @see CaravanHttpRequest#getHeaders()
+   * @param name Header name
+   * @param headerValues Header values
+   * @return Builder
+   */
+  public CaravanHttpRequestBuilder header(String name, Collection&lt;String&gt; headerValues) {
+<span class="fc" id="L118">    headers.putAll(name, headerValues);</span>
+<span class="fc" id="L119">    return this;</span>
+  }
+
+  /**
+   * Appends a URL fragment.
+   * @param urlFragment URL fragment
+   * @return Builder
+   */
+  public CaravanHttpRequestBuilder append(String urlFragment) {
+<span class="fc" id="L128">    this.path.append(urlFragment);</span>
+<span class="fc" id="L129">    return this;</span>
+  }
+
+  /**
+   * Adds a query template expression.
+   * @param name Query parameter name
+   * @return Builder
+   */
+  public CaravanHttpRequestBuilder query(String name) {
+<span class="fc" id="L138">    queryNames.add(name);</span>
+<span class="fc" id="L139">    return this;</span>
+  }
+
+  /**
+   * Adds a parameter with value to the request query
+   * @see CaravanHttpRequest#getUrl()
+   * @param name Parameter name
+   * @param value Parameter value
+   * @return Builder
+   */
+  public CaravanHttpRequestBuilder query(String name, Object value) {
+<span class="fc" id="L150">    return query(name).value(name, value);</span>
+  }
+
+  /**
+   * Adds a value for any UriTemplate expression in URL, header or body.
+   * @param name Parameter name
+   * @param value Parameter value
+   * @return Builder
+   */
+  public CaravanHttpRequestBuilder value(String name, Object value) {
+<span class="fc" id="L160">    values.put(name, value);</span>
+<span class="fc" id="L161">    return this;</span>
+  }
+
+  /**
+   * Sets a template for the HTTP body.
+   * @see CaravanHttpRequest#getBody()
+   * @param template Body template
+   * @return Builder
+   */
+  public CaravanHttpRequestBuilder body(String template) {
+<span class="fc" id="L171">    body = null;</span>
+<span class="fc" id="L172">    charset = Charsets.UTF_8;</span>
+<span class="fc" id="L173">    bodyTemplate = template;</span>
+<span class="fc" id="L174">    return this;</span>
+  }
+
+  /**
+   * Sets the HTTP body and charset.
+   * @see CaravanHttpRequest#getBody()
+   * @param newBody HTTP body
+   * @param newCharset HTTP charset
+   * @return Builder
+   */
+  public CaravanHttpRequestBuilder body(byte[] newBody, Charset newCharset) {
+<span class="fc" id="L185">    body = newBody;</span>
+<span class="fc" id="L186">    charset = newCharset;</span>
+<span class="fc" id="L187">    bodyTemplate = null;</span>
+<span class="fc" id="L188">    return this;</span>
+  }
+
+  /**
+   * Creates the request object with no values for the templates.
+   * @return Request
+   */
+  public CaravanHttpRequest build() {
+<span class="fc" id="L196">    return build(Collections.emptyMap());</span>
+  }
+
+  /**
+   * Creates the request object with given values for the templates.
+   * @param parameters Template values
+   * @return Request
+   */
+  public CaravanHttpRequest build(Map&lt;String, Object&gt; parameters) {
+<span class="fc" id="L205">    String expandedUrl = getExpandedUrl(parameters);</span>
+<span class="fc" id="L206">    Multimap&lt;String, String&gt; expandedHeaders = getExpandedHeaders(parameters);</span>
+<span class="fc" id="L207">    byte[] expandedBody = getExpandedBody(parameters);</span>
+<span class="fc" id="L208">    return new CaravanHttpRequest(serviceId, method, expandedUrl, expandedHeaders, expandedBody, charset);</span>
+  }
+
+  private String getExpandedUrl(Map&lt;String, Object&gt; parameters) {
+
+<span class="fc" id="L213">    Map&lt;String, Object&gt; mergedParams = Maps.newHashMap(parameters);</span>
+<span class="fc" id="L214">    mergedParams.putAll(values);</span>
+<span class="fc" id="L215">    List&lt;String&gt; sortedQueryNames = Lists.newArrayList(queryNames);</span>
+<span class="fc" id="L216">    Collections.sort(sortedQueryNames);</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">    String operator = path.indexOf(&quot;?&quot;) == -1 ? &quot;?&quot; : &quot;&amp;&quot;;</span>
+<span class="fc bfc" id="L218" title="All 2 branches covered.">    String query = queryNames.isEmpty() ? &quot;&quot; : ('{' + operator + StringUtils.join(queryNames, ',') + '}');</span>
+<span class="fc" id="L219">    return UriTemplate.fromTemplate(path + query).expand(mergedParams);</span>
+
+  }
+
+  private Multimap&lt;String, String&gt; getExpandedHeaders(Map&lt;String, Object&gt; parameters) {
+<span class="fc" id="L224">    Multimap&lt;String, String&gt; expandedHeaders = ArrayListMultimap.create();</span>
+<span class="fc" id="L225">    headers.entries().forEach(entry -&gt; {</span>
+<span class="fc" id="L226">      String template = entry.getValue();</span>
+<span class="fc" id="L227">      String expanded = UriTemplate.expand(template, parameters);</span>
+<span class="pc bpc" id="L228" title="1 of 2 branches missed.">      if (!Strings.isNullOrEmpty(expanded)) {</span>
+<span class="fc" id="L229">        expandedHeaders.put(entry.getKey(), expanded);</span>
+      }
+<span class="fc" id="L231">    });</span>
+<span class="fc" id="L232">    return expandedHeaders;</span>
+  }
+
+  private byte[] getExpandedBody(Map&lt;String, Object&gt; parameters) {
+<span class="fc bfc" id="L236" title="All 2 branches covered.">    if (bodyTemplate == null) {</span>
+<span class="fc" id="L237">      return body;</span>
+    }
+<span class="fc" id="L239">    return CaravanHttpHelper.urlDecode(UriTemplate.expand(bodyTemplate, parameters)).getBytes(Charsets.UTF_8);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

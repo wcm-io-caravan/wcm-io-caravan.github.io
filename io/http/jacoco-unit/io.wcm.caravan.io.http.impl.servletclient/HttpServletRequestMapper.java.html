@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HttpServletRequestMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.http.impl.servletclient</a> &gt; <span class="el_source">HttpServletRequestMapper.java</span></div><h1>HttpServletRequestMapper.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2015 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.http.impl.servletclient;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.security.Principal;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+
+import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.Maps;
+
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import rx.Observable;
+
+/**
+ * Mapper from {@link CaravanHttpRequest} to {@link HttpServletRequest}.
+ */
+public class HttpServletRequestMapper implements HttpServletRequest {
+
+  private final CaravanHttpRequest request;
+  private final URI uri;
+  private final String serviceId;
+<span class="fc" id="L72">  private final Map&lt;String, Object&gt; attributes = Maps.newHashMap();</span>
+
+  /**
+   * @param request Request
+   */
+<span class="fc" id="L77">  public HttpServletRequestMapper(CaravanHttpRequest request) throws NotSupportedByRequestMapperException {</span>
+<span class="fc" id="L78">    this.request = request;</span>
+    try {
+<span class="fc" id="L80">      uri = new URI(request.getUrl());</span>
+<span class="fc" id="L81">      serviceId = URLDecoder.decode(request.getServiceId(), Charsets.UTF_8.toString());</span>
+    }
+<span class="nc" id="L83">    catch (URISyntaxException | UnsupportedEncodingException ex) {</span>
+<span class="nc" id="L84">      throw new NotSupportedByRequestMapperException();</span>
+<span class="fc" id="L85">    }</span>
+<span class="fc" id="L86">  }</span>
+
+  @Override
+  public Object getAttribute(String name) {
+<span class="nc" id="L90">    return attributes.get(name);</span>
+  }
+
+  @Override
+  public Enumeration&lt;String&gt; getAttributeNames() {
+<span class="nc" id="L95">    return Collections.enumeration(attributes.keySet());</span>
+  }
+
+  @Override
+  public String getCharacterEncoding() {
+<span class="nc" id="L100">    return request.getCharset().toString();</span>
+  }
+
+  @Override
+  public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
+    // do nothing
+<span class="nc" id="L106">  }</span>
+
+  @Override
+  public int getContentLength() {
+<span class="nc" id="L110">    return request.getBody().length;</span>
+  }
+
+  @Override
+  public String getContentType() {
+<span class="nc" id="L115">    return null;</span>
+  }
+
+  @Override
+  public ServletInputStream getInputStream() throws IOException {
+<span class="nc" id="L120">    return new ServletInputStream() {</span>
+
+      private int index;
+
+      @Override
+      public int read() throws IOException {
+<span class="nc bnc" id="L126" title="All 2 branches missed.">        return index &lt; request.getBody().length ? -1 : request.getBody()[index++];</span>
+      }
+
+    };
+
+  }
+
+  @Override
+  public String getParameter(String name) {
+<span class="nc" id="L135">    String[] values = getParameterValues(name);</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">    return ArrayUtils.isEmpty(values) ? null : values[0];</span>
+  }
+
+  @Override
+  public Enumeration&lt;String&gt; getParameterNames() {
+<span class="nc" id="L141">    return Collections.enumeration(getParameterMap().keySet());</span>
+  }
+
+  @Override
+  public String[] getParameterValues(String name) {
+<span class="nc" id="L146">    return getParameterMap().get(name);</span>
+  }
+
+  @Override
+  public Map&lt;String, String[]&gt; getParameterMap() {
+    try {
+<span class="nc" id="L152">      List&lt;NameValuePair&gt; pairs = URLEncodedUtils.parse(new URI(request.getUrl()), Charsets.UTF_8.toString());</span>
+<span class="nc" id="L153">      Map&lt;String, Collection&lt;String&gt;&gt; multiMap = Observable.from(pairs).toMultimap(NameValuePair::getName, NameValuePair::getValue).toBlocking().single();</span>
+<span class="nc" id="L154">      Builder&lt;String, String[]&gt; builder = ImmutableMap.builder();</span>
+<span class="nc" id="L155">      multiMap.entrySet().stream().forEach(entry -&gt; {</span>
+<span class="nc" id="L156">        String[] arrayValue = entry.getValue().toArray(new String[entry.getValue().size()]);</span>
+<span class="nc" id="L157">        builder.put(entry.getKey(), arrayValue);</span>
+<span class="nc" id="L158">      });</span>
+<span class="nc" id="L159">      return builder.build();</span>
+    }
+<span class="nc" id="L161">    catch (URISyntaxException ex) {</span>
+<span class="nc" id="L162">      ex.printStackTrace();</span>
+    }
+<span class="nc" id="L164">    return null;</span>
+  }
+
+  @Override
+  public String getProtocol() {
+<span class="nc" id="L169">    return &quot;HTTP/1.1&quot;;</span>
+  }
+
+  @Override
+  public String getScheme() {
+<span class="nc" id="L174">    return &quot;http&quot;;</span>
+  }
+
+  @Override
+  public String getServerName() {
+<span class="nc" id="L179">    return &quot;localhost&quot;;</span>
+  }
+
+  @Override
+  public int getServerPort() {
+<span class="nc" id="L184">    return 8080;</span>
+  }
+
+  @Override
+  public BufferedReader getReader() throws IOException {
+<span class="nc" id="L189">    return new BufferedReader(new InputStreamReader(new ByteArrayInputStream(request.getBody())));</span>
+  }
+
+  @Override
+  public String getRemoteAddr() {
+<span class="nc" id="L194">    return &quot;localhost&quot;;</span>
+  }
+
+  @Override
+  public String getRemoteHost() {
+<span class="nc" id="L199">    return &quot;localhost&quot;;</span>
+  }
+
+  @Override
+  public void setAttribute(String name, Object o) {
+<span class="nc" id="L204">    attributes.put(name, o);</span>
+<span class="nc" id="L205">  }</span>
+
+  @Override
+  public void removeAttribute(String name) {
+<span class="nc" id="L209">    attributes.remove(name);</span>
+<span class="nc" id="L210">  }</span>
+
+  @Override
+  public Locale getLocale() {
+<span class="nc" id="L214">    return Locale.getDefault();</span>
+  }
+
+  @Override
+  public Enumeration&lt;Locale&gt; getLocales() {
+<span class="nc" id="L219">    return Collections.enumeration(Collections.singletonList(getLocale()));</span>
+  }
+
+  @Override
+  public boolean isSecure() {
+<span class="nc" id="L224">    return false;</span>
+  }
+
+  @Override
+  public RequestDispatcher getRequestDispatcher(String path) {
+<span class="nc" id="L229">    return getServletContext().getRequestDispatcher(path);</span>
+  }
+
+  @Override
+  public String getRealPath(String path) {
+<span class="nc" id="L234">    throw new NotSupportedByRequestMapperException();</span>
+  }
+
+  @Override
+  public int getRemotePort() {
+<span class="nc" id="L239">    return 0;</span>
+  }
+
+  @Override
+  public String getLocalName() {
+<span class="nc" id="L244">    return &quot;localhost&quot;;</span>
+  }
+
+  @Override
+  public String getLocalAddr() {
+<span class="nc" id="L249">    return &quot;localhost&quot;;</span>
+  }
+
+  @Override
+  public int getLocalPort() {
+<span class="nc" id="L254">    return 8080;</span>
+  }
+
+  @Override
+  public ServletContext getServletContext() {
+<span class="nc" id="L259">    throw new NotSupportedByRequestMapperException();</span>
+  }
+
+  @Override
+  public AsyncContext startAsync() {
+<span class="nc" id="L264">    return startAsync(this, null);</span>
+  }
+
+  @Override
+  public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) {
+<span class="nc" id="L269">    throw new NotSupportedByRequestMapperException();</span>
+
+  }
+
+  @Override
+  public boolean isAsyncStarted() {
+<span class="nc" id="L275">    return false;</span>
+  }
+
+  @Override
+  public boolean isAsyncSupported() {
+<span class="nc" id="L280">    return false;</span>
+  }
+
+  @Override
+  public AsyncContext getAsyncContext() {
+<span class="nc" id="L285">    throw new NotSupportedByRequestMapperException();</span>
+  }
+
+  @Override
+  public DispatcherType getDispatcherType() {
+<span class="nc" id="L290">    return DispatcherType.REQUEST;</span>
+  }
+
+  @Override
+  public String getAuthType() {
+<span class="nc" id="L295">    return null;</span>
+  }
+
+  @Override
+  public Cookie[] getCookies() {
+<span class="nc" id="L300">    return new Cookie[0];</span>
+  }
+
+  @Override
+  public long getDateHeader(String name) {
+<span class="nc" id="L305">    String value = getHeader(name);</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">    return value == null ? -1 : Long.parseLong(value);</span>
+  }
+
+  @Override
+  public String getHeader(String name) {
+<span class="nc" id="L311">    Collection&lt;String&gt; values = request.getHeaders().get(name);</span>
+<span class="nc bnc" id="L312" title="All 2 branches missed.">    return values.isEmpty() ? null : values.iterator().next();</span>
+  }
+
+  @Override
+  public Enumeration&lt;String&gt; getHeaders(String name) {
+<span class="nc" id="L317">    return Collections.enumeration(request.getHeaders().get(name));</span>
+  }
+
+  @Override
+  public Enumeration&lt;String&gt; getHeaderNames() {
+<span class="nc" id="L322">    return Collections.enumeration(request.getHeaders().keySet());</span>
+  }
+
+  @Override
+  public int getIntHeader(String name) {
+<span class="nc" id="L327">    String value = getHeader(name);</span>
+<span class="nc bnc" id="L328" title="All 2 branches missed.">    return value == null ? -1 : Integer.parseInt(value);</span>
+  }
+
+  @Override
+  public String getMethod() {
+<span class="nc" id="L333">    return request.getMethod();</span>
+  }
+
+  @Override
+  public String getPathInfo() {
+<span class="fc" id="L338">    return uri.getPath().substring(serviceId.length());</span>
+  }
+
+  @Override
+  public String getPathTranslated() {
+<span class="nc" id="L343">    return null;</span>
+  }
+
+  @Override
+  public String getContextPath() {
+<span class="fc" id="L348">    return &quot;&quot;;</span>
+  }
+
+  @Override
+  public String getQueryString() {
+<span class="fc" id="L353">    return uri.getRawQuery();</span>
+  }
+
+  @Override
+  public String getRemoteUser() {
+<span class="nc" id="L358">    return null;</span>
+  }
+
+  @Override
+  public boolean isUserInRole(String role) {
+<span class="nc" id="L363">    return false;</span>
+  }
+
+  @Override
+  public Principal getUserPrincipal() {
+<span class="nc" id="L368">    return null;</span>
+  }
+
+  @Override
+  public String getRequestedSessionId() {
+<span class="nc" id="L373">    return null;</span>
+  }
+
+  @Override
+  public String getRequestURI() {
+<span class="fc" id="L378">    return uri.getRawPath();</span>
+  }
+
+  @Override
+  public StringBuffer getRequestURL() {
+<span class="fc" id="L383">    return new StringBuffer(&quot;http://localhost:8080&quot;).append(getRequestURI());</span>
+  }
+
+  @Override
+  public String getServletPath() {
+<span class="fc" id="L388">    return serviceId;</span>
+  }
+
+  @Override
+  public HttpSession getSession(boolean create) {
+<span class="nc" id="L393">    throw new NotSupportedByRequestMapperException();</span>
+  }
+
+  @Override
+  public HttpSession getSession() {
+<span class="nc" id="L398">    return getSession(true);</span>
+  }
+
+  @Override
+  public boolean isRequestedSessionIdValid() {
+<span class="nc" id="L403">    return true;</span>
+  }
+
+  @Override
+  public boolean isRequestedSessionIdFromCookie() {
+<span class="nc" id="L408">    return false;</span>
+  }
+
+  @Override
+  public boolean isRequestedSessionIdFromURL() {
+<span class="nc" id="L413">    return false;</span>
+  }
+
+  @Override
+  public boolean isRequestedSessionIdFromUrl() {
+<span class="nc" id="L418">    return false;</span>
+  }
+
+  @Override
+  public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+<span class="nc" id="L423">    throw new NotSupportedByRequestMapperException();</span>
+  }
+
+  @Override
+  public void login(String username, String password) throws ServletException {
+<span class="nc" id="L428">    throw new NotSupportedByRequestMapperException();</span>
+  }
+
+  @Override
+  public void logout() throws ServletException {
+    // nothing to do
+<span class="nc" id="L434">  }</span>
+
+  @Override
+  public Collection&lt;Part&gt; getParts() throws IOException, ServletException {
+<span class="nc" id="L438">    return Collections.emptyList();</span>
+  }
+
+  @Override
+  public Part getPart(String name) throws IOException, ServletException {
+<span class="nc" id="L443">    return null;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

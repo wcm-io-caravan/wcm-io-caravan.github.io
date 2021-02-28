@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JacksonJsonNodeSink.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JSON Transformation</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.jsontransform.sink</a> &gt; <span class="el_source">JacksonJsonNodeSink.java</span></div><h1>JacksonJsonNodeSink.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.jsontransform.sink;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Stack;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.wcm.caravan.io.jsontransform.element.JsonElement;
+
+/**
+ * Converts the JSON stream elements into {@link JsonNode}s.
+ */
+@ProviderType
+public final class JacksonJsonNodeSink implements Sink {
+
+<span class="fc" id="L42">  private final Stack&lt;JsonNode&gt; breadCrumb = new Stack&lt;JsonNode&gt;();</span>
+  private final ObjectMapper mapper;
+  private JsonNode root;
+
+  /**
+   * @param factory JSON factory to initiate the Object Mapper.
+   */
+<span class="fc" id="L49">  public JacksonJsonNodeSink(final JsonFactory factory) {</span>
+<span class="fc" id="L50">    mapper = new ObjectMapper(factory);</span>
+<span class="fc" id="L51">  }</span>
+
+  /**
+   * @return The root node
+   */
+  public JsonNode getJsonNode() {
+<span class="fc" id="L57">    return root;</span>
+  }
+
+  @Override
+  public void close() throws IOException {
+    // nothing to do
+<span class="fc" id="L63">  }</span>
+
+  @Override
+  public void write(JsonElement element) throws IOException {
+<span class="pc bpc" id="L67" title="1 of 6 branches missed.">    switch (element.getType()) {</span>
+      case START_OBJECT:
+<span class="fc" id="L69">        handleStartObject(element);</span>
+<span class="fc" id="L70">        break;</span>
+      case END_OBJECT:
+<span class="fc" id="L72">        breadCrumb.pop();</span>
+<span class="fc" id="L73">        break;</span>
+      case START_ARRAY:
+<span class="fc" id="L75">        handleStartArray(element);</span>
+<span class="fc" id="L76">        break;</span>
+      case END_ARRAY:
+<span class="fc" id="L78">        breadCrumb.pop();</span>
+<span class="fc" id="L79">        break;</span>
+      case VALUE:
+<span class="fc" id="L81">        handleValue(element);</span>
+<span class="fc" id="L82">        break;</span>
+      default:
+        // nothing to do
+    }
+<span class="fc" id="L86">  }</span>
+
+  private void handleStartObject(final JsonElement element) {
+<span class="fc bfc" id="L89" title="All 2 branches covered.">    if (isRootElement(element)) {</span>
+<span class="fc" id="L90">      root = mapper.createObjectNode();</span>
+<span class="fc" id="L91">      breadCrumb.add(root);</span>
+    }
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    else if (isObjectProperty(element)) {</span>
+<span class="fc" id="L94">      breadCrumb.add(getCurrentObjectNode().putObject(element.getKey()));</span>
+    }
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">    else if (isArrayChild(element)) {</span>
+<span class="fc" id="L97">      breadCrumb.add(getCurrentArrayNode().addObject());</span>
+    }
+<span class="fc" id="L99">  }</span>
+
+  private boolean isRootElement(final JsonElement element) {
+<span class="pc bpc" id="L102" title="1 of 4 branches missed.">    return breadCrumb.isEmpty() &amp;&amp; element.getKey() == null;</span>
+  }
+
+  private boolean isObjectProperty(final JsonElement element) {
+<span class="pc bpc" id="L106" title="1 of 4 branches missed.">    return breadCrumb.peek() instanceof ObjectNode &amp;&amp; element.getKey() != null;</span>
+  }
+
+  private boolean isArrayChild(final JsonElement element) {
+<span class="fc" id="L110">    return breadCrumb.peek() instanceof ArrayNode;</span>
+  }
+
+  private ObjectNode getCurrentObjectNode() {
+<span class="fc" id="L114">    return (ObjectNode)breadCrumb.peek();</span>
+  }
+
+  private ArrayNode getCurrentArrayNode() {
+<span class="fc" id="L118">    return (ArrayNode)breadCrumb.peek();</span>
+  }
+
+  private void handleStartArray(final JsonElement element) {
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">    if (isRootElement(element)) {</span>
+<span class="nc" id="L123">      root = mapper.createArrayNode();</span>
+<span class="nc" id="L124">      breadCrumb.add(root);</span>
+    }
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">    else if (isObjectProperty(element)) {</span>
+<span class="fc" id="L127">      breadCrumb.add(getCurrentObjectNode().putArray(element.getKey()));</span>
+    }
+<span class="nc bnc" id="L129" title="All 2 branches missed.">    else if (isArrayChild(element)) {</span>
+<span class="nc" id="L130">      breadCrumb.add(getCurrentArrayNode().addArray());</span>
+    }
+<span class="fc" id="L132">  }</span>
+
+  private void handleValue(final JsonElement element) {
+<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (isObjectProperty(element)) {</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">      if (element.getValue() instanceof BigDecimal) {</span>
+<span class="fc" id="L137">        getCurrentObjectNode().put(element.getKey(), (BigDecimal)element.getValue());</span>
+      }
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">      else if (element.getValue() instanceof Boolean) {</span>
+<span class="nc" id="L140">        getCurrentObjectNode().put(element.getKey(), (Boolean)element.getValue());</span>
+      }
+      else {
+<span class="fc" id="L143">        getCurrentObjectNode().put(element.getKey(), (String)element.getValue());</span>
+      }
+    }
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">    else if (isArrayChild(element)) {</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">      if (element.getValue() instanceof BigDecimal) {</span>
+<span class="nc" id="L148">        getCurrentArrayNode().add((BigDecimal)element.getValue());</span>
+      }
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">      else if (element.getValue() instanceof Boolean) {</span>
+<span class="fc" id="L151">        getCurrentArrayNode().add((Boolean)element.getValue());</span>
+      }
+      else {
+<span class="nc" id="L154">        getCurrentArrayNode().add((String)element.getValue());</span>
+      }
+    }
+<span class="fc" id="L157">  }</span>
+
+  @Override
+  public boolean hasOutput() {
+<span class="nc bnc" id="L161" title="All 2 branches missed.">    return root != null;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

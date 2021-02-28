@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServletHttpClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Resilient HTTP</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.io.http.impl.servletclient</a> &gt; <span class="el_source">ServletHttpClient.java</span></div><h1>ServletHttpClient.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2015 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.io.http.impl.servletclient;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Sets;
+
+import io.wcm.caravan.io.http.CaravanHttpClient;
+import io.wcm.caravan.io.http.IllegalResponseRuntimeException;
+import io.wcm.caravan.io.http.RequestFailedRuntimeException;
+import io.wcm.caravan.io.http.impl.CaravanHttpServiceConfigValidator;
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.io.http.response.CaravanHttpResponse;
+import rx.Observable;
+
+/**
+ * Client which executes {@link Servlet}s registered in the same server directly without HTTP. Ignores fallbacks.
+ */
+@Component
+@Service(ServletHttpClient.class)
+<span class="fc" id="L54">public class ServletHttpClient implements CaravanHttpClient {</span>
+
+<span class="fc" id="L56">  private static final Logger LOG = LoggerFactory.getLogger(ServletHttpClient.class);</span>
+
+<span class="fc" id="L58">  @Reference(referenceInterface = Servlet.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)</span>
+  private final ConcurrentMap&lt;String, Servlet&gt; servlets = new ConcurrentSkipListMap&lt;&gt;();
+
+<span class="fc" id="L61">  private final Set&lt;String&gt; failedServices = Sets.newHashSet();</span>
+  protected void bindServlet(Servlet servlet, Map&lt;String, Object&gt; config) {
+<span class="fc" id="L63">    String serviceId = (String)config.get(&quot;alias&quot;);</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">    if (serviceId != null) {</span>
+<span class="fc" id="L65">      servlets.put(serviceId, servlet);</span>
+    }
+<span class="fc" id="L67">  }</span>
+
+  protected void unbindServlet(Servlet servle, Map&lt;String, Object&gt; config) {
+<span class="nc" id="L70">    String serviceId = (String)config.get(&quot;alias&quot;);</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">    if (serviceId != null) {</span>
+<span class="nc" id="L72">      servlets.remove(serviceId);</span>
+    }
+<span class="nc" id="L74">  }</span>
+
+  @Override
+  public Observable&lt;CaravanHttpResponse&gt; execute(CaravanHttpRequest request) {
+<span class="fc" id="L78">    return Observable.just(request.getServiceId())</span>
+<span class="fc" id="L79">        .map(serviceId -&gt; getServlet(serviceId))</span>
+<span class="fc" id="L80">        .map(servlet -&gt; executeServlet(servlet, request));</span>
+  }
+
+  @Override
+  public Observable&lt;CaravanHttpResponse&gt; execute(CaravanHttpRequest request, Observable&lt;CaravanHttpResponse&gt; fallback) {
+<span class="fc" id="L85">    return execute(request);</span>
+  }
+
+  @Override
+  public boolean hasValidConfiguration(String serviceId) {
+<span class="pc bpc" id="L90" title="1 of 4 branches missed.">    return servlets.containsKey(serviceId) &amp;&amp; !failedServices.contains(serviceId);</span>
+  }
+
+  private Servlet getServlet(String serviceId) {
+
+<span class="fc" id="L95">    Servlet servlet = servlets.get(serviceId);</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">    if (servlet == null) {</span>
+<span class="nc" id="L97">      throw new IllegalStateException(&quot;No local servlet registered for &quot; + serviceId);</span>
+    }
+<span class="fc" id="L99">    return servlet;</span>
+
+  }
+
+  private CaravanHttpResponse executeServlet(Servlet servlet, CaravanHttpRequest request) {
+
+<span class="fc" id="L105">    LOG.debug(&quot;Execute: {},\n{}&quot;, request.toString(), request.getCorrelationId());</span>
+<span class="fc" id="L106">    HttpServletRequestMapper requestMapper = new HttpServletRequestMapper(request);</span>
+<span class="fc" id="L107">    HttpServletResponseMapper responseMapper = new HttpServletResponseMapper();</span>
+    try {
+<span class="fc" id="L109">      servlet.service(requestMapper, responseMapper);</span>
+<span class="fc" id="L110">      CaravanHttpResponse response = responseMapper.getResponse();</span>
+
+<span class="fc" id="L112">      int status = response.status();</span>
+<span class="fc" id="L113">      boolean throwExceptionForStatus500 = CaravanHttpServiceConfigValidator.throwExceptionForStatus500(request.getServiceId());</span>
+<span class="fc bfc" id="L114" title="All 4 branches covered.">      if (status &gt;= 500 &amp;&amp; throwExceptionForStatus500) {</span>
+<span class="fc" id="L115">        String requestUrl = request.getUrl();</span>
+<span class="fc" id="L116">        String responseBody = response.body().asString();</span>
+<span class="fc" id="L117">        throw new IllegalResponseRuntimeException(request, requestUrl, status, responseBody,</span>
+          &quot;Executing '&quot; + requestUrl + &quot;' failed: &quot; + responseBody);
+      }
+<span class="fc" id="L120">      return response;</span>
+    }
+<span class="fc" id="L122">    catch (NotSupportedByRequestMapperException ex) {</span>
+<span class="fc" id="L123">      failedServices.add(request.getServiceId());</span>
+<span class="fc" id="L124">      throw ex;</span>
+    }
+<span class="fc" id="L126">    catch (ServletException | IOException ex) {</span>
+<span class="fc" id="L127">      throw new RequestFailedRuntimeException(request, ex.getMessage(), ex);</span>
+    }
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
