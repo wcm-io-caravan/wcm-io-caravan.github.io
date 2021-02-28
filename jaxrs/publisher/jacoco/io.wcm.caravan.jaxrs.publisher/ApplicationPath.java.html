@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApplicationPath.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JAX-RS Publisher</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.jaxrs.publisher</a> &gt; <span class="el_source">ApplicationPath.java</span></div><h1>ApplicationPath.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2015 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.jaxrs.publisher;
+
+import org.osgi.annotation.versioning.ProviderType;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.ComponentContext;
+
+/**
+ * Gets JAX-RS application path (URI prefix) from OSGi header of the current bundle.
+ */
+@ProviderType
+public final class ApplicationPath {
+
+  /**
+   * OSGi bundle header name that defines the &quot;application path&quot; (URI prefix) for all JAX-RS services in the bundle.
+   */
+  public static final String HEADER_APPLICATON_PATH = &quot;Caravan-JaxRs-ApplicationPath&quot;;
+
+  /**
+   * OSGi service property name that defines the &quot;application path&quot; (URI prefix).
+   * This property set is automatically set for &quot;global&quot; JAX-RS components.
+   */
+  public static final String PROPERTY_APPLICATON_PATH = &quot;caravan.jaxrs.applicationPath&quot;;
+
+  private ApplicationPath() {
+    // static methods only
+  }
+
+  /**
+   * Get JAX-RS application path for bundle.
+   * @param bundle Bundle
+   * @return Application path or null if not defined
+   */
+  public static String get(Bundle bundle) {
+<span class="fc" id="L54">    return bundle.getHeaders().get(HEADER_APPLICATON_PATH);</span>
+  }
+
+  /**
+   * Get JAX-RS application path for bundle or bundle context.
+   * @param bundleContext Bundle context
+   * @return Application path or null if not defined
+   */
+  public static String get(BundleContext bundleContext) {
+<span class="fc" id="L63">    return get(bundleContext.getBundle());</span>
+  }
+
+  /**
+   * Get JAX-RS application path for bundle of component context.
+   * If the component context is from an &quot;global&quot; JAx-RS Component the application path for which the
+   * service instance was created is returned.
+   * @param componentContext Component Context
+   * @return Application path or null if not defined
+   */
+  public static String get(ComponentContext componentContext) {
+<span class="fc" id="L74">    Bundle usingBundle = componentContext.getUsingBundle();</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">    if (usingBundle != null) {</span>
+<span class="fc" id="L76">      return get(usingBundle);</span>
+    }
+<span class="fc" id="L78">    return get(componentContext.getBundleContext().getBundle());</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
