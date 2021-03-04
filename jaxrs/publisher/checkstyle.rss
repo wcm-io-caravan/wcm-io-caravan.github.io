@@ -74,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/jaxrs/publisher//checkstyle.html#io.wcm.caravan.jaxrs.publisher.impl.ServletContainerBridge.java">io/wcm/caravan/jaxrs/publisher/impl/ServletContainerBridge.java</a>
+                  <a href="https://caravan.wcm.io/jaxrs/publisher//checkstyle.html#io.wcm.caravan.jaxrs.publisher.impl.JaxRsBundleTracker.java">io/wcm/caravan/jaxrs/publisher/impl/JaxRsBundleTracker.java</a>
                 </td>
                 <td>
                   0
@@ -88,7 +88,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/jaxrs/publisher//checkstyle.html#io.wcm.caravan.jaxrs.publisher.impl.JaxRsBundleTracker.java">io/wcm/caravan/jaxrs/publisher/impl/JaxRsBundleTracker.java</a>
+                  <a href="https://caravan.wcm.io/jaxrs/publisher//checkstyle.html#io.wcm.caravan.jaxrs.publisher.impl.ServletContainerBridge.java">io/wcm/caravan/jaxrs/publisher/impl/ServletContainerBridge.java</a>
                 </td>
                 <td>
                   0
@@ -116,7 +116,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/jaxrs/publisher//checkstyle.html#io.wcm.caravan.jaxrs.publisher.impl.JaxRsComponentTracker.java">io/wcm/caravan/jaxrs/publisher/impl/JaxRsComponentTracker.java</a>
+                  <a href="https://caravan.wcm.io/jaxrs/publisher//checkstyle.html#io.wcm.caravan.jaxrs.publisher.impl.JaxRsClassesProviderTracker.java">io/wcm/caravan/jaxrs/publisher/impl/JaxRsClassesProviderTracker.java</a>
                 </td>
                 <td>
                   0
@@ -130,7 +130,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/jaxrs/publisher//checkstyle.html#io.wcm.caravan.jaxrs.publisher.impl.JaxRsClassesProviderTracker.java">io/wcm/caravan/jaxrs/publisher/impl/JaxRsClassesProviderTracker.java</a>
+                  <a href="https://caravan.wcm.io/jaxrs/publisher//checkstyle.html#io.wcm.caravan.jaxrs.publisher.impl.JaxRsComponentTracker.java">io/wcm/caravan/jaxrs/publisher/impl/JaxRsComponentTracker.java</a>
                 </td>
                 <td>
                   0
