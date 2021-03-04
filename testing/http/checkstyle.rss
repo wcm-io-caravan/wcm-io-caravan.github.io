@@ -88,7 +88,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/testing/http//checkstyle.html#io.wcm.caravan.testing.http.SimpleCaravanHttpClient.java">io/wcm/caravan/testing/http/SimpleCaravanHttpClient.java</a>
+                  <a href="https://caravan.wcm.io/testing/http//checkstyle.html#io.wcm.caravan.testing.http.HostSplittingCaravanHttpClient.java">io/wcm/caravan/testing/http/HostSplittingCaravanHttpClient.java</a>
                 </td>
                 <td>
                   0
@@ -102,7 +102,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/testing/http//checkstyle.html#io.wcm.caravan.testing.http.HostSplittingCaravanHttpClient.java">io/wcm/caravan/testing/http/HostSplittingCaravanHttpClient.java</a>
+                  <a href="https://caravan.wcm.io/testing/http//checkstyle.html#io.wcm.caravan.testing.http.SimpleCaravanHttpClient.java">io/wcm/caravan/testing/http/SimpleCaravanHttpClient.java</a>
                 </td>
                 <td>
                   0
