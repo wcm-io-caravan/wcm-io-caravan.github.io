@@ -144,6 +144,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.model.ResourceRef.java">io/wcm/caravan/hal/docs/impl/model/ResourceRef.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.augmenter.HalDocsAugmenterFactoryImpl.java">io/wcm/caravan/hal/docs/impl/augmenter/HalDocsAugmenterFactoryImpl.java</a>
                 </td>
                 <td>
@@ -158,7 +172,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.model.ResourceRef.java">io/wcm/caravan/hal/docs/impl/model/ResourceRef.java</a>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.HalDocsBundleTracker.java">io/wcm/caravan/hal/docs/impl/HalDocsBundleTracker.java</a>
                 </td>
                 <td>
                   0
@@ -179,20 +193,6 @@ under the License.
                 </td>
                 <td>
                   1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.HalDocsBundleTracker.java">io/wcm/caravan/hal/docs/impl/HalDocsBundleTracker.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
                 </td>
                 <td>
                   0
@@ -242,20 +242,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.reader.ServiceJson.java">io/wcm/caravan/hal/docs/impl/reader/ServiceJson.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.model.LinkRelationRef.java">io/wcm/caravan/hal/docs/impl/model/LinkRelationRef.java</a>
                 </td>
                 <td>
@@ -263,6 +249,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.reader.ServiceJson.java">io/wcm/caravan/hal/docs/impl/reader/ServiceJson.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
                 </td>
                 <td>
                   0
@@ -298,7 +298,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.HttpContextWrapper.java">io/wcm/caravan/hal/docs/impl/HttpContextWrapper.java</a>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.package-info.java">io/wcm/caravan/hal/docs/package-info.java</a>
                 </td>
                 <td>
                   0
@@ -312,7 +312,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.package-info.java">io/wcm/caravan/hal/docs/package-info.java</a>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.HttpContextWrapper.java">io/wcm/caravan/hal/docs/impl/HttpContextWrapper.java</a>
                 </td>
                 <td>
                   0
