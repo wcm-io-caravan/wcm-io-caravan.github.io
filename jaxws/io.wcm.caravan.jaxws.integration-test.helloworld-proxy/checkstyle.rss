@@ -74,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/jaxws/io.wcm.caravan.jaxws.parent/io.wcm.caravan.jaxws.integration-test.helloworld-proxy//checkstyle.html#org.apache.hello_world_soap_http.Greeter.java">org/apache/hello_world_soap_http/Greeter.java</a>
+                  <a href="https://caravan.wcm.io/jaxws/io.wcm.caravan.jaxws.parent/io.wcm.caravan.jaxws.integration-test.helloworld-proxy//checkstyle.html#org.apache.hello_world_soap_http.types.package-info.java">org/apache/hello_world_soap_http/types/package-info.java</a>
                 </td>
                 <td>
                   0
@@ -88,7 +88,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/jaxws/io.wcm.caravan.jaxws.parent/io.wcm.caravan.jaxws.integration-test.helloworld-proxy//checkstyle.html#org.apache.hello_world_soap_http.types.package-info.java">org/apache/hello_world_soap_http/types/package-info.java</a>
+                  <a href="https://caravan.wcm.io/jaxws/io.wcm.caravan.jaxws.parent/io.wcm.caravan.jaxws.integration-test.helloworld-proxy//checkstyle.html#org.apache.hello_world_soap_http.Greeter.java">org/apache/hello_world_soap_http/Greeter.java</a>
                 </td>
                 <td>
                   0
@@ -172,7 +172,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/jaxws/io.wcm.caravan.jaxws.parent/io.wcm.caravan.jaxws.integration-test.helloworld-proxy//checkstyle.html#org.apache.hello_world_soap_http.types.SayHiResponse.java">org/apache/hello_world_soap_http/types/SayHiResponse.java</a>
+                  <a href="https://caravan.wcm.io/jaxws/io.wcm.caravan.jaxws.parent/io.wcm.caravan.jaxws.integration-test.helloworld-proxy//checkstyle.html#org.apache.hello_world_soap_http.types.GreetMe.java">org/apache/hello_world_soap_http/types/GreetMe.java</a>
                 </td>
                 <td>
                   0
@@ -186,7 +186,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/jaxws/io.wcm.caravan.jaxws.parent/io.wcm.caravan.jaxws.integration-test.helloworld-proxy//checkstyle.html#org.apache.hello_world_soap_http.types.GreetMe.java">org/apache/hello_world_soap_http/types/GreetMe.java</a>
+                  <a href="https://caravan.wcm.io/jaxws/io.wcm.caravan.jaxws.parent/io.wcm.caravan.jaxws.integration-test.helloworld-proxy//checkstyle.html#org.apache.hello_world_soap_http.types.SayHiResponse.java">org/apache/hello_world_soap_http/types/SayHiResponse.java</a>
                 </td>
                 <td>
                   0
