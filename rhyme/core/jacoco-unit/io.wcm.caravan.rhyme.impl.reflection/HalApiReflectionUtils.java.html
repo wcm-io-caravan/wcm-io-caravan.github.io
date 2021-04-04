@@ -262,8 +262,8 @@ public final class HalApiReflectionUtils {
 <span class="fc" id="L262">      String curi2 = annotationSupport.getRelation(method2);</span>
 
       // make sure that all standard link relations always come before custom relations
-<span class="pc bpc" id="L265" title="1 of 4 branches missed.">      if (curi2.contains(&quot;:&quot;) &amp;&amp; !curi1.contains(&quot;:&quot;)) {</span>
-<span class="nc" id="L266">        return -1;</span>
+<span class="fc bfc" id="L265" title="All 4 branches covered.">      if (curi2.contains(&quot;:&quot;) &amp;&amp; !curi1.contains(&quot;:&quot;)) {</span>
+<span class="fc" id="L266">        return -1;</span>
       }
 <span class="fc bfc" id="L268" title="All 4 branches covered.">      if (curi1.contains(&quot;:&quot;) &amp;&amp; !curi2.contains(&quot;:&quot;)) {</span>
 <span class="fc" id="L269">        return 1;</span>

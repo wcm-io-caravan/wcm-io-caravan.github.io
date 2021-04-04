@@ -143,15 +143,27 @@ public final class AsyncHalResourceRendererImpl implements AsyncHalResourceRende
     }
 
 <span class="fc bfc" id="L145" title="All 2 branches covered.">    for (RelationRenderResult related : listOfRelated) {</span>
-<span class="fc" id="L146">      hal.addLinks(related.getRelation(), related.getLinks());</span>
-<span class="fc" id="L147">      hal.addEmbedded(related.getRelation(), related.getEmbedded());</span>
-<span class="fc" id="L148">    }</span>
+<span class="fc" id="L146">      String relation = related.getRelation();</span>
 
-<span class="fc" id="L150">    return hal;</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">      if (related.isMultiValue()) {</span>
+<span class="fc" id="L149">        hal.addLinks(relation, related.getLinks());</span>
+<span class="fc" id="L150">        hal.addEmbedded(relation, related.getEmbedded());</span>
+      }
+      else {
+<span class="fc bfc" id="L153" title="All 2 branches covered.">        if (!related.getLinks().isEmpty()) {</span>
+<span class="fc" id="L154">          hal.setLink(relation, related.getLinks().get(0));</span>
+        }
+<span class="fc bfc" id="L156" title="All 2 branches covered.">        if (!related.getEmbedded().isEmpty()) {</span>
+<span class="fc" id="L157">          hal.setEmbedded(relation, related.getEmbedded().get(0));</span>
+        }
+      }
+<span class="fc" id="L160">    }</span>
+
+<span class="fc" id="L162">    return hal;</span>
   }
 
   public HalApiTypeSupport getTypeSupport() {
-<span class="fc" id="L154">    return typeSupport;</span>
+<span class="fc" id="L166">    return typeSupport;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

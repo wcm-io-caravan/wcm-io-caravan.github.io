@@ -102,21 +102,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.api.resources.EmbeddableResource.java">io/wcm/caravan/rhyme/api/resources/EmbeddableResource.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.api.resources.LinkableResource.java">io/wcm/caravan/rhyme/api/resources/LinkableResource.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.api.annotations.Related.java">io/wcm/caravan/rhyme/api/annotations/Related.java</a>
                 </td>
                 <td>
                   0
@@ -144,7 +130,21 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.api.annotations.Related.java">io/wcm/caravan/rhyme/api/annotations/Related.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.api.resources.EmbeddableResource.java">io/wcm/caravan/rhyme/api/resources/EmbeddableResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.api.resources.LinkableResource.java">io/wcm/caravan/rhyme/api/resources/LinkableResource.java</a>
                 </td>
                 <td>
                   0

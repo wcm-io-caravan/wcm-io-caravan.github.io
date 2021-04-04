@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6};
+var methods = {"i0":6,"i1":6,"i2":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -130,6 +130,10 @@ var activeTableTab = "activeTableTab";
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;? super <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>,io.reactivex.rxjava3.core.Observable&lt;?&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html#convertToObservable-java.lang.Class-">convertToObservable</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&nbsp;sourceType)</code>&nbsp;</td>
 </tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html#isProviderOfMultiplerValues-java.lang.Class-">isProviderOfMultiplerValues</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&nbsp;returnType)</code>&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -163,7 +167,7 @@ var activeTableTab = "activeTableTab";
 <a name="convertToObservable-java.lang.Class-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>convertToObservable</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;? super <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>,io.reactivex.rxjava3.core.Observable&lt;?&gt;&gt;&nbsp;convertToObservable(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&nbsp;sourceType)</pre>
@@ -172,6 +176,21 @@ var activeTableTab = "activeTableTab";
 <dd><code>sourceType</code> - the type to convert from</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a function that will create an <code>Observable</code> from an instance of the given type</dd>
+</dl>
+</li>
+</ul>
+<a name="isProviderOfMultiplerValues-java.lang.Class-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>isProviderOfMultiplerValues</h4>
+<pre>boolean&nbsp;isProviderOfMultiplerValues(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;?&gt;&nbsp;returnType)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>returnType</code> - the return type of an annotated method</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the type is a collection or a reactive type that can emit multiple values</dd>
 </dl>
 </li>
 </ul>

@@ -81,141 +81,142 @@ final class RelatedResourcesRendererImpl {
 
 <span class="fc" id="L82">    verifyReturnType(resourceImplInstance, method);</span>
 <span class="fc" id="L83">    String relation = typeSupport.getRelation(method);</span>
+<span class="fc" id="L84">    boolean multiValue = typeSupport.isProviderOfMultiplerValues(method.getReturnType());</span>
 
     // call the implementation of the method to get an observable of related resource implementation instances
-<span class="fc" id="L86">    Observable&lt;?&gt; rxRelatedResources = invokeMethodAndReturnObservable(resourceImplInstance, method, metrics, typeSupport)</span>
-<span class="fc" id="L87">        .cache();</span>
+<span class="fc" id="L87">    Observable&lt;?&gt; rxRelatedResources = invokeMethodAndReturnObservable(resourceImplInstance, method, metrics, typeSupport)</span>
+<span class="fc" id="L88">        .cache();</span>
 
     // create links for those resources that implement LinkableResource
-<span class="fc" id="L90">    Single&lt;List&lt;Link&gt;&gt; rxLinks = createLinksTo(rxRelatedResources);</span>
+<span class="fc" id="L91">    Single&lt;List&lt;Link&gt;&gt; rxLinks = createLinksTo(rxRelatedResources);</span>
 
     // and (asynchronously) render those resources that should be embedded
-<span class="fc" id="L93">    Single&lt;List&lt;HalResource&gt;&gt; rxEmbeddedHalResources = renderEmbeddedResources(method, rxRelatedResources);</span>
+<span class="fc" id="L94">    Single&lt;List&lt;HalResource&gt;&gt; rxEmbeddedHalResources = renderEmbeddedResources(method, rxRelatedResources);</span>
 
     // collect all resource impl classes that cannot be rendered (because they don't extend either of EmbeddableResource and LinkableResource)
-<span class="fc" id="L96">    Single&lt;List&lt;String&gt;&gt; rxUnsupportedClassNames = findUnsupportedClassNames(rxRelatedResources);</span>
+<span class="fc" id="L97">    Single&lt;List&lt;String&gt;&gt; rxUnsupportedClassNames = findUnsupportedClassNames(rxRelatedResources);</span>
 
     // wait for all this to be complete before creating a RelatedResourceInfo for this method
-<span class="fc" id="L99">    Single&lt;RelationRenderResult&gt; renderResult = Single.zip(rxLinks, rxEmbeddedHalResources, rxUnsupportedClassNames,</span>
+<span class="fc" id="L100">    Single&lt;RelationRenderResult&gt; renderResult = Single.zip(rxLinks, rxEmbeddedHalResources, rxUnsupportedClassNames,</span>
         (links, embeddedResources, unsupportedClassNames) -&gt; {
 
-<span class="fc bfc" id="L102" title="All 2 branches covered.">          if (!unsupportedClassNames.isEmpty()) {</span>
-<span class="fc" id="L103">            throw new HalApiDeveloperException(&quot;Your server side resource implementation classes must implement either &quot;</span>
-<span class="fc" id="L104">                + EmbeddableResource.class.getSimpleName() + &quot; or &quot; + LinkableResource.class.getSimpleName() + &quot;. &quot;</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">          if (!unsupportedClassNames.isEmpty()) {</span>
+<span class="fc" id="L104">            throw new HalApiDeveloperException(&quot;Your server side resource implementation classes must implement either &quot;</span>
+<span class="fc" id="L105">                + EmbeddableResource.class.getSimpleName() + &quot; or &quot; + LinkableResource.class.getSimpleName() + &quot;. &quot;</span>
                 + &quot; This is not the case for &quot; + unsupportedClassNames);
           }
 
-<span class="fc" id="L108">          return new RelationRenderResult(relation, links, embeddedResources);</span>
+<span class="fc" id="L109">          return new RelationRenderResult(relation, links, embeddedResources, multiValue);</span>
         });
 
-<span class="fc" id="L111">    Class&lt;?&gt; emissionType = RxJavaReflectionUtils.getObservableEmissionType(method, typeSupport);</span>
+<span class="fc" id="L112">    Class&lt;?&gt; emissionType = RxJavaReflectionUtils.getObservableEmissionType(method, typeSupport);</span>
 
     // and measure the time of the emissions
-<span class="fc" id="L114">    return renderResult</span>
-<span class="fc" id="L115">        .compose(EmissionStopwatch</span>
-<span class="fc" id="L116">            .collectMetrics(&quot;emission of all linked and embedded &quot; + emissionType.getSimpleName() + &quot; instances returned by &quot;</span>
-<span class="fc" id="L117">                + getClassAndMethodName(resourceImplInstance, method, typeSupport), metrics));</span>
+<span class="fc" id="L115">    return renderResult</span>
+<span class="fc" id="L116">        .compose(EmissionStopwatch</span>
+<span class="fc" id="L117">            .collectMetrics(&quot;emission of all linked and embedded &quot; + emissionType.getSimpleName() + &quot; instances returned by &quot;</span>
+<span class="fc" id="L118">                + getClassAndMethodName(resourceImplInstance, method, typeSupport), metrics));</span>
   }
 
   private Single&lt;List&lt;String&gt;&gt; findUnsupportedClassNames(Observable&lt;?&gt; rxRelatedResources) {
 
-<span class="fc" id="L122">    return rxRelatedResources</span>
-<span class="fc bfc" id="L123" title="All 2 branches covered.">        .filter(res -&gt; !(res instanceof LinkableResource))</span>
-<span class="fc bfc" id="L124" title="All 2 branches covered.">        .filter(res -&gt; !(res instanceof EmbeddableResource))</span>
-<span class="fc" id="L125">        .map(res -&gt; HalApiReflectionUtils.getSimpleClassName(res, typeSupport))</span>
-<span class="fc" id="L126">        .distinct()</span>
-<span class="fc" id="L127">        .toList();</span>
+<span class="fc" id="L123">    return rxRelatedResources</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        .filter(res -&gt; !(res instanceof LinkableResource))</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        .filter(res -&gt; !(res instanceof EmbeddableResource))</span>
+<span class="fc" id="L126">        .map(res -&gt; HalApiReflectionUtils.getSimpleClassName(res, typeSupport))</span>
+<span class="fc" id="L127">        .distinct()</span>
+<span class="fc" id="L128">        .toList();</span>
   }
 
   private void verifyReturnType(Object resourceImplInstance, Method method) {
 
     // get the emitted result resource type from the method signature
-<span class="fc" id="L133">    Class&lt;?&gt; relatedResourceInterface = RxJavaReflectionUtils.getObservableEmissionType(method, typeSupport);</span>
+<span class="fc" id="L134">    Class&lt;?&gt; relatedResourceInterface = RxJavaReflectionUtils.getObservableEmissionType(method, typeSupport);</span>
 
-<span class="fc bfc" id="L135" title="All 4 branches covered.">    if (!HalApiReflectionUtils.isHalApiInterface(relatedResourceInterface, typeSupport) &amp;&amp; !LinkableResource.class.equals(relatedResourceInterface)) {</span>
+<span class="fc bfc" id="L136" title="All 4 branches covered.">    if (!HalApiReflectionUtils.isHalApiInterface(relatedResourceInterface, typeSupport) &amp;&amp; !LinkableResource.class.equals(relatedResourceInterface)) {</span>
 
-<span class="fc" id="L137">      String returnTypeDesc = getReturnTypeDescription(method, relatedResourceInterface);</span>
+<span class="fc" id="L138">      String returnTypeDesc = getReturnTypeDescription(method, relatedResourceInterface);</span>
 
-<span class="fc" id="L139">      String fullMethodName = getClassAndMethodName(resourceImplInstance, method, typeSupport);</span>
-<span class="fc" id="L140">      throw new HalApiDeveloperException(&quot;The method &quot; + fullMethodName + &quot; returns &quot; + returnTypeDesc + &quot;, &quot;</span>
-<span class="fc" id="L141">          + &quot;but it must return an interface annotated with the @&quot; + HalApiInterface.class.getSimpleName()</span>
+<span class="fc" id="L140">      String fullMethodName = getClassAndMethodName(resourceImplInstance, method, typeSupport);</span>
+<span class="fc" id="L141">      throw new HalApiDeveloperException(&quot;The method &quot; + fullMethodName + &quot; returns &quot; + returnTypeDesc + &quot;, &quot;</span>
+<span class="fc" id="L142">          + &quot;but it must return an interface annotated with the @&quot; + HalApiInterface.class.getSimpleName()</span>
           + &quot; annotation (or a supported generic type that provides such instances, e.g. Observable)&quot;);
     }
-<span class="fc" id="L144">  }</span>
+<span class="fc" id="L145">  }</span>
 
   private static String getReturnTypeDescription(Method method, Class&lt;?&gt; relatedResourceInterface) {
-<span class="fc" id="L147">    Class&lt;?&gt; returnType = method.getReturnType();</span>
-<span class="fc" id="L148">    String returnTypeDesc = relatedResourceInterface.getSimpleName();</span>
-<span class="fc bfc" id="L149" title="All 2 branches covered.">    if (!returnType.equals(relatedResourceInterface)) {</span>
-<span class="fc" id="L150">      return returnType.getSimpleName() + &quot;&lt;&quot; + returnTypeDesc + &quot;&gt;&quot;;</span>
+<span class="fc" id="L148">    Class&lt;?&gt; returnType = method.getReturnType();</span>
+<span class="fc" id="L149">    String returnTypeDesc = relatedResourceInterface.getSimpleName();</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">    if (!returnType.equals(relatedResourceInterface)) {</span>
+<span class="fc" id="L151">      return returnType.getSimpleName() + &quot;&lt;&quot; + returnTypeDesc + &quot;&gt;&quot;;</span>
     }
-<span class="fc" id="L152">    return returnTypeDesc;</span>
+<span class="fc" id="L153">    return returnTypeDesc;</span>
   }
 
   private Single&lt;List&lt;Link&gt;&gt; createLinksTo(Observable&lt;?&gt; rxRelatedResources) {
 
     // filter only those resources that are Linkable
-<span class="fc" id="L158">    Observable&lt;LinkableResource&gt; rxLinkedResourceImpls = rxRelatedResources</span>
-<span class="fc" id="L159">        .filter(r -&gt; r instanceof LinkableResource)</span>
+<span class="fc" id="L159">    Observable&lt;LinkableResource&gt; rxLinkedResourceImpls = rxRelatedResources</span>
+<span class="fc" id="L160">        .filter(r -&gt; r instanceof LinkableResource)</span>
         // decide whether to write links to resource that are also embedded
-<span class="fc" id="L161">        .filter(this::filterLinksToEmbeddedResource)</span>
-<span class="fc" id="L162">        .map(r -&gt; (LinkableResource)r);</span>
+<span class="fc" id="L162">        .filter(this::filterLinksToEmbeddedResource)</span>
+<span class="fc" id="L163">        .map(r -&gt; (LinkableResource)r);</span>
 
     // and let each resource create a link to itself
-<span class="fc" id="L165">    Observable&lt;Link&gt; rxLinks = rxLinkedResourceImpls</span>
-<span class="fc" id="L166">        .map(linkedResource -&gt; {</span>
+<span class="fc" id="L166">    Observable&lt;Link&gt; rxLinks = rxLinkedResourceImpls</span>
+<span class="fc" id="L167">        .map(linkedResource -&gt; {</span>
 
-<span class="fc" id="L168">          String methodName = &quot;#createLink of &quot; + HalApiReflectionUtils.getSimpleClassName(linkedResource, typeSupport);</span>
+<span class="fc" id="L169">          String methodName = &quot;#createLink of &quot; + HalApiReflectionUtils.getSimpleClassName(linkedResource, typeSupport);</span>
 
-<span class="fc" id="L170">          Stopwatch sw = Stopwatch.createStarted();</span>
-<span class="fc" id="L171">          Link link = linkedResource.createLink();</span>
-<span class="fc" id="L172">          metrics.onMethodInvocationFinished(AsyncHalResourceRenderer.class,</span>
+<span class="fc" id="L171">          Stopwatch sw = Stopwatch.createStarted();</span>
+<span class="fc" id="L172">          Link link = linkedResource.createLink();</span>
+<span class="fc" id="L173">          metrics.onMethodInvocationFinished(AsyncHalResourceRenderer.class,</span>
               &quot;calling &quot; + methodName,
-<span class="fc" id="L174">              sw.elapsed(TimeUnit.MICROSECONDS));</span>
+<span class="fc" id="L175">              sw.elapsed(TimeUnit.MICROSECONDS));</span>
 
-<span class="fc bfc" id="L176" title="All 2 branches covered.">          if (link == null) {</span>
-<span class="fc" id="L177">            throw new HalApiDeveloperException(methodName + &quot; returned a null value&quot;);</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">          if (link == null) {</span>
+<span class="fc" id="L178">            throw new HalApiDeveloperException(methodName + &quot; returned a null value&quot;);</span>
           }
-<span class="fc" id="L179">          return link;</span>
+<span class="fc" id="L180">          return link;</span>
         });
 
-<span class="fc" id="L182">    return rxLinks.toList();</span>
+<span class="fc" id="L183">    return rxLinks.toList();</span>
   }
 
   private boolean filterLinksToEmbeddedResource(Object relatedResource) {
 
-<span class="fc bfc" id="L187" title="All 2 branches covered.">    if (!(relatedResource instanceof EmbeddableResource)) {</span>
-<span class="fc" id="L188">      return true;</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">    if (!(relatedResource instanceof EmbeddableResource)) {</span>
+<span class="fc" id="L189">      return true;</span>
     }
 
-<span class="fc" id="L191">    EmbeddableResource embedded = (EmbeddableResource)relatedResource;</span>
-<span class="fc bfc" id="L192" title="All 2 branches covered.">    if (!embedded.isEmbedded()) {</span>
-<span class="fc" id="L193">      return true;</span>
+<span class="fc" id="L192">    EmbeddableResource embedded = (EmbeddableResource)relatedResource;</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">    if (!embedded.isEmbedded()) {</span>
+<span class="fc" id="L194">      return true;</span>
     }
 
-<span class="fc" id="L196">    return embedded.isLinkedWhenEmbedded();</span>
+<span class="fc" id="L197">    return embedded.isLinkedWhenEmbedded();</span>
   }
 
   private Single&lt;List&lt;HalResource&gt;&gt; renderEmbeddedResources(Method method, Observable&lt;?&gt; rxRelatedResources) {
 
     // embedded resources can only occur for methods that don't have parameters
     // (because if the method has parameters, it must be a link template)
-<span class="fc bfc" id="L203" title="All 2 branches covered.">    if (method.getParameterCount() == 0) {</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">    if (method.getParameterCount() == 0) {</span>
 
       // filter only those resources that are actually embedded
-<span class="fc" id="L206">      Observable&lt;EmbeddableResource&gt; rxEmbeddedResourceImpls = rxRelatedResources</span>
-<span class="fc" id="L207">          .filter(r -&gt; r instanceof EmbeddableResource)</span>
-<span class="fc" id="L208">          .map(r -&gt; (EmbeddableResource)r)</span>
-<span class="fc" id="L209">          .filter(r -&gt; r.isEmbedded());</span>
+<span class="fc" id="L207">      Observable&lt;EmbeddableResource&gt; rxEmbeddedResourceImpls = rxRelatedResources</span>
+<span class="fc" id="L208">          .filter(r -&gt; r instanceof EmbeddableResource)</span>
+<span class="fc" id="L209">          .map(r -&gt; (EmbeddableResource)r)</span>
+<span class="fc" id="L210">          .filter(r -&gt; r.isEmbedded());</span>
 
       // and render them by recursively calling the render function from AsyncHalresourceRendererImpl
-<span class="fc" id="L212">      Observable&lt;HalResource&gt; rxHalResources = rxEmbeddedResourceImpls</span>
-<span class="fc" id="L213">          .concatMapEager(r -&gt; recursiveRenderFunc.apply(r).toObservable());</span>
+<span class="fc" id="L213">      Observable&lt;HalResource&gt; rxHalResources = rxEmbeddedResourceImpls</span>
+<span class="fc" id="L214">          .concatMapEager(r -&gt; recursiveRenderFunc.apply(r).toObservable());</span>
 
-<span class="fc" id="L215">      return rxHalResources.toList();</span>
+<span class="fc" id="L216">      return rxHalResources.toList();</span>
     }
 
-<span class="fc" id="L218">    return Single.just(Collections.emptyList());</span>
+<span class="fc" id="L219">    return Single.just(Collections.emptyList());</span>
   }
 
   /**
@@ -227,23 +228,32 @@ final class RelatedResourcesRendererImpl {
     private final List&lt;Link&gt; links;
     private final List&lt;HalResource&gt; embedded;
 
-<span class="fc" id="L230">    private RelationRenderResult(String relation, List&lt;Link&gt; links, List&lt;HalResource&gt; embedded) {</span>
-<span class="fc" id="L231">      this.relation = relation;</span>
-<span class="fc" id="L232">      this.links = links;</span>
-<span class="fc" id="L233">      this.embedded = embedded;</span>
-<span class="fc" id="L234">    }</span>
+    private final boolean multiValue;
+
+
+<span class="fc" id="L234">    private RelationRenderResult(String relation, List&lt;Link&gt; links, List&lt;HalResource&gt; embedded, boolean multiValue) {</span>
+<span class="fc" id="L235">      this.relation = relation;</span>
+<span class="fc" id="L236">      this.links = links;</span>
+<span class="fc" id="L237">      this.embedded = embedded;</span>
+<span class="fc" id="L238">      this.multiValue = multiValue;</span>
+<span class="fc" id="L239">    }</span>
 
     String getRelation() {
-<span class="fc" id="L237">      return this.relation;</span>
+<span class="fc" id="L242">      return this.relation;</span>
     }
 
     List&lt;Link&gt; getLinks() {
-<span class="fc" id="L241">      return this.links;</span>
+<span class="fc" id="L246">      return this.links;</span>
     }
 
     List&lt;HalResource&gt; getEmbedded() {
-<span class="fc" id="L245">      return this.embedded;</span>
+<span class="fc" id="L250">      return this.embedded;</span>
     }
+
+    boolean isMultiValue() {
+<span class="fc" id="L254">      return multiValue;</span>
+    }
+
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
