@@ -23,7 +23,6 @@ import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 
 import io.reactivex.rxjava3.core.Single;
-import io.wcm.caravan.hal.resource.Link;
 import io.wcm.caravan.rhyme.api.Rhyme;
 import io.wcm.caravan.rhyme.api.RhymeBuilder;
 import io.wcm.caravan.rhyme.api.client.HalApiClient;
@@ -43,7 +42,7 @@ import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResponseRendererImpl;
 
 final class RhymeImpl implements Rhyme {
 
-<span class="fc" id="L46">  private final RequestMetricsCollector metrics = RequestMetricsCollector.create();</span>
+<span class="fc" id="L45">  private final RequestMetricsCollector metrics = RequestMetricsCollector.create();</span>
 
   private final String requestUri;
   private final JsonResourceLoader jsonLoader;
@@ -52,79 +51,71 @@ final class RhymeImpl implements Rhyme {
   private final HalApiClient client;
   private final AsyncHalResponseRenderer renderer;
 
-<span class="fc" id="L55">  RhymeImpl(String requestUri, JsonResourceLoader jsonLoader, ExceptionStatusAndLoggingStrategy exceptionStrategy, HalApiTypeSupport typeSupport) {</span>
-<span class="fc" id="L56">    this.requestUri = requestUri;</span>
-<span class="fc" id="L57">    this.jsonLoader = jsonLoader;</span>
-<span class="fc" id="L58">    this.exceptionStrategy = exceptionStrategy;</span>
-<span class="fc" id="L59">    this.client = createHalApiClient(typeSupport);</span>
-<span class="fc" id="L60">    this.renderer = createResponseRenderer(typeSupport);</span>
-<span class="fc" id="L61">  }</span>
+<span class="fc" id="L54">  RhymeImpl(String requestUri, JsonResourceLoader jsonLoader, ExceptionStatusAndLoggingStrategy exceptionStrategy, HalApiTypeSupport typeSupport) {</span>
+<span class="fc" id="L55">    this.requestUri = requestUri;</span>
+<span class="fc" id="L56">    this.jsonLoader = jsonLoader;</span>
+<span class="fc" id="L57">    this.exceptionStrategy = exceptionStrategy;</span>
+<span class="fc" id="L58">    this.client = createHalApiClient(typeSupport);</span>
+<span class="fc" id="L59">    this.renderer = createResponseRenderer(typeSupport);</span>
+<span class="fc" id="L60">  }</span>
 
   private HalApiClient createHalApiClient(HalApiTypeSupport typeSupport) {
 
-<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (jsonLoader == null) {</span>
-<span class="fc" id="L66">      return new HalApiClient() {</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">    if (jsonLoader == null) {</span>
+<span class="fc" id="L65">      return new HalApiClient() {</span>
 
         @Override
         public &lt;T&gt; T getEntryPoint(String uri, Class&lt;T&gt; halApiInterface) {
-<span class="fc" id="L70">          throw new HalApiDeveloperException(&quot;#getEntryPoint can only be used if you have provided a &quot; + JsonResourceLoader.class.getSimpleName()</span>
-<span class="fc" id="L71">              + &quot; when constructing your &quot; + RhymeBuilder.class.getSimpleName());</span>
+<span class="fc" id="L69">          throw new HalApiDeveloperException(&quot;#getEntryPoint can only be used if you have provided a &quot; + JsonResourceLoader.class.getSimpleName()</span>
+<span class="fc" id="L70">              + &quot; when constructing your &quot; + RhymeBuilder.class.getSimpleName());</span>
         }
       };
     }
 
-<span class="fc" id="L76">    return new HalApiClientImpl(jsonLoader, metrics, typeSupport);</span>
+<span class="fc" id="L75">    return new HalApiClientImpl(jsonLoader, metrics, typeSupport);</span>
   }
 
   private AsyncHalResponseRenderer createResponseRenderer(HalApiTypeSupport typeSupport) {
 
-<span class="fc" id="L81">    AsyncHalResourceRenderer resourceRenderer = new AsyncHalResourceRendererImpl(metrics, typeSupport);</span>
+<span class="fc" id="L80">    AsyncHalResourceRenderer resourceRenderer = new AsyncHalResourceRendererImpl(metrics, typeSupport);</span>
 
-<span class="fc" id="L83">    return new AsyncHalResponseRendererImpl(resourceRenderer, metrics, exceptionStrategy, typeSupport);</span>
+<span class="fc" id="L82">    return new AsyncHalResponseRendererImpl(resourceRenderer, metrics, exceptionStrategy, typeSupport);</span>
   }
 
   @Override
   public &lt;T&gt; T getUpstreamEntryPoint(String uri, Class&lt;T&gt; halApiInterface) {
 
-<span class="fc" id="L89">    return client.getEntryPoint(uri, halApiInterface);</span>
+<span class="fc" id="L88">    return client.getEntryPoint(uri, halApiInterface);</span>
   }
 
   @Override
   public void setResponseMaxAge(Duration duration) {
 
-<span class="fc" id="L95">    metrics.setResponseMaxAge(duration);</span>
-<span class="fc" id="L96">  }</span>
+<span class="fc" id="L94">    metrics.setResponseMaxAge(duration);</span>
+<span class="fc" id="L95">  }</span>
 
   @Override
   public CompletionStage&lt;HalResponse&gt; renderResponseAsync(LinkableResource resourceImpl) {
 
-<span class="fc" id="L101">    return respondWith(resourceImpl).toCompletionStage();</span>
+<span class="fc" id="L100">    return respondWith(resourceImpl).toCompletionStage();</span>
   }
 
   @Override
   public HalResponse renderResponse(LinkableResource resourceImpl) {
 
-<span class="fc" id="L107">    return respondWith(resourceImpl).blockingGet();</span>
+<span class="fc" id="L106">    return respondWith(resourceImpl).blockingGet();</span>
   }
 
   @Override
   public HalResponse renderVndErrorResponse(Throwable error) {
 
-<span class="fc" id="L113">    VndErrorResponseRenderer errorRenderer = VndErrorResponseRenderer.create(exceptionStrategy);</span>
+<span class="fc" id="L112">    VndErrorResponseRenderer errorRenderer = VndErrorResponseRenderer.create(exceptionStrategy);</span>
 
-<span class="fc" id="L115">    LinkableResource resourceImpl = new LinkableResource() {</span>
-
-      @Override
-      public Link createLink() {
-<span class="fc" id="L119">        return null;</span>
-      }
-    };
-
-<span class="fc" id="L123">    return errorRenderer.renderError(requestUri, resourceImpl, error, metrics);</span>
+<span class="fc" id="L114">    return errorRenderer.renderError(requestUri, null, error, metrics);</span>
   }
 
   private Single&lt;HalResponse&gt; respondWith(LinkableResource resourceImpl) {
-<span class="fc" id="L127">    return renderer.renderResponse(requestUri, resourceImpl);</span>
+<span class="fc" id="L118">    return renderer.renderResponse(requestUri, resourceImpl);</span>
   }
 
 }

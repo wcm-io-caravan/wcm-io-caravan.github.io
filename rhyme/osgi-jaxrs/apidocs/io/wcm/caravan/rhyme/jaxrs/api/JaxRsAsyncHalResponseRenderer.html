@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6};
+var methods = {"i0":6,"i1":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -127,8 +127,17 @@ public interface <span class="typeNameLabel">JaxRsAsyncHalResponseRenderer</span
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/jaxrs/api/JaxRsAsyncHalResponseRenderer.html#respondWith-io.wcm.caravan.rhyme.api.resources.LinkableResource-javax.ws.rs.core.UriInfo-javax.ws.rs.container.AsyncResponse-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">respondWith</a></span>(io.wcm.caravan.rhyme.api.resources.LinkableResource&nbsp;resourceImpl,
            javax.ws.rs.core.UriInfo&nbsp;uriInfo,
-           javax.ws.rs.container.AsyncResponse&nbsp;asyncResponse,
+           javax.ws.rs.container.AsyncResponse&nbsp;suspended,
            io.wcm.caravan.rhyme.api.common.RequestMetricsCollector&nbsp;metrics)</code>&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/jaxrs/api/JaxRsAsyncHalResponseRenderer.html#respondWithError-java.lang.Throwable-javax.ws.rs.core.UriInfo-javax.ws.rs.container.AsyncResponse-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">respondWithError</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;ex,
+                javax.ws.rs.core.UriInfo&nbsp;uriInfo,
+                javax.ws.rs.container.AsyncResponse&nbsp;suspended,
+                io.wcm.caravan.rhyme.api.common.RequestMetricsCollector&nbsp;metrics)</code>
+<div class="block">Render a response for an exception that was caught before a <code>LinkableResource</code> was created</div>
+</td>
 </tr>
 </table>
 </li>
@@ -148,18 +157,38 @@ public interface <span class="typeNameLabel">JaxRsAsyncHalResponseRenderer</span
 <a name="respondWith-io.wcm.caravan.rhyme.api.resources.LinkableResource-javax.ws.rs.core.UriInfo-javax.ws.rs.container.AsyncResponse-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>respondWith</h4>
 <pre>void&nbsp;respondWith(io.wcm.caravan.rhyme.api.resources.LinkableResource&nbsp;resourceImpl,
                  javax.ws.rs.core.UriInfo&nbsp;uriInfo,
-                 javax.ws.rs.container.AsyncResponse&nbsp;asyncResponse,
+                 javax.ws.rs.container.AsyncResponse&nbsp;suspended,
                  io.wcm.caravan.rhyme.api.common.RequestMetricsCollector&nbsp;metrics)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>resourceImpl</code> - the resource to be rendered</dd>
 <dd><code>uriInfo</code> - information about the URI of the incoming request</dd>
-<dd><code>asyncResponse</code> - the JAX-RS response to be resumed</dd>
+<dd><code>suspended</code> - the JAX-RS response to be resumed</dd>
+<dd><code>metrics</code> - collects information about all upstream requests executed during the current request</dd>
+</dl>
+</li>
+</ul>
+<a name="respondWithError-java.lang.Throwable-javax.ws.rs.core.UriInfo-javax.ws.rs.container.AsyncResponse-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>respondWithError</h4>
+<pre>void&nbsp;respondWithError(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;ex,
+                      javax.ws.rs.core.UriInfo&nbsp;uriInfo,
+                      javax.ws.rs.container.AsyncResponse&nbsp;suspended,
+                      io.wcm.caravan.rhyme.api.common.RequestMetricsCollector&nbsp;metrics)</pre>
+<div class="block">Render a response for an exception that was caught before a <code>LinkableResource</code> was created</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>ex</code> - the response t</dd>
+<dd><code>uriInfo</code> - information about the URI of the incoming request</dd>
+<dd><code>suspended</code> - the JAX-RS response to be resumed</dd>
 <dd><code>metrics</code> - collects information about all upstream requests executed during the current request</dd>
 </dl>
 </li>
