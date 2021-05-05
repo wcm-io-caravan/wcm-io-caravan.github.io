@@ -27,7 +27,7 @@ import io.wcm.caravan.rhyme.api.RhymeBuilder;
 import io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy;
 import io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport;
 import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
-import io.wcm.caravan.rhyme.api.spi.JsonResourceLoader;
+import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
 import io.wcm.caravan.rhyme.impl.reflection.CompositeHalApiTypeSupport;
 import io.wcm.caravan.rhyme.impl.reflection.DefaultHalApiTypeSupport;
 import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
@@ -39,17 +39,17 @@ import io.wcm.caravan.rhyme.impl.renderer.CompositeExceptionStatusAndLoggingStra
  */
 public class RhymeBuilderImpl implements RhymeBuilder {
 
-  private final JsonResourceLoader jsonLoader;
+  private final HalResourceLoader resourceLoader;
 <span class="fc" id="L43">  private final List&lt;HalApiTypeSupport&gt; registeredTypeSupports = new ArrayList&lt;&gt;();</span>
 
 <span class="fc" id="L45">  private final List&lt;ExceptionStatusAndLoggingStrategy&gt; exceptionStrategies = new ArrayList&lt;&gt;();</span>
 
   /**
-   * @param jsonLoader to be used to load upstream-resource (or null if not needed)
+   * @param resourceLoader to be used to load upstream-resource (or null if not needed)
    */
-<span class="fc" id="L50">  public RhymeBuilderImpl(JsonResourceLoader jsonLoader) {</span>
+<span class="fc" id="L50">  public RhymeBuilderImpl(HalResourceLoader resourceLoader) {</span>
 
-<span class="fc" id="L52">    this.jsonLoader = jsonLoader;</span>
+<span class="fc" id="L52">    this.resourceLoader = resourceLoader;</span>
 
 <span class="fc" id="L54">    this.registeredTypeSupports.add(new DefaultHalApiTypeSupport());</span>
 <span class="fc" id="L55">  }</span>
@@ -102,7 +102,7 @@ public class RhymeBuilderImpl implements RhymeBuilder {
 <span class="fc" id="L102">    HalApiTypeSupport typeSupport = getEffectiveTypeSupport();</span>
 <span class="fc" id="L103">    ExceptionStatusAndLoggingStrategy exceptionStrategy = getEffectiveExceptionStrategy();</span>
 
-<span class="fc" id="L105">    return new RhymeImpl(incomingRequestUri, jsonLoader, exceptionStrategy, typeSupport);</span>
+<span class="fc" id="L105">    return new RhymeImpl(incomingRequestUri, resourceLoader, exceptionStrategy, typeSupport);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

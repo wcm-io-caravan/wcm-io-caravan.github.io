@@ -423,7 +423,7 @@ public class JaxRsControllerProxyLinkBuilder&lt;JaxRsResourceType&gt; implements
 <span class="fc" id="L423">        parameter.iterable = isOfIterableType(field);</span>
 <span class="fc" id="L424">        parameter.query = true;</span>
 <span class="pc bpc" id="L425" title="1 of 2 branches missed.">        parameter.required = !field.isAnnotationPresent(DefaultValue.class);</span>
-<span class="fc" id="L426">        parameter.valueProvider = (args -&gt; JaxRsReflectionUtils.getFieldValue(field, args[index]));</span>
+<span class="fc" id="L426">        parameter.valueProvider = (args -&gt; ReflectionUtils.getFieldValue(field, args[index]));</span>
 
 <span class="fc" id="L428">        return parameter;</span>
       }
@@ -436,7 +436,7 @@ public class JaxRsControllerProxyLinkBuilder&lt;JaxRsResourceType&gt; implements
 <span class="fc" id="L436">        parameter.iterable = isOfIterableType(field);</span>
 <span class="fc" id="L437">        parameter.query = false;</span>
 <span class="fc" id="L438">        parameter.required = true;</span>
-<span class="fc" id="L439">        parameter.valueProvider = (args -&gt; JaxRsReflectionUtils.getFieldValue(field, args[index]));</span>
+<span class="fc" id="L439">        parameter.valueProvider = (args -&gt; ReflectionUtils.getFieldValue(field, args[index]));</span>
 
 <span class="fc" id="L441">        return parameter;</span>
       }

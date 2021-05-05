@@ -4,4 +4,3 @@ io.wcm.caravan.rhyme.api.common
 io.wcm.caravan.rhyme.api.exceptions
 io.wcm.caravan.rhyme.api.server
 io.wcm.caravan.rhyme.api.spi
-io.wcm.caravan.rhyme.util

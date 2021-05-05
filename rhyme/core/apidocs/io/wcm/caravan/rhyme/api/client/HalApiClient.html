@@ -126,20 +126,20 @@ public interface <span class="typeNameLabel">HalApiClient</span></pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClient</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html#create-io.wcm.caravan.rhyme.api.spi.JsonResourceLoader-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">create</a></span>(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/JsonResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">JsonResourceLoader</a>&nbsp;jsonLoader,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html#create-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">create</a></span>(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalResourceLoader</a>&nbsp;resourceLoader,
       <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a>&nbsp;metrics)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClient</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html#create-io.wcm.caravan.rhyme.api.spi.JsonResourceLoader-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-">create</a></span>(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/JsonResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">JsonResourceLoader</a>&nbsp;jsonLoader,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html#create-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-">create</a></span>(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalResourceLoader</a>&nbsp;resourceLoader,
       <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a>&nbsp;metrics,
       <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiAnnotationSupport</a>&nbsp;annotationSupport,
       <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiReturnTypeSupport</a>&nbsp;returnTypeSupport)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>&lt;T&gt;&nbsp;T</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html#getEntryPoint-java.lang.String-java.lang.Class-">getEntryPoint</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
-             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html#getRemoteResource-java.lang.String-java.lang.Class-">getRemoteResource</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
+                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -156,36 +156,36 @@ public interface <span class="typeNameLabel">HalApiClient</span></pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getEntryPoint-java.lang.String-java.lang.Class-">
+<a name="getRemoteResource-java.lang.String-java.lang.Class-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getEntryPoint</h4>
-<pre>&lt;T&gt;&nbsp;T&nbsp;getEntryPoint(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
-                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</pre>
+<h4>getRemoteResource</h4>
+<pre>&lt;T&gt;&nbsp;T&nbsp;getRemoteResource(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
+                        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</pre>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>T</code> - the HAL API interface type</dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>uri</code> - the absolute path (and query parameters) of the entry point</dd>
+<dd><code>uri</code> - the absolute URI of the resource to load (usually the entry point of the HAL API)</dd>
 <dd><code>halApiInterface</code> - the HAL API interface class of a service's entry point resource</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a proxy implementation of the specified entry point interface</dd>
 </dl>
 </li>
 </ul>
-<a name="create-io.wcm.caravan.rhyme.api.spi.JsonResourceLoader-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">
+<a name="create-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>create</h4>
-<pre>static&nbsp;<a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClient</a>&nbsp;create(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/JsonResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">JsonResourceLoader</a>&nbsp;jsonLoader,
+<pre>static&nbsp;<a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClient</a>&nbsp;create(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalResourceLoader</a>&nbsp;resourceLoader,
                            <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a>&nbsp;metrics)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>jsonLoader</code> - implements the actual loading (and caching) of JSON/HAL resources via any HTTP client library</dd>
+<dd><code>resourceLoader</code> - implements the actual loading (and caching) of JSON/HAL resources via any HTTP client library</dd>
 <dd><code>metrics</code> - an instance of <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common"><code>RequestMetricsCollector</code></a> to collect performance relevant data for the current
           incoming request</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -194,19 +194,19 @@ public interface <span class="typeNameLabel">HalApiClient</span></pre>
 </dl>
 </li>
 </ul>
-<a name="create-io.wcm.caravan.rhyme.api.spi.JsonResourceLoader-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-">
+<a name="create-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>create</h4>
-<pre>static&nbsp;<a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClient</a>&nbsp;create(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/JsonResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">JsonResourceLoader</a>&nbsp;jsonLoader,
+<pre>static&nbsp;<a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClient</a>&nbsp;create(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalResourceLoader</a>&nbsp;resourceLoader,
                            <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a>&nbsp;metrics,
                            <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiAnnotationSupport</a>&nbsp;annotationSupport,
                            <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiReturnTypeSupport</a>&nbsp;returnTypeSupport)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>jsonLoader</code> - implements the actual loading (and caching) of JSON/HAL resources via any HTTP client library</dd>
+<dd><code>resourceLoader</code> - implements the actual loading (and caching) of JSON/HAL resources via any HTTP client library</dd>
 <dd><code>metrics</code> - an instance of <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common"><code>RequestMetricsCollector</code></a> to collect performance relevant data for the current
           incoming request</dd>
 <dd><code>annotationSupport</code> - an (optional) strategy to identify HAL API interfaces and methods that use different

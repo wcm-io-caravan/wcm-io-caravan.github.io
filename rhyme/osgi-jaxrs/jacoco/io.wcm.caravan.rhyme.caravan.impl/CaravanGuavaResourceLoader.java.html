@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CaravanGuavaResourceLoader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - OSGi/JAX-RS Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.caravan.impl</a> &gt; <span class="el_source">CaravanGuavaResourceLoader.java</span></div><h1>CaravanGuavaResourceLoader.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2017 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.caravan.impl;
+
+import java.io.IOException;
+import java.time.Clock;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
+import hu.akarnokd.rxjava3.interop.RxJavaInterop;
+import io.reactivex.rxjava3.core.Single;
+import io.wcm.caravan.io.http.CaravanHttpClient;
+import io.wcm.caravan.io.http.IllegalResponseRuntimeException;
+import io.wcm.caravan.io.http.request.CaravanHttpRequest;
+import io.wcm.caravan.io.http.request.CaravanHttpRequestBuilder;
+import io.wcm.caravan.io.http.response.CaravanHttpResponse;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiClientException;
+import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
+
+
+class CaravanGuavaResourceLoader implements HalResourceLoader {
+
+<span class="fc" id="L46">  private static final JsonFactory JSON_FACTORY = new JsonFactory(new ObjectMapper());</span>
+
+<span class="fc" id="L48">  private final Cache&lt;String, CacheEntry&gt; cache = CacheBuilder.newBuilder().build();</span>
+
+  private final String serviceId;
+  private final CaravanHttpClient client;
+  private final Clock clock;
+
+<span class="fc" id="L54">  CaravanGuavaResourceLoader(CaravanHttpClient client, String serviceId, Clock clock) {</span>
+<span class="fc" id="L55">    this.serviceId = serviceId;</span>
+<span class="fc" id="L56">    this.client = client;</span>
+<span class="fc" id="L57">    this.clock = clock;</span>
+<span class="fc" id="L58">  }</span>
+
+  @Override
+  public Single&lt;HalResponse&gt; getHalResource(String uri) {
+
+<span class="fc" id="L63">    CacheEntry cached = cache.getIfPresent(uri);</span>
+
+<span class="fc bfc" id="L65" title="All 4 branches covered.">    if (cached != null &amp;&amp; !cached.isStale()) {</span>
+<span class="fc" id="L66">      return Single.just(cached.getResponseWithAdjustedMaxAge());</span>
+    }
+
+<span class="fc" id="L69">    CaravanHttpRequest request = createRequest(uri);</span>
+
+<span class="fc" id="L71">    return executeRequest(request)</span>
+<span class="fc" id="L72">        .map(response -&gt; parseAndCacheResponse(uri, request, response))</span>
+<span class="fc" id="L73">        .onErrorResumeNext(ex -&gt; rethrowAsHalApiClientException(ex, uri));</span>
+  }
+
+  private CaravanHttpRequest createRequest(String uri) {
+
+<span class="fc" id="L78">    CaravanHttpRequestBuilder requestBuilder = new CaravanHttpRequestBuilder(serviceId);</span>
+
+<span class="fc" id="L80">    requestBuilder.append(uri);</span>
+
+<span class="fc" id="L82">    return requestBuilder.build();</span>
+  }
+
+  private Single&lt;CaravanHttpResponse&gt; executeRequest(CaravanHttpRequest request) {
+
+<span class="fc" id="L87">    return RxJavaInterop.toV3Single(client.execute(request).toSingle());</span>
+  }
+
+  @SuppressWarnings(&quot;PMD.AvoidRethrowingException&quot;)
+  private HalResponse parseAndCacheResponse(String uri, CaravanHttpRequest request, CaravanHttpResponse response) {
+    try {
+
+<span class="fc" id="L94">      int statusCode = response.status();</span>
+<span class="fc" id="L95">      String responseBody = response.body().asString();</span>
+
+      JsonNode jsonNode;
+      Integer maxAge;
+<span class="fc bfc" id="L99" title="All 2 branches covered.">      if (statusCode &gt;= 400) {</span>
+<span class="fc" id="L100">        jsonNode = parseResponseBodyAndIgnoreErrors(responseBody);</span>
+<span class="fc" id="L101">        maxAge = null;</span>
+      }
+      else {
+<span class="fc" id="L104">        jsonNode = parseResponseBody(responseBody);</span>
+<span class="fc" id="L105">        maxAge = parseMaxAge(response);</span>
+      }
+
+<span class="fc" id="L108">      HalResponse halResponse = new HalResponse()</span>
+<span class="fc" id="L109">          .withStatus(statusCode)</span>
+<span class="fc" id="L110">          .withBody(jsonNode)</span>
+<span class="fc" id="L111">          .withMaxAge(maxAge);</span>
+
+<span class="fc bfc" id="L113" title="All 2 branches covered.">      if (statusCode &gt;= 400) {</span>
+<span class="fc" id="L114">        IllegalResponseRuntimeException cause = new IllegalResponseRuntimeException(request, uri, statusCode, responseBody,</span>
+            &quot;Received &quot; + statusCode + &quot; response from &quot; + uri);
+<span class="fc" id="L116">        throw new HalApiClientException(halResponse, uri, cause);</span>
+      }
+
+<span class="fc bfc" id="L119" title="All 2 branches covered.">      if (maxAge != null) {</span>
+<span class="fc" id="L120">        cache.put(uri, new CacheEntry(halResponse));</span>
+      }
+
+<span class="fc" id="L123">      return halResponse;</span>
+
+    }
+<span class="fc" id="L126">    catch (HalApiClientException ex) {</span>
+<span class="fc" id="L127">      throw ex;</span>
+    }
+<span class="fc" id="L129">    catch (JsonParseException ex) {</span>
+<span class="fc" id="L130">      throw new RuntimeException(&quot;Failed to parse HAL/JSON body from &quot; + uri, ex);</span>
+    }
+<span class="nc" id="L132">    catch (IOException ex) {</span>
+<span class="nc" id="L133">      throw new RuntimeException(&quot;Failed to transfer HAL/JSON body from &quot; + uri, ex);</span>
+    }
+    // CHECKSTYLE:OFF - yes, we want to catch and rethrow all runtime exceptions
+<span class="nc" id="L136">    catch (RuntimeException ex) {</span>
+<span class="nc" id="L137">      throw new RuntimeException(&quot;Failed to process HAL/JSON response body from &quot; + uri, ex);</span>
+    }
+  }
+
+  private JsonNode parseResponseBody(String responseBody) throws IOException, JsonParseException {
+<span class="fc" id="L142">    return JSON_FACTORY.createParser(responseBody).readValueAsTree();</span>
+  }
+
+  private Integer parseMaxAge(CaravanHttpResponse response) {
+
+<span class="fc" id="L147">    Integer maxAge = null;</span>
+<span class="fc" id="L148">    String maxAgeString = response.getCacheControl().get(&quot;max-age&quot;);</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">    if (maxAgeString != null) {</span>
+      try {
+<span class="fc" id="L151">        maxAge = Integer.parseInt(maxAgeString);</span>
+      }
+<span class="nc" id="L153">      catch (NumberFormatException ex) {</span>
+        // ignore
+<span class="fc" id="L155">      }</span>
+    }
+<span class="fc" id="L157">    return maxAge;</span>
+  }
+
+  private JsonNode parseResponseBodyAndIgnoreErrors(String responseBody) {
+<span class="fc" id="L161">    JsonNode jsonNode = null;</span>
+    try {
+<span class="fc" id="L163">      jsonNode = parseResponseBody(responseBody);</span>
+    }
+<span class="fc" id="L165">    catch (Exception ex) {</span>
+      // ignore any exceptions when trying to parse the response body for 40x errors
+<span class="fc" id="L167">    }</span>
+<span class="fc" id="L168">    return jsonNode;</span>
+  }
+
+  private Single&lt;HalResponse&gt; rethrowAsHalApiClientException(Throwable ex, String uri) {
+
+<span class="fc bfc" id="L173" title="All 2 branches covered.">    if (ex instanceof HalApiClientException) {</span>
+<span class="fc" id="L174">      return Single.error(ex);</span>
+    }
+
+<span class="fc bfc" id="L177" title="All 2 branches covered.">    if (ex instanceof IllegalResponseRuntimeException) {</span>
+<span class="fc" id="L178">      IllegalResponseRuntimeException irre = ((IllegalResponseRuntimeException)ex);</span>
+
+<span class="fc" id="L180">      JsonNode body = parseResponseBodyAndIgnoreErrors(irre.getResponseBody());</span>
+
+<span class="fc" id="L182">      HalResponse jsonResponse = new HalResponse()</span>
+<span class="fc" id="L183">          .withStatus(irre.getResponseStatusCode())</span>
+<span class="fc" id="L184">          .withBody(body);</span>
+
+<span class="fc" id="L186">      return Single.error(new HalApiClientException(jsonResponse, uri, ex));</span>
+    }
+
+<span class="fc" id="L189">    String message = &quot;HTTP request for &quot; + uri + &quot; failed without a status code (e.g. because of timeout, configuration or networking issues)&quot;;</span>
+<span class="fc" id="L190">    return Single.error(new HalApiClientException(message, null, uri, ex));</span>
+  }
+
+  class CacheEntry {
+
+<span class="fc" id="L195">    private final long timeRetrieved = clock.millis();</span>
+    private final HalResponse response;
+
+<span class="fc" id="L198">    CacheEntry(HalResponse response) {</span>
+<span class="fc" id="L199">      this.response = response;</span>
+<span class="fc" id="L200">    }</span>
+
+    private int getSecondsInCache() {
+<span class="fc" id="L203">      return (int)(clock.millis() - timeRetrieved) / 1000;</span>
+    }
+
+    boolean isStale() {
+
+<span class="fc" id="L208">      int secondsCached = getSecondsInCache();</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">      return secondsCached &gt; response.getMaxAge();</span>
+    }
+
+    HalResponse getResponseWithAdjustedMaxAge() {
+
+<span class="fc" id="L214">      int newMaxAge = Math.max(0, response.getMaxAge() - getSecondsInCache());</span>
+<span class="fc" id="L215">      return response.withMaxAge(newMaxAge);</span>
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

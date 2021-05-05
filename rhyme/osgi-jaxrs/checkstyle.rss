@@ -27,7 +27,7 @@ under the License.
     <item>
       <title>File: 15,
              Errors: 0,
-             Warnings: 0,
+             Warnings: 1,
              Infos: 0
       </title>
             <link>https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html</link>
@@ -47,20 +47,6 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.caravan.api.CaravanRhymeRequestCycle.java">io/wcm/caravan/rhyme/caravan/api/CaravanRhymeRequestCycle.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.caravan.impl.CaravanGuavaJsonResourceLoader.java">io/wcm/caravan/rhyme/caravan/impl/CaravanGuavaJsonResourceLoader.java</a>
                 </td>
                 <td>
                   0
@@ -102,20 +88,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.jaxrs.impl.JaxRsReflectionUtils.java">io/wcm/caravan/rhyme/jaxrs/impl/JaxRsReflectionUtils.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.jaxrs.impl.JaxRsAsyncHalResponseHandlerImpl.java">io/wcm/caravan/rhyme/jaxrs/impl/JaxRsAsyncHalResponseHandlerImpl.java</a>
                 </td>
                 <td>
@@ -137,6 +109,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.jaxrs.impl.ReflectionUtils.java">io/wcm/caravan/rhyme/jaxrs/impl/ReflectionUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -172,6 +158,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.caravan.impl.CaravanGuavaResourceLoader.java">io/wcm/caravan/rhyme/caravan/impl/CaravanGuavaResourceLoader.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.caravan.api.CaravanHalApiClient.java">io/wcm/caravan/rhyme/caravan/api/CaravanHalApiClient.java</a>
                 </td>
                 <td>
@@ -186,7 +186,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.caravan.impl.CaravanJsonPipelineResourceLoader.java">io/wcm/caravan/rhyme/caravan/impl/CaravanJsonPipelineResourceLoader.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.caravan.impl.CaravanHalApiClientImpl.java">io/wcm/caravan/rhyme/caravan/impl/CaravanHalApiClientImpl.java</a>
                 </td>
                 <td>
                   0
@@ -200,7 +200,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.caravan.impl.CaravanHalApiClientImpl.java">io/wcm/caravan/rhyme/caravan/impl/CaravanHalApiClientImpl.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.caravan.impl.CaravanJsonPipelineResourceLoader.java">io/wcm/caravan/rhyme/caravan/impl/CaravanJsonPipelineResourceLoader.java</a>
                 </td>
                 <td>
                   0

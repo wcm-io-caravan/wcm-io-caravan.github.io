@@ -431,7 +431,7 @@
 <a class="jxr_linenumber" name="L423" href="#L423">423</a>         parameter.iterable = isOfIterableType(field);
 <a class="jxr_linenumber" name="L424" href="#L424">424</a>         parameter.query = <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>         parameter.required = !field.isAnnotationPresent(DefaultValue.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>         parameter.valueProvider = (args -&gt; JaxRsReflectionUtils.getFieldValue(field, args[index]));
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>         parameter.valueProvider = (args -&gt; ReflectionUtils.getFieldValue(field, args[index]));
 <a class="jxr_linenumber" name="L427" href="#L427">427</a> 
 <a class="jxr_linenumber" name="L428" href="#L428">428</a>         <strong class="jxr_keyword">return</strong> parameter;
 <a class="jxr_linenumber" name="L429" href="#L429">429</a>       }
@@ -444,7 +444,7 @@
 <a class="jxr_linenumber" name="L436" href="#L436">436</a>         parameter.iterable = isOfIterableType(field);
 <a class="jxr_linenumber" name="L437" href="#L437">437</a>         parameter.query = false;
 <a class="jxr_linenumber" name="L438" href="#L438">438</a>         parameter.required = <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>         parameter.valueProvider = (args -&gt; JaxRsReflectionUtils.getFieldValue(field, args[index]));
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>         parameter.valueProvider = (args -&gt; ReflectionUtils.getFieldValue(field, args[index]));
 <a class="jxr_linenumber" name="L440" href="#L440">440</a> 
 <a class="jxr_linenumber" name="L441" href="#L441">441</a>         <strong class="jxr_keyword">return</strong> parameter;
 <a class="jxr_linenumber" name="L442" href="#L442">442</a>       }

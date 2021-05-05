@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -126,31 +126,25 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>&lt;T&gt;&nbsp;T</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#getUpstreamEntryPoint-java.lang.String-java.lang.Class-">getUpstreamEntryPoint</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
-                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#getRemoteResource-java.lang.String-java.lang.Class-">getRemoteResource</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
+                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</code>
 <div class="block">Create a dynamic client proxy to load HAL+JSON resources from an upstream service.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a></code></td>
+<td class="colFirst"><code>io.reactivex.rxjava3.core.Single&lt;<a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-">renderResponse</a></span>(io.wcm.caravan.rhyme.api.resources.LinkableResource&nbsp;resourceImpl)</code>
-<div class="block">Synchronously render the given resource as a <a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> instance.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html?is-external=true" title="class or interface in java.util.concurrent">CompletionStage</a>&lt;<a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderResponseAsync-io.wcm.caravan.rhyme.api.resources.LinkableResource-">renderResponseAsync</a></span>(io.wcm.caravan.rhyme.api.resources.LinkableResource&nbsp;resourceImpl)</code>
 <div class="block">Asynchronously render the given resource as a <a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> instance.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderVndErrorResponse-java.lang.Throwable-">renderVndErrorResponse</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;error)</code>
 <div class="block">Render a vnd.error response for an error that happened before the <code>LinkableResource</code> instance was created
  (using the status code obtained from the <a href="../../../../../io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>ExceptionStatusAndLoggingStrategy</code></a>).</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#setResponseMaxAge-java.time.Duration-">setResponseMaxAge</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html?is-external=true" title="class or interface in java.time">Duration</a>&nbsp;duration)</code>
 <div class="block">Limit the maximum time for which the response should be cached by clients and downstream services.</div>
@@ -171,20 +165,20 @@ var activeTableTab = "activeTableTab";
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getUpstreamEntryPoint-java.lang.String-java.lang.Class-">
+<a name="getRemoteResource-java.lang.String-java.lang.Class-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getUpstreamEntryPoint</h4>
-<pre>&lt;T&gt;&nbsp;T&nbsp;getUpstreamEntryPoint(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
-                            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</pre>
+<h4>getRemoteResource</h4>
+<pre>&lt;T&gt;&nbsp;T&nbsp;getRemoteResource(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
+                        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</pre>
 <div class="block">Create a dynamic client proxy to load HAL+JSON resources from an upstream service.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>T</code> - an interface annotated with <code>HalApiInterface</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>uri</code> - the URI of the entry point, in any format that the <a href="../../../../../io/wcm/caravan/rhyme/api/spi/JsonResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>JsonResourceLoader</code></a> being used can understand</dd>
+<dd><code>uri</code> - the URI of the entry point, in any format that the <a href="../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> being used can understand</dd>
 <dd><code>halApiInterface</code> - an interface annotated with <code>HalApiInterface</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a dynamic proxy instance of the provided <code>HalApiInterface</code> that you can use to navigate through the
@@ -208,13 +202,13 @@ var activeTableTab = "activeTableTab";
 </dl>
 </li>
 </ul>
-<a name="renderResponseAsync-io.wcm.caravan.rhyme.api.resources.LinkableResource-">
+<a name="renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>renderResponseAsync</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html?is-external=true" title="class or interface in java.util.concurrent">CompletionStage</a>&lt;<a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&gt;&nbsp;renderResponseAsync(io.wcm.caravan.rhyme.api.resources.LinkableResource&nbsp;resourceImpl)</pre>
+<h4>renderResponse</h4>
+<pre>io.reactivex.rxjava3.core.Single&lt;<a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&gt;&nbsp;renderResponse(io.wcm.caravan.rhyme.api.resources.LinkableResource&nbsp;resourceImpl)</pre>
 <div class="block">Asynchronously render the given resource as a <a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> instance. If rendering is successful, that
  instance will have a 200 status code and a HAL+JSON media type. If any errors were thrown and handled, a vnd.error
  response will be rendered instead (using the status code obtained from the
@@ -223,27 +217,8 @@ var activeTableTab = "activeTableTab";
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>resourceImpl</code> - a server-side implementation of an interface annotated with <code>HalApiInterface</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html?is-external=true" title="class or interface in java.util.concurrent"><code>CompletionStage</code></a> that will provide a <a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> instance with status code, content type
+<dd>a <code>Single</code> that will emit a <a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> instance with status code, content type
          and body already set</dd>
-</dl>
-</li>
-</ul>
-<a name="renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>renderResponse</h4>
-<pre><a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;renderResponse(io.wcm.caravan.rhyme.api.resources.LinkableResource&nbsp;resourceImpl)</pre>
-<div class="block">Synchronously render the given resource as a <a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> instance. If rendering is successful, that
- instance will have a 200 status code and a HAL+JSON media type. If any errors were thrown and handled, a vnd.error
- response will be rendered instead (using the status code obtained from the
- <a href="../../../../../io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>ExceptionStatusAndLoggingStrategy</code></a>)</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>resourceImpl</code> - a server-side implementation of an interface annotated with <code>HalApiInterface</code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a <a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> instance with status code, content type and body already set</dd>
 </dl>
 </li>
 </ul>

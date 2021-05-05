@@ -49,7 +49,7 @@
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.common.HalResponse;
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.JsonResourceLoader;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.impl.metadata.EmissionStopwatch;
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  
@@ -62,13 +62,13 @@
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Cache&lt;String, Object&gt; proxyCache = CacheBuilder.newBuilder().build();
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="JsonResourceLoader" href="../../../../../../io/wcm/caravan/rhyme/api/spi/JsonResourceLoader.html#JsonResourceLoader">JsonResourceLoader</a> jsonLoader;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="HalResourceLoader" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html#HalResourceLoader">HalResourceLoader</a> resourceLoader;
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="RequestMetricsCollector" href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#RequestMetricsCollector">RequestMetricsCollector</a> metrics;
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="HalApiTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/HalApiTypeSupport.html#HalApiTypeSupport">HalApiTypeSupport</a> typeSupport;
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>    <a name="HalApiClientProxyFactory" href="../../../../../../io/wcm/caravan/rhyme/impl/client/HalApiClientProxyFactory.html#HalApiClientProxyFactory">HalApiClientProxyFactory</a>(<a name="JsonResourceLoader" href="../../../../../../io/wcm/caravan/rhyme/api/spi/JsonResourceLoader.html#JsonResourceLoader">JsonResourceLoader</a> jsonLoader, <a name="RequestMetricsCollector" href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#RequestMetricsCollector">RequestMetricsCollector</a> metrics, <a name="HalApiTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/HalApiTypeSupport.html#HalApiTypeSupport">HalApiTypeSupport</a> typeSupport) {
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>    <a name="HalApiClientProxyFactory" href="../../../../../../io/wcm/caravan/rhyme/impl/client/HalApiClientProxyFactory.html#HalApiClientProxyFactory">HalApiClientProxyFactory</a>(<a name="HalResourceLoader" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html#HalResourceLoader">HalResourceLoader</a> resourceLoader, <a name="RequestMetricsCollector" href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#RequestMetricsCollector">RequestMetricsCollector</a> metrics, <a name="HalApiTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/HalApiTypeSupport.html#HalApiTypeSupport">HalApiTypeSupport</a> typeSupport) {
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">this</strong>.metrics = metrics;
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">this</strong>.jsonLoader = jsonLoader;
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">this</strong>.resourceLoader = resourceLoader;
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">this</strong>.typeSupport = typeSupport;
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>    }
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  
@@ -110,7 +110,7 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>                 + <span class="jxr_string">")"</span>);
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>           }
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> 
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>           <strong class="jxr_keyword">return</strong> jsonLoader.loadJsonResource(url)
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>           <strong class="jxr_keyword">return</strong> resourceLoader.getHalResource(url)
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>               .map(HalResponse::getBody);
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         })
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         .compose(EmissionStopwatch.collectMetrics(<span class="jxr_string">"fetching "</span> + relatedResourceType.getSimpleName() + <span class="jxr_string">" from upstream server"</span>, metrics));

@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ import io.wcm.caravan.rhyme.api.annotations.ResourceState;
 import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
 import io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport;
 import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
-import io.wcm.caravan.rhyme.api.spi.JsonResourceLoader;
+import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
 import io.wcm.caravan.rhyme.impl.client.HalApiClientImpl;
 import io.wcm.caravan.rhyme.impl.reflection.DefaultHalApiTypeSupport;
 
@@ -40,27 +40,27 @@ import io.wcm.caravan.rhyme.impl.reflection.DefaultHalApiTypeSupport;
 public interface HalApiClient {
 
   /**
-   * @param uri the absolute path (and query parameters) of the entry point
+   * @param uri the absolute URI of the resource to load (usually the entry point of the HAL API)
    * @param halApiInterface the HAL API interface class of a service's entry point resource
    * @return a proxy implementation of the specified entry point interface
    * @param &lt;T&gt; the HAL API interface type
    */
-  &lt;T&gt; T getEntryPoint(String uri, Class&lt;T&gt; halApiInterface);
+  &lt;T&gt; T getRemoteResource(String uri, Class&lt;T&gt; halApiInterface);
 
   /**
-   * @param jsonLoader implements the actual loading (and caching) of JSON/HAL resources via any HTTP client library
+   * @param resourceLoader implements the actual loading (and caching) of JSON/HAL resources via any HTTP client library
    * @param metrics an instance of {@link RequestMetricsCollector} to collect performance relevant data for the current
    *          incoming request
    * @return an instance of {@link HalApiClient} that should be re-used for all upstream requests required by the
    *         current incoming request
    */
-  static HalApiClient create(JsonResourceLoader jsonLoader, RequestMetricsCollector metrics) {
+  static HalApiClient create(HalResourceLoader resourceLoader, RequestMetricsCollector metrics) {
 
-<span class="fc" id="L59">    return new HalApiClientImpl(jsonLoader, metrics, new DefaultHalApiTypeSupport());</span>
+<span class="fc" id="L59">    return new HalApiClientImpl(resourceLoader, metrics, new DefaultHalApiTypeSupport());</span>
   }
 
   /**
-   * @param jsonLoader implements the actual loading (and caching) of JSON/HAL resources via any HTTP client library
+   * @param resourceLoader implements the actual loading (and caching) of JSON/HAL resources via any HTTP client library
    * @param metrics an instance of {@link RequestMetricsCollector} to collect performance relevant data for the current
    *          incoming request
    * @param annotationSupport an (optional) strategy to identify HAL API interfaces and methods that use different
@@ -70,10 +70,10 @@ public interface HalApiClient {
    * @return an instance of {@link HalApiClient} that should be re-used for all upstream requests required by the
    *         current incoming request
    */
-  static HalApiClient create(JsonResourceLoader jsonLoader, RequestMetricsCollector metrics,
+  static HalApiClient create(HalResourceLoader resourceLoader, RequestMetricsCollector metrics,
       HalApiAnnotationSupport annotationSupport, HalApiReturnTypeSupport returnTypeSupport) {
 
-<span class="fc" id="L76">    return new HalApiClientImpl(jsonLoader, metrics, DefaultHalApiTypeSupport.extendWith(annotationSupport, returnTypeSupport));</span>
+<span class="fc" id="L76">    return new HalApiClientImpl(resourceLoader, metrics, DefaultHalApiTypeSupport.extendWith(annotationSupport, returnTypeSupport));</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

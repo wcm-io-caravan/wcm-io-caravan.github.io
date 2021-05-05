@@ -41,7 +41,7 @@ import io.wcm.caravan.rhyme.api.client.HalApiClient;
 import io.wcm.caravan.rhyme.api.common.HalResponse;
 import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
 import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
-import io.wcm.caravan.rhyme.api.spi.JsonResourceLoader;
+import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
 import io.wcm.caravan.rhyme.impl.metadata.EmissionStopwatch;
 import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
 
@@ -54,13 +54,13 @@ final class HalApiClientProxyFactory {
 
 <span class="fc" id="L55">  private final Cache&lt;String, Object&gt; proxyCache = CacheBuilder.newBuilder().build();</span>
 
-  private final JsonResourceLoader jsonLoader;
+  private final HalResourceLoader resourceLoader;
   private final RequestMetricsCollector metrics;
   private final HalApiTypeSupport typeSupport;
 
-<span class="fc" id="L61">  HalApiClientProxyFactory(JsonResourceLoader jsonLoader, RequestMetricsCollector metrics, HalApiTypeSupport typeSupport) {</span>
+<span class="fc" id="L61">  HalApiClientProxyFactory(HalResourceLoader resourceLoader, RequestMetricsCollector metrics, HalApiTypeSupport typeSupport) {</span>
 <span class="fc" id="L62">    this.metrics = metrics;</span>
-<span class="fc" id="L63">    this.jsonLoader = jsonLoader;</span>
+<span class="fc" id="L63">    this.resourceLoader = resourceLoader;</span>
 <span class="fc" id="L64">    this.typeSupport = typeSupport;</span>
 <span class="fc" id="L65">  }</span>
 
@@ -102,7 +102,7 @@ final class HalApiClientProxyFactory {
                 + &quot;)&quot;);
           }
 
-<span class="fc" id="L105">          return jsonLoader.loadJsonResource(url)</span>
+<span class="fc" id="L105">          return resourceLoader.getHalResource(url)</span>
 <span class="fc" id="L106">              .map(HalResponse::getBody);</span>
         })
 <span class="fc" id="L108">        .compose(EmissionStopwatch.collectMetrics(&quot;fetching &quot; + relatedResourceType.getSimpleName() + &quot; from upstream server&quot;, metrics));</span>

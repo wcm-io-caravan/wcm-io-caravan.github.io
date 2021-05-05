@@ -97,7 +97,7 @@ import io.wcm.caravan.rhyme.jaxrs.api.JaxRsAsyncHalResponseRenderer;
 <span class="fc" id="L97">    }</span>
 
     @Override
-    public &lt;T&gt; T getUpstreamEntryPoint(String serviceId, String uri, Class&lt;T&gt; halApiInterface) {
+    public &lt;T&gt; T getRemoteResource(String serviceId, String uri, Class&lt;T&gt; halApiInterface) {
 
 <span class="fc" id="L102">      return halApiClient.getEntryPoint(serviceId, uri, halApiInterface, metrics);</span>
     }

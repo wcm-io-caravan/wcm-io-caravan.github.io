@@ -120,12 +120,6 @@
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a></code></td>
-<td class="colLast"><span class="typeNameLabel">Rhyme.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-">renderResponse</a></span>(io.wcm.caravan.rhyme.api.resources.LinkableResource&nbsp;resourceImpl)</code>
-<div class="block">Synchronously render the given resource as a <a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> instance.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a></code></td>
 <td class="colLast"><span class="typeNameLabel">Rhyme.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderVndErrorResponse-java.lang.Throwable-">renderVndErrorResponse</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;error)</code>
 <div class="block">Render a vnd.error response for an error that happened before the <code>LinkableResource</code> instance was created
  (using the status code obtained from the <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>ExceptionStatusAndLoggingStrategy</code></a>).</div>
@@ -141,8 +135,8 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html?is-external=true" title="class or interface in java.util.concurrent">CompletionStage</a>&lt;<a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&gt;</code></td>
-<td class="colLast"><span class="typeNameLabel">Rhyme.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderResponseAsync-io.wcm.caravan.rhyme.api.resources.LinkableResource-">renderResponseAsync</a></span>(io.wcm.caravan.rhyme.api.resources.LinkableResource&nbsp;resourceImpl)</code>
+<td class="colFirst"><code>io.reactivex.rxjava3.core.Single&lt;<a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&gt;</code></td>
+<td class="colLast"><span class="typeNameLabel">Rhyme.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-">renderResponse</a></span>(io.wcm.caravan.rhyme.api.resources.LinkableResource&nbsp;resourceImpl)</code>
 <div class="block">Asynchronously render the given resource as a <a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> instance.</div>
 </td>
 </tr>
@@ -177,10 +171,6 @@
 <td class="colLast"><span class="typeNameLabel">HalResponse.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html#withMaxAge-java.lang.Integer-">withMaxAge</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&nbsp;value)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a></code></td>
-<td class="colLast"><span class="typeNameLabel">HalResponse.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html#withReason-java.lang.String-">withReason</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a></code></td>
 <td class="colLast"><span class="typeNameLabel">HalResponse.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html#withStatus-java.lang.Integer-">withStatus</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&nbsp;value)</code>&nbsp;</td>
 </tr>
@@ -268,7 +258,7 @@
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code>io.reactivex.rxjava3.core.Single&lt;<a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&gt;</code></td>
-<td class="colLast"><span class="typeNameLabel">JsonResourceLoader.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/JsonResourceLoader.html#loadJsonResource-java.lang.String-">loadJsonResource</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri)</code>&nbsp;</td>
+<td class="colLast"><span class="typeNameLabel">HalResourceLoader.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html#getHalResource-java.lang.String-">getHalResource</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri)</code>&nbsp;</td>
 </tr>
 </tbody>
 </table>
