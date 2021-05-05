@@ -41,9 +41,11 @@ final class ReflectionUtils {
     try {
 <span class="fc" id="L42">      return FieldUtils.readField(field, instance, true);</span>
     }
-<span class="fc" id="L44">    catch (IllegalAccessException | RuntimeException ex) {</span>
+    // CHECKSTYLE:OFF - we really want to catch any possible runtime exception that might be thrown here
+<span class="fc" id="L45">    catch (IllegalAccessException | RuntimeException ex) {</span>
+      // CHECKSTYLE:ON
 
-<span class="fc" id="L46">      throw new HalApiDeveloperException(&quot;Failed to access field &quot; + field.getName() + &quot; of class &quot; + instance.getClass().getName() + &quot; through reflection&quot;,</span>
+<span class="fc" id="L48">      throw new HalApiDeveloperException(&quot;Failed to access field &quot; + field.getName() + &quot; of class &quot; + instance.getClass().getName() + &quot; through reflection&quot;,</span>
           ex);
     }
   }

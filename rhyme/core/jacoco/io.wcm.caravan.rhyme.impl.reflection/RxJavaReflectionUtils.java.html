@@ -148,28 +148,35 @@ public final class RxJavaReflectionUtils {
 <span class="fc" id="L148">    return cached;</span>
   }
 
+  /**
+   * Converts the observable into any other type supported by the given {@link HalApiTypeSupport} instance
+   * @param observable to convert
+   * @param targetType to which the observable should be convert
+   * @param typeSupport provides the available conversion functions
+   * @return an object of the given target type
+   */
   public static Object convertObservableTo(Observable&lt;?&gt; observable, Class&lt;?&gt; targetType, HalApiReturnTypeSupport typeSupport) {
 
-<span class="fc" id="L153">    Preconditions.checkNotNull(targetType, &quot;A target type must be provided&quot;);</span>
+<span class="fc" id="L160">    Preconditions.checkNotNull(targetType, &quot;A target type must be provided&quot;);</span>
 
-<span class="fc" id="L155">    Function&lt;Observable, ?&gt; conversion = typeSupport.convertFromObservable(targetType);</span>
-<span class="fc bfc" id="L156" title="All 2 branches covered.">    if (conversion == null) {</span>
-<span class="fc" id="L157">      throw new HalApiDeveloperException(&quot;The given target type of &quot; + targetType.getName() + &quot; is not a supported return type&quot;);</span>
+<span class="fc" id="L162">    Function&lt;Observable, ?&gt; conversion = typeSupport.convertFromObservable(targetType);</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">    if (conversion == null) {</span>
+<span class="fc" id="L164">      throw new HalApiDeveloperException(&quot;The given target type of &quot; + targetType.getName() + &quot; is not a supported return type&quot;);</span>
     }
 
-<span class="fc" id="L160">    return conversion.apply(observable);</span>
+<span class="fc" id="L167">    return conversion.apply(observable);</span>
   }
 
   private static Observable&lt;?&gt; convertToObservable(Object reactiveInstance, HalApiReturnTypeSupport typeSupport) {
 
-<span class="fc" id="L165">    Preconditions.checkNotNull(reactiveInstance, &quot;Cannot convert null objects&quot;);</span>
+<span class="fc" id="L172">    Preconditions.checkNotNull(reactiveInstance, &quot;Cannot convert null objects&quot;);</span>
 
-<span class="fc" id="L167">    Function&lt;Object, Observable&lt;?&gt;&gt; conversion = typeSupport.convertToObservable(reactiveInstance.getClass());</span>
-<span class="fc bfc" id="L168" title="All 2 branches covered.">    if (conversion == null) {</span>
-<span class="fc" id="L169">      throw new HalApiDeveloperException(&quot;The given instance of &quot; + reactiveInstance.getClass().getName() + &quot; is not a supported return type&quot;);</span>
+<span class="fc" id="L174">    Function&lt;Object, Observable&lt;?&gt;&gt; conversion = typeSupport.convertToObservable(reactiveInstance.getClass());</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">    if (conversion == null) {</span>
+<span class="fc" id="L176">      throw new HalApiDeveloperException(&quot;The given instance of &quot; + reactiveInstance.getClass().getName() + &quot; is not a supported return type&quot;);</span>
     }
 
-<span class="fc" id="L172">    return conversion.apply(reactiveInstance);</span>
+<span class="fc" id="L179">    return conversion.apply(reactiveInstance);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

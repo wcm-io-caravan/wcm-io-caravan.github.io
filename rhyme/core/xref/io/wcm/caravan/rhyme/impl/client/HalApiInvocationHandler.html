@@ -90,14 +90,14 @@
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>        Observable rxReturnValue = getCachedObservableReturnValue(invocation);
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>        <strong class="jxr_keyword">return</strong> RxJavaReflectionUtils.convertObservableTo(rxReturnValue, method.getReturnType(), typeSupport);
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">catch</strong> (<a name="HalApiDeveloperException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiDeveloperException.html#HalApiDeveloperException">HalApiDeveloperException</a> e) {
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>        <em class="jxr_comment">// these exceptions should just be re-thrown as they are expected errors by the developer (e.g. using invalid types in the signatures of the HAL API interface)</em>
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>        <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>      <strong class="jxr_keyword">catch</strong> (<a name="HalApiClientException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException">HalApiClientException</a> e) {
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>        <em class="jxr_comment">// these exceptions should just be re-thrown as they contain important context information</em>
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>        <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>      }
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      <em class="jxr_comment">// CHECKSTYLE:OFF</em>
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">catch</strong> (<a name="HalApiDeveloperException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiDeveloperException.html#HalApiDeveloperException">HalApiDeveloperException</a> | <a name="HalApiClientException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException">HalApiClientException</a> ex) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>        <em class="jxr_comment">// these exceptions should just be re-thrown as they are implementation errors by the developer</em>
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>        <em class="jxr_comment">// (e.g. using invalid types in the signatures of the HAL API interface),</em>
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>        <em class="jxr_comment">//or contain important context information from failed HTTP request</em>
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>        <strong class="jxr_keyword">throw</strong> ex;
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      }
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <em class="jxr_comment">// CHECKSTYLE:ON</em>
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">catch</strong> (NoSuchElementException ex) {
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>        <em class="jxr_comment">// these exceptions should be re-thrown with a better error message</em>
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a name="HalApiDeveloperException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiDeveloperException.html#HalApiDeveloperException">HalApiDeveloperException</a>(<span class="jxr_string">"The invocation of "</span> + invocation + <span class="jxr_string">" has failed, "</span>
