@@ -116,7 +116,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.metadata.EmissionStopwatch.java">io/wcm/caravan/rhyme/impl/metadata/EmissionStopwatch.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.util.RxJavaTransformers.java">io/wcm/caravan/rhyme/impl/util/RxJavaTransformers.java</a>
                 </td>
                 <td>
                   0
@@ -130,7 +130,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.util.RxJavaTransformers.java">io/wcm/caravan/rhyme/impl/util/RxJavaTransformers.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.metadata.EmissionStopwatch.java">io/wcm/caravan/rhyme/impl/metadata/EmissionStopwatch.java</a>
                 </td>
                 <td>
                   0
@@ -466,7 +466,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.client.ResourceLinkHandler.java">io/wcm/caravan/rhyme/impl/client/ResourceLinkHandler.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.client.HalApiMethodInvocation.java">io/wcm/caravan/rhyme/impl/client/HalApiMethodInvocation.java</a>
                 </td>
                 <td>
                   0
@@ -480,7 +480,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.client.HalApiMethodInvocation.java">io/wcm/caravan/rhyme/impl/client/HalApiMethodInvocation.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.client.ResourceLinkHandler.java">io/wcm/caravan/rhyme/impl/client/ResourceLinkHandler.java</a>
                 </td>
                 <td>
                   0

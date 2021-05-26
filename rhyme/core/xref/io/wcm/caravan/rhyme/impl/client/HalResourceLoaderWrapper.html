@@ -10,7 +10,7 @@
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * #%L</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * wcm.io</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * %%</em>
-<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> * Copyright (C) 2018 wcm.io</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> * Copyright (C) 2021 wcm.io</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> * %%</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> * you may not use this file except in compliance with the License.</em>
@@ -79,7 +79,7 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>              .doOnSuccess(jsonResponse -&gt; registerResponseMetrics(uri, jsonResponse, stopwatch))
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>              .onErrorResumeNext(ex -&gt; rethrowUnexpectedExceptions(uri, ex));
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          <a name="LinkRewriting" href="../../../../../../io/wcm/caravan/rhym<a name="LinkRewriting" href="../../../../../../io/wcm/caravan/rhyme/impl/client/LinkRewriting.html#LinkRewriting">LinkRewriting</a>/LinkRewriting.html#LinkRewriting">LinkRewriting</a> rewriting = <strong class="jxr_keyword">new</strong> <a name="LinkRewriting" href="../../../../../../io/wcm/caravan/rhyme/impl/client/LinkRewriting.html#LinkRewriting">LinkRewriting</a>(uri);
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          <a name="LinkRewriting" href="../../../../../../io/wcm/caravan/rhyme/impl/client/LinkRewriting.html#LinkRewriting">LinkRewriting</a> rewriting = <strong class="jxr_keyword">new</strong> <a name="LinkRewriting" href="../../../../../../io/wcm/caravan/rhyme/impl/client/LinkRewriting.html#LinkRewriting">LinkRewriting</a>(uri);
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          Single&lt;HalResponse&gt; processedResource = loadedResource.map(rewriting::resolveRelativeLinks);
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>  
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>          Single&lt;HalResponse&gt; cachedResource = processedResource.compose(RxJavaTransformers.cacheSingleIfCompleted());

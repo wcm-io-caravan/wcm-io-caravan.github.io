@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2017 wcm.io
+ * Copyright (C) 2021 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -262,8 +262,8 @@ public final class HalApiReflectionUtils {
 <span class="fc" id="L262">      String curi2 = annotationSupport.getRelation(method2);</span>
 
       // make sure that all standard link relations always come before custom relations
-<span class="pc bpc" id="L265" title="1 of 4 branches missed.">      if (curi2.contains(&quot;:&quot;) &amp;&amp; !curi1.contains(&quot;:&quot;)) {</span>
-<span class="nc" id="L266">        return -1;</span>
+<span class="fc bfc" id="L265" title="All 4 branches covered.">      if (curi2.contains(&quot;:&quot;) &amp;&amp; !curi1.contains(&quot;:&quot;)) {</span>
+<span class="fc" id="L266">        return -1;</span>
       }
 <span class="fc bfc" id="L268" title="All 4 branches covered.">      if (curi1.contains(&quot;:&quot;) &amp;&amp; !curi2.contains(&quot;:&quot;)) {</span>
 <span class="fc" id="L269">        return 1;</span>
@@ -275,4 +275,4 @@ public final class HalApiReflectionUtils {
 
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
