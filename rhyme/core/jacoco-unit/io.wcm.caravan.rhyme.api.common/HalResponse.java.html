@@ -19,6 +19,8 @@
  */
 package io.wcm.caravan.rhyme.api.common;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.wcm.caravan.hal.resource.HalResource;
@@ -26,6 +28,7 @@ import io.wcm.caravan.hal.resource.HalResource;
 /**
  * A response to a successful or failed HTTP request to retrieve a {@link HalResource}
  */
+@ProviderType
 public class HalResponse {
 
   private final Integer status;
@@ -37,25 +40,25 @@ public class HalResponse {
    * Creates an instance with all fields set to null, you have to use the #withXyz method to actually populate the
    * fields
    */
-<span class="fc" id="L40">  public HalResponse() {</span>
-<span class="fc" id="L41">    this.status = null;</span>
-<span class="fc" id="L42">    this.contentType = null;</span>
-<span class="fc" id="L43">    this.body = null;</span>
-<span class="fc" id="L44">    this.maxAge = null;</span>
-<span class="fc" id="L45">  }</span>
+<span class="fc" id="L43">  public HalResponse() {</span>
+<span class="fc" id="L44">    this.status = null;</span>
+<span class="fc" id="L45">    this.contentType = null;</span>
+<span class="fc" id="L46">    this.body = null;</span>
+<span class="fc" id="L47">    this.maxAge = null;</span>
+<span class="fc" id="L48">  }</span>
 
-<span class="fc" id="L47">  private HalResponse(Integer status, String contentType, HalResource body, Integer maxAge) {</span>
-<span class="fc" id="L48">    this.status = status;</span>
-<span class="fc" id="L49">    this.contentType = contentType;</span>
-<span class="fc" id="L50">    this.body = body;</span>
-<span class="fc" id="L51">    this.maxAge = maxAge;</span>
-<span class="fc" id="L52">  }</span>
+<span class="fc" id="L50">  private HalResponse(Integer status, String contentType, HalResource body, Integer maxAge) {</span>
+<span class="fc" id="L51">    this.status = status;</span>
+<span class="fc" id="L52">    this.contentType = contentType;</span>
+<span class="fc" id="L53">    this.body = body;</span>
+<span class="fc" id="L54">    this.maxAge = maxAge;</span>
+<span class="fc" id="L55">  }</span>
 
   /**
    * @return the HTTP status code (or null if a request failed without receiving a status code)
    */
   public Integer getStatus() {
-<span class="fc" id="L58">    return status;</span>
+<span class="fc" id="L61">    return status;</span>
   }
 
   /**
@@ -63,14 +66,14 @@ public class HalResponse {
    * @return a new instance with the given status code
    */
   public HalResponse withStatus(Integer value) {
-<span class="fc" id="L66">    return new HalResponse(value, contentType, body, maxAge);</span>
+<span class="fc" id="L69">    return new HalResponse(value, contentType, body, maxAge);</span>
   }
 
   /**
    * @return the value of the 'Content-Type' HTTP header
    */
   public String getContentType() {
-<span class="fc" id="L73">    return contentType;</span>
+<span class="fc" id="L76">    return contentType;</span>
   }
 
   /**
@@ -78,7 +81,7 @@ public class HalResponse {
    * @return a new instance with the given content type
    */
   public HalResponse withContentType(String value) {
-<span class="fc" id="L81">    return new HalResponse(status, value, body, maxAge);</span>
+<span class="fc" id="L84">    return new HalResponse(status, value, body, maxAge);</span>
   }
 
   /**
@@ -86,7 +89,7 @@ public class HalResponse {
    *         receiving a response body)
    */
   public HalResource getBody() {
-<span class="fc" id="L89">    return body;</span>
+<span class="fc" id="L92">    return body;</span>
   }
 
   /**
@@ -94,7 +97,7 @@ public class HalResponse {
    * @return a new instance with the given body
    */
   public HalResponse withBody(HalResource value) {
-<span class="fc" id="L97">    return new HalResponse(status, contentType, value, maxAge);</span>
+<span class="fc" id="L100">    return new HalResponse(status, contentType, value, maxAge);</span>
   }
 
   /**
@@ -102,15 +105,15 @@ public class HalResponse {
    * @return a new instance with the given body
    */
   public HalResponse withBody(JsonNode value) {
-<span class="fc bfc" id="L105" title="All 2 branches covered.">    HalResource hal = value != null ? new HalResource(value) : null;</span>
-<span class="fc" id="L106">    return new HalResponse(status, contentType, hal, maxAge);</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">    HalResource hal = value != null ? new HalResource(value) : null;</span>
+<span class="fc" id="L109">    return new HalResponse(status, contentType, hal, maxAge);</span>
   }
 
   /**
    * @return the &quot;max-age&quot; value of the &quot;Cache-Control&quot; header (or null if not defined)
    */
   public Integer getMaxAge() {
-<span class="fc" id="L113">    return maxAge;</span>
+<span class="fc" id="L116">    return maxAge;</span>
   }
 
   /**
@@ -118,7 +121,7 @@ public class HalResponse {
    * @return a new instance with the given max age
    */
   public HalResponse withMaxAge(Integer value) {
-<span class="fc" id="L121">    return new HalResponse(status, contentType, body, value);</span>
+<span class="fc" id="L124">    return new HalResponse(status, contentType, body, value);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

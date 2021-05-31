@@ -19,6 +19,8 @@
  */
 package io.wcm.caravan.rhyme.api.exceptions;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 import io.wcm.caravan.rhyme.api.client.HalApiClient;
 import io.wcm.caravan.rhyme.api.common.HalResponse;
 
@@ -26,6 +28,7 @@ import io.wcm.caravan.rhyme.api.common.HalResponse;
  * Thrown whenever the {@link HalApiClient} implementation fails to load a HAL resource, and provides
  * access to the status code and URL of the failed HTTP request.
  */
+@ProviderType
 public class HalApiClientException extends RuntimeException {
 
   private static final long serialVersionUID = -2265405683402689209L;
@@ -40,10 +43,10 @@ public class HalApiClientException extends RuntimeException {
    * @param cause the root cause for the failed HTTP request
    */
   public HalApiClientException(HalResponse errorResponse, String requestUrl, Throwable cause) {
-<span class="fc" id="L43">    super(&quot;HTTP request failed with status code &quot; + errorResponse.getStatus(), cause);</span>
-<span class="fc" id="L44">    this.errorResponse = errorResponse;</span>
-<span class="fc" id="L45">    this.requestUrl = requestUrl;</span>
-<span class="fc" id="L46">  }</span>
+<span class="fc" id="L46">    super(&quot;HTTP request failed with status code &quot; + errorResponse.getStatus(), cause);</span>
+<span class="fc" id="L47">    this.errorResponse = errorResponse;</span>
+<span class="fc" id="L48">    this.requestUrl = requestUrl;</span>
+<span class="fc" id="L49">  }</span>
 
   /**
    * Constructor to use if no response body was received from the upstream service.
@@ -54,10 +57,10 @@ public class HalApiClientException extends RuntimeException {
    * @param cause the root cause for the failed HTTP request
    */
   public HalApiClientException(String message, Integer statusCode, String requestUrl, Throwable cause) {
-<span class="fc" id="L57">    super(message, cause);</span>
-<span class="fc" id="L58">    this.errorResponse = new HalResponse().withStatus(statusCode);</span>
-<span class="fc" id="L59">    this.requestUrl = requestUrl;</span>
-<span class="fc" id="L60">  }</span>
+<span class="fc" id="L60">    super(message, cause);</span>
+<span class="fc" id="L61">    this.errorResponse = new HalResponse().withStatus(statusCode);</span>
+<span class="fc" id="L62">    this.requestUrl = requestUrl;</span>
+<span class="fc" id="L63">  }</span>
 
   /**
    * Constructor used to re-throw a {@link HalApiClientException} and add additional context information
@@ -65,17 +68,17 @@ public class HalApiClientException extends RuntimeException {
    * @param cause the exception that was caught and re-thrown
    */
   public HalApiClientException(String message, HalApiClientException cause) {
-<span class="fc" id="L68">    super(message, cause);</span>
-<span class="fc" id="L69">    this.errorResponse = cause.getErrorResponse();</span>
-<span class="fc" id="L70">    this.requestUrl = cause.getRequestUrl();</span>
-<span class="fc" id="L71">  }</span>
+<span class="fc" id="L71">    super(message, cause);</span>
+<span class="fc" id="L72">    this.errorResponse = cause.getErrorResponse();</span>
+<span class="fc" id="L73">    this.requestUrl = cause.getRequestUrl();</span>
+<span class="fc" id="L74">  }</span>
 
   /**
    * @return a {@link HalResponse} object that contains additional information in the body only if the upstream
    *         service's response contained a Vnd+Error body
    */
   public HalResponse getErrorResponse() {
-<span class="fc" id="L78">    return errorResponse;</span>
+<span class="fc" id="L81">    return errorResponse;</span>
   }
 
   /**
@@ -83,14 +86,14 @@ public class HalApiClientException extends RuntimeException {
    *         code)
    */
   public Integer getStatusCode() {
-<span class="fc" id="L86">    return errorResponse.getStatus();</span>
+<span class="fc" id="L89">    return errorResponse.getStatus();</span>
   }
 
   /**
    * @return the URI of the request that failed
    */
   public String getRequestUrl() {
-<span class="fc" id="L93">    return requestUrl;</span>
+<span class="fc" id="L96">    return requestUrl;</span>
   }
 
 }

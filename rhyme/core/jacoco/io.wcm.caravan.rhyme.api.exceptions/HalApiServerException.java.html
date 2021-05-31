@@ -19,10 +19,13 @@
  */
 package io.wcm.caravan.rhyme.api.exceptions;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * A server-side exception that you can throw in your resource implementations if you want to send a response with a
  * specific status code
  */
+@ProviderType
 public class HalApiServerException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
@@ -34,8 +37,8 @@ public class HalApiServerException extends RuntimeException {
    * @param msg the error message
    */
   public HalApiServerException(int statusCode, String msg) {
-<span class="fc" id="L37">    this(statusCode, msg, null);</span>
-<span class="fc" id="L38">  }</span>
+<span class="fc" id="L40">    this(statusCode, msg, null);</span>
+<span class="fc" id="L41">  }</span>
 
   /**
    * @param statusCode to use for the HTTP response
@@ -43,12 +46,12 @@ public class HalApiServerException extends RuntimeException {
    * @param cause the root cause
    */
   public HalApiServerException(int statusCode, String msg, Throwable cause) {
-<span class="fc" id="L46">    super(msg, cause);</span>
-<span class="fc" id="L47">    this.statusCode = statusCode;</span>
-<span class="fc" id="L48">  }</span>
+<span class="fc" id="L49">    super(msg, cause);</span>
+<span class="fc" id="L50">    this.statusCode = statusCode;</span>
+<span class="fc" id="L51">  }</span>
 
   public int getStatusCode() {
-<span class="fc" id="L51">    return statusCode;</span>
+<span class="fc" id="L54">    return statusCode;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

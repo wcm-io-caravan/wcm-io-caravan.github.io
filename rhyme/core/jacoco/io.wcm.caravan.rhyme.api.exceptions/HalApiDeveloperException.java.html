@@ -19,11 +19,13 @@
  */
 package io.wcm.caravan.rhyme.api.exceptions;
 
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Thrown by the framework whenever an error condition is likely to be caused by invalid code (rather than network or
  * data issues)
  */
+@ProviderType
 public class HalApiDeveloperException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
@@ -32,15 +34,15 @@ public class HalApiDeveloperException extends RuntimeException {
    * @param message the detail message
    */
   public HalApiDeveloperException(String message) {
-<span class="fc" id="L35">    super(message);</span>
-<span class="fc" id="L36">  }</span>
+<span class="fc" id="L37">    super(message);</span>
+<span class="fc" id="L38">  }</span>
 
   /**
    * @param message the detail message
    * @param cause the exception that was caught and re-thrown
    */
   public HalApiDeveloperException(String message, Throwable cause) {
-<span class="fc" id="L43">    super(message, cause);</span>
-<span class="fc" id="L44">  }</span>
+<span class="fc" id="L45">    super(message, cause);</span>
+<span class="fc" id="L46">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
