@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SlingLinkBuilderImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - AEM Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.integration.impl</a> &gt; <span class="el_source">SlingLinkBuilderImpl.java</span></div><h1>SlingLinkBuilderImpl.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.aem.integration.impl;
+
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.Self;
+
+import com.damnhandy.uri.template.UriTemplate;
+
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.aem.integration.SlingLinkBuilder;
+import io.wcm.caravan.rhyme.aem.integration.SlingLinkableResource;
+import io.wcm.caravan.rhyme.aem.integration.SlingRhyme;
+import io.wcm.handler.url.UrlHandler;
+
+@Model(adaptables = SlingRhyme.class, adapters = SlingLinkBuilder.class)
+<span class="fc" id="L20">public class SlingLinkBuilderImpl implements SlingLinkBuilder {</span>
+
+  @Self
+  private Resource targetResource;
+
+  @Self
+  private UrlHandler urlHandler;
+
+  @Inject
+  private ResourceSelectorRegistry registry;
+
+  @Override
+  public Link createLinkToCurrentResource(SlingLinkableResource slingModel) {
+
+<span class="fc" id="L34">    String url = buildResourceUrl(slingModel);</span>
+
+<span class="fc" id="L36">    Link link = new Link(url)</span>
+<span class="fc" id="L37">        .setName(slingModel.getLinkName())</span>
+<span class="fc" id="L38">        .setTitle(slingModel.getLinkTitle());</span>
+
+<span class="fc" id="L40">    return link;</span>
+  }
+
+  private String buildResourceUrl(SlingLinkableResource slingModel) {
+
+<span class="fc" id="L45">    String url = urlHandler.get(targetResource)</span>
+<span class="fc" id="L46">        .selectors(getClassSpecificSelector(slingModel))</span>
+<span class="fc" id="L47">        .extension(HalApiServlet.EXTENSION)</span>
+<span class="fc" id="L48">        .build();</span>
+
+<span class="fc" id="L50">    return appendQueryWithTemplate(url, slingModel);</span>
+  }
+
+  private String appendQueryWithTemplate(String baseUrl, SlingLinkableResource slingModel) {
+
+<span class="fc" id="L55">    Map&lt;String, Object&gt; queryParams = slingModel.getQueryParameters();</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    if (queryParams.isEmpty()) {</span>
+<span class="fc" id="L57">      return baseUrl;</span>
+    }
+<span class="fc" id="L59">    String[] names = queryParams.keySet().toArray(new String[queryParams.size()]);</span>
+
+<span class="fc" id="L61">    UriTemplate template = UriTemplate.buildFromTemplate(baseUrl).query(names).build();</span>
+
+<span class="fc" id="L63">    queryParams.entrySet().stream()</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        .filter(entry -&gt; entry.getValue() != null)</span>
+<span class="fc" id="L65">        .forEach(entry -&gt; template.set(entry.getKey(), entry.getValue()));</span>
+
+<span class="fc" id="L67">    return template.expand();</span>
+  }
+
+  private String getClassSpecificSelector(SlingLinkableResource slingModel) {
+
+<span class="fc" id="L72">    return registry.getSelectorForModelClass(slingModel.getClass())</span>
+<span class="fc" id="L73">        .orElse(null);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

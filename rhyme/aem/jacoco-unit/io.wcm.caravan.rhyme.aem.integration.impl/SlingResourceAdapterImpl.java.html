@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SlingResourceAdapterImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - AEM Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.integration.impl</a> &gt; <span class="el_source">SlingResourceAdapterImpl.java</span></div><h1>SlingResourceAdapterImpl.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.aem.integration.impl;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import javax.inject.Inject;
+
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.Self;
+import org.jetbrains.annotations.NotNull;
+
+import com.damnhandy.uri.template.UriTemplate;
+import com.damnhandy.uri.template.UriTemplateBuilder;
+import com.google.common.base.Preconditions;
+
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.aem.integration.ResourceStreams;
+import io.wcm.caravan.rhyme.aem.integration.SlingLinkableResource;
+import io.wcm.caravan.rhyme.aem.integration.SlingResourceAdapter;
+import io.wcm.caravan.rhyme.aem.integration.SlingRhyme;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.handler.url.UrlHandler;
+
+@Model(adaptables = SlingRhyme.class, adapters = SlingResourceAdapter.class)
+public class SlingResourceAdapterImpl implements SlingResourceAdapter {
+
+  @Self
+  private SlingRhyme slingRhyme;
+
+  @Self
+  private UrlHandler urlHandler;
+
+  @Inject
+  private ResourceSelectorRegistry registry;
+
+  @Self
+  private Resource currentResource;
+
+  private final ResourceSelector resourceSelector;
+
+  private final ResourceFilter resourceFilter;
+
+<span class="fc" id="L54">  public SlingResourceAdapterImpl() {</span>
+<span class="fc" id="L55">    resourceSelector = new ResourceSelector(null, null);</span>
+<span class="fc" id="L56">    resourceFilter = new ResourceFilter(null, null);</span>
+<span class="fc" id="L57">  }</span>
+
+<span class="fc" id="L59">  private SlingResourceAdapterImpl(SlingResourceAdapterImpl adapter, Resource resource, ResourceSelector selector, ResourceFilter filter) {</span>
+<span class="fc" id="L60">    slingRhyme = adapter.slingRhyme;</span>
+<span class="fc" id="L61">    urlHandler = adapter.urlHandler;</span>
+<span class="fc" id="L62">    registry = adapter.registry;</span>
+<span class="fc" id="L63">    currentResource = resource;</span>
+<span class="fc" id="L64">    resourceSelector = new ResourceSelector(selector.description, selector.resources);</span>
+<span class="fc" id="L65">    resourceFilter = new ResourceFilter(filter.description, filter.predicate);</span>
+<span class="fc" id="L66">  }</span>
+
+<span class="fc" id="L68">  private SlingResourceAdapterImpl(SlingResourceAdapterImpl adapter, Resource resource) {</span>
+<span class="fc" id="L69">    slingRhyme = adapter.slingRhyme;</span>
+<span class="fc" id="L70">    urlHandler = adapter.urlHandler;</span>
+<span class="fc" id="L71">    registry = adapter.registry;</span>
+<span class="fc" id="L72">    currentResource = resource;</span>
+<span class="fc" id="L73">    resourceSelector = new ResourceSelector(null, null);</span>
+<span class="fc" id="L74">    resourceFilter = new ResourceFilter(null, null);</span>
+<span class="fc" id="L75">  }</span>
+
+  private SlingResourceAdapter fromResource(Resource resource) {
+
+<span class="fc bfc" id="L79" title="All 2 branches covered.">    if (resourceSelector.resources != null) {</span>
+<span class="fc" id="L80">      throw new HalApiDeveloperException(&quot;The SlingResourceAdapterImpl#fromXyz methods must be called *before* any of the selectXyz methods are called&quot;);</span>
+    }
+
+<span class="fc" id="L83">    return new SlingResourceAdapterImpl(this, resource);</span>
+  }
+
+  @Override
+  public SlingResourceAdapter fromResourceAt(String path) {
+
+<span class="fc" id="L89">    Resource resource = currentResource.getResourceResolver().getResource(path);</span>
+
+<span class="fc bfc" id="L91" title="All 2 branches covered.">    if (resource == null) {</span>
+<span class="fc" id="L92">      throw new HalApiDeveloperException(&quot;There does not exist a resource at &quot; + path);</span>
+    }
+
+<span class="fc" id="L95">    return fromResource(resource);</span>
+  }
+
+  @Override
+  public SlingResourceAdapter fromCurrentPage() {
+
+<span class="fc" id="L101">    return fromResource(ResourceStreams.getPageResource(currentResource));</span>
+  }
+
+  @Override
+  public SlingResourceAdapter fromParentPage() {
+
+<span class="fc" id="L107">    return fromResource(ResourceStreams.getParentPageResource(currentResource));</span>
+  }
+
+  @Override
+  public SlingResourceAdapter fromGrandParentPage() {
+
+<span class="fc" id="L113">    return fromResource(ResourceStreams.getGrandParentPageResource(currentResource));</span>
+  }
+
+  @Override
+  public SlingResourceAdapter select(Stream&lt;Resource&gt; resources) {
+
+<span class="fc" id="L119">    return resourceSelector.add(resources, &quot;custom stream of resourcs&quot;);</span>
+  }
+
+  @Override
+  public SlingResourceAdapter selectCurrentResource() {
+
+<span class="fc" id="L125">    return resourceSelector.add(currentResource, Stream::of, &quot;current resource at {}&quot;);</span>
+  }
+
+  @Override
+  public SlingResourceAdapter selectContentResource() {
+<span class="fc" id="L130">    return resourceSelector.add(currentResource, ResourceStreams::getContentResource, &quot;content resource of {}&quot;);</span>
+  }
+
+  @Override
+  public SlingResourceAdapter selectParentResource() {
+
+<span class="fc" id="L136">    return resourceSelector.add(currentResource, ResourceStreams::getParent, &quot;parent of {}&quot;);</span>
+  }
+
+  @Override
+  public SlingResourceAdapter selectChildResources() {
+
+<span class="fc" id="L142">    return resourceSelector.add(currentResource, ResourceStreams::getChildren, &quot;children of {}&quot;);</span>
+  }
+
+  @Override
+  public SlingResourceAdapter selectContentOfCurrentPage() {
+
+<span class="fc" id="L148">    return resourceSelector.add(currentResource, ResourceStreams::getContentOfContainingPage, &quot;content of {}&quot;);</span>
+  }
+
+
+  @Override
+  public SlingResourceAdapter selectContentOfChildPages() {
+
+<span class="fc" id="L155">    return resourceSelector.add(currentResource, ResourceStreams::getContentOfChildPages, &quot;content of child pages of {}&quot;);</span>
+  }
+
+  @Override
+  public SlingResourceAdapter selectContentOfChildPage(String name) {
+
+<span class="fc" id="L161">    return resourceSelector.add(currentResource, res -&gt; ResourceStreams.getContentOfNamedChildPage(res, name),</span>
+        &quot;content of child page named '&quot; + name + &quot;' of {}&quot;);
+  }
+
+  @Override
+  public SlingResourceAdapter selectContentOfGrandChildPages() {
+
+<span class="fc" id="L168">    return resourceSelector.add(currentResource, ResourceStreams::getContentOfGrandChildPages, &quot;content of grand child pages of {}&quot;);</span>
+  }
+
+  @Override
+  public SlingResourceAdapter selectChildResource(String name) {
+
+<span class="fc" id="L174">    return resourceSelector.add(currentResource, res -&gt; ResourceStreams.getNamedChild(res, name), &quot;child named '&quot; + name + &quot;' of {}&quot;);</span>
+  }
+
+  @Override
+  public SlingResourceAdapter selectResourceAt(String path) {
+
+<span class="fc bfc" id="L180" title="All 2 branches covered.">    if (path == null) {</span>
+<span class="fc" id="L181">      currentResource = null;</span>
+<span class="fc" id="L182">      return this;</span>
+    }
+
+<span class="fc" id="L185">    Resource resource = currentResource.getResourceResolver().getResource(path);</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">    if (resource == null) {</span>
+<span class="fc" id="L187">      return resourceSelector.add(Stream.empty(), &quot;non-existent resource at &quot; + path);</span>
+    }
+
+<span class="fc" id="L190">    return resourceSelector.add(Stream.of(resource), &quot;different resource at &quot; + resource.getPath());</span>
+  }
+
+
+  @Override
+  public SlingResourceAdapter filter(Predicate&lt;Resource&gt; predicate) {
+
+<span class="fc" id="L197">    return resourceFilter.add(predicate, &quot;custom predicate&quot;);</span>
+  }
+
+  @Override
+  public SlingResourceAdapter filterAdaptableTo(Class&lt;?&gt; adapterClazz) {
+
+<span class="fc bfc" id="L203" title="All 2 branches covered.">    return resourceFilter.add((res) -&gt; res.adaptTo(adapterClazz) != null,</span>
+<span class="fc" id="L204">        &quot;if resource can be adapted to &quot; + adapterClazz.getSimpleName());</span>
+  }
+
+  @Override
+  public SlingResourceAdapter filterWithName(String resourceName) {
+
+<span class="fc" id="L210">    return resourceFilter.add((res) -&gt; res.getName().equals(resourceName),</span>
+        &quot;if resource name is &quot; + resourceName);
+  }
+
+  @Override
+  public &lt;ModelType&gt; TypedResourceAdapter&lt;ModelType&gt; adaptTo(Class&lt;ModelType&gt; clazz) {
+
+<span class="fc bfc" id="L217" title="All 2 branches covered.">    if (currentResource == null) {</span>
+<span class="fc" id="L218">      return new TemplateResourceAdapter&lt;ModelType&gt;(clazz);</span>
+    }
+
+<span class="fc" id="L221">    return new TypedResourceAdapterImpl&lt;ModelType&gt;(clazz);</span>
+  }
+
+  private final class TypedResourceAdapterImpl&lt;ModelType&gt; implements TypedResourceAdapter&lt;ModelType&gt; {
+
+    private final Class&lt;ModelType&gt; clazz;
+
+    private final CompositeLinkDecorator&lt;ModelType&gt; linkDecorator;
+
+<span class="fc" id="L230">    private TypedResourceAdapterImpl(Class&lt;ModelType&gt; clazz) {</span>
+<span class="fc" id="L231">      this.clazz = clazz;</span>
+<span class="fc" id="L232">      this.linkDecorator = new CompositeLinkDecorator&lt;ModelType&gt;();</span>
+<span class="fc" id="L233">    }</span>
+
+<span class="fc" id="L235">    private TypedResourceAdapterImpl(Class&lt;ModelType&gt; clazz, CompositeLinkDecorator&lt;ModelType&gt; decorator) {</span>
+<span class="fc" id="L236">      this.clazz = clazz;</span>
+<span class="fc" id="L237">      this.linkDecorator = decorator;</span>
+<span class="fc" id="L238">    }</span>
+
+    private TypedResourceAdapterImpl&lt;ModelType&gt; withLinkDecorator(LinkDecorator&lt;ModelType&gt; decorator) {
+<span class="fc" id="L241">      return new TypedResourceAdapterImpl&lt;ModelType&gt;(clazz, linkDecorator.withAdditionalDecorator(decorator));</span>
+    }
+
+    @Override
+    public TypedResourceAdapter&lt;ModelType&gt; withLinkTitle(String title) {
+
+<span class="fc" id="L247">      return withLinkDecorator(new LinkDecorator&lt;ModelType&gt;() {</span>
+
+        @Override
+        public String getLinkTitle(Resource resource, ModelType model) {
+<span class="fc" id="L251">          return title;</span>
+        }
+
+      });
+    }
+
+    @Override
+    public TypedResourceAdapter&lt;ModelType&gt; withLinkName(String name) {
+
+<span class="fc" id="L260">      return withLinkDecorator(new LinkDecorator&lt;ModelType&gt;() {</span>
+
+        @Override
+        public String getLinkName(Resource resource, ModelType model) {
+<span class="fc" id="L264">          return name;</span>
+        }
+
+      });
+    }
+
+    @Override
+    public TypedResourceAdapter&lt;ModelType&gt; withQueryParameters(Map&lt;String, Object&gt; parameters) {
+
+<span class="fc" id="L273">      return withLinkDecorator(new LinkDecorator&lt;ModelType&gt;() {</span>
+
+        @Override
+        public Map&lt;String, Object&gt; getQueryParameters() {
+<span class="fc" id="L277">          return parameters;</span>
+        }
+      });
+    }
+
+    @Override
+    public TypedResourceAdapter&lt;ModelType&gt; withQueryParameterTemplate(String... names) {
+<span class="fc" id="L284">      throw new HalApiDeveloperException(&quot;#withQueryParameterTemplatecan only be called if you selected a null resource path to create a template&quot;);</span>
+    }
+
+    @Override
+    public ModelType getInstance() {
+
+<span class="fc" id="L290">      return getOptional()</span>
+<span class="fc" id="L291">          .orElseThrow(() -&gt; new HalApiDeveloperException(&quot;No resources were found after selecting &quot; + resourceSelector.description));</span>
+    }
+
+    @Override
+    public Optional&lt;ModelType&gt; getOptional() {
+
+<span class="fc" id="L297">      return getStream().findFirst();</span>
+    }
+
+    @Override
+    public Stream&lt;ModelType&gt; getStream() {
+
+<span class="fc" id="L303">      Stream&lt;Resource&gt; resources = resourceSelector.resources;</span>
+
+<span class="fc bfc" id="L305" title="All 2 branches covered.">      if (resources == null) {</span>
+<span class="fc" id="L306">        throw new HalApiDeveloperException(&quot;No resources have been selected with this adapter&quot;);</span>
+      }
+
+<span class="fc bfc" id="L309" title="All 2 branches covered.">      if (resourceFilter.predicate != null) {</span>
+<span class="fc" id="L310">        resources = resources.filter(resourceFilter.predicate);</span>
+      }
+
+<span class="fc" id="L313">      return resources.map(this::adaptToModelTypeAnDecorateLinks);</span>
+    }
+
+    private ModelType adaptToModelTypeAnDecorateLinks(Resource res) {
+
+<span class="fc" id="L318">      ModelType model = slingRhyme.adaptResource(res, this.clazz);</span>
+
+<span class="fc" id="L320">      decorateLinks(res, model);</span>
+
+<span class="fc" id="L322">      return model;</span>
+    }
+
+    private void decorateLinks(Resource resource, ModelType model) {
+
+<span class="fc bfc" id="L327" title="All 2 branches covered.">      if (!(model instanceof SlingLinkableResource)) {</span>
+<span class="fc" id="L328">        throw new HalApiDeveloperException(</span>
+<span class="fc" id="L329">            &quot;Your model class &quot; + model.getClass().getSimpleName() + &quot; does not implement &quot; + SlingLinkableResource.class.getName()</span>
+                + &quot; (which is required if you want to override link names and titles via SlingResourceAdapter)&quot;);
+      }
+
+<span class="fc" id="L333">      SlingLinkableResource linkable = (SlingLinkableResource)model;</span>
+
+<span class="fc" id="L335">      String title = linkDecorator.getLinkTitle(resource, model);</span>
+<span class="fc bfc" id="L336" title="All 2 branches covered.">      if (title != null) {</span>
+<span class="fc" id="L337">        linkable.setLinkTitle(title);</span>
+      }
+
+<span class="fc" id="L340">      String name = linkDecorator.getLinkName(resource, model);</span>
+<span class="fc bfc" id="L341" title="All 2 branches covered.">      if (name != null) {</span>
+<span class="fc" id="L342">        linkable.setLinkName(name);</span>
+      }
+
+<span class="fc" id="L345">      Map&lt;String, Object&gt; parameters = linkDecorator.getQueryParameters();</span>
+<span class="fc bfc" id="L346" title="All 2 branches covered.">      if (parameters != null) {</span>
+<span class="fc" id="L347">        linkable.setQueryParameters(parameters);</span>
+      }
+<span class="fc" id="L349">    }</span>
+
+
+  }
+
+  private interface LinkDecorator&lt;ModelType&gt; {
+
+    default String getLinkTitle(Resource resource, ModelType model) {
+<span class="fc" id="L357">      return null;</span>
+    }
+
+    default String getLinkName(Resource resource, ModelType model) {
+<span class="fc" id="L361">      return null;</span>
+    }
+
+    default Map&lt;String, Object&gt; getQueryParameters() {
+<span class="fc" id="L365">      return null;</span>
+    }
+  }
+
+<span class="fc" id="L369">  private class CompositeLinkDecorator&lt;ModelType&gt; implements LinkDecorator&lt;ModelType&gt; {</span>
+
+<span class="fc" id="L371">    private final List&lt;LinkDecorator&lt;ModelType&gt;&gt; delegates = new ArrayList&lt;&gt;();</span>
+
+    CompositeLinkDecorator&lt;ModelType&gt; withAdditionalDecorator(LinkDecorator&lt;ModelType&gt; decorator) {
+<span class="fc" id="L374">      CompositeLinkDecorator&lt;ModelType&gt; newInstance = new CompositeLinkDecorator&lt;&gt;();</span>
+
+<span class="fc" id="L376">      newInstance.delegates.addAll(this.delegates);</span>
+<span class="fc" id="L377">      newInstance.delegates.add(decorator);</span>
+<span class="fc" id="L378">      return newInstance;</span>
+    }
+
+    private &lt;T&gt; T findFirstNonNull(Function&lt;LinkDecorator&lt;ModelType&gt;, T&gt; func) {
+
+<span class="fc" id="L383">      return delegates.stream()</span>
+<span class="fc" id="L384">          .map(func)</span>
+<span class="fc" id="L385">          .filter(Objects::nonNull)</span>
+<span class="fc" id="L386">          .findFirst()</span>
+<span class="fc" id="L387">          .orElse(null);</span>
+    }
+
+    @Override
+    public String getLinkTitle(Resource resource, ModelType model) {
+
+<span class="fc" id="L393">      return findFirstNonNull(dec -&gt; dec.getLinkTitle(resource, model));</span>
+    }
+
+    @Override
+    public String getLinkName(Resource resource, ModelType model) {
+
+<span class="fc" id="L399">      return findFirstNonNull(dec -&gt; dec.getLinkName(resource, model));</span>
+    }
+
+    @Override
+    public Map&lt;String, Object&gt; getQueryParameters() {
+
+<span class="fc" id="L405">      return findFirstNonNull(dec -&gt; dec.getQueryParameters());</span>
+    }
+
+  }
+
+  private final class ResourceFilter {
+
+    private final String description;
+    private final Predicate&lt;Resource&gt; predicate;
+
+<span class="fc" id="L415">    private ResourceFilter(String description, Predicate&lt;Resource&gt; predicate) {</span>
+<span class="fc" id="L416">      this.description = description;</span>
+<span class="fc" id="L417">      this.predicate = predicate;</span>
+<span class="fc" id="L418">    }</span>
+
+    private SlingResourceAdapter add(Predicate&lt;Resource&gt; newPredicate, String newDescription) {
+
+      ResourceFilter newFilter;
+<span class="fc bfc" id="L423" title="All 2 branches covered.">      if (predicate != null) {</span>
+
+<span class="fc" id="L425">        String mergedDescription = this.description + &quot; and &quot; + newDescription;</span>
+<span class="fc" id="L426">        Predicate&lt;Resource&gt; mergedPredicate = predicate.and(newPredicate);</span>
+
+<span class="fc" id="L428">        newFilter = new ResourceFilter(mergedDescription, mergedPredicate);</span>
+<span class="fc" id="L429">      }</span>
+      else {
+<span class="fc" id="L431">        newFilter = new ResourceFilter(newDescription, newPredicate);</span>
+      }
+
+<span class="fc" id="L434">      SlingResourceAdapter newInstance = new SlingResourceAdapterImpl(SlingResourceAdapterImpl.this, currentResource, resourceSelector, newFilter);</span>
+
+<span class="fc" id="L436">      return newInstance;</span>
+    }
+
+  }
+
+  private final class ResourceSelector {
+
+    private final String description;
+    private final Stream&lt;Resource&gt; resources;
+
+<span class="fc" id="L446">    private ResourceSelector(String description, Stream&lt;Resource&gt; resources) {</span>
+<span class="fc" id="L447">      this.description = description;</span>
+<span class="fc" id="L448">      this.resources = resources;</span>
+<span class="fc" id="L449">    }</span>
+
+    private SlingResourceAdapter add(Resource contextResource, Function&lt;Resource, Stream&lt;Resource&gt;&gt; streamFunc, String newDescription) {
+
+<span class="fc" id="L453">      Stream&lt;Resource&gt; stream = streamFunc.apply(contextResource);</span>
+
+<span class="fc" id="L455">      return add(stream, newDescription.replace(&quot;{}&quot;, contextResource.getPath()));</span>
+    }
+
+    private SlingResourceAdapter add(@NotNull Stream&lt;Resource&gt; newResources, String newDescription) {
+
+<span class="fc" id="L460">      Preconditions.checkNotNull(newResources, &quot;the stream of resources must not be null&quot;);</span>
+
+      ResourceSelector newSelector;
+<span class="fc bfc" id="L463" title="All 2 branches covered.">      if (resources != null) {</span>
+
+<span class="fc" id="L465">        String mergedDescription = this.description + &quot; and &quot; + newDescription;</span>
+<span class="fc" id="L466">        Stream&lt;Resource&gt; mergedStream = Stream.concat(this.resources, newResources);</span>
+
+<span class="fc" id="L468">        newSelector = new ResourceSelector(mergedDescription, mergedStream);</span>
+<span class="fc" id="L469">      }</span>
+      else {
+<span class="fc" id="L471">        newSelector = new ResourceSelector(newDescription, newResources);</span>
+      }
+
+
+<span class="fc" id="L475">      SlingResourceAdapter newInstance = new SlingResourceAdapterImpl(SlingResourceAdapterImpl.this, currentResource, newSelector, resourceFilter);</span>
+
+<span class="fc" id="L477">      return newInstance;</span>
+    }
+  }
+
+  private final class TemplateResourceAdapter&lt;T&gt; implements TypedResourceAdapter&lt;T&gt; {
+
+    private static final String PATH_PLACEHOLDER = &quot;/letsassumethisisunlikelytoexist&quot;;
+
+    private final Class&lt;T&gt; halApiInterface;
+
+    private String linkTitle;
+    private String linkName;
+    private String[] queryParameters;
+
+<span class="fc" id="L491">    private TemplateResourceAdapter(Class&lt;T&gt; halApiInterface) {</span>
+<span class="fc" id="L492">      this.halApiInterface = halApiInterface;</span>
+<span class="fc" id="L493">    }</span>
+
+    @Override
+    public TypedResourceAdapter&lt;T&gt; withLinkTitle(String title) {
+<span class="fc" id="L497">      this.linkTitle = title;</span>
+<span class="fc" id="L498">      return this;</span>
+    }
+
+    @Override
+    public TypedResourceAdapter&lt;T&gt; withLinkName(String name) {
+<span class="fc" id="L503">      this.linkName = name;</span>
+<span class="fc" id="L504">      return this;</span>
+    }
+
+    @Override
+    public TypedResourceAdapter&lt;T&gt; withQueryParameterTemplate(String... names) {
+<span class="fc" id="L509">      this.queryParameters = names;</span>
+<span class="fc" id="L510">      return this;</span>
+    }
+
+    @Override
+    public TypedResourceAdapter&lt;T&gt; withQueryParameters(Map&lt;String, Object&gt; parameters) {
+<span class="fc" id="L515">      throw new HalApiDeveloperException(&quot;#withQueryParameters cannot be called if you selected a null resource path to build a template&quot;);</span>
+    }
+
+
+    @Override
+    public T getInstance() {
+<span class="fc" id="L521">      return createResource();</span>
+    }
+
+    @Override
+    public Optional&lt;T&gt; getOptional() {
+<span class="fc" id="L526">      return Optional.of(createResource());</span>
+    }
+
+    @Override
+    public Stream&lt;T&gt; getStream() {
+<span class="fc" id="L531">      return Stream.of(createResource());</span>
+    }
+
+    private &lt;T extends LinkableResource&gt; T createResource() {
+
+<span class="fc" id="L536">      return (T)Proxy.newProxyInstance(halApiInterface.getClassLoader(), new Class[] { halApiInterface }, new InvocationHandler() {</span>
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+<span class="fc bfc" id="L541" title="All 2 branches covered.">          if (method.getName().equals(&quot;createLink&quot;)) {</span>
+<span class="fc" id="L542">            return createLink();</span>
+          }
+
+<span class="fc" id="L545">          throw new HalApiDeveloperException(&quot;Unsupported call to &quot; + method.getName() + &quot; method on &quot;</span>
+<span class="fc" id="L546">              + halApiInterface.getName() + &quot; proxy instance. &quot;</span>
+              + &quot;Any instances created with SlingLinkBuilder#buildTemplateTo can only be used to create link templates for these resources&quot;);
+        }
+      });
+    }
+
+    private Link createLink() {
+
+<span class="fc" id="L554">      String baseTemplate = getResourceUrl().replace(PATH_PLACEHOLDER, &quot;{+path}&quot;);</span>
+
+<span class="fc" id="L556">      UriTemplateBuilder builder = UriTemplate.buildFromTemplate(baseTemplate);</span>
+
+<span class="fc bfc" id="L558" title="All 2 branches covered.">      if (queryParameters != null) {</span>
+<span class="fc" id="L559">        builder.query(queryParameters);</span>
+      }
+<span class="fc" id="L561">      String uriTemplate = builder.build()</span>
+<span class="fc" id="L562">          .getTemplate();</span>
+
+<span class="fc" id="L564">      return new Link(uriTemplate)</span>
+<span class="fc" id="L565">          .setTitle(linkTitle)</span>
+<span class="fc" id="L566">          .setName(linkName);</span>
+    }
+
+    private String getResourceUrl() {
+
+<span class="fc" id="L571">      String selector = registry.getSelectorForHalApiInterface(halApiInterface).orElse(null);</span>
+
+<span class="fc" id="L573">      return urlHandler.get(PATH_PLACEHOLDER)</span>
+<span class="fc" id="L574">          .selectors(selector)</span>
+<span class="fc" id="L575">          .extension(HalApiServlet.EXTENSION)</span>
+<span class="fc" id="L576">          .buildExternalLinkUrl();</span>
+    }
+
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

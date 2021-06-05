@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalApiServlet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - AEM Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.integration.impl</a> &gt; <span class="el_source">HalApiServlet.java</span></div><h1>HalApiServlet.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.aem.integration.impl;
+
+import static org.apache.sling.api.servlets.ServletResolverConstants.DEFAULT_RESOURCE_TYPE;
+import static org.apache.sling.api.servlets.ServletResolverConstants.SLING_SERVLET_EXTENSIONS;
+import static org.apache.sling.api.servlets.ServletResolverConstants.SLING_SERVLET_METHODS;
+import static org.apache.sling.api.servlets.ServletResolverConstants.SLING_SERVLET_RESOURCE_TYPES;
+import static org.osgi.framework.Constants.SERVICE_DESCRIPTION;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.servlets.HttpConstants;
+import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.jetbrains.annotations.NotNull;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Charsets;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiServerException;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+
+
+@Component(service = Servlet.class, property = {
+    SERVICE_DESCRIPTION + &quot;=Servlet to render HAL responses using the Rhyme framework&quot;,
+    SLING_SERVLET_METHODS + &quot;=&quot; + HttpConstants.METHOD_GET,
+    SLING_SERVLET_RESOURCE_TYPES + &quot;=&quot; + DEFAULT_RESOURCE_TYPE,
+    SLING_SERVLET_EXTENSIONS + &quot;=&quot; + HalApiServlet.EXTENSION })
+<span class="fc" id="L42">public class HalApiServlet extends SlingSafeMethodsServlet {</span>
+
+  private static final long serialVersionUID = -7540592969300324670L;
+
+<span class="fc" id="L46">  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();</span>
+
+  static final String EXTENSION = &quot;rhyme&quot;;
+
+  static final String QUERY_PARAM_EMBED_METADATA = &quot;embedMetadata&quot;;
+
+  @Reference
+  private ResourceSelectorRegistry registry;
+
+  @Override
+  protected void doGet(@NotNull SlingHttpServletRequest request, @NotNull SlingHttpServletResponse response)
+      throws ServletException, IOException {
+
+<span class="fc" id="L59">    SlingRhymeImpl rhyme = request.adaptTo(SlingRhymeImpl.class);</span>
+
+    try {
+<span class="fc" id="L62">      ensureThatRequestIsValid(request);</span>
+
+<span class="fc" id="L64">      LinkableResource requestedResource = adaptRequestedResourceToSlingModel(request, rhyme);</span>
+
+<span class="fc" id="L66">      HalResponse halResponse = rhyme.renderResource(requestedResource);</span>
+
+<span class="fc" id="L68">      writeHalResponse(request, halResponse, response);</span>
+    }
+<span class="fc" id="L70">    catch (RuntimeException ex) {</span>
+
+<span class="fc" id="L72">      HalResponse errorResponse = rhyme.renderVndErrorResponse(ex);</span>
+
+<span class="fc" id="L74">      writeHalResponse(request, errorResponse, response);</span>
+<span class="fc" id="L75">    }</span>
+<span class="fc" id="L76">  }</span>
+
+  private void ensureThatRequestIsValid(SlingHttpServletRequest request) {
+
+<span class="fc" id="L80">    Resource resource = request.getResource();</span>
+
+<span class="fc bfc" id="L82" title="All 2 branches covered.">    if (Resource.RESOURCE_TYPE_NON_EXISTING.equals(resource.getResourceType())) {</span>
+<span class="fc" id="L83">      throw new HalApiServerException(HttpStatus.SC_NOT_FOUND,</span>
+<span class="fc" id="L84">          &quot;There does not exist any resource at &quot; + resource.getPath());</span>
+    }
+<span class="fc" id="L86">  }</span>
+
+  private LinkableResource adaptRequestedResourceToSlingModel(SlingHttpServletRequest request, SlingRhymeImpl rhyme) {
+
+<span class="fc" id="L90">    List&lt;String&gt; selectors = Arrays.asList(request.getRequestPathInfo().getSelectors());</span>
+
+<span class="fc" id="L92">    Class&lt;? extends LinkableResource&gt; modelClass = registry.getModelClassForSelectors(selectors);</span>
+
+<span class="fc" id="L94">    return rhyme.adaptResource(request.getResource(), modelClass);</span>
+  }
+
+  private void writeHalResponse(SlingHttpServletRequest request, HalResponse halResponse, SlingHttpServletResponse servletResponse)
+      throws IOException, JsonGenerationException, JsonMappingException {
+
+<span class="fc" id="L100">    servletResponse.setContentType(halResponse.getContentType());</span>
+<span class="fc" id="L101">    servletResponse.setCharacterEncoding(Charsets.UTF_8.name());</span>
+<span class="fc" id="L102">    servletResponse.setStatus(halResponse.getStatus());</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">    if (halResponse.getMaxAge() != null) {</span>
+<span class="fc" id="L104">      servletResponse.setHeader(&quot;cache-control&quot;, &quot;max-age=&quot; + halResponse.getMaxAge());</span>
+    }
+
+<span class="fc" id="L107">    HalResource responseBody = halResponse.getBody();</span>
+
+<span class="fc bfc" id="L109" title="All 2 branches covered.">    if (shouldMetadataBeRemoved(request)) {</span>
+<span class="fc" id="L110">      responseBody.removeEmbedded(&quot;caravan:metadata&quot;);</span>
+    }
+
+<span class="fc" id="L113">    OBJECT_MAPPER.writeValue(servletResponse.getWriter(), responseBody.getModel());</span>
+<span class="fc" id="L114">  }</span>
+
+  private boolean shouldMetadataBeRemoved(SlingHttpServletRequest request) {
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    return !request.getParameterMap().containsKey(QUERY_PARAM_EMBED_METADATA);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

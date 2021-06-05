@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ResourceSelectorRegistry.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - AEM Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.integration.impl</a> &gt; <span class="el_source">ResourceSelectorRegistry.java</span></div><h1>ResourceSelectorRegistry.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.aem.integration.impl;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
+
+import io.wcm.caravan.rhyme.aem.integration.ResourceSelectorProvider;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+
+@Component(service = ResourceSelectorRegistry.class)
+<span class="fc" id="L37">public class ResourceSelectorRegistry {</span>
+
+  @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+      policy = ReferencePolicy.STATIC,
+      policyOption = ReferencePolicyOption.GREEDY)
+  private List&lt;ResourceSelectorProvider&gt; providers;
+
+  public Class&lt;? extends LinkableResource&gt; getModelClassForSelectors(Collection&lt;String&gt; selectors) {
+
+<span class="fc" id="L46">    Class&lt;? extends LinkableResource&gt; customModelClass = providers.stream()</span>
+<span class="fc" id="L47">        .flatMap(provider -&gt; provider.getModelClassesWithSelectors().entrySet().stream())</span>
+<span class="fc" id="L48">        .filter(entry -&gt; selectors.contains(entry.getValue()))</span>
+<span class="fc" id="L49">        .map(entry -&gt; entry.getKey())</span>
+<span class="fc" id="L50">        .findFirst()</span>
+<span class="fc" id="L51">        .orElse(null);</span>
+
+<span class="fc bfc" id="L53" title="All 2 branches covered.">    if (customModelClass != null) {</span>
+<span class="fc" id="L54">      return customModelClass;</span>
+    }
+
+<span class="fc" id="L57">    return LinkableResource.class;</span>
+  }
+
+  public Optional&lt;String&gt; getSelectorForModelClass(Class&lt;?&gt; clazz) {
+
+<span class="fc" id="L62">    return providers.stream()</span>
+<span class="fc" id="L63">        .map(provider -&gt; provider.getModelClassesWithSelectors().get(clazz))</span>
+<span class="fc" id="L64">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L65">        .findFirst();</span>
+  }
+
+  public Optional&lt;String&gt; getSelectorForHalApiInterface(Class&lt;?&gt; halApiInterface) {
+
+<span class="fc" id="L70">    Optional&lt;Class&lt;? extends LinkableResource&gt;&gt; modelClass = providers.stream()</span>
+<span class="fc" id="L71">        .flatMap(provider -&gt; provider.getModelClassesWithSelectors().keySet().stream())</span>
+<span class="fc" id="L72">        .filter(clazz -&gt; halApiInterface.isAssignableFrom(clazz))</span>
+<span class="fc" id="L73">        .findFirst();</span>
+
+<span class="fc" id="L75">    return modelClass</span>
+<span class="fc" id="L76">        .flatMap(this::getSelectorForModelClass);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

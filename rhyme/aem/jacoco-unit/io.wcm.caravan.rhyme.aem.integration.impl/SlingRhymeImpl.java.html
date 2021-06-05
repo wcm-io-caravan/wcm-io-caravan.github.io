@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SlingRhymeImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - AEM Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.integration.impl</a> &gt; <span class="el_source">SlingRhymeImpl.java</span></div><h1>SlingRhymeImpl.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.aem.integration.impl;
+
+import java.time.Duration;
+import java.util.Arrays;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.adapter.SlingAdaptable;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.Self;
+import org.jetbrains.annotations.NotNull;
+
+import io.wcm.caravan.rhyme.aem.integration.SlingRhyme;
+import io.wcm.caravan.rhyme.api.Rhyme;
+import io.wcm.caravan.rhyme.api.RhymeBuilder;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.handler.url.UrlHandler;
+
+@Model(adaptables = SlingHttpServletRequest.class, adapters = { SlingRhyme.class, SlingRhymeImpl.class })
+public class SlingRhymeImpl extends SlingAdaptable implements SlingRhyme {
+
+  private final SlingHttpServletRequest request;
+  private final Resource currentResource;
+  private final Rhyme rhyme;
+
+  @Inject
+<span class="fc" id="L32">  public SlingRhymeImpl(@Self SlingHttpServletRequest request, HalResourceLoaderManager picker) {</span>
+
+<span class="fc" id="L34">    this.request = request;</span>
+
+<span class="fc" id="L36">    this.currentResource = request.getResource();</span>
+
+<span class="fc" id="L38">    this.rhyme = RhymeBuilder.withResourceLoader(picker.getResourceLoader())</span>
+<span class="fc" id="L39">        .buildForRequestTo(request.getRequestURL().toString());</span>
+<span class="fc" id="L40">  }</span>
+
+<span class="fc" id="L42">  SlingRhymeImpl(SlingRhymeImpl slingRhyme, Resource currentResource) {</span>
+
+<span class="fc" id="L44">    this.request = slingRhyme.request;</span>
+<span class="fc" id="L45">    this.currentResource = currentResource;</span>
+<span class="fc" id="L46">    this.rhyme = slingRhyme.rhyme;</span>
+<span class="fc" id="L47">  }</span>
+
+  @Override
+  public &lt;@NotNull T&gt; T adaptResource(Resource resource, @NotNull Class&lt;T&gt; modelClass) {
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">    if (resource == null) {</span>
+<span class="fc" id="L53">      throw new HalApiDeveloperException(&quot;Cannot adapt null resource to &quot; + modelClass.getSimpleName());</span>
+    }
+
+<span class="fc" id="L56">    verifyModelAnnotationIfPresent(modelClass);</span>
+
+    try {
+<span class="fc" id="L59">      T slingModel = resource.adaptTo(modelClass);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">      if (slingModel == null) {</span>
+<span class="fc" id="L61">        throw new HalApiDeveloperException(&quot;Failed to adapt &quot; + resource + &quot; to &quot; + modelClass.getSimpleName());</span>
+      }
+
+<span class="fc" id="L64">      RhymeObjects.injectIntoSlingModel(slingModel, () -&gt; new SlingRhymeImpl(this, resource));</span>
+
+<span class="fc" id="L66">      return slingModel;</span>
+    }
+<span class="fc" id="L68">    catch (RuntimeException ex) {</span>
+<span class="fc" id="L69">      throw new HalApiDeveloperException(&quot;Failed to adapt &quot; + resource + &quot; to &quot; + modelClass.getSimpleName(), ex);</span>
+    }
+  }
+
+  private void verifyModelAnnotationIfPresent(Class&lt;?&gt; modelClass) {
+
+<span class="fc" id="L75">    Model modelAnnotation = modelClass.getAnnotation(Model.class);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">    if (modelAnnotation != null) {</span>
+
+<span class="fc bfc" id="L78" title="All 2 branches covered.">      if (!Arrays.asList(modelAnnotation.adaptables()).contains(Resource.class)) {</span>
+<span class="fc" id="L79">        throw new HalApiDeveloperException(modelClass + &quot; is not declared to be adaptable from &quot; + Resource.class);</span>
+      }
+    }
+<span class="fc" id="L82">  }</span>
+
+  @Override
+  public &lt;AdapterType&gt; AdapterType adaptTo(Class&lt;AdapterType&gt; type) {
+
+<span class="fc bfc" id="L87" title="All 2 branches covered.">    if (UrlHandler.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L88">      return (AdapterType)request.adaptTo(UrlHandler.class);</span>
+    }
+<span class="fc bfc" id="L90" title="All 2 branches covered.">    if (Resource.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L91">      return (AdapterType)currentResource;</span>
+    }
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    if (HttpServletRequest.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L94">      return (AdapterType)request;</span>
+    }
+
+<span class="fc" id="L97">    return super.adaptTo(type);</span>
+  }
+
+  @Override
+  public Resource getRequestedResource() {
+
+<span class="fc" id="L103">    return request.getResource();</span>
+  }
+
+  @Override
+  public Resource getCurrentResource() {
+
+<span class="fc" id="L109">    return currentResource;</span>
+  }
+
+  Rhyme getCaravanRhyme() {
+<span class="fc" id="L113">    return rhyme;</span>
+  }
+
+  @Override
+  public &lt;T&gt; T getRemoteResource(String uri, Class&lt;T&gt; halApiInterface) {
+<span class="fc" id="L118">    return rhyme.getRemoteResource(uri, halApiInterface);</span>
+  }
+
+  @Override
+  public void setResponseMaxAge(Duration duration) {
+<span class="fc" id="L123">    rhyme.setResponseMaxAge(duration);</span>
+<span class="fc" id="L124">  }</span>
+
+  HalResponse renderResource(LinkableResource resourceImpl) {
+<span class="fc" id="L127">    return rhyme.renderResponse(resourceImpl).blockingGet();</span>
+  }
+
+  HalResponse renderVndErrorResponse(Throwable error) {
+<span class="fc" id="L131">    return rhyme.renderVndErrorResponse(error);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
