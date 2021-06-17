@@ -16,18 +16,18 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.impl,RhymeImpl,0,90,0,2,0,19,0,8,0,7
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl,RhymeImpl.new HalApiClient() {...},0,24,0,0,0,3,0,2,0,2
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl,RhymeBuilderImpl,0,105,0,6,0,23,0,10,0,7
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.client,HalApiClient,0,18,0,0,0,2,0,2,0,2
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.CacheOnlyCompletedTransformer,0,44,0,2,0,13,0,8,0,7
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers,0,16,0,0,0,3,0,3,0,3
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.AsyncFilterTransformer,0,31,0,0,0,11,0,4,0,4
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils.MethodRelationComparator,0,40,0,8,0,10,0,6,0,2
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,DefaultHalApiTypeSupport,0,256,0,46,0,58,0,51,0,28
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiTypeSupportAdapter.NoAdditionalReturnTypeSupport,0,9,0,0,0,4,0,4,0,4
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiTypeSupportAdapter.NoAdditionalAnnotationSupport,0,17,0,0,0,8,0,8,0,8
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,RxJavaReflectionUtils,0,234,0,12,0,43,0,11,0,5
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,CompositeHalApiTypeSupport,0,121,0,0,0,16,0,24,0,24
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiTypeSupportAdapter.NoAdditionalAnnotationSupport,0,17,0,0,0,8,0,8,0,8
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils,0,315,0,20,0,57,0,22,0,12
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,CompositeHalApiTypeSupport,0,121,0,0,0,16,0,24,0,24
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils.InterfaceCollector,0,39,0,2,0,11,0,4,0,3
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiTypeSupportAdapter,0,100,0,4,0,26,0,18,0,16
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.CacheOnlyCompletedTransformer,0,44,0,2,0,13,0,8,0,7
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers,0,16,0,0,0,3,0,3,0,3
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.AsyncFilterTransformer,0,31,0,0,0,11,0,4,0,4
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api,RhymeBuilder,0,10,0,0,0,2,0,2,0,2
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client,RelatedResourceHandler,0,362,0,20,0,70,0,32,0,22
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client,HalApiClientProxyFactory,0,233,0,6,0,41,0,13,0,10

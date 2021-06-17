@@ -4,11 +4,11 @@ Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceA
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.ResourceSelector,0,83,0,2,0,15,0,4,0,3
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.TemplateResourceAdapter.new InvocationHandler() {...},0,37,0,2,0,5,0,3,0,2
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.LinkDecorator,0,6,0,0,0,3,0,3,0,3
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingRhymeImpl,0,194,0,14,0,41,0,20,0,13
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.TemplateResourceAdapter,0,110,0,2,0,28,0,12,0,11
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingRhymeImpl,0,222,0,18,0,48,0,24,0,15
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,HalResourceLoaderManager.ImplementationPickingHalResourceLoader,0,40,0,2,0,5,0,3,0,2
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,RhymeObjects,0,137,0,12,0,28,0,12,0,6
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl,0,368,0,12,0,54,0,33,0,27
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl,0,402,0,14,0,61,0,36,0,29
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.ResourceFilter,0,65,0,2,0,12,0,3,0,2
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,HalResourceLoaderManager,0,13,0,0,0,4,0,3,0,3
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,ResourceSelectorRegistry,0,78,0,2,0,20,0,11,0,10
