@@ -114,9 +114,14 @@ public class CompositeHalApiTypeSupport implements HalApiTypeSupport {
 <span class="fc" id="L114">    return anyMatch(delegate -&gt; delegate.isProviderOfMultiplerValues(returnType));</span>
   }
 
-  List&lt;HalApiTypeSupport&gt; getDelegates() {
-<span class="fc" id="L118">    return delegates;</span>
+  @Override
+  public boolean isProviderOfOptionalValue(Class&lt;?&gt; returnType) {
+
+<span class="fc" id="L120">    return anyMatch(delegate -&gt; delegate.isProviderOfOptionalValue(returnType));</span>
   }
 
+  List&lt;HalApiTypeSupport&gt; getDelegates() {
+<span class="fc" id="L124">    return delegates;</span>
+  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

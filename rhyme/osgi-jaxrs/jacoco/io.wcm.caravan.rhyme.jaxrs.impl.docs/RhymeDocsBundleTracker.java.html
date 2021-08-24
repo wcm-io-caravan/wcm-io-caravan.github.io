@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RhymeDocsBundleTracker.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - OSGi/JAX-RS Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.jaxrs.impl.docs</a> &gt; <span class="el_source">RhymeDocsBundleTracker.java</span></div><h1>RhymeDocsBundleTracker.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.jaxrs.impl.docs;
+
+import java.net.URL;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.util.tracker.BundleTracker;
+import org.osgi.util.tracker.BundleTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
+
+/**
+ * Tracks all bundle activations to check if a bundle contains HTML documentation resources
+ * generated with the rhyme-docs-maven-plugin, so that the {@link RhymeDocsOsgiBundleSupport}
+ * knows in which bundles to look for these documentation files
+ */
+@Component(immediate = true)
+<span class="fc" id="L45">public class RhymeDocsBundleTracker implements BundleTrackerCustomizer&lt;String&gt; {</span>
+
+<span class="fc" id="L47">  private static final Logger log = LoggerFactory.getLogger(RhymeDocsBundleTracker.class);</span>
+
+  @Reference
+  private RhymeDocsOsgiBundleSupport rhymeDocsSupport;
+
+  private BundleTracker bundleTracker;
+
+  @Activate
+  void activate(ComponentContext componentContext) {
+
+<span class="fc" id="L57">    bundleTracker = new BundleTracker&lt;String&gt;(componentContext.getBundleContext(), Bundle.ACTIVE, this);</span>
+<span class="fc" id="L58">    bundleTracker.open();</span>
+<span class="fc" id="L59">  }</span>
+
+  @Deactivate
+  void deactivate(@SuppressWarnings(&quot;unused&quot;) ComponentContext componentContext) {
+
+<span class="fc" id="L64">    bundleTracker.close();</span>
+<span class="fc" id="L65">  }</span>
+
+  private static boolean hasRhymeDocs(Bundle bundle) {
+
+<span class="fc" id="L69">    String rhymeDocsPath = &quot;/&quot; + RhymeDocsSupport.FOLDER;</span>
+
+<span class="fc" id="L71">    URL rhymeDocsUrl = bundle.getResource(rhymeDocsPath);</span>
+
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (rhymeDocsUrl == null) {</span>
+<span class="fc" id="L74">      log.debug(&quot;No rhyme docs were found in bundle at {}&quot;, bundle.getSymbolicName(), rhymeDocsPath);</span>
+<span class="fc" id="L75">      return false;</span>
+    }
+
+<span class="fc" id="L78">    log.info(&quot;Rhyme docs were found in bundle {} at {}&quot;, bundle.getSymbolicName(), rhymeDocsUrl);</span>
+<span class="fc" id="L79">    return true;</span>
+  }
+  
+  @Override
+  public String addingBundle(Bundle bundle, BundleEvent event) {
+
+<span class="fc" id="L85">    log.debug(&quot;Bundle {} was added&quot;, bundle.getSymbolicName());</span>
+
+<span class="fc bfc" id="L87" title="All 2 branches covered.">    if (!hasRhymeDocs(bundle)) {</span>
+<span class="fc" id="L88">      return null;</span>
+    }
+
+<span class="fc" id="L91">    rhymeDocsSupport.registerBundle(bundle);</span>
+  
+<span class="fc" id="L93">    return bundle.getSymbolicName();  </span>
+  }
+
+  @Override
+  public void modifiedBundle(Bundle bundle, BundleEvent event, String symbolicName) {
+    // nothing to do
+<span class="fc" id="L99">  }</span>
+
+  @Override
+  public void removedBundle(Bundle bundle, BundleEvent event, String symbolicName) {
+
+<span class="fc bfc" id="L104" title="All 2 branches covered.">    if (!hasRhymeDocs(bundle)) {</span>
+<span class="fc" id="L105">      return;</span>
+    }
+
+<span class="fc" id="L108">    rhymeDocsSupport.unregisterBundle(bundle);</span>
+<span class="fc" id="L109">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

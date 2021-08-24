@@ -171,6 +171,13 @@ import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
 <span class="fc bfc" id="L171" title="All 2 branches covered.">        || Publisher.class.isAssignableFrom(returnType);</span>
   }
 
+  @Override
+  public boolean isProviderOfOptionalValue(Class&lt;?&gt; returnType) {
+
+<span class="fc bfc" id="L177" title="All 2 branches covered.">    return Optional.class.isAssignableFrom(returnType)</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">        || Maybe.class.isAssignableFrom(returnType);</span>
+  }
+
   /**
    * @param annotationSupport additional support for different annotations
    * @param returnTypeSupport additional support for different return types
@@ -179,11 +186,12 @@ import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
    */
   public static HalApiTypeSupport extendWith(HalApiAnnotationSupport annotationSupport, HalApiReturnTypeSupport returnTypeSupport) {
 
-<span class="fc" id="L182">    DefaultHalApiTypeSupport defaultSupport = new DefaultHalApiTypeSupport();</span>
-<span class="fc" id="L183">    HalApiTypeSupportAdapter adapter = new HalApiTypeSupportAdapter(annotationSupport, returnTypeSupport);</span>
+<span class="fc" id="L189">    DefaultHalApiTypeSupport defaultSupport = new DefaultHalApiTypeSupport();</span>
+<span class="fc" id="L190">    HalApiTypeSupportAdapter adapter = new HalApiTypeSupportAdapter(annotationSupport, returnTypeSupport);</span>
 
-<span class="fc" id="L185">    return new CompositeHalApiTypeSupport(ImmutableList.of(defaultSupport, adapter));</span>
+<span class="fc" id="L192">    return new CompositeHalApiTypeSupport(ImmutableList.of(defaultSupport, adapter));</span>
   }
+
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

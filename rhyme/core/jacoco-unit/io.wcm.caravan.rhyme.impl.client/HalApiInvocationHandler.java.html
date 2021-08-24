@@ -72,103 +72,107 @@ final class HalApiInvocationHandler implements InvocationHandler {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
+<span class="fc bfc" id="L75" title="All 2 branches covered.">    if (method.getName().equals(&quot;hashCode&quot;)) {</span>
+<span class="fc" id="L76">      throw new HalApiDeveloperException(&quot;You cannot call hashCode() on dynamic client proxies. Avoid using collections like LinkedHashSet.&quot;);</span>
+    }
+
     // we want to measure how much time is spent for reflection magic in this proxy
-<span class="fc" id="L76">    Stopwatch stopwatch = Stopwatch.createStarted();</span>
+<span class="fc" id="L80">    Stopwatch stopwatch = Stopwatch.createStarted();</span>
 
     // create an object to help with identification of methods and parameters
-<span class="fc" id="L79">    HalApiMethodInvocation invocation = new HalApiMethodInvocation(resourceInterface, method, args, typeSupport);</span>
+<span class="fc" id="L83">    HalApiMethodInvocation invocation = new HalApiMethodInvocation(resourceInterface, method, args, typeSupport);</span>
 
     try {
-<span class="fc" id="L82">      Observable rxReturnValue = getCachedObservableReturnValue(invocation);</span>
-<span class="fc" id="L83">      return RxJavaReflectionUtils.convertObservableTo(rxReturnValue, method.getReturnType(), typeSupport);</span>
+<span class="fc" id="L86">      Observable rxReturnValue = getCachedObservableReturnValue(invocation);</span>
+<span class="fc" id="L87">      return RxJavaReflectionUtils.convertObservableTo(rxReturnValue, method.getReturnType(), typeSupport);</span>
     }
     // CHECKSTYLE:OFF
-<span class="fc" id="L86">    catch (HalApiDeveloperException | HalApiClientException ex) {</span>
+<span class="fc" id="L90">    catch (HalApiDeveloperException | HalApiClientException ex) {</span>
       // these exceptions should just be re-thrown as they are implementation errors by the developer
       // (e.g. using invalid types in the signatures of the HAL API interface),
       //or contain important context information from failed HTTP request
-<span class="fc" id="L90">      throw ex;</span>
+<span class="fc" id="L94">      throw ex;</span>
     }
     // CHECKSTYLE:ON
-<span class="fc" id="L93">    catch (NoSuchElementException ex) {</span>
+<span class="fc" id="L97">    catch (NoSuchElementException ex) {</span>
       // these exceptions should be re-thrown with a better error message
-<span class="fc" id="L95">      throw new HalApiDeveloperException(&quot;The invocation of &quot; + invocation + &quot; has failed, &quot;</span>
+<span class="fc" id="L99">      throw new HalApiDeveloperException(&quot;The invocation of &quot; + invocation + &quot; has failed, &quot;</span>
           + &quot;most likely because no link or embedded resource with appropriate relation was found in the HAL resource&quot;, ex);
     }
     // CHECKSTYLE:OFF - we really want to catch any other possible runtime exceptions here to add additional information on the method being called
-<span class="fc" id="L99">    catch (Exception e) {</span>
+<span class="fc" id="L103">    catch (Exception e) {</span>
       // CHECKSTYLE:ON
-<span class="fc" id="L101">      throw new RuntimeException(&quot;The invocation of &quot; + invocation + &quot; has failed with an unexpected exception&quot;, e);</span>
+<span class="fc" id="L105">      throw new RuntimeException(&quot;The invocation of &quot; + invocation + &quot; has failed with an unexpected exception&quot;, e);</span>
     }
     finally {
       // collect the time spend calling all proxy methods during the current request in the HalResponseMetadata object
-<span class="fc" id="L105">      metrics.onMethodInvocationFinished(HalApiClient.class, &quot;calling &quot; + invocation.toString(), stopwatch.elapsed(TimeUnit.MICROSECONDS));</span>
+<span class="fc" id="L109">      metrics.onMethodInvocationFinished(HalApiClient.class, &quot;calling &quot; + invocation.toString(), stopwatch.elapsed(TimeUnit.MICROSECONDS));</span>
     }
   }
 
   private Observable getCachedObservableReturnValue(HalApiMethodInvocation invocation) throws ExecutionException {
     try {
-<span class="fc" id="L111">      return returnValueCache.get(invocation.getCacheKey(), () -&gt; callAnnotationSpecificHandler(invocation));</span>
+<span class="fc" id="L115">      return returnValueCache.get(invocation.getCacheKey(), () -&gt; callAnnotationSpecificHandler(invocation));</span>
     }
-<span class="fc" id="L113">    catch (UncheckedExecutionException ex) {</span>
-<span class="fc" id="L114">      throw (RuntimeException)ex.getCause();</span>
+<span class="fc" id="L117">    catch (UncheckedExecutionException ex) {</span>
+<span class="fc" id="L118">      throw (RuntimeException)ex.getCause();</span>
     }
   }
 
   private Single&lt;HalResource&gt; addContextToHalApiClientException(Throwable ex, HalApiMethodInvocation invocation) {
-<span class="fc bfc" id="L119" title="All 2 branches covered.">    if (ex instanceof HalApiClientException) {</span>
-<span class="fc" id="L120">      String msg = &quot;Failed to load an upstream resource that was requested by calling &quot; + invocation;</span>
-<span class="fc" id="L121">      return Single.error(new HalApiClientException(msg, (HalApiClientException)ex));</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">    if (ex instanceof HalApiClientException) {</span>
+<span class="fc" id="L124">      String msg = &quot;Failed to load an upstream resource that was requested by calling &quot; + invocation;</span>
+<span class="fc" id="L125">      return Single.error(new HalApiClientException(msg, (HalApiClientException)ex));</span>
     }
-<span class="fc" id="L123">    return Single.error(ex);</span>
+<span class="fc" id="L127">    return Single.error(ex);</span>
   }
 
   @SuppressWarnings(&quot;PMD.AvoidRethrowingException&quot;)
   private Observable callAnnotationSpecificHandler(HalApiMethodInvocation invocation) {
 
-<span class="fc bfc" id="L129" title="All 2 branches covered.">    if (invocation.isForMethodAnnotatedWithResourceState()) {</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">    if (invocation.isForMethodAnnotatedWithResourceState()) {</span>
 
-<span class="fc" id="L131">      Maybe&lt;Object&gt; state = rxResource</span>
-<span class="fc" id="L132">          .onErrorResumeNext(ex -&gt; addContextToHalApiClientException(ex, invocation))</span>
-<span class="fc" id="L133">          .map(hal -&gt; new ResourceStateHandler(hal))</span>
-<span class="fc" id="L134">          .flatMapMaybe(handler -&gt; handler.handleMethodInvocation(invocation));</span>
+<span class="fc" id="L135">      Maybe&lt;Object&gt; state = rxResource</span>
+<span class="fc" id="L136">          .onErrorResumeNext(ex -&gt; addContextToHalApiClientException(ex, invocation))</span>
+<span class="fc" id="L137">          .map(hal -&gt; new ResourceStateHandler(hal))</span>
+<span class="fc" id="L138">          .flatMapMaybe(handler -&gt; handler.handleMethodInvocation(invocation));</span>
 
-<span class="fc" id="L136">      return RxJavaReflectionUtils.convertAndCacheReactiveType(state, invocation.getReturnType(), metrics, invocation.getDescription(), typeSupport);</span>
+<span class="fc" id="L140">      return RxJavaReflectionUtils.convertAndCacheReactiveType(state, invocation.getReturnType(), metrics, invocation.getDescription(), typeSupport);</span>
     }
 
-<span class="fc bfc" id="L139" title="All 2 branches covered.">    if (invocation.isForMethodAnnotatedWithRelatedResource()) {</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">    if (invocation.isForMethodAnnotatedWithRelatedResource()) {</span>
 
-<span class="fc" id="L141">      Observable&lt;Object&gt; relatedProxies = rxResource</span>
-<span class="fc" id="L142">          .onErrorResumeNext(ex -&gt; addContextToHalApiClientException(ex, invocation))</span>
-<span class="fc" id="L143">          .map(hal -&gt; new RelatedResourceHandler(hal, proxyFactory, typeSupport))</span>
-<span class="fc" id="L144">          .flatMapObservable(handler -&gt; handler.handleMethodInvocation(invocation));</span>
+<span class="fc" id="L145">      Observable&lt;Object&gt; relatedProxies = rxResource</span>
+<span class="fc" id="L146">          .onErrorResumeNext(ex -&gt; addContextToHalApiClientException(ex, invocation))</span>
+<span class="fc" id="L147">          .map(hal -&gt; new RelatedResourceHandler(hal, proxyFactory, typeSupport))</span>
+<span class="fc" id="L148">          .flatMapObservable(handler -&gt; handler.handleMethodInvocation(invocation));</span>
 
-<span class="fc" id="L146">      return RxJavaReflectionUtils.convertAndCacheReactiveType(relatedProxies, invocation.getReturnType(), metrics, invocation.getDescription(), typeSupport);</span>
+<span class="fc" id="L150">      return RxJavaReflectionUtils.convertAndCacheReactiveType(relatedProxies, invocation.getReturnType(), metrics, invocation.getDescription(), typeSupport);</span>
     }
 
-<span class="fc bfc" id="L149" title="All 2 branches covered.">    if (invocation.isForMethodAnnotatedWithResourceLink()) {</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">    if (invocation.isForMethodAnnotatedWithResourceLink()) {</span>
 
-<span class="fc" id="L151">      ResourceLinkHandler handler = new ResourceLinkHandler(linkToResource);</span>
-<span class="fc" id="L152">      return Observable.just(handler.handleMethodInvocation(invocation));</span>
+<span class="fc" id="L155">      ResourceLinkHandler handler = new ResourceLinkHandler(linkToResource);</span>
+<span class="fc" id="L156">      return Observable.just(handler.handleMethodInvocation(invocation));</span>
     }
 
-<span class="fc bfc" id="L155" title="All 2 branches covered.">    if (invocation.isForMethodAnnotatedWithResourceRepresentation()) {</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">    if (invocation.isForMethodAnnotatedWithResourceRepresentation()) {</span>
 
-<span class="fc" id="L157">      Single&lt;Object&gt; representation = rxResource</span>
-<span class="fc" id="L158">          .onErrorResumeNext(ex -&gt; addContextToHalApiClientException(ex, invocation))</span>
-<span class="fc" id="L159">          .map(hal -&gt; new ResourceRepresentationHandler(hal))</span>
-<span class="fc" id="L160">          .flatMap(handler -&gt; handler.handleMethodInvocation(invocation));</span>
+<span class="fc" id="L161">      Single&lt;Object&gt; representation = rxResource</span>
+<span class="fc" id="L162">          .onErrorResumeNext(ex -&gt; addContextToHalApiClientException(ex, invocation))</span>
+<span class="fc" id="L163">          .map(hal -&gt; new ResourceRepresentationHandler(hal))</span>
+<span class="fc" id="L164">          .flatMap(handler -&gt; handler.handleMethodInvocation(invocation));</span>
 
-<span class="fc" id="L162">      return RxJavaReflectionUtils.convertAndCacheReactiveType(representation, invocation.getReturnType(), metrics, invocation.getDescription(), typeSupport);</span>
+<span class="fc" id="L166">      return RxJavaReflectionUtils.convertAndCacheReactiveType(representation, invocation.getReturnType(), metrics, invocation.getDescription(), typeSupport);</span>
     }
 
-<span class="fc bfc" id="L165" title="All 2 branches covered.">    if (invocation.toString().endsWith(&quot;#toString()&quot;)) {</span>
-<span class="fc bfc" id="L166" title="All 2 branches covered.">      String linkDesc = linkToResource != null ? &quot; at &quot; + linkToResource.getHref() : &quot; (embedded without self link)&quot;;</span>
-<span class="fc" id="L167">      return Observable.just(&quot;dynamic client proxy for &quot; + invocation.getResourceInterfaceName() + linkDesc);</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">    if (invocation.toString().endsWith(&quot;#toString()&quot;)) {</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">      String linkDesc = linkToResource != null ? &quot; at &quot; + linkToResource.getHref() : &quot; (embedded without self link)&quot;;</span>
+<span class="fc" id="L171">      return Observable.just(&quot;dynamic client proxy for &quot; + invocation.getResourceInterfaceName() + linkDesc);</span>
     }
 
     // unsupported operation
-<span class="fc" id="L171">    throw new HalApiDeveloperException(&quot;The method &quot; + invocation + &quot; is not annotated with one of the supported HAL API annotations&quot;);</span>
+<span class="fc" id="L175">    throw new HalApiDeveloperException(&quot;The method &quot; + invocation + &quot; is not annotated with one of the supported HAL API annotations&quot;);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

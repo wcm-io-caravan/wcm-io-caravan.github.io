@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
     <item>
-      <title>File: 17,
+      <title>File: 21,
              Errors: 0,
-             Warnings: 0,
+             Warnings: 4,
              Infos: 0
       </title>
             <link>https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html</link>
@@ -44,6 +44,20 @@ under the License.
             </tr>
           </thead>
           <tbody>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsJaxRsApplication.java">io/wcm/caravan/rhyme/jaxrs/impl/docs/RhymeDocsJaxRsApplication.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.caravan.api.CaravanRhymeRequestCycle.java">io/wcm/caravan/rhyme/caravan/api/CaravanRhymeRequestCycle.java</a>
@@ -66,7 +80,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   0
@@ -89,6 +103,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.jaxrs.impl.JaxRsAsyncHalResponseHandlerImpl.java">io/wcm/caravan/rhyme/jaxrs/impl/JaxRsAsyncHalResponseHandlerImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsOsgiBundleSupport.java">io/wcm/caravan/rhyme/jaxrs/impl/docs/RhymeDocsOsgiBundleSupport.java</a>
                 </td>
                 <td>
                   0
@@ -256,6 +284,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsBundleTracker.java">io/wcm/caravan/rhyme/jaxrs/impl/docs/RhymeDocsBundleTracker.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.caravan.impl.CaravanRhymeRequestCycleImpl.java">io/wcm/caravan/rhyme/caravan/impl/CaravanRhymeRequestCycleImpl.java</a>
                 </td>
                 <td>
@@ -271,6 +313,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.jaxrs.api.JaxRsBundleInfo.java">io/wcm/caravan/rhyme/jaxrs/api/JaxRsBundleInfo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html#io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsHtmlResource.java">io/wcm/caravan/rhyme/jaxrs/impl/docs/RhymeDocsHtmlResource.java</a>
                 </td>
                 <td>
                   0

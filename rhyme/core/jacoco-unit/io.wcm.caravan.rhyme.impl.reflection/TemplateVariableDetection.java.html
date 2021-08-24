@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TemplateVariableDetection.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - Core Framework</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.reflection</a> &gt; <span class="el_source">TemplateVariableDetection.java</span></div><h1>TemplateVariableDetection.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl.reflection;
+
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
+
+import io.wcm.caravan.rhyme.api.annotations.Related;
+import io.wcm.caravan.rhyme.api.annotations.TemplateVariable;
+import io.wcm.caravan.rhyme.api.annotations.TemplateVariables;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+
+/**
+ * implements the logic of discovering the names (and values) of all template variables in the signature
+ * of a method annotated with {@link Related}. This is used for the implementation of the dynamic client
+ * proxies, and for documentation generation with the rhyme-docs-maven-plugin
+ */
+public final class TemplateVariableDetection {
+
+  private TemplateVariableDetection() {
+    // this class contains only static methods
+  }
+
+  /**
+   * Collect the names of all template variables in the signature of a {@link Related} method,
+   * and populates the values from the corresponding arguments to the method call.
+   * These arguments can be empty, e.g. if the method
+   * doesn't have any parameters or the actual parameters weren't available because it wasn't invoked.
+   * @param method annotated with {@link Related}
+   * @param methodArgs the values of each argument provided in the method call (can be empty)
+   * @return an object with the variable names and keys, and the corresponding values (which can be null)
+   */
+  public static Map&lt;String, Object&gt; getVariablesNameValueMap(Method method, Optional&lt;Object[]&gt; methodArgs) {
+
+<span class="fc" id="L66">    Map&lt;String, Object&gt; map = new LinkedHashMap&lt;&gt;();</span>
+
+<span class="fc" id="L68">    findVariables(method, methodArgs)</span>
+<span class="fc" id="L69">        .forEach(def -&gt; map.put(def.getName(), def.getValue()));</span>
+
+<span class="fc" id="L71">    return map;</span>
+  }
+
+  /**
+   * Collect all template variables from the signature of a {@link Related} method
+   * @param method annotated with {@link Related}
+   * @param methodArgs the values of each argument provided in the method call (can be empty)
+   * @return a list with one {@link TemplateVariableWithTypeInfo} for each variable in the signature
+   */
+  public static List&lt;TemplateVariableWithTypeInfo&gt; findVariables(Method method, Optional&lt;Object[]&gt; methodArgs) {
+
+    Object[] args;
+<span class="fc bfc" id="L83" title="All 2 branches covered.">    if (methodArgs.isPresent()) {</span>
+<span class="fc" id="L84">      args = methodArgs.get();</span>
+    }
+    else {
+<span class="fc" id="L87">      args = new Object[method.getParameterCount()];</span>
+    }
+
+<span class="fc" id="L90">    List&lt;TemplateVariableWithTypeInfo&gt; definitions = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L92" title="All 2 branches covered.">    for (int i = 0; i &lt; method.getParameterCount(); i++) {</span>
+<span class="fc" id="L93">      Parameter parameter = method.getParameters()[i];</span>
+
+<span class="fc" id="L95">      TemplateVariables variables = parameter.getAnnotation(TemplateVariables.class);</span>
+<span class="fc" id="L96">      TemplateVariable variable = parameter.getAnnotation(TemplateVariable.class);</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">      if (variables != null) {</span>
+<span class="fc" id="L98">        definitions.addAll(getVariableInfos(args[i], parameter.getType()));</span>
+      }
+<span class="fc bfc" id="L100" title="All 2 branches covered.">      else if (variable != null) {</span>
+<span class="fc" id="L101">        definitions.add(new TemplateVariableWithTypeInfo(variable.value(), parameter.getType(), args[i]));</span>
+      }
+      // if no annotation was used, we can try to extract the parameter name from the method.
+      // these arguments will be called &quot;arg0&quot;, &quot;arg1&quot; etc if this information was stripped from the compiler
+<span class="fc bfc" id="L105" title="All 2 branches covered.">      else if (!(&quot;arg&quot; + i).equals(parameter.getName())) {</span>
+<span class="fc" id="L106">        definitions.add(new TemplateVariableWithTypeInfo(parameter.getName(), parameter.getType(), args[i]));</span>
+      }
+      else {
+<span class="fc" id="L109">        throw new HalApiDeveloperException(&quot;method parameter names have been stripped for  &quot; + method + &quot;, so they do need to be annotated with either&quot;</span>
+<span class="fc" id="L110">            + &quot; @&quot; + TemplateVariable.class.getSimpleName()</span>
+<span class="fc" id="L111">            + &quot; or @&quot; + TemplateVariables.class.getSimpleName());</span>
+      }
+
+    }
+
+<span class="fc" id="L116">    return definitions;</span>
+  }
+
+  /**
+   * Contains name, value (if present) and type information for a template variable in a call to a {@link Related}
+   * method
+   */
+  public static class TemplateVariableWithTypeInfo {
+
+    private final String name;
+    private final Class type;
+    private final Object value;
+
+    private Class dtoClass;
+    private Method dtoMethod;
+    private Field dtoField;
+
+<span class="fc" id="L133">    private TemplateVariableWithTypeInfo(String name, Class type, Object value) {</span>
+<span class="fc" id="L134">      this.name = name;</span>
+<span class="fc" id="L135">      this.type = type;</span>
+<span class="fc" id="L136">      this.value = value;</span>
+<span class="fc" id="L137">    }</span>
+
+    /**
+     * @return the name of the template variable
+     */
+    public String getName() {
+<span class="fc" id="L143">      return this.name;</span>
+    }
+
+    /**
+     * @return the java type of the template variable
+     */
+    public Class getType() {
+<span class="fc" id="L150">      return this.type;</span>
+    }
+
+    /**
+     * @return the value of the template variable (can be null)
+     */
+    public Object getValue() {
+<span class="fc" id="L157">      return this.value;</span>
+    }
+
+    /**
+     * If this variable is defined by a {@link TemplateVariables} parameter, this method will return
+     * the class where the corresponding method or field is defined.
+     * @return the class/interface of the {@link TemplateVariable} parameter (can be null)
+     */
+    public Class getDtoClass() {
+<span class="fc" id="L166">      return this.dtoClass;</span>
+    }
+
+    /**
+     * Only if this variable is defined by a get method of a {@link TemplateVariable} class/interface,
+     * this method will return the method that needs to be called to get the parameter value
+     * @return the method (can be null)
+     */
+    public Method getDtoMethod() {
+<span class="fc" id="L175">      return this.dtoMethod;</span>
+    }
+
+    /**
+     * Only if this variable is defined by a public field of a {@link TemplateVariable} class/interface,
+     * this method will return the field containing the parameter value
+     * @return the field (can be null)
+     */
+    public Field getDtoField() {
+<span class="fc" id="L184">      return this.dtoField;</span>
+    }
+  }
+
+  private static List&lt;TemplateVariableWithTypeInfo&gt; getVariableInfos(Object instance, Class dtoClass) {
+
+<span class="fc bfc" id="L190" title="All 2 branches covered.">    if (dtoClass.isInterface()) {</span>
+<span class="fc" id="L191">      return getVariableInfosFromPublicGetter(instance, dtoClass);</span>
+    }
+
+<span class="fc" id="L194">    return getVariablesInfosFromFields(instance, dtoClass);</span>
+  }
+
+  private static &lt;T&gt; List&lt;TemplateVariableWithTypeInfo&gt; getVariableInfosFromPublicGetter(Object instance, Class dtoClass) {
+    try {
+<span class="fc" id="L199">      return Stream.of(Introspector.getBeanInfo(dtoClass).getPropertyDescriptors())</span>
+<span class="fc" id="L200">          .map(property -&gt; {</span>
+<span class="fc" id="L201">            Method readMethod = property.getReadMethod();</span>
+<span class="fc" id="L202">            Object value = invokeMethod(readMethod, instance);</span>
+<span class="fc" id="L203">            TemplateVariableWithTypeInfo variable = new TemplateVariableWithTypeInfo(property.getName(), readMethod.getReturnType(), value);</span>
+<span class="fc" id="L204">            variable.dtoClass = dtoClass;</span>
+<span class="fc" id="L205">            variable.dtoMethod = readMethod;</span>
+<span class="fc" id="L206">            return variable;</span>
+          })
+<span class="fc" id="L208">          .collect(Collectors.toList());</span>
+    }
+<span class="fc" id="L210">    catch (IntrospectionException | RuntimeException ex) {</span>
+<span class="fc" id="L211">      throw new HalApiDeveloperException(&quot;Failed to extract template variables from interface &quot; + dtoClass.getName() + &quot; through reflection&quot;, ex);</span>
+    }
+  }
+
+  private static Object invokeMethod(Method readMethod, Object instance) {
+
+<span class="fc bfc" id="L217" title="All 2 branches covered.">    if (instance == null) {</span>
+<span class="fc" id="L218">      return null;</span>
+    }
+
+    try {
+<span class="fc" id="L222">      return readMethod.invoke(instance, new Object[0]);</span>
+    }
+<span class="fc" id="L224">    catch (InvocationTargetException | IllegalAccessException | RuntimeException ex) {</span>
+<span class="fc" id="L225">      throw new HalApiDeveloperException(&quot;Failed to invoke getter &quot; + readMethod.getName() + &quot; from class &quot; + instance.getClass().getSimpleName(), ex);</span>
+    }
+  }
+
+  private static &lt;T&gt; List&lt;TemplateVariableWithTypeInfo&gt; getVariablesInfosFromFields(Object instance, Class dtoClass) {
+
+    try {
+<span class="fc" id="L232">      return Stream.of(FieldUtils.getAllFields(dtoClass))</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">          .filter(field -&gt; !field.isSynthetic())</span>
+<span class="fc bfc" id="L234" title="All 2 branches covered.">          .filter(field -&gt; !Modifier.isStatic(field.getModifiers()))</span>
+<span class="fc" id="L235">          .map(field -&gt; {</span>
+<span class="fc" id="L236">            Object value = getFieldValue(field, instance);</span>
+<span class="fc" id="L237">            TemplateVariableWithTypeInfo variable = new TemplateVariableWithTypeInfo(field.getName(), field.getType(), value);</span>
+<span class="fc" id="L238">            variable.dtoClass = dtoClass;</span>
+<span class="fc" id="L239">            variable.dtoField = field;</span>
+<span class="fc" id="L240">            return variable;</span>
+          })
+<span class="fc" id="L242">          .collect(Collectors.toList());</span>
+    }
+<span class="fc" id="L244">    catch (RuntimeException ex) {</span>
+<span class="fc" id="L245">      throw new HalApiDeveloperException(&quot;Failed to extract template variables from class &quot; + dtoClass.getName() + &quot; through reflection&quot;, ex);</span>
+    }
+  }
+
+  private static Object getFieldValue(Field field, Object instance) {
+
+<span class="fc bfc" id="L251" title="All 2 branches covered.">    if (instance == null) {</span>
+<span class="fc" id="L252">      return null;</span>
+    }
+
+    try {
+<span class="fc" id="L256">      return FieldUtils.readField(field, instance, false);</span>
+    }
+<span class="fc" id="L258">    catch (IllegalAccessException | RuntimeException ex) {</span>
+<span class="fc" id="L259">      throw new HalApiDeveloperException(&quot;Failed to read value of field &quot; + field.getName() + &quot; from class &quot; + instance.getClass().getSimpleName()</span>
+<span class="fc" id="L260">          + &quot;. Make sure that all fields in your classes used as parameters annotated with @&quot; + TemplateVariables.class.getSimpleName() + &quot; are public&quot;, ex);</span>
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
