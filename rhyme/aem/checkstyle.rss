@@ -172,20 +172,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.integration.impl.SlingLinkBuilderImpl.java">io/wcm/caravan/rhyme/aem/integration/impl/SlingLinkBuilderImpl.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.integration.SlingResourceAdapter.java">io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.java</a>
                 </td>
                 <td>
@@ -193,6 +179,20 @@ under the License.
                 </td>
                 <td>
                   22
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.integration.impl.SlingLinkBuilderImpl.java">io/wcm/caravan/rhyme/aem/integration/impl/SlingLinkBuilderImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
