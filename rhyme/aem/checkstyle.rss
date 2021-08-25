@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
     <item>
-      <title>File: 18,
+      <title>File: 20,
              Errors: 0,
-             Warnings: 71,
+             Warnings: 74,
              Infos: 0
       </title>
             <link>https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html</link>
@@ -44,20 +44,6 @@ under the License.
             </tr>
           </thead>
           <tbody>
-                          <tr>
-                <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.integration.ResourceSelectorProvider.java">io/wcm/caravan/rhyme/aem/integration/ResourceSelectorProvider.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.integration.impl.SlingRhymeImpl.java">io/wcm/caravan/rhyme/aem/integration/impl/SlingRhymeImpl.java</a>
@@ -136,7 +122,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  7
+                  9
                 </td>
                 <td>
                   0
@@ -165,6 +151,20 @@ under the License.
                 </td>
                 <td>
                   15
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.integration.impl.entrypoint.AemApiDiscoveryResource.java">io/wcm/caravan/rhyme/aem/integration/impl/entrypoint/AemApiDiscoveryResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -270,13 +270,41 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.integration.impl.ResourceSelectorRegistry.java">io/wcm/caravan/rhyme/aem/integration/impl/ResourceSelectorRegistry.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.integration.impl.RhymeResourceRegistry.java">io/wcm/caravan/rhyme/aem/integration/impl/RhymeResourceRegistry.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  4
+                  5
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.integration.impl.entrypoint.AemApiDiscoveryResourceImpl.java">io/wcm/caravan/rhyme/aem/integration/impl/entrypoint/AemApiDiscoveryResourceImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.integration.RhymeResourceRegistration.java">io/wcm/caravan/rhyme/aem/integration/RhymeResourceRegistration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0

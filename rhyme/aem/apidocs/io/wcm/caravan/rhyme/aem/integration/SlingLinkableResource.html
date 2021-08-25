@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/RhymeObject.html" title="annotation in io.wcm.caravan.rhyme.aem.integration"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/RhymeResourceRegistration.html" title="interface in io.wcm.caravan.rhyme.aem.integration"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.aem.integration"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -136,14 +136,22 @@ var activeTableTab = "activeTableTab";
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingLinkableResource.html#getQueryParameters--">getQueryParameters</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingLinkableResource.html#setLinkName-java.lang.String-">setLinkName</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;linkName)</code>&nbsp;</td>
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingLinkableResource.html#isExpandAllVariables--">isExpandAllVariables</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingLinkableResource.html#setLinkTitle-java.lang.String-">setLinkTitle</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;linkTitle)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingLinkableResource.html#setExpandAllVariables-boolean-">setExpandAllVariables</a></span>(boolean&nbsp;expandAllVariables)</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingLinkableResource.html#setLinkName-java.lang.String-">setLinkName</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;linkName)</code>&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingLinkableResource.html#setLinkTitle-java.lang.String-">setLinkTitle</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;linkTitle)</code>&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingLinkableResource.html#setQueryParameters-java.util.Map-">setQueryParameters</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;parameters)</code>&nbsp;</td>
 </tr>
@@ -210,10 +218,28 @@ var activeTableTab = "activeTableTab";
 <a name="setQueryParameters-java.util.Map-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setQueryParameters</h4>
 <pre>void&nbsp;setQueryParameters(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;parameters)</pre>
+</li>
+</ul>
+<a name="setExpandAllVariables-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setExpandAllVariables</h4>
+<pre>void&nbsp;setExpandAllVariables(boolean&nbsp;expandAllVariables)</pre>
+</li>
+</ul>
+<a name="isExpandAllVariables--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>isExpandAllVariables</h4>
+<pre>boolean&nbsp;isExpandAllVariables()</pre>
 </li>
 </ul>
 </li>
@@ -243,7 +269,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/RhymeObject.html" title="annotation in io.wcm.caravan.rhyme.aem.integration"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/RhymeResourceRegistration.html" title="interface in io.wcm.caravan.rhyme.aem.integration"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.aem.integration"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">

@@ -26,6 +26,8 @@ import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 <span class="fc" id="L26">  private boolean useParametersFromRequest = true;</span>
 <span class="fc" id="L27">  private Map&lt;String, Object&gt; queryParameters = new LinkedHashMap&lt;&gt;();</span>
 
+<span class="fc" id="L29">  private boolean expandAllVariables = true;</span>
+
   @RhymeObject
   private SlingHttpServletRequest request;
 
@@ -33,61 +35,73 @@ import io.wcm.caravan.rhyme.api.resources.LinkableResource;
   @Override
   public Link createLink() {
 
-<span class="fc" id="L36">    return linkBuilder.createLinkToCurrentResource(this);</span>
+<span class="fc" id="L38">    return linkBuilder.createLinkToCurrentResource(this);</span>
   }
 
   @Override
   public String getLinkTitle() {
 
-<span class="fc bfc" id="L42" title="All 2 branches covered.">    return contextLinkTitle != null ? contextLinkTitle : getDefaultLinkTitle();</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">    return contextLinkTitle != null ? contextLinkTitle : getDefaultLinkTitle();</span>
   }
 
   @Override
   public void setLinkTitle(String linkTitle) {
 
-<span class="fc" id="L48">    this.contextLinkTitle = linkTitle;</span>
-<span class="fc" id="L49">  }</span>
+<span class="fc" id="L50">    this.contextLinkTitle = linkTitle;</span>
+<span class="fc" id="L51">  }</span>
 
   @Override
   public String getLinkName() {
 
-<span class="fc bfc" id="L54" title="All 2 branches covered.">    if (linkName != null) {</span>
-<span class="fc" id="L55">      return linkName;</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    if (linkName != null) {</span>
+<span class="fc" id="L57">      return linkName;</span>
     }
 
-<span class="fc bfc" id="L58" title="All 2 branches covered.">    if (rhyme != null) {</span>
-<span class="fc" id="L59">      return rhyme.getCurrentResource().getName();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">    if (rhyme != null) {</span>
+<span class="fc" id="L61">      return rhyme.getCurrentResource().getName();</span>
     }
 
-<span class="fc" id="L62">    return null;</span>
+<span class="fc" id="L64">    return null;</span>
   }
 
   @Override
   public void setLinkName(String name) {
 
-<span class="fc" id="L68">    this.linkName = name;</span>
-<span class="fc" id="L69">  }</span>
+<span class="fc" id="L70">    this.linkName = name;</span>
+<span class="fc" id="L71">  }</span>
 
   protected abstract String getDefaultLinkTitle();
 
   @Override
   public Map&lt;String, Object&gt; getQueryParameters() {
 
-<span class="fc bfc" id="L76" title="All 2 branches covered.">    if (useParametersFromRequest) {</span>
-<span class="fc bfc" id="L77" title="All 2 branches covered.">      for (RequestParameter parameter : request.getRequestParameterList()) {</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">    if (useParametersFromRequest) {</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">      for (RequestParameter parameter : request.getRequestParameterList()) {</span>
         // TODO: add support for parameters with multiple values
-<span class="fc" id="L79">        queryParameters.put(parameter.getName(), parameter.getString());</span>
-<span class="fc" id="L80">      }</span>
-<span class="fc" id="L81">      useParametersFromRequest = false;</span>
+<span class="fc" id="L81">        queryParameters.put(parameter.getName(), parameter.getString());</span>
+<span class="fc" id="L82">      }</span>
+<span class="fc" id="L83">      useParametersFromRequest = false;</span>
     }
 
-<span class="fc" id="L84">    return queryParameters;</span>
+<span class="fc" id="L86">    return queryParameters;</span>
   }
 
   @Override
   public void setQueryParameters(Map&lt;String, Object&gt; parameters) {
-<span class="fc" id="L89">    useParametersFromRequest = false;</span>
-<span class="fc" id="L90">    queryParameters = parameters;</span>
-<span class="fc" id="L91">  }</span>
+<span class="fc" id="L91">    useParametersFromRequest = false;</span>
+<span class="fc" id="L92">    queryParameters = parameters;</span>
+<span class="fc" id="L93">  }</span>
+
+  @Override
+  public void setExpandAllVariables(boolean expandAllVariables) {
+<span class="fc" id="L97">    this.expandAllVariables = expandAllVariables;</span>
+<span class="fc" id="L98">  }</span>
+
+  @Override
+  public boolean isExpandAllVariables() {
+<span class="fc" id="L102">    return expandAllVariables;</span>
+  }
+
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

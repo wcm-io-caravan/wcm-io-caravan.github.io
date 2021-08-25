@@ -26,7 +26,7 @@ import io.wcm.handler.url.UrlHandler;
   private UrlHandler urlHandler;
 
   @Inject
-  private ResourceSelectorRegistry registry;
+  private RhymeResourceRegistry registry;
 
   @Override
   public Link createLinkToCurrentResource(SlingLinkableResource slingModel) {
@@ -64,7 +64,7 @@ import io.wcm.handler.url.UrlHandler;
 <span class="fc bfc" id="L64" title="All 2 branches covered.">        .filter(entry -&gt; entry.getValue() != null)</span>
 <span class="fc" id="L65">        .forEach(entry -&gt; template.set(entry.getKey(), entry.getValue()));</span>
 
-<span class="fc" id="L67">    return template.expand();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">    return slingModel.isExpandAllVariables() ? template.expand() : template.expandPartial();</span>
   }
 
   private String getClassSpecificSelector(SlingLinkableResource slingModel) {
