@@ -1,10 +1,10 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingLinkBuilderImpl,0,96,0,4,0,22,0,9,0,7
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.CompositeLinkDecorator,0,73,0,0,0,14,0,9,0,9
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.CompositeLinkDecorator,0,81,0,2,0,15,0,11,0,10
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.ResourceSelector,0,83,0,2,0,15,0,4,0,3
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.TemplateResourceAdapter.new InvocationHandler() {...},0,37,0,2,0,5,0,3,0,2
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.LinkDecorator,0,6,0,0,0,3,0,3,0,3
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingRhymeImpl,0,222,0,18,0,48,0,24,0,15
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingRhymeImpl,0,224,0,18,0,49,0,24,0,15
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.TemplateResourceAdapter,0,110,0,2,0,28,0,12,0,11
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,HalResourceLoaderManager.ImplementationPickingHalResourceLoader,0,40,0,2,0,5,0,3,0,2
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,RhymeObjects,0,137,0,12,0,28,0,12,0,6
@@ -16,6 +16,9 @@ Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceA
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.TypedResourceAdapterImpl.new SlingResourceAdapterImpl.LinkDecorator() {...},0,12,0,0,0,2,0,2,0,2
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.TypedResourceAdapterImpl.new SlingResourceAdapterImpl.LinkDecorator() {...},0,12,0,0,0,2,0,2,0,2
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,HalApiServlet,0,137,0,8,0,31,0,11,0,7
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.TypedResourceAdapterImpl,0,196,0,12,0,39,0,19,0,13
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl,SlingResourceAdapterImpl.TypedResourceAdapterImpl,0,201,0,14,0,41,0,20,0,13
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration,AbstractLinkableResource,0,86,0,10,0,23,0,13,0,8
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration,ResourceStreams,0,149,0,8,0,39,0,19,0,15
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl.docs,RhymeDocsOsgiBundleSupport,0,64,0,4,0,18,0,10,0,8
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl.docs,RhymeDocsBundleTracker,0,75,0,6,0,24,0,11,0,8
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.integration.impl.docs,RhymeDocsServlet,0,77,0,6,0,18,0,8,0,5

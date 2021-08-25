@@ -15,6 +15,7 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.jetbrains.annotations.NotNull;
 
 import io.wcm.caravan.rhyme.aem.integration.SlingRhyme;
+import io.wcm.caravan.rhyme.aem.integration.impl.docs.RhymeDocsOsgiBundleSupport;
 import io.wcm.caravan.rhyme.api.Rhyme;
 import io.wcm.caravan.rhyme.api.RhymeBuilder;
 import io.wcm.caravan.rhyme.api.common.HalResponse;
@@ -30,120 +31,121 @@ public class SlingRhymeImpl extends SlingAdaptable implements SlingRhyme {
   private final Rhyme rhyme;
 
   @Inject
-<span class="fc" id="L33">  public SlingRhymeImpl(@Self SlingHttpServletRequest request, HalResourceLoaderManager picker) {</span>
+<span class="fc" id="L34">  public SlingRhymeImpl(@Self SlingHttpServletRequest request, HalResourceLoaderManager picker, RhymeDocsOsgiBundleSupport rhymeDocs) {</span>
 
-<span class="fc" id="L35">    this.request = request;</span>
+<span class="fc" id="L36">    this.request = request;</span>
 
-<span class="fc" id="L37">    this.currentResource = request.getResource();</span>
+<span class="fc" id="L38">    this.currentResource = request.getResource();</span>
 
-<span class="fc" id="L39">    this.rhyme = RhymeBuilder.withResourceLoader(picker.getResourceLoader())</span>
-<span class="fc" id="L40">        .buildForRequestTo(request.getRequestURL().toString());</span>
-<span class="fc" id="L41">  }</span>
+<span class="fc" id="L40">    this.rhyme = RhymeBuilder.withResourceLoader(picker.getResourceLoader())</span>
+<span class="fc" id="L41">        .withRhymeDocsSupport(rhymeDocs)</span>
+<span class="fc" id="L42">        .buildForRequestTo(request.getRequestURL().toString());</span>
+<span class="fc" id="L43">  }</span>
 
-<span class="fc" id="L43">  SlingRhymeImpl(SlingRhymeImpl slingRhyme, Resource currentResource) {</span>
+<span class="fc" id="L45">  SlingRhymeImpl(SlingRhymeImpl slingRhyme, Resource currentResource) {</span>
 
-<span class="fc" id="L45">    this.request = slingRhyme.request;</span>
-<span class="fc" id="L46">    this.currentResource = currentResource;</span>
-<span class="fc" id="L47">    this.rhyme = slingRhyme.rhyme;</span>
-<span class="fc" id="L48">  }</span>
+<span class="fc" id="L47">    this.request = slingRhyme.request;</span>
+<span class="fc" id="L48">    this.currentResource = currentResource;</span>
+<span class="fc" id="L49">    this.rhyme = slingRhyme.rhyme;</span>
+<span class="fc" id="L50">  }</span>
 
   @Override
   public &lt;@NotNull T&gt; T adaptResource(Resource resource, @NotNull Class&lt;T&gt; modelClass) {
 
-<span class="fc bfc" id="L53" title="All 2 branches covered.">    if (resource == null) {</span>
-<span class="fc" id="L54">      throw new HalApiDeveloperException(&quot;Cannot adapt null resource to &quot; + modelClass.getSimpleName());</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">    if (resource == null) {</span>
+<span class="fc" id="L56">      throw new HalApiDeveloperException(&quot;Cannot adapt null resource to &quot; + modelClass.getSimpleName());</span>
     }
 
-<span class="fc" id="L57">    verifyModelAnnotationIfPresent(modelClass);</span>
+<span class="fc" id="L59">    verifyModelAnnotationIfPresent(modelClass);</span>
 
     try {
-<span class="fc" id="L60">      T slingModel = resource.adaptTo(modelClass);</span>
-<span class="fc bfc" id="L61" title="All 2 branches covered.">      if (slingModel == null) {</span>
-<span class="fc" id="L62">        throw new HalApiDeveloperException(&quot;Failed to adapt &quot; + resource + &quot; to &quot; + modelClass.getSimpleName());</span>
+<span class="fc" id="L62">      T slingModel = resource.adaptTo(modelClass);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">      if (slingModel == null) {</span>
+<span class="fc" id="L64">        throw new HalApiDeveloperException(&quot;Failed to adapt &quot; + resource + &quot; to &quot; + modelClass.getSimpleName());</span>
       }
 
-<span class="fc" id="L65">      RhymeObjects.injectIntoSlingModel(slingModel, () -&gt; new SlingRhymeImpl(this, resource));</span>
+<span class="fc" id="L67">      RhymeObjects.injectIntoSlingModel(slingModel, () -&gt; new SlingRhymeImpl(this, resource));</span>
 
-<span class="fc" id="L67">      return slingModel;</span>
+<span class="fc" id="L69">      return slingModel;</span>
     }
-<span class="fc" id="L69">    catch (RuntimeException ex) {</span>
-<span class="fc" id="L70">      throw new HalApiDeveloperException(&quot;Failed to adapt &quot; + resource + &quot; to &quot; + modelClass.getSimpleName(), ex);</span>
+<span class="fc" id="L71">    catch (RuntimeException ex) {</span>
+<span class="fc" id="L72">      throw new HalApiDeveloperException(&quot;Failed to adapt &quot; + resource + &quot; to &quot; + modelClass.getSimpleName(), ex);</span>
     }
   }
 
   private void verifyModelAnnotationIfPresent(Class&lt;?&gt; modelClass) {
 
-<span class="fc" id="L76">    Model modelAnnotation = modelClass.getAnnotation(Model.class);</span>
-<span class="fc bfc" id="L77" title="All 2 branches covered.">    if (modelAnnotation != null) {</span>
+<span class="fc" id="L78">    Model modelAnnotation = modelClass.getAnnotation(Model.class);</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">    if (modelAnnotation != null) {</span>
 
-<span class="fc bfc" id="L79" title="All 2 branches covered.">      if (!Arrays.asList(modelAnnotation.adaptables()).contains(Resource.class)) {</span>
-<span class="fc" id="L80">        throw new HalApiDeveloperException(modelClass + &quot; is not declared to be adaptable from &quot; + Resource.class);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">      if (!Arrays.asList(modelAnnotation.adaptables()).contains(Resource.class)) {</span>
+<span class="fc" id="L82">        throw new HalApiDeveloperException(modelClass + &quot; is not declared to be adaptable from &quot; + Resource.class);</span>
       }
     }
-<span class="fc" id="L83">  }</span>
+<span class="fc" id="L85">  }</span>
 
   @Override
   public &lt;AdapterType&gt; AdapterType adaptTo(Class&lt;AdapterType&gt; type) {
 
-<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (UrlHandler.class.isAssignableFrom(type)) {</span>
-<span class="fc" id="L89">      return (AdapterType)request.adaptTo(UrlHandler.class);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">    if (UrlHandler.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L91">      return (AdapterType)request.adaptTo(UrlHandler.class);</span>
     }
-<span class="fc bfc" id="L91" title="All 2 branches covered.">    if (Resource.class.isAssignableFrom(type)) {</span>
-<span class="fc" id="L92">      return (AdapterType)currentResource;</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    if (Resource.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L94">      return (AdapterType)currentResource;</span>
     }
-<span class="fc bfc" id="L94" title="All 2 branches covered.">    if (HttpServletRequest.class.isAssignableFrom(type)) {</span>
-<span class="fc" id="L95">      return (AdapterType)request;</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">    if (HttpServletRequest.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L97">      return (AdapterType)request;</span>
     }
-<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (isAdaptableFromRequest(type)) {</span>
-<span class="fc" id="L98">      return request.adaptTo(type);</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">    if (isAdaptableFromRequest(type)) {</span>
+<span class="fc" id="L100">      return request.adaptTo(type);</span>
     }
 
-<span class="fc" id="L101">    return super.adaptTo(type);</span>
+<span class="fc" id="L103">    return super.adaptTo(type);</span>
   }
 
   private &lt;AdapterType&gt; boolean isAdaptableFromRequest(Class&lt;AdapterType&gt; type) {
 
-<span class="fc" id="L106">    Model annotation = type.getAnnotation(Model.class);</span>
-<span class="fc bfc" id="L107" title="All 2 branches covered.">    if (annotation == null) {</span>
-<span class="fc" id="L108">      return false;</span>
+<span class="fc" id="L108">    Model annotation = type.getAnnotation(Model.class);</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">    if (annotation == null) {</span>
+<span class="fc" id="L110">      return false;</span>
     }
 
-<span class="fc" id="L111">    return Stream.of(annotation.adaptables())</span>
-<span class="fc" id="L112">        .anyMatch(adaptableClass -&gt; HttpServletRequest.class.isAssignableFrom(adaptableClass));</span>
+<span class="fc" id="L113">    return Stream.of(annotation.adaptables())</span>
+<span class="fc" id="L114">        .anyMatch(adaptableClass -&gt; HttpServletRequest.class.isAssignableFrom(adaptableClass));</span>
   }
 
   @Override
   public Resource getRequestedResource() {
 
-<span class="fc" id="L118">    return request.getResource();</span>
+<span class="fc" id="L120">    return request.getResource();</span>
   }
 
   @Override
   public Resource getCurrentResource() {
 
-<span class="fc" id="L124">    return currentResource;</span>
+<span class="fc" id="L126">    return currentResource;</span>
   }
 
   Rhyme getCaravanRhyme() {
-<span class="fc" id="L128">    return rhyme;</span>
+<span class="fc" id="L130">    return rhyme;</span>
   }
 
   @Override
   public &lt;T&gt; T getRemoteResource(String uri, Class&lt;T&gt; halApiInterface) {
-<span class="fc" id="L133">    return rhyme.getRemoteResource(uri, halApiInterface);</span>
+<span class="fc" id="L135">    return rhyme.getRemoteResource(uri, halApiInterface);</span>
   }
 
   @Override
   public void setResponseMaxAge(Duration duration) {
-<span class="fc" id="L138">    rhyme.setResponseMaxAge(duration);</span>
-<span class="fc" id="L139">  }</span>
+<span class="fc" id="L140">    rhyme.setResponseMaxAge(duration);</span>
+<span class="fc" id="L141">  }</span>
 
   HalResponse renderResource(LinkableResource resourceImpl) {
-<span class="fc" id="L142">    return rhyme.renderResponse(resourceImpl).blockingGet();</span>
+<span class="fc" id="L144">    return rhyme.renderResponse(resourceImpl).blockingGet();</span>
   }
 
   HalResponse renderVndErrorResponse(Throwable error) {
-<span class="fc" id="L146">    return rhyme.renderVndErrorResponse(error);</span>
+<span class="fc" id="L148">    return rhyme.renderVndErrorResponse(error);</span>
   }
 
 }
