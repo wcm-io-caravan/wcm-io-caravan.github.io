@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -92,7 +92,7 @@ var activeTableTab = "activeTableTab";
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="subTitle">io.wcm.caravan.rhyme.aem.integration</div>
-<h2 title="Interface SlingResourceAdapter.TypedResourceAdapter" class="title">Interface SlingResourceAdapter.TypedResourceAdapter&lt;T&gt;</h2>
+<h2 title="Interface SlingResourceAdapter.TypedResourceAdapter" class="title">Interface SlingResourceAdapter.TypedResourceAdapter&lt;I,M extends I&gt;</h2>
 </div>
 <div class="contentContainer">
 <div class="description">
@@ -104,7 +104,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public static interface <span class="typeNameLabel">SlingResourceAdapter.TypedResourceAdapter&lt;T&gt;</span></pre>
+<pre>public static interface <span class="typeNameLabel">SlingResourceAdapter.TypedResourceAdapter&lt;I,M extends I&gt;</span></pre>
 </li>
 </ul>
 </div>
@@ -124,35 +124,39 @@ var activeTableTab = "activeTableTab";
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a></code></td>
+<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html#getInstance--">getInstance</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util">Optional</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;</code></td>
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util">Optional</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html#getOptional--">getOptional</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html?is-external=true" title="class or interface in java.util.stream">Stream</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;</code></td>
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html?is-external=true" title="class or interface in java.util.stream">Stream</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html#getStream--">getStream</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;</code></td>
+<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>,<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html#withLinkName-java.lang.String-">withLinkName</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;</code></td>
+<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>,<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html#withLinkTitle-java.lang.String-">withLinkTitle</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;title)</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html#withPartialLinkTemplate--">withPartialLinkTemplate</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>,<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html#withModifications-java.util.function.Consumer-">withModifications</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html?is-external=true" title="class or interface in java.util.function">Consumer</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;&nbsp;consumer)</code>&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html#withQueryParameters-java.util.Map-">withQueryParameters</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;parameters)</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>,<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html#withPartialLinkTemplate--">withPartialLinkTemplate</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;</code></td>
+<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>,<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html#withQueryParameters-java.util.Map-">withQueryParameters</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;parameters)</code>&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>,<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html#withQueryParameterTemplate-java.lang.String...-">withQueryParameterTemplate</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;names)</code>&nbsp;</td>
 </tr>
 </table>
@@ -170,13 +174,22 @@ var activeTableTab = "activeTableTab";
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="withModifications-java.util.function.Consumer-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withModifications</h4>
+<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>,<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;&nbsp;withModifications(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html?is-external=true" title="class or interface in java.util.function">Consumer</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;&nbsp;consumer)</pre>
+</li>
+</ul>
 <a name="withLinkTitle-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>withLinkTitle</h4>
-<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;&nbsp;withLinkTitle(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;title)</pre>
+<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>,<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;&nbsp;withLinkTitle(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;title)</pre>
 </li>
 </ul>
 <a name="withLinkName-java.lang.String-">
@@ -185,7 +198,7 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>withLinkName</h4>
-<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;&nbsp;withLinkName(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</pre>
+<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>,<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;&nbsp;withLinkName(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</pre>
 </li>
 </ul>
 <a name="withQueryParameterTemplate-java.lang.String...-">
@@ -194,7 +207,7 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>withQueryParameterTemplate</h4>
-<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;&nbsp;withQueryParameterTemplate(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;names)</pre>
+<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>,<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;&nbsp;withQueryParameterTemplate(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;names)</pre>
 </li>
 </ul>
 <a name="withQueryParameters-java.util.Map-">
@@ -203,7 +216,7 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>withQueryParameters</h4>
-<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;&nbsp;withQueryParameters(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;parameters)</pre>
+<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>,<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;&nbsp;withQueryParameters(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&gt;&nbsp;parameters)</pre>
 </li>
 </ul>
 <a name="withPartialLinkTemplate--">
@@ -212,7 +225,7 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>withPartialLinkTemplate</h4>
-<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;&nbsp;withPartialLinkTemplate()</pre>
+<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="interface in io.wcm.caravan.rhyme.aem.integration">SlingResourceAdapter.TypedResourceAdapter</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>,<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&gt;&nbsp;withPartialLinkTemplate()</pre>
 </li>
 </ul>
 <a name="getInstance--">
@@ -221,7 +234,7 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>getInstance</h4>
-<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&nbsp;getInstance()</pre>
+<pre><a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">M</a>&nbsp;getInstance()</pre>
 </li>
 </ul>
 <a name="getOptional--">
@@ -230,7 +243,7 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>getOptional</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util">Optional</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;&nbsp;getOptional()</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util">Optional</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>&gt;&nbsp;getOptional()</pre>
 </li>
 </ul>
 <a name="getStream--">
@@ -239,7 +252,7 @@ var activeTableTab = "activeTableTab";
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getStream</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html?is-external=true" title="class or interface in java.util.stream">Stream</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">T</a>&gt;&nbsp;getStream()</pre>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html?is-external=true" title="class or interface in java.util.stream">Stream</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/aem/integration/SlingResourceAdapter.TypedResourceAdapter.html" title="type parameter in SlingResourceAdapter.TypedResourceAdapter">I</a>&gt;&nbsp;getStream()</pre>
 </li>
 </ul>
 </li>
