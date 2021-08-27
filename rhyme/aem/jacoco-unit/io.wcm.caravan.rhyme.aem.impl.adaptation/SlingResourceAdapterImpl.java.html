@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import com.google.common.base.Preconditions;
 
 import io.wcm.caravan.rhyme.aem.api.SlingRhyme;
-import io.wcm.caravan.rhyme.aem.api.adaptation.PostAdaptionStage;
+import io.wcm.caravan.rhyme.aem.api.adaptation.PostAdaptationStage;
 import io.wcm.caravan.rhyme.aem.api.adaptation.SlingResourceAdapter;
 import io.wcm.caravan.rhyme.aem.impl.RhymeResourceRegistry;
 import io.wcm.caravan.rhyme.aem.impl.util.PageUtils;
@@ -222,23 +222,23 @@ public class SlingResourceAdapterImpl implements SlingResourceAdapter {
   }
 
   @Override
-  public &lt;I&gt; PostAdaptionStage&lt;I, I&gt; adaptTo(Class&lt;I&gt; clazz) {
+  public &lt;I&gt; PostAdaptationStage&lt;I, I&gt; adaptTo(Class&lt;I&gt; clazz) {
 
 <span class="fc bfc" id="L227" title="All 2 branches covered.">    if (nullResourcePathGiven) {</span>
-<span class="fc" id="L228">      return new UnknownResourcePostAdaptionStage&lt;I, I&gt;(this, clazz, registry);</span>
+<span class="fc" id="L228">      return new TemplateProxyPostAdaptationStage&lt;I, I&gt;(this, clazz, registry);</span>
     }
 
-<span class="fc" id="L231">    return new SlingModelPostAdaptionStage&lt;I, I&gt;(this, clazz, clazz);</span>
+<span class="fc" id="L231">    return new SlingModelPostAdaptationStage&lt;I, I&gt;(this, clazz, clazz);</span>
   }
 
   @Override
-  public &lt;I, M extends I&gt; PostAdaptionStage&lt;I, M&gt; adaptTo(Class&lt;I&gt; halApiInterface, Class&lt;M&gt; slingModelClass) {
+  public &lt;I, M extends I&gt; PostAdaptationStage&lt;I, M&gt; adaptTo(Class&lt;I&gt; halApiInterface, Class&lt;M&gt; slingModelClass) {
 
 <span class="fc bfc" id="L237" title="All 2 branches covered.">    if (nullResourcePathGiven) {</span>
 <span class="fc" id="L238">      throw new HalApiDeveloperException(&quot;You cannot specify a model class if pure template generation was forced by calling #selectResourceAt&quot;);</span>
     }
 
-<span class="fc" id="L241">    return new SlingModelPostAdaptionStage&lt;I, M&gt;(this, halApiInterface, slingModelClass);</span>
+<span class="fc" id="L241">    return new SlingModelPostAdaptationStage&lt;I, M&gt;(this, halApiInterface, slingModelClass);</span>
   }
 
 

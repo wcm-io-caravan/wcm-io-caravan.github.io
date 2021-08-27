@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TemplateProxyPostAdaptationStage.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - AEM Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.impl.adaptation</a> &gt; <span class="el_source">TemplateProxyPostAdaptationStage.java</span></div><h1>TemplateProxyPostAdaptationStage.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.aem.impl.adaptation;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+
+import com.damnhandy.uri.template.UriTemplate;
+import com.damnhandy.uri.template.UriTemplateBuilder;
+
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.aem.api.adaptation.PostAdaptationStage;
+import io.wcm.caravan.rhyme.aem.impl.HalApiServlet;
+import io.wcm.caravan.rhyme.aem.impl.RhymeResourceRegistry;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.handler.url.UrlHandler;
+
+final class TemplateProxyPostAdaptationStage&lt;I, M extends I&gt; implements PostAdaptationStage&lt;I, M&gt; {
+
+  private static final String PATH_PLACEHOLDER = &quot;/letsassumethisisunlikelytoexist&quot;;
+
+  private final SlingResourceAdapterImpl adapterImpl;
+  private final Class&lt;I&gt; halApiInterface;
+  private final RhymeResourceRegistry registry;
+
+  private String linkTitle;
+  private String linkName;
+  private String[] queryParameters;
+
+<span class="fc" id="L52">  TemplateProxyPostAdaptationStage(SlingResourceAdapterImpl adapterImpl, Class&lt;I&gt; halApiInterface, RhymeResourceRegistry registry) {</span>
+<span class="fc" id="L53">    this.adapterImpl = adapterImpl;</span>
+<span class="fc" id="L54">    this.halApiInterface = halApiInterface;</span>
+<span class="fc" id="L55">    this.registry = registry;</span>
+<span class="fc" id="L56">  }</span>
+
+  @Override
+  public PostAdaptationStage&lt;I, M&gt; withLinkTitle(String title) {
+<span class="fc" id="L60">    this.linkTitle = title;</span>
+<span class="fc" id="L61">    return this;</span>
+  }
+
+  @Override
+  public PostAdaptationStage&lt;I, M&gt; withLinkName(String name) {
+<span class="fc" id="L66">    this.linkName = name;</span>
+<span class="fc" id="L67">    return this;</span>
+  }
+
+  @Override
+  public PostAdaptationStage&lt;I, M&gt; withQueryParameterTemplate(String... names) {
+<span class="fc" id="L72">    this.queryParameters = names;</span>
+<span class="fc" id="L73">    return this;</span>
+  }
+
+  @Override
+  public PostAdaptationStage&lt;I, M&gt; withPartialLinkTemplate() {
+<span class="fc" id="L78">    throw new HalApiDeveloperException(&quot;#withPartialLinkTemplate cannot be called if you selected a null resource path to build a template&quot;);</span>
+  }
+
+  @Override
+  public SlingModelPostAdaptationStage&lt;I, M&gt; withModifications(Consumer&lt;M&gt; decorator) {
+<span class="fc" id="L83">    throw new HalApiDeveloperException(&quot;#withModifications cannot be called if you selected a null resource path to build a template&quot;);</span>
+  }
+
+  @Override
+  public M getInstance() {
+<span class="fc" id="L88">    return createResourceProxy();</span>
+  }
+
+  @Override
+  public Optional&lt;I&gt; getOptional() {
+<span class="fc" id="L93">    return Optional.of(createResourceProxy());</span>
+  }
+
+  @Override
+  public Stream&lt;I&gt; getStream() {
+<span class="fc" id="L98">    return Stream.of(createResourceProxy());</span>
+  }
+
+  private &lt;T extends LinkableResource&gt; T createResourceProxy() {
+
+<span class="fc" id="L103">    return (T)Proxy.newProxyInstance(halApiInterface.getClassLoader(), new Class[] { halApiInterface }, new InvocationHandler() {</span>
+
+      @Override
+      public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (method.getName().equals(&quot;createLink&quot;)) {</span>
+<span class="fc" id="L109">          return createLink();</span>
+        }
+
+<span class="fc" id="L112">        throw new HalApiDeveloperException(&quot;Unsupported call to &quot; + method.getName() + &quot; method on &quot;</span>
+<span class="fc" id="L113">            + halApiInterface.getName() + &quot; proxy instance. &quot;</span>
+            + &quot;Any instances created with SlingLinkBuilder#selectResourceAt(null) can only be used to create link templates for these resources&quot;);
+      }
+    });
+  }
+
+  private Link createLink() {
+
+<span class="fc" id="L121">    String baseTemplate = getResourceUrl().replace(PATH_PLACEHOLDER, &quot;{+path}&quot;);</span>
+
+<span class="fc" id="L123">    UriTemplateBuilder builder = UriTemplate.buildFromTemplate(baseTemplate);</span>
+
+<span class="fc bfc" id="L125" title="All 2 branches covered.">    if (queryParameters != null) {</span>
+<span class="fc" id="L126">      builder.query(queryParameters);</span>
+    }
+<span class="fc" id="L128">    String uriTemplate = builder.build()</span>
+<span class="fc" id="L129">        .getTemplate();</span>
+
+<span class="fc" id="L131">    return new Link(uriTemplate)</span>
+<span class="fc" id="L132">        .setTitle(linkTitle)</span>
+<span class="fc" id="L133">        .setName(linkName);</span>
+  }
+
+  private String getResourceUrl() {
+
+<span class="fc" id="L138">    String selector = registry.getSelectorForHalApiInterface(halApiInterface).orElse(null);</span>
+
+<span class="fc" id="L140">    UrlHandler urlHandler = adapterImpl.getSlingRhyme().adaptTo(UrlHandler.class);</span>
+
+<span class="fc" id="L142">    return urlHandler.get(PATH_PLACEHOLDER)</span>
+<span class="fc" id="L143">        .selectors(selector)</span>
+<span class="fc" id="L144">        .extension(HalApiServlet.EXTENSION)</span>
+<span class="fc" id="L145">        .buildExternalLinkUrl();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

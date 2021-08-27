@@ -133,8 +133,8 @@
   </thead> 
   <tbody> 
    <tr class="b"> 
-    <td>28</td> 
-    <td>4</td> 
+    <td>33</td> 
+    <td>5</td> 
     <td>0</td> 
     <td>4</td> 
    </tr> 
@@ -156,7 +156,7 @@
     <td>1</td> 
    </tr> 
    <tr class="a"> 
-    <td><a href="#io.wcm.caravan.rhyme.aem.impl.adaptation.UnknownResourcePostAdaptionStage">io.wcm.caravan.rhyme.aem.impl.adaptation.UnknownResourcePostAdaptionStage</a></td> 
+    <td><a href="#io.wcm.caravan.rhyme.aem.impl.adaptation.TemplateProxyPostAdaptationStage">io.wcm.caravan.rhyme.aem.impl.adaptation.TemplateProxyPostAdaptationStage</a></td> 
     <td>1</td> 
    </tr> 
    <tr class="b"> 
@@ -164,6 +164,10 @@
     <td>1</td> 
    </tr> 
    <tr class="a"> 
+    <td><a href="#io.wcm.caravan.rhyme.aem.impl.parameters.QueryParamInjector">io.wcm.caravan.rhyme.aem.impl.parameters.QueryParamInjector</a></td> 
+    <td>1</td> 
+   </tr> 
+   <tr class="b"> 
     <td><a href="#io.wcm.caravan.rhyme.aem.impl.util.PageUtils">io.wcm.caravan.rhyme.aem.impl.util.PageUtils</a></td> 
     <td>1</td> 
    </tr> 
@@ -174,7 +178,7 @@
  <h3 id="io.wcm.caravan.rhyme.aem.impl.HalApiServlet">io.wcm.caravan.rhyme.aem.impl.HalApiServlet</h3> 
  <table border="0" class="bodyTable table table-striped table-hover"> 
   <thead> 
-   <tr class="b"> 
+   <tr class="a"> 
     <th>Bug</th> 
     <th>Category</th> 
     <th>Details</th> 
@@ -183,21 +187,21 @@
    </tr> 
   </thead> 
   <tbody> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td>Possible null pointer dereference in io.wcm.caravan.rhyme.aem.impl.HalApiServlet.doGet(SlingHttpServletRequest, SlingHttpServletResponse) due to return value of called method</td> 
     <td>STYLE</td> 
     <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE</a></td> 
-    <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/HalApiServlet.html#L68">68</a></td> 
+    <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/HalApiServlet.html#L76">76</a></td> 
     <td>High</td> 
    </tr> 
   </tbody> 
  </table> 
-</section><a name="io.wcm.caravan.rhyme.aem.impl.adaptation.UnknownResourcePostAdaptionStage"></a> 
+</section><a name="io.wcm.caravan.rhyme.aem.impl.adaptation.TemplateProxyPostAdaptationStage"></a> 
 <section> 
- <h3 id="io.wcm.caravan.rhyme.aem.impl.adaptation.UnknownResourcePostAdaptionStage">io.wcm.caravan.rhyme.aem.impl.adaptation.UnknownResourcePostAdaptionStage</h3> 
+ <h3 id="io.wcm.caravan.rhyme.aem.impl.adaptation.TemplateProxyPostAdaptationStage">io.wcm.caravan.rhyme.aem.impl.adaptation.TemplateProxyPostAdaptationStage</h3> 
  <table border="0" class="bodyTable table table-striped table-hover"> 
   <thead> 
-   <tr class="b"> 
+   <tr class="a"> 
     <th>Bug</th> 
     <th>Category</th> 
     <th>Details</th> 
@@ -206,11 +210,11 @@
    </tr> 
   </thead> 
   <tbody> 
-   <tr class="a"> 
-    <td>Possible null pointer dereference in io.wcm.caravan.rhyme.aem.impl.adaptation.UnknownResourcePostAdaptionStage.getResourceUrl() due to return value of called method</td> 
+   <tr class="b"> 
+    <td>Possible null pointer dereference in io.wcm.caravan.rhyme.aem.impl.adaptation.TemplateProxyPostAdaptationStage.getResourceUrl() due to return value of called method</td> 
     <td>STYLE</td> 
     <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE</a></td> 
-    <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/adaptation/UnknownResourcePostAdaptionStage.html#L148">148</a></td> 
+    <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/adaptation/TemplateProxyPostAdaptationStage.html#L142">142</a></td> 
     <td>Medium</td> 
    </tr> 
   </tbody> 
@@ -220,7 +224,7 @@
  <h3 id="io.wcm.caravan.rhyme.aem.impl.docs.RhymeDocsOsgiBundleSupport">io.wcm.caravan.rhyme.aem.impl.docs.RhymeDocsOsgiBundleSupport</h3> 
  <table border="0" class="bodyTable table table-striped table-hover"> 
   <thead> 
-   <tr class="b"> 
+   <tr class="a"> 
     <th>Bug</th> 
     <th>Category</th> 
     <th>Details</th> 
@@ -229,11 +233,34 @@
    </tr> 
   </thead> 
   <tbody> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td>This web server request could be used by an attacker to expose internal services and filesystem.</td> 
     <td>SECURITY</td> 
     <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#URLCONNECTION_SSRF_FD">URLCONNECTION_SSRF_FD</a></td> 
     <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/docs/RhymeDocsOsgiBundleSupport.html#L67">67</a></td> 
+    <td>Medium</td> 
+   </tr> 
+  </tbody> 
+ </table> 
+</section><a name="io.wcm.caravan.rhyme.aem.impl.parameters.QueryParamInjector"></a> 
+<section> 
+ <h3 id="io.wcm.caravan.rhyme.aem.impl.parameters.QueryParamInjector">io.wcm.caravan.rhyme.aem.impl.parameters.QueryParamInjector</h3> 
+ <table border="0" class="bodyTable table table-striped table-hover"> 
+  <thead> 
+   <tr class="a"> 
+    <th>Bug</th> 
+    <th>Category</th> 
+    <th>Details</th> 
+    <th>Line</th> 
+    <th>Priority</th> 
+   </tr> 
+  </thead> 
+  <tbody> 
+   <tr class="b"> 
+    <td>Possible null pointer dereference in io.wcm.caravan.rhyme.aem.impl.parameters.QueryParamInjector.getValue(Object, String, Type, AnnotatedElement, DisposalCallbackRegistry) due to return value of called method</td> 
+    <td>STYLE</td> 
+    <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE</a></td> 
+    <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/parameters/QueryParamInjector.html#L78">78</a></td> 
     <td>Medium</td> 
    </tr> 
   </tbody> 
@@ -243,7 +270,7 @@
  <h3 id="io.wcm.caravan.rhyme.aem.impl.util.PageUtils">io.wcm.caravan.rhyme.aem.impl.util.PageUtils</h3> 
  <table border="0" class="bodyTable table table-striped table-hover"> 
   <thead> 
-   <tr class="b"> 
+   <tr class="a"> 
     <th>Bug</th> 
     <th>Category</th> 
     <th>Details</th> 
@@ -252,7 +279,7 @@
    </tr> 
   </thead> 
   <tbody> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td>Possible null pointer dereference in io.wcm.caravan.rhyme.aem.impl.util.PageUtils.getParentPageResource(Resource) due to return value of called method</td> 
     <td>STYLE</td> 
     <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE</a></td> 
@@ -274,8 +301,9 @@
     <li class="dropdown"><a href="#Files" title="Files">Files <b class="caret"></b></a>
       <ul class="nav nav-list">
     <li><a href="#io.wcm.caravan.rhyme.aem.impl.HalApiServlet" title="io.wcm.caravan.rhyme.aem.impl.HalApiServlet">io.wcm.caravan.rhyme.aem.impl.HalApiServlet</a>
-    <li><a href="#io.wcm.caravan.rhyme.aem.impl.adaptation.UnknownResourcePostAdaptionStage" title="io.wcm.caravan.rhyme.aem.impl.adaptation.UnknownResourcePostAdaptionStage">io.wcm.caravan.rhyme.aem.impl.adaptation.UnknownResourcePostAdaptionStage</a>
+    <li><a href="#io.wcm.caravan.rhyme.aem.impl.adaptation.TemplateProxyPostAdaptationStage" title="io.wcm.caravan.rhyme.aem.impl.adaptation.TemplateProxyPostAdaptationStage">io.wcm.caravan.rhyme.aem.impl.adaptation.TemplateProxyPostAdaptationStage</a>
     <li><a href="#io.wcm.caravan.rhyme.aem.impl.docs.RhymeDocsOsgiBundleSupport" title="io.wcm.caravan.rhyme.aem.impl.docs.RhymeDocsOsgiBundleSupport">io.wcm.caravan.rhyme.aem.impl.docs.RhymeDocsOsgiBundleSupport</a>
+    <li><a href="#io.wcm.caravan.rhyme.aem.impl.parameters.QueryParamInjector" title="io.wcm.caravan.rhyme.aem.impl.parameters.QueryParamInjector">io.wcm.caravan.rhyme.aem.impl.parameters.QueryParamInjector</a>
     <li><a href="#io.wcm.caravan.rhyme.aem.impl.util.PageUtils" title="io.wcm.caravan.rhyme.aem.impl.util.PageUtils">io.wcm.caravan.rhyme.aem.impl.util.PageUtils</a>
         <li class="divider"></li>
       </ul>

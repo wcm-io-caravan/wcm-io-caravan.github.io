@@ -17,6 +17,7 @@ import io.wcm.caravan.rhyme.aem.api.resources.SlingLinkableResource;
 import io.wcm.caravan.rhyme.aem.impl.HalApiServlet;
 import io.wcm.caravan.rhyme.aem.impl.RhymeResourceRegistry;
 import io.wcm.caravan.rhyme.aem.impl.SlingRhymeImpl;
+import io.wcm.caravan.rhyme.aem.impl.parameters.QueryParamCollector;
 import io.wcm.handler.url.UrlHandler;
 
 @Model(adaptables = SlingRhyme.class, adapters = SlingLinkBuilder.class)
@@ -36,55 +37,57 @@ public class SlingLinkBuilderImpl implements SlingLinkBuilder {
    * @param registry to lookup the selectors to be used for URL generation
    */
   @Inject
-<span class="fc" id="L39">  public SlingLinkBuilderImpl(@Self Resource targetResource, @Self UrlHandler urlHandler, RhymeResourceRegistry registry) {</span>
-<span class="fc" id="L40">    this.targetResource = targetResource;</span>
-<span class="fc" id="L41">    this.urlHandler = urlHandler;</span>
-<span class="fc" id="L42">    this.registry = registry;</span>
-<span class="fc" id="L43">  }</span>
+<span class="fc" id="L40">  public SlingLinkBuilderImpl(@Self Resource targetResource, @Self UrlHandler urlHandler, RhymeResourceRegistry registry) {</span>
+<span class="fc" id="L41">    this.targetResource = targetResource;</span>
+<span class="fc" id="L42">    this.urlHandler = urlHandler;</span>
+<span class="fc" id="L43">    this.registry = registry;</span>
+<span class="fc" id="L44">  }</span>
 
   @Override
   public Link createLinkToCurrentResource(SlingLinkableResource slingModel) {
 
-<span class="fc" id="L48">    String url = buildResourceUrl(slingModel);</span>
+<span class="fc" id="L49">    String url = buildResourceUrl(slingModel);</span>
 
-<span class="fc" id="L50">    Link link = new Link(url)</span>
-<span class="fc" id="L51">        .setName(slingModel.getLinkName())</span>
-<span class="fc" id="L52">        .setTitle(slingModel.getLinkTitle());</span>
+<span class="fc" id="L51">    Link link = new Link(url)</span>
+<span class="fc" id="L52">        .setName(slingModel.getLinkProperties().getName())</span>
+<span class="fc" id="L53">        .setTitle(slingModel.getLinkProperties().getTitle());</span>
 
-<span class="fc" id="L54">    return link;</span>
+<span class="fc" id="L55">    return link;</span>
   }
 
   private String buildResourceUrl(SlingLinkableResource slingModel) {
 
-<span class="fc" id="L59">    String url = urlHandler.get(targetResource)</span>
-<span class="fc" id="L60">        .selectors(getClassSpecificSelector(slingModel))</span>
-<span class="fc" id="L61">        .extension(HalApiServlet.EXTENSION)</span>
-<span class="fc" id="L62">        .build();</span>
+<span class="fc" id="L60">    String url = urlHandler.get(targetResource)</span>
+<span class="fc" id="L61">        .selectors(getClassSpecificSelector(slingModel))</span>
+<span class="fc" id="L62">        .extension(HalApiServlet.EXTENSION)</span>
+<span class="fc" id="L63">        .build();</span>
 
-<span class="fc" id="L64">    return appendQueryWithTemplate(url, slingModel);</span>
+<span class="fc" id="L65">    return appendQueryWithTemplate(url, slingModel);</span>
   }
 
   private String appendQueryWithTemplate(String baseUrl, SlingLinkableResource slingModel) {
 
-<span class="fc" id="L69">    Map&lt;String, Object&gt; queryParams = slingModel.getQueryParameters();</span>
-<span class="fc bfc" id="L70" title="All 2 branches covered.">    if (queryParams.isEmpty()) {</span>
-<span class="fc" id="L71">      return baseUrl;</span>
+<span class="fc" id="L70">    QueryParamCollector collector = new QueryParamCollector();</span>
+
+<span class="fc" id="L72">    Map&lt;String, Object&gt; queryParams = collector.getQueryParameters(slingModel);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (queryParams.isEmpty()) {</span>
+<span class="fc" id="L74">      return baseUrl;</span>
     }
-<span class="fc" id="L73">    String[] names = queryParams.keySet().toArray(new String[queryParams.size()]);</span>
+<span class="fc" id="L76">    String[] names = queryParams.keySet().toArray(new String[queryParams.size()]);</span>
 
-<span class="fc" id="L75">    UriTemplate template = UriTemplate.buildFromTemplate(baseUrl).query(names).build();</span>
+<span class="fc" id="L78">    UriTemplate template = UriTemplate.buildFromTemplate(baseUrl).query(names).build();</span>
 
-<span class="fc" id="L77">    queryParams.entrySet().stream()</span>
-<span class="fc bfc" id="L78" title="All 2 branches covered.">        .filter(entry -&gt; entry.getValue() != null)</span>
-<span class="fc" id="L79">        .forEach(entry -&gt; template.set(entry.getKey(), entry.getValue()));</span>
+<span class="fc" id="L80">    queryParams.entrySet().stream()</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        .filter(entry -&gt; entry.getValue() != null)</span>
+<span class="fc" id="L82">        .forEach(entry -&gt; template.set(entry.getKey(), entry.getValue()));</span>
 
-<span class="fc bfc" id="L81" title="All 2 branches covered.">    return slingModel.isExpandAllVariables() ? template.expand() : template.expandPartial();</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">    return slingModel.getLinkProperties().isTemplated() ? template.expandPartial() : template.expand();</span>
   }
 
   private String getClassSpecificSelector(SlingLinkableResource slingModel) {
 
-<span class="fc" id="L86">    return registry.getSelectorForModelClass(slingModel.getClass())</span>
-<span class="fc" id="L87">        .orElse(null);</span>
+<span class="fc" id="L89">    return registry.getSelectorForModelClass(slingModel.getClass())</span>
+<span class="fc" id="L90">        .orElse(null);</span>
   }
 
 }

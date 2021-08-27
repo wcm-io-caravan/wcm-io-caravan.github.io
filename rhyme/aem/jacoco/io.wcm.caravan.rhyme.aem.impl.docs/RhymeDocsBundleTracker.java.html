@@ -77,7 +77,7 @@ import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
 <span class="fc" id="L77">    log.info(&quot;Rhyme docs were found in bundle {} at {}&quot;, bundle.getSymbolicName(), rhymeDocsUrl);</span>
 <span class="fc" id="L78">    return true;</span>
   }
-  
+
   @Override
   public String addingBundle(Bundle bundle, BundleEvent event) {
 
@@ -88,8 +88,8 @@ import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
     }
 
 <span class="fc" id="L90">    rhymeDocsSupport.registerBundle(bundle);</span>
-  
-<span class="fc" id="L92">    return bundle.getSymbolicName();  </span>
+
+<span class="fc" id="L92">    return bundle.getSymbolicName();</span>
   }
 
   @Override

@@ -25,7 +25,7 @@
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> com.google.common.base.Preconditions;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.aem.api.SlingRhyme;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.aem.api.adaptation.PostAdaptionStage;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.aem.api.adaptation.PostAdaptationStage;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.aem.api.adaptation.SlingResourceAdapter;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.aem.impl.RhymeResourceRegistry;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.aem.impl.util.PageUtils;
@@ -230,23 +230,23 @@
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>   }
 <a class="jxr_linenumber" name="L223" href="#L223">223</a> 
 <a class="jxr_linenumber" name="L224" href="#L224">224</a>   @Override
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>   <strong class="jxr_keyword">public</strong> &lt;I&gt; PostAdaptionStage&lt;I, I&gt; adaptTo(Class&lt;I&gt; clazz) {
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>   <strong class="jxr_keyword">public</strong> &lt;I&gt; PostAdaptationStage&lt;I, I&gt; adaptTo(Class&lt;I&gt; clazz) {
 <a class="jxr_linenumber" name="L226" href="#L226">226</a> 
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>     <strong class="jxr_keyword">if</strong> (nullResourcePathGiven) {
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> UnknownResourcePostAdaptionStage&lt;I, I&gt;(<strong class="jxr_keyword">this</strong>, clazz, registry);
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TemplateProxyPostAdaptationStage&lt;I, I&gt;(<strong class="jxr_keyword">this</strong>, clazz, registry);
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>     }
 <a class="jxr_linenumber" name="L230" href="#L230">230</a> 
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> SlingModelPostAdaptionStage&lt;I, I&gt;(<strong class="jxr_keyword">this</strong>, clazz, clazz);
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> SlingModelPostAdaptationStage&lt;I, I&gt;(<strong class="jxr_keyword">this</strong>, clazz, clazz);
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>   }
 <a class="jxr_linenumber" name="L233" href="#L233">233</a> 
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>   @Override
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>   <strong class="jxr_keyword">public</strong> &lt;I, M <strong class="jxr_keyword">extends</strong> I&gt; PostAdaptionStage&lt;I, M&gt; adaptTo(Class&lt;I&gt; halApiInterface, Class&lt;M&gt; slingModelClass) {
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>   <strong class="jxr_keyword">public</strong> &lt;I, M <strong class="jxr_keyword">extends</strong> I&gt; PostAdaptationStage&lt;I, M&gt; adaptTo(Class&lt;I&gt; halApiInterface, Class&lt;M&gt; slingModelClass) {
 <a class="jxr_linenumber" name="L236" href="#L236">236</a> 
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>     <strong class="jxr_keyword">if</strong> (nullResourcePathGiven) {
 <a class="jxr_linenumber" name="L238" href="#L238">238</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> HalApiDeveloperException(<span class="jxr_string">"You cannot specify a model class if pure template generation was forced by calling #selectResourceAt"</span>);
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>     }
 <a class="jxr_linenumber" name="L240" href="#L240">240</a> 
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> SlingModelPostAdaptionStage&lt;I, M&gt;(<strong class="jxr_keyword">this</strong>, halApiInterface, slingModelClass);
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> SlingModelPostAdaptationStage&lt;I, M&gt;(<strong class="jxr_keyword">this</strong>, halApiInterface, slingModelClass);
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>   }
 <a class="jxr_linenumber" name="L243" href="#L243">243</a> 
 <a class="jxr_linenumber" name="L244" href="#L244">244</a> 

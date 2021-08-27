@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractLinkableResource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - AEM Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.api.resources</a> &gt; <span class="el_source">AbstractLinkableResource.java</span></div><h1>AbstractLinkableResource.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.aem.api.resources;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import javax.annotation.PostConstruct;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.request.RequestParameter;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 
 import io.wcm.caravan.hal.resource.Link;
 import io.wcm.caravan.rhyme.aem.api.SlingRhyme;
 import io.wcm.caravan.rhyme.aem.api.adaptation.SlingResourceAdapter;
+import io.wcm.caravan.rhyme.aem.api.linkbuilder.LinkProperties;
 import io.wcm.caravan.rhyme.aem.api.linkbuilder.SlingLinkBuilder;
 import io.wcm.caravan.rhyme.api.annotations.HalApiInterface;
 import io.wcm.caravan.rhyme.api.resources.LinkableResource;
@@ -21,7 +19,7 @@ import io.wcm.caravan.rhyme.api.resources.LinkableResource;
  * also contains an implementation of {@link LinkableResource#createLink()} that uses
  * the {@link SlingLinkBuilder} to generate the link.
  */
-<span class="fc" id="L24">public abstract class AbstractLinkableResource implements LinkableResource, SlingLinkableResource {</span>
+<span class="fc" id="L22">public abstract class AbstractLinkableResource implements LinkableResource, SlingLinkableResource {</span>
 
   @Self
   protected SlingRhyme rhyme;
@@ -32,88 +30,27 @@ import io.wcm.caravan.rhyme.api.resources.LinkableResource;
   @Self
   protected SlingLinkBuilder linkBuilder;
 
-  private String contextLinkTitle;
-  private String linkName;
+<span class="fc" id="L33">  private final LinkProperties linkProperties = new LinkProperties();</span>
 
-<span class="fc" id="L38">  private boolean useParametersFromRequest = true;</span>
-<span class="fc" id="L39">  private Map&lt;String, Object&gt; queryParameters = new LinkedHashMap&lt;&gt;();</span>
-
-<span class="fc" id="L41">  private boolean expandAllVariables = true;</span>
-
-  @Self
-  private SlingHttpServletRequest request;
-
+  @PostConstruct
+  void init() {
+<span class="fc" id="L37">    linkProperties.setTitle(getDefaultLinkTitle());</span>
+<span class="fc" id="L38">    linkProperties.setName(rhyme.getCurrentResource().getName());</span>
+<span class="fc" id="L39">  }</span>
 
   @Override
   public Link createLink() {
 
-<span class="fc" id="L50">    return linkBuilder.createLinkToCurrentResource(this);</span>
+<span class="fc" id="L44">    return linkBuilder.createLinkToCurrentResource(this);</span>
   }
 
   @Override
-  public String getLinkTitle() {
+  public LinkProperties getLinkProperties() {
 
-<span class="fc bfc" id="L56" title="All 2 branches covered.">    return contextLinkTitle != null ? contextLinkTitle : getDefaultLinkTitle();</span>
+<span class="fc" id="L50">    return linkProperties;</span>
   }
-
-  @Override
-  public void setLinkTitle(String linkTitle) {
-
-<span class="fc" id="L62">    this.contextLinkTitle = linkTitle;</span>
-<span class="fc" id="L63">  }</span>
-
-  @Override
-  public String getLinkName() {
-
-<span class="fc bfc" id="L68" title="All 2 branches covered.">    if (linkName != null) {</span>
-<span class="fc" id="L69">      return linkName;</span>
-    }
-
-<span class="fc bfc" id="L72" title="All 2 branches covered.">    if (rhyme != null) {</span>
-<span class="fc" id="L73">      return rhyme.getCurrentResource().getName();</span>
-    }
-
-<span class="fc" id="L76">    return null;</span>
-  }
-
-  @Override
-  public void setLinkName(String name) {
-
-<span class="fc" id="L82">    this.linkName = name;</span>
-<span class="fc" id="L83">  }</span>
 
   protected abstract String getDefaultLinkTitle();
-
-  @Override
-  public Map&lt;String, Object&gt; getQueryParameters() {
-
-<span class="fc bfc" id="L90" title="All 2 branches covered.">    if (useParametersFromRequest) {</span>
-<span class="fc bfc" id="L91" title="All 2 branches covered.">      for (RequestParameter parameter : request.getRequestParameterList()) {</span>
-        // TODO: add support for parameters with multiple values
-<span class="fc" id="L93">        queryParameters.put(parameter.getName(), parameter.getString());</span>
-<span class="fc" id="L94">      }</span>
-<span class="fc" id="L95">      useParametersFromRequest = false;</span>
-    }
-
-<span class="fc" id="L98">    return queryParameters;</span>
-  }
-
-  @Override
-  public void setQueryParameters(Map&lt;String, Object&gt; parameters) {
-<span class="fc" id="L103">    useParametersFromRequest = false;</span>
-<span class="fc" id="L104">    queryParameters = parameters;</span>
-<span class="fc" id="L105">  }</span>
-
-  @Override
-  public void setExpandAllVariables(boolean expandAllVariables) {
-<span class="fc" id="L109">    this.expandAllVariables = expandAllVariables;</span>
-<span class="fc" id="L110">  }</span>
-
-  @Override
-  public boolean isExpandAllVariables() {
-<span class="fc" id="L114">    return expandAllVariables;</span>
-  }
-
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

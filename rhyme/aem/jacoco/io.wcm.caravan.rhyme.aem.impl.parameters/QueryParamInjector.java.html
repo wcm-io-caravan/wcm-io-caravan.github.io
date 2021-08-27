@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryParamInjector.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - AEM Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.impl.parameters</a> &gt; <span class="el_source">QueryParamInjector.java</span></div><h1>QueryParamInjector.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.aem.impl.parameters;
+
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.request.RequestParameter;
+import org.apache.sling.models.annotations.injectorspecific.InjectionStrategy;
+import org.apache.sling.models.spi.AcceptsNullName;
+import org.apache.sling.models.spi.DisposalCallbackRegistry;
+import org.apache.sling.models.spi.Injector;
+import org.apache.sling.models.spi.injectorspecific.AbstractInjectAnnotationProcessor2;
+import org.apache.sling.models.spi.injectorspecific.InjectAnnotationProcessor2;
+import org.apache.sling.models.spi.injectorspecific.StaticInjectAnnotationProcessorFactory;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.util.converter.ConversionException;
+import org.osgi.util.converter.Converter;
+import org.osgi.util.converter.Converters;
+
+import io.wcm.caravan.rhyme.aem.api.SlingRhyme;
+import io.wcm.caravan.rhyme.aem.api.parameters.QueryParam;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiServerException;
+
+@Component(property = Constants.SERVICE_RANKING + &quot;:Integer=4000&quot;, service = { Injector.class, StaticInjectAnnotationProcessorFactory.class })
+<span class="fc" id="L50">public class QueryParamInjector implements Injector, StaticInjectAnnotationProcessorFactory, AcceptsNullName {</span>
+
+  public static final String NAME = &quot;query-parameters&quot;;
+
+<span class="fc" id="L54">  private static final Converter CONVERTER = Converters.standardConverter();</span>
+
+  @Override
+  public String getName() {
+<span class="fc" id="L58">    return NAME;</span>
+  }
+
+  @Override
+  public Object getValue(Object adaptable, String name, Type declaredType, AnnotatedElement element,
+      DisposalCallbackRegistry callbackRegistry) {
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (!(adaptable instanceof SlingRhyme)) {</span>
+<span class="fc" id="L66">      return null;</span>
+    }
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">    if (!element.isAnnotationPresent(QueryParam.class)) {</span>
+<span class="fc" id="L70">      return null;</span>
+    }
+
+<span class="fc" id="L73">    SlingHttpServletRequest request = ((SlingRhyme)adaptable).adaptTo(SlingHttpServletRequest.class);</span>
+
+
+<span class="fc" id="L76">    Field field = getField(element);</span>
+
+<span class="fc bfc" id="L78" title="All 2 branches covered.">    if (!request.getRequestParameterMap().containsKey(name)) {</span>
+<span class="fc" id="L79">      return getValueForMissingParam(field);</span>
+    }
+
+<span class="fc" id="L82">    RequestParameter[] values = request.getRequestParameterMap().getValues(name);</span>
+
+<span class="fc" id="L84">    return convertValues(field, values);</span>
+  }
+
+  private static Object convertValues(Field field, RequestParameter[] values) {
+
+<span class="fc" id="L89">    String[] stringValues = Stream.of(values)</span>
+<span class="fc" id="L90">        .map(RequestParameter::toString)</span>
+<span class="fc" id="L91">        .toArray(String[]::new);</span>
+
+    try {
+
+      // note that there is a known issue here where strings cannot be converted to int
+      // with converter versions &lt; 1.0.10 and JDK &gt; 11
+      // https://issues.apache.org/jira/browse/FELIX-6157
+<span class="fc" id="L98">      return CONVERTER.convert(stringValues).to(field.getGenericType());</span>
+    }
+<span class="fc" id="L100">    catch (ConversionException ex) {</span>
+<span class="fc" id="L101">      String valueString = StringUtils.join(stringValues, &quot;,&quot;);</span>
+<span class="fc" id="L102">      throw new HalApiServerException(HttpStatus.SC_BAD_REQUEST, &quot;Invalid value '&quot; + valueString + &quot;' for parameter '&quot; + field.getName()</span>
+<span class="fc" id="L103">          + &quot;' (a value of type &quot; + field.getType().getSimpleName() + &quot; was expected)&quot;, ex);</span>
+    }
+  }
+
+  private static Object getValueForMissingParam(Field field) {
+
+<span class="fc bfc" id="L109" title="All 2 branches covered.">    if (Collection.class.isAssignableFrom(field.getType())) {</span>
+<span class="fc" id="L110">      return CONVERTER.convert(new String[0]).to(field.getGenericType());</span>
+    }
+
+<span class="fc" id="L113">    return null;</span>
+  }
+
+  private static Field getField(AnnotatedElement element) {
+<span class="fc" id="L117">    return (Field)element;</span>
+  }
+
+  @Override
+  public InjectAnnotationProcessor2 createAnnotationProcessor(AnnotatedElement element) {
+    // check if the element has the expected annotation
+<span class="fc" id="L123">    QueryParam annotation = element.getAnnotation(QueryParam.class);</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">    if (annotation != null) {</span>
+<span class="fc" id="L125">      return new QueryParamAnnotationProcessor(annotation);</span>
+    }
+<span class="fc" id="L127">    return null;</span>
+  }
+
+  private static class QueryParamAnnotationProcessor extends AbstractInjectAnnotationProcessor2 {
+
+    private final QueryParam annotation;
+
+<span class="fc" id="L134">    public QueryParamAnnotationProcessor(QueryParam annotation) {</span>
+<span class="fc" id="L135">      this.annotation = annotation;</span>
+<span class="fc" id="L136">    }</span>
+
+    @Override
+    public InjectionStrategy getInjectionStrategy() {
+<span class="fc" id="L140">      return InjectionStrategy.DEFAULT;</span>
+    }
+
+    @Override
+    public Boolean isOptional() {
+<span class="fc" id="L145">      return true;</span>
+    }
+
+    @Override
+    public String getName() {
+      // since null is not allowed as default value in annotations, the empty string means, the default should be
+      // used!
+<span class="fc bfc" id="L152" title="All 2 branches covered.">      if (annotation.name().isEmpty()) {</span>
+<span class="fc" id="L153">        return null;</span>
+      }
+<span class="fc" id="L155">      return annotation.name();</span>
+    }
+  }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

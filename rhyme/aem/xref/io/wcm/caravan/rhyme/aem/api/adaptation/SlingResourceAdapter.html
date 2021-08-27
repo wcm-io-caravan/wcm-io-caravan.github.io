@@ -29,7 +29,7 @@
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> * &lt;li&gt;(optional): Calling a &lt;b&gt;filter*&lt;/b&gt; method allows to limit adaptation to resources that match the specified</em>
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> * criteria&lt;/li&gt;</em>
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * &lt;li&gt;(required): Calling an &lt;b&gt;adaptTo&lt;/b&gt; method defines to which interface or sling model class you want these</em>
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> * resources to be adapted to. It returns a generic steps {@link PostAdaptionStage} instance that knows these types, and</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> * resources to be adapted to. It returns a generic steps {@link PostAdaptationStage} instance that knows these types, and</em>
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment"> * will be used for the following steps&lt;/li&gt;</em>
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> * &lt;li&gt;(optional): Calling a &lt;b&gt;with*&lt;/b&gt; method allows you to modify the sling model instances after they have been</em>
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment"> * created. A common use-case is to override link properties.&lt;/li&gt;</em>
@@ -79,9 +79,9 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>    <a name="SlingResourceAdapter" href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/SlingResourceAdapter.html#SlingResourceAdapter">SlingResourceAdapter</a> filterWithName(String resourceName);
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>    &lt;I&gt; PostAdaptionStage&lt;I, I&gt; adaptTo(Class&lt;I&gt; halApiInterface);
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>    &lt;I&gt; PostAdaptationStage&lt;I, I&gt; adaptTo(Class&lt;I&gt; halApiInterface);
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>    &lt;I, M <strong class="jxr_keyword">extends</strong> I&gt; PostAdaptionStage&lt;I, M&gt; adaptTo(Class&lt;I&gt; halApiInterface, Class&lt;M&gt; slingModelClass);
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>    &lt;I, M <strong class="jxr_keyword">extends</strong> I&gt; PostAdaptationStage&lt;I, M&gt; adaptTo(Class&lt;I&gt; halApiInterface, Class&lt;M&gt; slingModelClass);
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  }

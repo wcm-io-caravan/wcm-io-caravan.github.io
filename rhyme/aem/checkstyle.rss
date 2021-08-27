@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
     <item>
-      <title>File: 23,
+      <title>File: 27,
              Errors: 0,
-             Warnings: 77,
+             Warnings: 78,
              Infos: 0
       </title>
             <link>https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html</link>
@@ -88,35 +88,21 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.parameters.QueryParamInjector.java">io/wcm/caravan/rhyme/aem/impl/parameters/QueryParamInjector.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.docs.RhymeDocsBundleTracker.java">io/wcm/caravan/rhyme/aem/impl/docs/RhymeDocsBundleTracker.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.resources.AemApiDiscoveryResource.java">io/wcm/caravan/rhyme/aem/impl/resources/AemApiDiscoveryResource.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.api.SlingRhyme.java">io/wcm/caravan/rhyme/aem/api/SlingRhyme.java</a>
                 </td>
                 <td>
                   0
@@ -144,69 +130,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.api.RhymeResourceRegistration.java">io/wcm/caravan/rhyme/aem/api/RhymeResourceRegistration.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.adaptation.TemplateProxyPostAdaptationStage.java">io/wcm/caravan/rhyme/aem/impl/adaptation/TemplateProxyPostAdaptationStage.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
                   0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.util.PageUtils.java">io/wcm/caravan/rhyme/aem/impl/util/PageUtils.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.api.package-info.java">io/wcm/caravan/rhyme/aem/api/package-info.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.adaptation.SlingModelPostAdaptionStage.java">io/wcm/caravan/rhyme/aem/impl/adaptation/SlingModelPostAdaptionStage.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.linkbuilder.SlingLinkBuilderImpl.java">io/wcm/caravan/rhyme/aem/impl/linkbuilder/SlingLinkBuilderImpl.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
                 </td>
                 <td>
                   0
@@ -228,13 +158,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.resources.AemApiDiscoveryResourceImpl.java">io/wcm/caravan/rhyme/aem/impl/resources/AemApiDiscoveryResourceImpl.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.api.linkbuilder.LinkProperties.java">io/wcm/caravan/rhyme/aem/api/linkbuilder/LinkProperties.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
                 <td>
                   0
@@ -270,6 +200,146 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.adaptation.SlingModelPostAdaptationStage.java">io/wcm/caravan/rhyme/aem/impl/adaptation/SlingModelPostAdaptationStage.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.api.parameters.QueryParam.java">io/wcm/caravan/rhyme/aem/api/parameters/QueryParam.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.resources.AemApiDiscoveryResource.java">io/wcm/caravan/rhyme/aem/impl/resources/AemApiDiscoveryResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.api.SlingRhyme.java">io/wcm/caravan/rhyme/aem/api/SlingRhyme.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.api.RhymeResourceRegistration.java">io/wcm/caravan/rhyme/aem/api/RhymeResourceRegistration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.parameters.QueryParamCollector.java">io/wcm/caravan/rhyme/aem/impl/parameters/QueryParamCollector.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.util.PageUtils.java">io/wcm/caravan/rhyme/aem/impl/util/PageUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.api.package-info.java">io/wcm/caravan/rhyme/aem/api/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.linkbuilder.SlingLinkBuilderImpl.java">io/wcm/caravan/rhyme/aem/impl/linkbuilder/SlingLinkBuilderImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.resources.AemApiDiscoveryResourceImpl.java">io/wcm/caravan/rhyme/aem/impl/resources/AemApiDiscoveryResourceImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.api.linkbuilder.SlingLinkBuilder.java">io/wcm/caravan/rhyme/aem/api/linkbuilder/SlingLinkBuilder.java</a>
                 </td>
                 <td>
@@ -298,13 +368,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.RhymeResourceRegistry.java">io/wcm/caravan/rhyme/aem/impl/RhymeResourceRegistry.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.api.adaptation.PostAdaptationStage.java">io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptationStage.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  5
+                  9
                 </td>
                 <td>
                   0
@@ -312,13 +382,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.api.adaptation.PostAdaptionStage.java">io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptionStage.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.RhymeResourceRegistry.java">io/wcm/caravan/rhyme/aem/impl/RhymeResourceRegistry.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  10
+                  5
                 </td>
                 <td>
                   0
@@ -340,27 +410,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.impl.adaptation.UnknownResourcePostAdaptionStage.java">io/wcm/caravan/rhyme/aem/impl/adaptation/UnknownResourcePostAdaptionStage.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html#io.wcm.caravan.rhyme.aem.api.resources.SlingLinkableResource.java">io/wcm/caravan/rhyme/aem/api/resources/SlingLinkableResource.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  9
+                  2
                 </td>
                 <td>
                   0

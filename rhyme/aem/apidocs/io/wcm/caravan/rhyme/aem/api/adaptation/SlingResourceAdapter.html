@@ -49,7 +49,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptionStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptationStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li>Next&nbsp;Class</li>
 </ul>
 <ul class="navList">
@@ -114,7 +114,7 @@ var activeTableTab = "activeTableTab";
  <li>(optional): Calling a <b>filter*</b> method allows to limit adaptation to resources that match the specified
  criteria</li>
  <li>(required): Calling an <b>adaptTo</b> method defines to which interface or sling model class you want these
- resources to be adapted to. It returns a generic steps <a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptionStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation"><code>PostAdaptionStage</code></a> instance that knows these types, and
+ resources to be adapted to. It returns a generic steps <a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptationStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation"><code>PostAdaptationStage</code></a> instance that knows these types, and
  will be used for the following steps</li>
  <li>(optional): Calling a <b>with*</b> method allows you to modify the sling model instances after they have been
  created. A common use-case is to override link properties.</li>
@@ -139,11 +139,11 @@ var activeTableTab = "activeTableTab";
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>&lt;I&gt;&nbsp;<a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptionStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation">PostAdaptionStage</a>&lt;I,I&gt;</code></td>
+<td class="colFirst"><code>&lt;I&gt;&nbsp;<a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptationStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation">PostAdaptationStage</a>&lt;I,I&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/SlingResourceAdapter.html#adaptTo-java.lang.Class-">adaptTo</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;I&gt;&nbsp;halApiInterface)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>&lt;I,M extends I&gt;<br><a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptionStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation">PostAdaptionStage</a>&lt;I,M&gt;</code></td>
+<td class="colFirst"><code>&lt;I,M extends I&gt;<br><a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptationStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation">PostAdaptationStage</a>&lt;I,M&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/SlingResourceAdapter.html#adaptTo-java.lang.Class-java.lang.Class-">adaptTo</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;I&gt;&nbsp;halApiInterface,
        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;M&gt;&nbsp;slingModelClass)</code>&nbsp;</td>
 </tr>
@@ -417,7 +417,7 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>adaptTo</h4>
-<pre>&lt;I&gt;&nbsp;<a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptionStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation">PostAdaptionStage</a>&lt;I,I&gt;&nbsp;adaptTo(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;I&gt;&nbsp;halApiInterface)</pre>
+<pre>&lt;I&gt;&nbsp;<a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptationStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation">PostAdaptationStage</a>&lt;I,I&gt;&nbsp;adaptTo(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;I&gt;&nbsp;halApiInterface)</pre>
 </li>
 </ul>
 <a name="adaptTo-java.lang.Class-java.lang.Class-">
@@ -426,8 +426,8 @@ var activeTableTab = "activeTableTab";
 <ul class="blockListLast">
 <li class="blockList">
 <h4>adaptTo</h4>
-<pre>&lt;I,M extends I&gt;&nbsp;<a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptionStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation">PostAdaptionStage</a>&lt;I,M&gt;&nbsp;adaptTo(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;I&gt;&nbsp;halApiInterface,
-                                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;M&gt;&nbsp;slingModelClass)</pre>
+<pre>&lt;I,M extends I&gt;&nbsp;<a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptationStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation">PostAdaptationStage</a>&lt;I,M&gt;&nbsp;adaptTo(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;I&gt;&nbsp;halApiInterface,
+                                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;M&gt;&nbsp;slingModelClass)</pre>
 </li>
 </ul>
 </li>
@@ -458,7 +458,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptionStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../../../io/wcm/caravan/rhyme/aem/api/adaptation/PostAdaptationStage.html" title="interface in io.wcm.caravan.rhyme.aem.api.adaptation"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li>Next&nbsp;Class</li>
 </ul>
 <ul class="navList">
