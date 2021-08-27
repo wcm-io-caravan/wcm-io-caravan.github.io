@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SlingRhymeImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - AEM Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.impl</a> &gt; <span class="el_source">SlingRhymeImpl.java</span></div><h1>SlingRhymeImpl.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.aem.impl;
+
+import java.time.Duration;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.adapter.Adaptable;
+import org.apache.sling.api.adapter.SlingAdaptable;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.Self;
+import org.apache.sling.models.factory.ModelFactory;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSet.Builder;
+
+import io.wcm.caravan.rhyme.aem.api.SlingRhyme;
+import io.wcm.caravan.rhyme.aem.impl.docs.RhymeDocsOsgiBundleSupport;
+import io.wcm.caravan.rhyme.aem.impl.util.PageUtils;
+import io.wcm.caravan.rhyme.api.Rhyme;
+import io.wcm.caravan.rhyme.api.RhymeBuilder;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+
+@Model(adaptables = SlingHttpServletRequest.class, adapters = { SlingRhyme.class, SlingRhymeImpl.class })
+public class SlingRhymeImpl extends SlingAdaptable implements SlingRhyme {
+
+  private final ModelFactory modelFactory;
+
+  private final SlingHttpServletRequest request;
+  private final Resource currentResource;
+  private final Rhyme rhyme;
+
+  @Inject
+<span class="fc" id="L42">  public SlingRhymeImpl(@Self SlingHttpServletRequest request, ModelFactory modelFactory, ResourceLoaderRegistry picker, RhymeDocsOsgiBundleSupport rhymeDocs) {</span>
+
+<span class="fc" id="L44">    this.modelFactory = modelFactory;</span>
+<span class="fc" id="L45">    this.request = request;</span>
+<span class="fc" id="L46">    this.currentResource = request.getResource();</span>
+
+<span class="fc" id="L48">    this.rhyme = RhymeBuilder.withResourceLoader(picker.getResourceLoader())</span>
+<span class="fc" id="L49">        .withRhymeDocsSupport(rhymeDocs)</span>
+<span class="fc" id="L50">        .buildForRequestTo(request.getRequestURL().toString());</span>
+<span class="fc" id="L51">  }</span>
+
+<span class="fc" id="L53">  private SlingRhymeImpl(SlingRhymeImpl slingRhyme, Resource currentResource) {</span>
+<span class="fc" id="L54">    this.modelFactory = slingRhyme.modelFactory;</span>
+<span class="fc" id="L55">    this.request = slingRhyme.request;</span>
+<span class="fc" id="L56">    this.currentResource = currentResource;</span>
+<span class="fc" id="L57">    this.rhyme = slingRhyme.rhyme;</span>
+<span class="fc" id="L58">  }</span>
+
+  @Override
+  public &lt;T&gt; T adaptResource(Resource resource, Class&lt;T&gt; modelClass) {
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">    if (resource == null) {</span>
+<span class="fc" id="L64">      throw new HalApiDeveloperException(&quot;Cannot adapt null resource to &quot; + modelClass.getSimpleName());</span>
+    }
+
+<span class="fc bfc" id="L67" title="All 2 branches covered.">    if (resource != currentResource) {</span>
+<span class="fc" id="L68">      SlingRhymeImpl slingRhymeWithNextResource = new SlingRhymeImpl(this, resource);</span>
+<span class="fc" id="L69">      return slingRhymeWithNextResource.adaptResource(resource, modelClass);</span>
+    }
+
+<span class="fc" id="L72">    verifyModelAnnotationIfPresent(modelClass);</span>
+
+    try {
+<span class="fc" id="L75">      T slingModel = adaptTo(modelClass);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">      if (slingModel == null) {</span>
+<span class="fc" id="L77">        throw new HalApiDeveloperException(&quot;SlingRhyme#adaptTo(&quot; + modelClass.getName() + &quot;) returned null, see previous log messages for the root cause&quot;);</span>
+      }
+
+<span class="fc" id="L80">      return slingModel;</span>
+    }
+<span class="fc" id="L82">    catch (RuntimeException ex) {</span>
+<span class="fc" id="L83">      throw new HalApiDeveloperException(&quot;Failed to adapt &quot; + resource + &quot; to &quot; + modelClass.getSimpleName(), ex);</span>
+    }
+  }
+
+  private void verifyModelAnnotationIfPresent(Class&lt;?&gt; modelClass) {
+
+<span class="fc bfc" id="L89" title="All 2 branches covered.">    if (modelClass.isAnnotationPresent(Model.class)) {</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">      if (!isDirectlyAdaptableFromSlingRhyme(modelClass)) {</span>
+<span class="fc" id="L91">        throw new HalApiDeveloperException(modelClass + &quot; is not declared to be adaptable from &quot; + SlingRhyme.class);</span>
+      }
+    }
+<span class="fc" id="L94">  }</span>
+
+  @Override
+  public &lt;AdapterType&gt; AdapterType adaptTo(Class&lt;AdapterType&gt; type) {
+
+    // immediately return the current resource or request if they are the target of the adaption
+<span class="fc bfc" id="L100" title="All 2 branches covered.">    if (Resource.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L101">      return (AdapterType)currentResource;</span>
+    }
+<span class="fc bfc" id="L103" title="All 2 branches covered.">    if (HttpServletRequest.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L104">      return (AdapterType)request;</span>
+    }
+
+    // shortcut to avoid further lookup if the target type is adaptable from SlingRhyme
+<span class="fc bfc" id="L108" title="All 2 branches covered.">    if (isDirectlyAdaptableFromSlingRhyme(type)) {</span>
+<span class="fc" id="L109">      return super.adaptTo(type);</span>
+    }
+
+    /*
+     * these cases are covered by the &quot;tryAdapting&quot; below, but they might be useful if failed
+     * attempts to adapt to a sling model are causing extensive logging
+
+    if (modelFactory.canCreateFromAdaptable(request, type)) {
+      return modelFactory.createModel(request, type);
+    }
+    if (modelFactory.canCreateFromAdaptable(currentResource, type)) {
+      return modelFactory.createModel(currentResource, type);
+    }
+    */
+
+    // then try
+<span class="fc" id="L125">    return tryAdapting(type, getRelatedAdaptables())</span>
+<span class="fc" id="L126">        .orElseGet(() -&gt; super.adaptTo(type));</span>
+  }
+
+  private Collection&lt;Adaptable&gt; getRelatedAdaptables() {
+
+<span class="fc" id="L131">    Builder&lt;Adaptable&gt; builder = ImmutableSet.&lt;Adaptable&gt;builder();</span>
+<span class="fc" id="L132">    builder.add(currentResource);</span>
+<span class="fc" id="L133">    builder.add(request);</span>
+
+<span class="fc" id="L135">    PageUtils.getOptionalPageResource(currentResource).ifPresent(builder::add);</span>
+
+<span class="fc" id="L137">    return builder.build();</span>
+  }
+
+  private &lt;AdapterType&gt; Optional&lt;AdapterType&gt; tryAdapting(Class&lt;AdapterType&gt; type, Collection&lt;Adaptable&gt; adaptables) {
+
+<span class="fc" id="L142">    return adaptables.stream()</span>
+<span class="fc" id="L143">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L144">        .map(adaptable -&gt; adaptable.adaptTo(type))</span>
+<span class="fc" id="L145">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L146">        .findFirst();</span>
+  }
+
+  private boolean isDirectlyAdaptableFromSlingRhyme(Class&lt;?&gt; adapterType) {
+
+<span class="fc" id="L151">    Model modelAnnotation = adapterType.getAnnotation(Model.class);</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">    if (modelAnnotation == null) {</span>
+<span class="fc" id="L153">      return false;</span>
+    }
+
+<span class="fc" id="L156">    return Stream.of(modelAnnotation.adaptables())</span>
+<span class="fc" id="L157">        .anyMatch(modelAdaptable -&gt; SlingRhyme.class.isAssignableFrom(modelAdaptable));</span>
+  }
+
+  @Override
+  public Resource getRequestedResource() {
+
+<span class="fc" id="L163">    return request.getResource();</span>
+  }
+
+  @Override
+  public Resource getCurrentResource() {
+
+<span class="fc" id="L169">    return currentResource;</span>
+  }
+
+  Rhyme getCaravanRhyme() {
+<span class="fc" id="L173">    return rhyme;</span>
+  }
+
+  @Override
+  public &lt;T&gt; T getRemoteResource(String uri, Class&lt;T&gt; halApiInterface) {
+<span class="fc" id="L178">    return rhyme.getRemoteResource(uri, halApiInterface);</span>
+  }
+
+  @Override
+  public void setResponseMaxAge(Duration duration) {
+<span class="fc" id="L183">    rhyme.setResponseMaxAge(duration);</span>
+<span class="fc" id="L184">  }</span>
+
+  HalResponse renderResource(LinkableResource resourceImpl) {
+<span class="fc" id="L187">    return rhyme.renderResponse(resourceImpl).blockingGet();</span>
+  }
+
+  HalResponse renderVndErrorResponse(Throwable error) {
+<span class="fc" id="L191">    return rhyme.renderVndErrorResponse(error);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

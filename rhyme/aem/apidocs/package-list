@@ -1,1 +1,4 @@
-io.wcm.caravan.rhyme.aem.integration
+io.wcm.caravan.rhyme.aem.api
+io.wcm.caravan.rhyme.aem.api.adaptation
+io.wcm.caravan.rhyme.aem.api.linkbuilder
+io.wcm.caravan.rhyme.aem.api.resources
