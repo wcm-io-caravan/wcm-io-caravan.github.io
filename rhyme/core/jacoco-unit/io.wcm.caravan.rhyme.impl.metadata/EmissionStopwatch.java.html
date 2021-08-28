@@ -63,7 +63,7 @@ public class EmissionStopwatch&lt;T&gt; implements SingleTransformer&lt;T, T&gt;
 
 <span class="fc" id="L64">    return upstream</span>
 <span class="fc" id="L65">        .doOnSubscribe(d -&gt; startStopwatch())</span>
-<span class="fc" id="L66">        .doOnSuccess(o -&gt; sendMetrics());</span>
+<span class="fc" id="L66">        .doOnTerminate(this::sendMetrics);</span>
   }
 
   @Override
@@ -84,11 +84,8 @@ public class EmissionStopwatch&lt;T&gt; implements SingleTransformer&lt;T, T&gt;
 <span class="fc" id="L84">  }</span>
 
   private void sendMetrics() {
-
-<span class="pc bpc" id="L88" title="1 of 2 branches missed.">    if (stopwatch != null) {</span>
-<span class="fc" id="L89">      stopwatch.close();</span>
-    }
-<span class="fc" id="L91">  }</span>
+<span class="fc" id="L87">    stopwatch.close();</span>
+<span class="fc" id="L88">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
