@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -151,6 +151,13 @@ public interface <span class="typeNameLabel">Rhyme</span></pre>
 <div class="block">Limit the maximum time for which the response should be cached by clients and downstream services.</div>
 </td>
 </tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsStopwatch.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsStopwatch</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#startStopwatch-java.lang.Class-java.util.function.Supplier-">startStopwatch</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&nbsp;measuringClass,
+              <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;taskDescription)</code>
+<div class="block">Start measuring the execution time of a specific (possibly repeated) task within your own code.</div>
+</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -226,7 +233,7 @@ public interface <span class="typeNameLabel">Rhyme</span></pre>
 <a name="renderVndErrorResponse-java.lang.Throwable-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>renderVndErrorResponse</h4>
 <pre><a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;renderVndErrorResponse(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;error)</pre>
@@ -237,6 +244,31 @@ public interface <span class="typeNameLabel">Rhyme</span></pre>
 <dd><code>error</code> - an exception that was caught during initialisation</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a <a href="../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> instance with status code, content type and body already set</dd>
+</dl>
+</li>
+</ul>
+<a name="startStopwatch-java.lang.Class-java.util.function.Supplier-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>startStopwatch</h4>
+<pre><a href="../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsStopwatch.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsStopwatch</a>&nbsp;startStopwatch(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&nbsp;measuringClass,
+                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;taskDescription)</pre>
+<div class="block">Start measuring the execution time of a specific (possibly repeated) task within your own code. To finish the
+ measurement, you have to call <a href="../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsStopwatch.html#close--"><code>RequestMetricsStopwatch.close()</code></a> when the task has been completed,
+ or use a try-with-resources statement around the code section to be measured (since it's an <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang"><code>AutoCloseable</code></a>
+ type).
+ The result of your measurements will appear within the embedded "rhyme:metadata" resource in the rendered response.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>measuringClass</code> - only used to group the results in the "rhyme:metadata" resource into separate sections for
+          each class</dd>
+<dd><code>taskDescription</code> - provides a human readable description of the task (and context) that was executed.
+          Measurements with the exact same task descriptions will be grouped, and the execution count and overall
+          sum of execution times will be calculated</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a <a href="../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsStopwatch.html" title="interface in io.wcm.caravan.rhyme.api.common"><code>RequestMetricsStopwatch</code></a> that you need to close to finish the measurement</dd>
 </dl>
 </li>
 </ul>

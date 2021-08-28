@@ -120,7 +120,7 @@ import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 <span class="fc" id="L120">    HalResource responseBody = halResponse.getBody();</span>
 
 <span class="fc bfc" id="L122" title="All 2 branches covered.">    if (shouldMetadataBeRemoved(request)) {</span>
-<span class="fc" id="L123">      responseBody.removeEmbedded(&quot;caravan:metadata&quot;);</span>
+<span class="fc" id="L123">      responseBody.removeEmbedded(&quot;rhyme:metadata&quot;);</span>
     }
 
 <span class="fc" id="L126">    OBJECT_MAPPER.writeValue(servletResponse.getWriter(), responseBody.getModel());</span>

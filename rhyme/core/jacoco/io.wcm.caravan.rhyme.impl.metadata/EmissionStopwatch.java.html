@@ -19,12 +19,8 @@
  */
 package io.wcm.caravan.rhyme.impl.metadata;
 
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.base.Stopwatch;
+import java.util.function.Supplier;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableSource;
@@ -33,6 +29,7 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 import io.reactivex.rxjava3.core.SingleTransformer;
 import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
+import io.wcm.caravan.rhyme.api.common.RequestMetricsStopwatch;
 
 /**
  * A transformer that measures the time between subscription and completion of any {@link Single} or {@link Observable}
@@ -40,16 +37,16 @@ import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
  */
 public class EmissionStopwatch&lt;T&gt; implements SingleTransformer&lt;T, T&gt;, ObservableTransformer&lt;T, T&gt; {
 
-<span class="fc" id="L43">  private final Stopwatch stopwatch = Stopwatch.createUnstarted();</span>
-
   private final RequestMetricsCollector metrics;
-  private final String message;
-<span class="fc" id="L47">  private final AtomicInteger itemCounter = new AtomicInteger();</span>
+  private final Supplier&lt;String&gt; message;
+<span class="fc" id="L42">  private final AtomicInteger itemCounter = new AtomicInteger();</span>
 
-<span class="fc" id="L49">  EmissionStopwatch(RequestMetricsCollector metrics, String message) {</span>
-<span class="fc" id="L50">    this.metrics = metrics;</span>
-<span class="fc" id="L51">    this.message = message;</span>
-<span class="fc" id="L52">  }</span>
+  private RequestMetricsStopwatch stopwatch;
+
+<span class="fc" id="L46">  EmissionStopwatch(RequestMetricsCollector metrics, Supplier&lt;String&gt; message) {</span>
+<span class="fc" id="L47">    this.metrics = metrics;</span>
+<span class="fc" id="L48">    this.message = message;</span>
+<span class="fc" id="L49">  }</span>
 
   /**
    * @param message describes the task that was executed
@@ -57,39 +54,41 @@ public class EmissionStopwatch&lt;T&gt; implements SingleTransformer&lt;T, T&gt;
    * @return a Transformer to use with {@link Single#compose(SingleTransformer)} or
    *         {@link Observable#compose(ObservableTransformer)}
    */
-  public static &lt;T&gt; EmissionStopwatch&lt;T&gt; collectMetrics(String message, RequestMetricsCollector metrics) {
-<span class="fc" id="L61">    return new EmissionStopwatch&lt;T&gt;(metrics, message);</span>
+  public static &lt;T&gt; EmissionStopwatch&lt;T&gt; collectMetrics(Supplier&lt;String&gt; message, RequestMetricsCollector metrics) {
+<span class="fc" id="L58">    return new EmissionStopwatch&lt;T&gt;(metrics, message);</span>
   }
 
   @Override
   public SingleSource&lt;T&gt; apply(Single&lt;T&gt; upstream) {
 
-<span class="fc" id="L67">    return upstream</span>
-<span class="fc" id="L68">        .doOnSubscribe(d -&gt; startStopwatch())</span>
-<span class="fc" id="L69">        .doOnSuccess(o -&gt; sendMetrics());</span>
+<span class="fc" id="L64">    return upstream</span>
+<span class="fc" id="L65">        .doOnSubscribe(d -&gt; startStopwatch())</span>
+<span class="fc" id="L66">        .doOnSuccess(o -&gt; sendMetrics());</span>
   }
 
   @Override
   public ObservableSource&lt;T&gt; apply(Observable&lt;T&gt; upstream) {
 
-<span class="fc" id="L75">    return upstream</span>
-<span class="fc" id="L76">        .doOnSubscribe(d -&gt; startStopwatch())</span>
-<span class="fc" id="L77">        .doOnNext(i -&gt; itemCounter.incrementAndGet())</span>
-<span class="fc" id="L78">        .doOnTerminate(this::sendMetrics);</span>
+<span class="fc" id="L72">    return upstream</span>
+<span class="fc" id="L73">        .doOnSubscribe(d -&gt; startStopwatch())</span>
+<span class="fc" id="L74">        .doOnNext(i -&gt; itemCounter.incrementAndGet())</span>
+<span class="fc" id="L75">        .doOnTerminate(this::sendMetrics);</span>
   }
 
 
   private void startStopwatch() {
-<span class="fc bfc" id="L83" title="All 2 branches covered.">    if (!stopwatch.isRunning()) {</span>
-<span class="fc" id="L84">      stopwatch.start();</span>
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">    if (stopwatch == null) {</span>
+<span class="fc" id="L82">      stopwatch = metrics.startStopwatch(EmissionStopwatch.class, message);</span>
     }
-<span class="fc" id="L86">  }</span>
+<span class="fc" id="L84">  }</span>
 
   private void sendMetrics() {
-<span class="fc bfc" id="L89" title="All 2 branches covered.">    String desc = StringUtils.replace(message, &quot;{}&quot;, itemCounter.get() &gt; 1 ? itemCounter.get() + &quot; &quot; : &quot;&quot;);</span>
 
-<span class="fc" id="L91">    metrics.onMethodInvocationFinished(EmissionStopwatch.class, desc, stopwatch.elapsed(TimeUnit.MICROSECONDS));</span>
-<span class="fc" id="L92">  }</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">    if (stopwatch != null) {</span>
+<span class="fc" id="L89">      stopwatch.close();</span>
+    }
+<span class="fc" id="L91">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

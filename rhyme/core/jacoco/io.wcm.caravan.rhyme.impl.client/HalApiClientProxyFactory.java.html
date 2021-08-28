@@ -25,9 +25,7 @@ import java.lang.reflect.Proxy;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Stopwatch;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.UncheckedExecutionException;
@@ -40,6 +38,7 @@ import io.wcm.caravan.rhyme.api.annotations.ResourceLink;
 import io.wcm.caravan.rhyme.api.client.HalApiClient;
 import io.wcm.caravan.rhyme.api.common.HalResponse;
 import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
+import io.wcm.caravan.rhyme.api.common.RequestMetricsStopwatch;
 import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
 import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
 import io.wcm.caravan.rhyme.impl.metadata.EmissionStopwatch;
@@ -52,37 +51,37 @@ import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
 final class HalApiClientProxyFactory {
 
 
-<span class="fc" id="L55">  private final Cache&lt;String, Object&gt; proxyCache = CacheBuilder.newBuilder().build();</span>
+<span class="fc" id="L54">  private final Cache&lt;String, Object&gt; proxyCache = CacheBuilder.newBuilder().build();</span>
 
   private final HalResourceLoader resourceLoader;
   private final RequestMetricsCollector metrics;
   private final HalApiTypeSupport typeSupport;
 
-<span class="fc" id="L61">  HalApiClientProxyFactory(HalResourceLoader resourceLoader, RequestMetricsCollector metrics, HalApiTypeSupport typeSupport) {</span>
-<span class="fc" id="L62">    this.metrics = metrics;</span>
-<span class="fc" id="L63">    this.resourceLoader = resourceLoader;</span>
-<span class="fc" id="L64">    this.typeSupport = typeSupport;</span>
-<span class="fc" id="L65">  }</span>
+<span class="fc" id="L60">  HalApiClientProxyFactory(HalResourceLoader resourceLoader, RequestMetricsCollector metrics, HalApiTypeSupport typeSupport) {</span>
+<span class="fc" id="L61">    this.metrics = metrics;</span>
+<span class="fc" id="L62">    this.resourceLoader = resourceLoader;</span>
+<span class="fc" id="L63">    this.typeSupport = typeSupport;</span>
+<span class="fc" id="L64">  }</span>
 
   &lt;T&gt; T createProxyFromUrl(Class&lt;T&gt; relatedResourceType, String url) {
 
-<span class="fc" id="L69">    Single&lt;HalResource&gt; rxHal = loadHalResource(url, relatedResourceType);</span>
+<span class="fc" id="L68">    Single&lt;HalResource&gt; rxHal = loadHalResource(url, relatedResourceType);</span>
 
-<span class="fc" id="L71">    return getProxy(relatedResourceType, rxHal, new Link(url));</span>
+<span class="fc" id="L70">    return getProxy(relatedResourceType, rxHal, new Link(url));</span>
   }
 
   &lt;T&gt; T createProxyFromLink(Class&lt;T&gt; relatedResourceType, Link link) {
 
-<span class="fc" id="L76">    Single&lt;HalResource&gt; rxHal = loadHalResource(link.getHref(), relatedResourceType);</span>
+<span class="fc" id="L75">    Single&lt;HalResource&gt; rxHal = loadHalResource(link.getHref(), relatedResourceType);</span>
 
-<span class="fc" id="L78">    return getProxy(relatedResourceType, rxHal, link);</span>
+<span class="fc" id="L77">    return getProxy(relatedResourceType, rxHal, link);</span>
   }
 
   &lt;T&gt; T createProxyFromHalResource(Class&lt;T&gt; relatedResourceType, HalResource contextResource, Link link) {
 
-<span class="fc" id="L83">    Single&lt;HalResource&gt; rxHal = Single.just(contextResource);</span>
+<span class="fc" id="L82">    Single&lt;HalResource&gt; rxHal = Single.just(contextResource);</span>
 
-<span class="fc" id="L85">    return getProxy(relatedResourceType, rxHal, link);</span>
+<span class="fc" id="L84">    return getProxy(relatedResourceType, rxHal, link);</span>
   }
 
   private &lt;T&gt; Single&lt;HalResource&gt; loadHalResource(String resourceUrl, Class&lt;T&gt; relatedResourceType) {
@@ -91,21 +90,21 @@ final class HalApiClientProxyFactory {
     // (e.g. right before it is actually retrieved).
     // This is because i should still be possible to create a proxy just to get a URI template
     // by calling a method annotated with @ResourceLink.
-<span class="fc" id="L94">    return Single.just(resourceUrl)</span>
-<span class="fc" id="L95">        .flatMap(url -&gt; {</span>
-<span class="fc" id="L96">          Link link = new Link(url);</span>
-<span class="fc bfc" id="L97" title="All 2 branches covered.">          if (link.isTemplated()) {</span>
-<span class="fc" id="L98">            throw new HalApiDeveloperException(&quot;Cannot follow the link template to &quot; + link.getHref()</span>
+<span class="fc" id="L93">    return Single.just(resourceUrl)</span>
+<span class="fc" id="L94">        .flatMap(url -&gt; {</span>
+<span class="fc" id="L95">          Link link = new Link(url);</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">          if (link.isTemplated()) {</span>
+<span class="fc" id="L97">            throw new HalApiDeveloperException(&quot;Cannot follow the link template to &quot; + link.getHref()</span>
                 + &quot; because it has not been expanded.&quot;
                 + &quot; If you are calling a proxy method with parameters then make sure to provide at least one parameter &quot;
-<span class="fc" id="L101">                + &quot;(unless you are only interested in obtaining the link template by calling the method annotated with @&quot; + ResourceLink.class.getSimpleName()</span>
+<span class="fc" id="L100">                + &quot;(unless you are only interested in obtaining the link template by calling the method annotated with @&quot; + ResourceLink.class.getSimpleName()</span>
                 + &quot;)&quot;);
           }
 
-<span class="fc" id="L105">          return resourceLoader.getHalResource(url)</span>
-<span class="fc" id="L106">              .map(HalResponse::getBody);</span>
+<span class="fc" id="L104">          return resourceLoader.getHalResource(url)</span>
+<span class="fc" id="L105">              .map(HalResponse::getBody);</span>
         })
-<span class="fc" id="L108">        .compose(EmissionStopwatch.collectMetrics(&quot;fetching &quot; + relatedResourceType.getSimpleName() + &quot; from upstream server&quot;, metrics));</span>
+<span class="fc" id="L107">        .compose(EmissionStopwatch.collectMetrics(() -&gt; &quot;fetching &quot; + relatedResourceType.getSimpleName() + &quot; from upstream server (or cache)&quot;, metrics));</span>
   }
 
 
@@ -113,53 +112,48 @@ final class HalApiClientProxyFactory {
   private &lt;T&gt; T getProxy(Class&lt;T&gt; relatedResourceType, Single&lt;HalResource&gt; rxHal, Link linkToResource) {
 
     // do not try to cache proxies for resources for which no link is available
-<span class="fc bfc" id="L116" title="All 2 branches covered.">    if (linkToResource == null) {</span>
-<span class="fc" id="L117">      return createProxy(relatedResourceType, rxHal, null);</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">    if (linkToResource == null) {</span>
+<span class="fc" id="L116">      return createProxy(relatedResourceType, rxHal, null);</span>
     }
 
-<span class="fc" id="L120">    String cacheKey = linkToResource.getModel().toString() + relatedResourceType.getName();</span>
+<span class="fc" id="L119">    String cacheKey = linkToResource.getModel().toString() + relatedResourceType.getName();</span>
 
     try {
-<span class="fc" id="L123">      return (T)proxyCache.get(cacheKey, () -&gt; createProxy(relatedResourceType, rxHal, linkToResource));</span>
+<span class="fc" id="L122">      return (T)proxyCache.get(cacheKey, () -&gt; createProxy(relatedResourceType, rxHal, linkToResource));</span>
     }
-<span class="fc" id="L125">    catch (UncheckedExecutionException | ExecutionException ex) {</span>
+<span class="fc" id="L124">    catch (UncheckedExecutionException | ExecutionException ex) {</span>
       // we not that createProxy never throws any checked exception, so its safe to case to re-throw the original exception
-<span class="fc" id="L127">      throw (RuntimeException)ex.getCause();</span>
+<span class="fc" id="L126">      throw (RuntimeException)ex.getCause();</span>
     }
   }
 
   private &lt;T&gt; T createProxy(Class&lt;T&gt; relatedResourceType, Single&lt;HalResource&gt; rxHal, Link linkToResource) {
 
-<span class="fc" id="L133">    Stopwatch sw = Stopwatch.createStarted();</span>
+<span class="fc" id="L132">    try (RequestMetricsStopwatch sw = metrics.startStopwatch(HalApiClient.class,</span>
+<span class="fc" id="L133">        () -&gt; &quot;creating &quot; + relatedResourceType.getSimpleName() + &quot; proxy instance&quot;)) {</span>
 
-    try {
       // check that the given class is indeed a HAL api interface
-<span class="fc bfc" id="L137" title="All 2 branches covered.">      if (!isHalApiInterface(relatedResourceType, typeSupport)) {</span>
-<span class="fc" id="L138">        throw new HalApiDeveloperException(</span>
-<span class="fc" id="L139">            &quot;The given resource interface &quot; + relatedResourceType.getName() + &quot; does not have a @&quot; + HalApiInterface.class.getSimpleName() + &quot; annotation.&quot;);</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">      if (!isHalApiInterface(relatedResourceType, typeSupport)) {</span>
+<span class="fc" id="L137">        throw new HalApiDeveloperException(</span>
+<span class="fc" id="L138">            &quot;The given resource interface &quot; + relatedResourceType.getName() + &quot; does not have a @&quot; + HalApiInterface.class.getSimpleName() + &quot; annotation.&quot;);</span>
       }
 
-<span class="fc" id="L142">      Class[] interfaces = getInterfacesToImplement(relatedResourceType);</span>
+<span class="fc" id="L141">      Class[] interfaces = getInterfacesToImplement(relatedResourceType);</span>
 
       // the main logic of the proxy is implemented in this InvocationHandler
-<span class="fc" id="L145">      HalApiInvocationHandler invocationHandler = new HalApiInvocationHandler(rxHal, relatedResourceType, linkToResource, this, metrics, typeSupport);</span>
+<span class="fc" id="L144">      HalApiInvocationHandler invocationHandler = new HalApiInvocationHandler(rxHal, relatedResourceType, linkToResource, this, metrics, typeSupport);</span>
 
       @SuppressWarnings(&quot;unchecked&quot;)
-<span class="fc" id="L148">      T proxy = (T)Proxy.newProxyInstance(relatedResourceType.getClassLoader(), interfaces, invocationHandler);</span>
+<span class="fc" id="L147">      T proxy = (T)Proxy.newProxyInstance(relatedResourceType.getClassLoader(), interfaces, invocationHandler);</span>
 
-<span class="fc" id="L150">      return proxy;</span>
-    }
-    finally {
-<span class="fc" id="L153">      metrics.onMethodInvocationFinished(HalApiClient.class,</span>
-<span class="fc" id="L154">          &quot;creating &quot; + relatedResourceType.getSimpleName() + &quot; proxy instance&quot;,</span>
-<span class="fc" id="L155">          sw.elapsed(TimeUnit.MICROSECONDS));</span>
+<span class="fc" id="L149">      return proxy;</span>
     }
   }
 
   private &lt;T&gt; Class[] getInterfacesToImplement(Class&lt;T&gt; relatedResourceType) {
-<span class="fc" id="L160">    List&lt;Class&gt; interfaces = new LinkedList&lt;&gt;();</span>
-<span class="fc" id="L161">    interfaces.add(relatedResourceType);</span>
-<span class="fc" id="L162">    return interfaces.toArray(new Class[0]);</span>
+<span class="fc" id="L154">    List&lt;Class&gt; interfaces = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L155">    interfaces.add(relatedResourceType);</span>
+<span class="fc" id="L156">    return interfaces.toArray(new Class[0]);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
