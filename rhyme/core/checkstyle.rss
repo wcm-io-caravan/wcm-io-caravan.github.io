@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
     <item>
-      <title>File: 53,
+      <title>File: 54,
              Errors: 0,
-             Warnings: 8,
+             Warnings: 10,
              Infos: 0
       </title>
             <link>https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html</link>
@@ -276,7 +276,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  2
                 </td>
                 <td>
                   0
@@ -635,6 +635,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.api.client.HalApiClient.java">io/wcm/caravan/rhyme/api/client/HalApiClient.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.api.server.ResourceConversions.java">io/wcm/caravan/rhyme/api/server/ResourceConversions.java</a>
                 </td>
                 <td>
                   0
