@@ -27,7 +27,7 @@ under the License.
     <item>
       <title>File: 27,
              Errors: 0,
-             Warnings: 78,
+             Warnings: 86,
              Infos: 0
       </title>
             <link>https://caravan.wcm.io/rhyme/aem/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.aem//checkstyle.html</link>
@@ -52,7 +52,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  21
+                  26
                 </td>
                 <td>
                   0
@@ -80,7 +80,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  11
+                  14
                 </td>
                 <td>
                   0

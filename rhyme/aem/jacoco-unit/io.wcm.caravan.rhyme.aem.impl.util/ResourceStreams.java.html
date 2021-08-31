@@ -38,72 +38,88 @@ public final class ResourceStreams {
 <span class="fc" id="L38">    return StreamSupport.stream(res.getChildren().spliterator(), false);</span>
   }
 
+  public static Stream&lt;Resource&gt; getGrandChildren(Resource res) {
+
+<span class="fc" id="L43">    return getChildren(res)</span>
+<span class="fc" id="L44">        .flatMap(ResourceStreams::getChildren);</span>
+  }
+
   public static Stream&lt;Resource&gt; getNamedChild(Resource res, String name) {
 
-<span class="fc" id="L43">    return Stream.of(res.getChild(name))</span>
-<span class="fc" id="L44">        .filter(Objects::nonNull);</span>
+<span class="fc" id="L49">    return Stream.of(res.getChild(name))</span>
+<span class="fc" id="L50">        .filter(Objects::nonNull);</span>
+  }
+
+  public static Stream&lt;Resource&gt; getNamedSibling(Resource res, String name) {
+
+<span class="fc" id="L55">    return getParent(res)</span>
+<span class="fc" id="L56">        .flatMap(parent -&gt; getNamedChild(parent, name));</span>
   }
 
   public static Stream&lt;Resource&gt; getChildPages(Resource res) {
 
-<span class="fc" id="L49">    Resource pageResource = PageUtils.getPageResource(res);</span>
+<span class="fc" id="L61">    Resource pageResource = PageUtils.getPageResource(res);</span>
 
-<span class="fc" id="L51">    return getChildren(pageResource)</span>
-<span class="fc" id="L52">        .filter(PageUtils::isPage);</span>
+<span class="fc" id="L63">    return getChildren(pageResource)</span>
+<span class="fc" id="L64">        .filter(PageUtils::isPage);</span>
   }
 
   public static Stream&lt;Resource&gt; getContentOfContainingPage(Resource res) {
 
-<span class="fc" id="L57">    Resource pageResource = PageUtils.getPageResource(res);</span>
+<span class="fc" id="L69">    Resource pageResource = PageUtils.getPageResource(res);</span>
 
-<span class="fc" id="L59">    return getContentResources(Stream.of(pageResource));</span>
+<span class="fc" id="L71">    return getContentResources(Stream.of(pageResource));</span>
   }
 
   public static Stream&lt;Resource&gt; getContentOfChildPages(Resource res) {
 
-<span class="fc" id="L64">    Resource pageResource = PageUtils.getPageResource(res);</span>
+<span class="fc" id="L76">    Resource pageResource = PageUtils.getPageResource(res);</span>
 
-<span class="fc" id="L66">    Stream&lt;Resource&gt; childPages = getChildPages(pageResource);</span>
+<span class="fc" id="L78">    Stream&lt;Resource&gt; childPages = getChildPages(pageResource);</span>
 
-<span class="fc" id="L68">    return getContentResources(childPages);</span>
+<span class="fc" id="L80">    return getContentResources(childPages);</span>
   }
 
   public static Stream&lt;Resource&gt; getContentOfGrandChildPages(Resource res) {
 
-<span class="fc" id="L73">    Resource pageResource = PageUtils.getPageResource(res);</span>
+<span class="fc" id="L85">    Stream&lt;Resource&gt; grandChildPages = getGrandChildPages(res);</span>
 
-<span class="fc" id="L75">    Stream&lt;Resource&gt; grandChildPages = getChildPages(pageResource)</span>
-<span class="fc" id="L76">        .flatMap(ResourceStreams::getChildPages);</span>
+<span class="fc" id="L87">    return getContentResources(grandChildPages);</span>
+  }
 
-<span class="fc" id="L78">    return getContentResources(grandChildPages);</span>
+  public static Stream&lt;Resource&gt; getGrandChildPages(Resource res) {
+<span class="fc" id="L91">    Resource pageResource = PageUtils.getPageResource(res);</span>
+
+<span class="fc" id="L93">    return getChildPages(pageResource)</span>
+<span class="fc" id="L94">        .flatMap(ResourceStreams::getChildPages);</span>
   }
 
   public static Stream&lt;Resource&gt; getContentOfNamedChildPage(Resource res, String name) {
 
-<span class="fc" id="L83">    Resource pageResource = PageUtils.getPageResource(res);</span>
+<span class="fc" id="L99">    Resource pageResource = PageUtils.getPageResource(res);</span>
 
-<span class="fc" id="L85">    Stream&lt;Resource&gt; childPage = ResourceStreams.getChildPages(pageResource)</span>
-<span class="fc" id="L86">        .filter(child -&gt; name.equals(child.getName()));</span>
+<span class="fc" id="L101">    Stream&lt;Resource&gt; childPage = ResourceStreams.getChildPages(pageResource)</span>
+<span class="fc" id="L102">        .filter(child -&gt; name.equals(child.getName()));</span>
 
-<span class="fc" id="L88">    return getContentResources(childPage);</span>
+<span class="fc" id="L104">    return getContentResources(childPage);</span>
   }
 
   public static Stream&lt;Resource&gt; getParent(Resource res) {
 
-<span class="fc" id="L93">    return Stream.of(res.getParent()).filter(Objects::nonNull);</span>
+<span class="fc" id="L109">    return Stream.of(res.getParent()).filter(Objects::nonNull);</span>
   }
 
   public static Stream&lt;Resource&gt; getContentResource(Resource pageResource) {
 
-<span class="fc" id="L98">    return Stream.of(pageResource.getChild(JcrConstants.JCR_CONTENT))</span>
-<span class="fc" id="L99">        .filter(Objects::nonNull);</span>
+<span class="fc" id="L114">    return Stream.of(pageResource.getChild(JcrConstants.JCR_CONTENT))</span>
+<span class="fc" id="L115">        .filter(Objects::nonNull);</span>
   }
 
   public static Stream&lt;Resource&gt; getContentResources(Stream&lt;Resource&gt; pageResources) {
 
-<span class="fc" id="L104">    return pageResources</span>
-<span class="fc" id="L105">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L106">        .flatMap(ResourceStreams::getContentResource);</span>
+<span class="fc" id="L120">    return pageResources</span>
+<span class="fc" id="L121">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L122">        .flatMap(ResourceStreams::getContentResource);</span>
   }
 
 }
