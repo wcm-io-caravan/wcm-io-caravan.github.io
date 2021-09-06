@@ -88,15 +88,26 @@
 </tr>
 <tbody>
 <tr class="altColor">
+<td class="colOne"><a href="io/wcm/caravan/rhyme/api/client/HalApiClient.html#create-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">io.wcm.caravan.rhyme.api.client.HalApiClient.create(HalResourceLoader, RequestMetricsCollector)</a>
+<div class="block"><span class="deprecationComment">to create a stand-alone instance use <a href="io/wcm/caravan/rhyme/api/client/HalApiClient.html#create-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-"><code>HalApiClient.create(HalResourceLoader)</code></a> instead</span></div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colOne"><a href="io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html#create-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-">io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer.create(RequestMetricsCollector, ExceptionStatusAndLoggingStrategy, HalApiAnnotationSupport, HalApiReturnTypeSupport)</a>
 <div class="block"><span class="deprecationComment">Use
              <a href="io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html#create-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport-"><code>AsyncHalResponseRenderer.create(RequestMetricsCollector,ExceptionStatusAndLoggingStrategy,HalApiAnnotationSupport,HalApiReturnTypeSupport,RhymeDocsSupport)</code></a>
              instead</span></div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#onMethodInvocationFinished-java.lang.Class-java.lang.String-long-">io.wcm.caravan.rhyme.api.common.RequestMetricsCollector.onMethodInvocationFinished(Class, String, long)</a>
 <div class="block"><span class="deprecationComment">use <a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#startStopwatch-java.lang.Class-java.util.function.Supplier-"><code>RequestMetricsCollector.startStopwatch(Class, Supplier)</code></a> instead</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#withoutResourceLoader--">io.wcm.caravan.rhyme.api.RhymeBuilder.withoutResourceLoader()</a>
+<div class="block"><span class="deprecationComment">no longer required because there is now a default <a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> implementation available,
+             use <a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#create--"><code>RhymeBuilder.create()</code></a> instead</span></div>
 </td>
 </tr>
 </tbody>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalResourceLoaderBuilderImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - Core Framework</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.client</a> &gt; <span class="el_source">HalResourceLoaderBuilderImpl.java</span></div><h1>HalResourceLoaderBuilderImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl.client;
+
+import java.time.Clock;
+import java.time.Duration;
+
+import io.wcm.caravan.rhyme.api.client.CachingConfiguration;
+import io.wcm.caravan.rhyme.api.client.HalResourceLoaderBuilder;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
+import io.wcm.caravan.rhyme.api.spi.HalResponseCache;
+import io.wcm.caravan.rhyme.api.spi.HttpClientSupport;
+import io.wcm.caravan.rhyme.impl.client.cache.CachingHalResourceLoader;
+import io.wcm.caravan.rhyme.impl.client.cache.DefaultCachingConfiguration;
+import io.wcm.caravan.rhyme.impl.client.cache.GuavaCacheImplementation;
+import io.wcm.caravan.rhyme.impl.client.http.HttpHalResourceLoader;
+import io.wcm.caravan.rhyme.impl.client.http.HttpUrlConnectionSupport;
+
+public class HalResourceLoaderBuilderImpl implements HalResourceLoaderBuilder {
+
+  private final HalResourceLoader loader;
+  private final CachingConfiguration cachingConfig;
+  private final HalResponseCache cache;
+  private final Clock clock;
+
+<span class="fc" id="L44">  public HalResourceLoaderBuilderImpl() {</span>
+<span class="fc" id="L45">    this.loader = HttpHalResourceLoader.withClientImplementation(new HttpUrlConnectionSupport());</span>
+<span class="fc" id="L46">    this.cachingConfig = new DefaultCachingConfiguration();</span>
+<span class="fc" id="L47">    this.cache = null;</span>
+<span class="fc" id="L48">    this.clock = Clock.systemUTC();</span>
+<span class="fc" id="L49">  }</span>
+
+<span class="fc" id="L51">  private HalResourceLoaderBuilderImpl(HalResourceLoader loader, CachingConfiguration cachingConfig, HalResponseCache cache, Clock clock) {</span>
+<span class="fc" id="L52">    this.loader = loader;</span>
+<span class="fc" id="L53">    this.cachingConfig = cachingConfig;</span>
+<span class="fc" id="L54">    this.cache = cache;</span>
+<span class="fc" id="L55">    this.clock = clock;</span>
+<span class="fc" id="L56">  }</span>
+
+  @Override
+  public HalResourceLoaderBuilder withExistingLoader(HalResourceLoader customLoader) {
+
+<span class="fc" id="L61">    return new HalResourceLoaderBuilderImpl(customLoader, cachingConfig, cache, clock);</span>
+  }
+
+  @Override
+  public HalResourceLoaderBuilder withCustomHttpClient(HttpClientSupport client) {
+
+<span class="fc" id="L67">    HttpHalResourceLoader customLoader = HttpHalResourceLoader.withClientImplementation(client);</span>
+
+<span class="fc" id="L69">    return new HalResourceLoaderBuilderImpl(customLoader, cachingConfig, cache, clock);</span>
+  }
+
+  @Override
+  public HalResourceLoaderBuilder withMemoryCache() {
+
+<span class="fc" id="L75">    return withMemoryCache(10000, Duration.ofDays(1));</span>
+  }
+
+  @Override
+  public HalResourceLoaderBuilder withMemoryCache(int maxNumItems, Duration timeToIdle) {
+
+<span class="fc" id="L81">    GuavaCacheImplementation guava = new GuavaCacheImplementation(maxNumItems, timeToIdle);</span>
+
+<span class="fc" id="L83">    return new HalResourceLoaderBuilderImpl(loader, cachingConfig, guava, clock);</span>
+  }
+
+  @Override
+  public HalResourceLoaderBuilder withCustomCache(HalResponseCache cacheImplementation) {
+
+<span class="fc" id="L89">    return new HalResourceLoaderBuilderImpl(loader, cachingConfig, cacheImplementation, clock);</span>
+  }
+
+  @Override
+  public HalResourceLoaderBuilder withCachingConfiguration(CachingConfiguration config) {
+
+<span class="fc" id="L95">    return new HalResourceLoaderBuilderImpl(loader, config, cache, clock);</span>
+  }
+
+  @Override
+  public HalResourceLoaderBuilder withClock(Clock customClock) {
+
+<span class="fc" id="L101">    return new HalResourceLoaderBuilderImpl(loader, cachingConfig, cache, customClock);</span>
+  }
+
+  @Override
+  public HalResourceLoader build() {
+
+<span class="fc bfc" id="L107" title="All 2 branches covered.">    if (cache != null) {</span>
+<span class="fc" id="L108">      return new CachingHalResourceLoader(loader, cache, cachingConfig, clock);</span>
+    }
+
+<span class="fc bfc" id="L111" title="All 2 branches covered.">    if (!(cachingConfig instanceof DefaultCachingConfiguration)) {</span>
+<span class="fc" id="L112">      throw new HalApiDeveloperException(&quot;You have only provided a &quot; + CachingConfiguration.class.getSimpleName()</span>
+          + &quot;, but you must also actually enable caching by calling #withMemoryCache or #withCustomCache&quot;);
+    }
+
+<span class="fc" id="L116">    return loader;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

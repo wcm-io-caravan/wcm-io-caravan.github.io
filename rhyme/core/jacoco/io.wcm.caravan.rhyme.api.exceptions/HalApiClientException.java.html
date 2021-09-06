@@ -43,7 +43,7 @@ public class HalApiClientException extends RuntimeException {
    * @param cause the root cause for the failed HTTP request
    */
   public HalApiClientException(HalResponse errorResponse, String requestUrl, Throwable cause) {
-<span class="fc" id="L46">    super(&quot;HTTP request failed with status code &quot; + errorResponse.getStatus(), cause);</span>
+<span class="fc" id="L46">    super(createMessage(errorResponse, requestUrl), cause);</span>
 <span class="fc" id="L47">    this.errorResponse = errorResponse;</span>
 <span class="fc" id="L48">    this.requestUrl = requestUrl;</span>
 <span class="fc" id="L49">  }</span>
@@ -73,12 +73,26 @@ public class HalApiClientException extends RuntimeException {
 <span class="fc" id="L73">    this.requestUrl = cause.getRequestUrl();</span>
 <span class="fc" id="L74">  }</span>
 
+  private static String createMessage(HalResponse errorResponse, String requestUrl) {
+
+<span class="fc" id="L78">    String msg = &quot;HAL client request to &quot; + requestUrl + &quot; has failed &quot;;</span>
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">    if (errorResponse.getStatus() == null) {</span>
+<span class="fc" id="L81">      return msg + &quot;before a status code was available&quot;;</span>
+    }
+<span class="fc bfc" id="L83" title="All 2 branches covered.">    if (errorResponse.getStatus() == 200) {</span>
+<span class="fc" id="L84">      return msg + &quot; because the response body is malformed&quot;;</span>
+    }
+
+<span class="fc" id="L87">    return msg + &quot;with status code &quot; + errorResponse.getStatus();</span>
+  }
+
   /**
    * @return a {@link HalResponse} object that contains additional information in the body only if the upstream
    *         service's response contained a Vnd+Error body
    */
   public HalResponse getErrorResponse() {
-<span class="fc" id="L81">    return errorResponse;</span>
+<span class="fc" id="L95">    return errorResponse;</span>
   }
 
   /**
@@ -86,14 +100,14 @@ public class HalApiClientException extends RuntimeException {
    *         code)
    */
   public Integer getStatusCode() {
-<span class="fc" id="L89">    return errorResponse.getStatus();</span>
+<span class="fc" id="L103">    return errorResponse.getStatus();</span>
   }
 
   /**
    * @return the URI of the request that failed
    */
   public String getRequestUrl() {
-<span class="fc" id="L96">    return requestUrl;</span>
+<span class="fc" id="L110">    return requestUrl;</span>
   }
 
 }

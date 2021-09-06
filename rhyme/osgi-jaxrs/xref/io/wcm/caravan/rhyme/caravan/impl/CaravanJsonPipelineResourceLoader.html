@@ -98,7 +98,7 @@
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>    <strong class="jxr_keyword">private</strong> SingleSource&lt;HalResponse&gt; rethrowAsHalApiClientException(Throwable ex, String uri) {
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">if</strong> (!(ex instanceof JsonPipelineInputException)) {
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>        String message = <span class="jxr_string">"HTTP request for "</span> + uri + <span class="jxr_string">" failed without a status code (e.g. because of timeout, configuration or networking issues)"</span>;
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>        String message = <span class="jxr_string">"HTTP request for "</span> + uri + <span class="jxr_string">" has failed before a status code was available"</span>;
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>        <strong class="jxr_keyword">return</strong> Single.error(<strong class="jxr_keyword">new</strong> HalApiClientException(message, <strong class="jxr_keyword">null</strong>, uri, ex));
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      }
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  

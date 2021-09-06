@@ -103,8 +103,14 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>@ProviderType
 public interface <span class="typeNameLabel">RequestMetricsCollector</span></pre>
-<div class="block">Keeps track of all upstream resource that have been fetched while handling the current-request, and collects
- additional data for performance analyze and caching.</div>
+<div class="block">Keeps track of all upstream resource that have been fetched while handling the current request, and collects
+ additional data for performance analyze and caching. An instance of this interface is automatically created
+ for each <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> instance. The collected information will be included in the
+ responses created by <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-"><code>Rhyme.renderResponse(LinkableResource)</code></a>.
+ <p>
+ If you don't use that method (or <a href="../../../../../../io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>AsyncHalResponseRenderer</code></a> to render your responses, simply create a default
+ implementation using <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#create--"><code>create()</code></a>
+ </p></div>
 </li>
 </ul>
 </div>

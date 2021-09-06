@@ -90,7 +90,7 @@ class CaravanJsonPipelineResourceLoader implements HalResourceLoader {
 
   private SingleSource&lt;HalResponse&gt; rethrowAsHalApiClientException(Throwable ex, String uri) {
 <span class="fc bfc" id="L92" title="All 2 branches covered.">    if (!(ex instanceof JsonPipelineInputException)) {</span>
-<span class="fc" id="L93">      String message = &quot;HTTP request for &quot; + uri + &quot; failed without a status code (e.g. because of timeout, configuration or networking issues)&quot;;</span>
+<span class="fc" id="L93">      String message = &quot;HTTP request for &quot; + uri + &quot; has failed before a status code was available&quot;;</span>
 <span class="fc" id="L94">      return Single.error(new HalApiClientException(message, null, uri, ex));</span>
     }
 

@@ -105,42 +105,50 @@
 </tr>
 <tbody>
 <tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></code></td>
+<td class="colLast"><span class="typeNameLabel">RhymeBuilder.</span><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#create--">create</a></span>()</code>
+<div class="block">Create a <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api"><code>RhymeBuilder</code></a> to build <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> instances that use a simple default HTTP client
+ to load upstream resources.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></code></td>
 <td class="colLast"><span class="typeNameLabel">RhymeBuilder.</span><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withAnnotationTypeSupport-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-">withAnnotationTypeSupport</a></span>(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiAnnotationSupport</a>&nbsp;additionalTypeSupport)</code>
 <div class="block">Extend the core framework to support additional annotation types in your annotated HAL API interfaces.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></code></td>
 <td class="colLast"><span class="typeNameLabel">RhymeBuilder.</span><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withExceptionStrategy-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-">withExceptionStrategy</a></span>(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi">ExceptionStatusAndLoggingStrategy</a>&nbsp;customStrategy)</code>
 <div class="block">Allow the exception handling of the core framework to support additional platform / framework specific exceptions.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></code></td>
 <td class="colLast"><span class="typeNameLabel">RhymeBuilder.</span><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withoutResourceLoader--">withoutResourceLoader</a></span>()</code>
-<div class="block">Create a <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api"><code>RhymeBuilder</code></a> that can only build <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> instances which do not request any resources
- from upstream services</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">no longer required because there is now a default <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> implementation available,
+             use <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#create--"><code>create()</code></a> instead</span></div>
+</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></code></td>
 <td class="colLast"><span class="typeNameLabel">RhymeBuilder.</span><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withResourceLoader-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-">withResourceLoader</a></span>(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalResourceLoader</a>&nbsp;resourceLoader)</code>
 <div class="block">Create a <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api"><code>RhymeBuilder</code></a> to build <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> instances that use the given <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a></div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></code></td>
 <td class="colLast"><span class="typeNameLabel">RhymeBuilder.</span><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withReturnTypeSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-">withReturnTypeSupport</a></span>(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiReturnTypeSupport</a>&nbsp;additionalTypeSupport)</code>
 <div class="block">Extend the core framework to support additional return types in your annotated HAL API interfaces.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></code></td>
 <td class="colLast"><span class="typeNameLabel">RhymeBuilder.</span><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withRhymeDocsSupport-io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport-">withRhymeDocsSupport</a></span>(<a href="../../../../../../io/wcm/caravan/rhyme/api/spi/RhymeDocsSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">RhymeDocsSupport</a>&nbsp;rhymeDocsSupport)</code>
-<div class="block">Enable generation of curie links (to HTML documentation generated with the rhyme-docs-maven-plugin)
- when rendering <a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a>s with
- <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-"><code>Rhyme.renderResponse(io.wcm.caravan.rhyme.api.resources.LinkableResource)</code></a>.</div>
+<div class="block">Enable generation of "curies" links (to HTML documentation generated with the rhyme-docs-maven-plugin)
+ when rendering <a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a>s with <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-"><code>Rhyme.renderResponse(LinkableResource)</code></a>.</div>
 </td>
 </tr>
 </tbody>

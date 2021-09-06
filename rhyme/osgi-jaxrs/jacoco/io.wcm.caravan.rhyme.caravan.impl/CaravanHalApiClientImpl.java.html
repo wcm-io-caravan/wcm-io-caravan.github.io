@@ -22,7 +22,6 @@ package io.wcm.caravan.rhyme.caravan.impl;
 import static org.osgi.service.component.annotations.ReferenceCardinality.OPTIONAL;
 import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
 
-import java.time.Clock;
 import java.util.concurrent.ExecutionException;
 
 import org.osgi.service.component.annotations.Activate;
@@ -32,7 +31,6 @@ import org.osgi.service.component.annotations.Reference;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import io.wcm.caravan.io.http.CaravanHttpClient;
 import io.wcm.caravan.pipeline.JsonPipelineFactory;
@@ -47,10 +45,11 @@ import io.wcm.caravan.rhyme.caravan.api.CaravanHalApiClient;
 /**
  * Implementation of the {@link CaravanHalApiClient} OSGi service that will use the
  * {@link CaravanJsonPipelineResourceLoader} for caching if the caravan JSON pipeline bundles are available at runtime.
- * Otherwise, it will fall back to using the {@link CaravanGuavaResourceLoader})
+ * Otherwise, it will fall back to using the {@link CaravanResilientHttpSupport} with a default
+ * Guava cache.)
  */
 @Component
-<span class="fc" id="L53">public class CaravanHalApiClientImpl implements CaravanHalApiClient {</span>
+<span class="fc" id="L52">public class CaravanHalApiClientImpl implements CaravanHalApiClient {</span>
 
   private LoadingCache&lt;String, HalResourceLoader&gt; resourceLoaderCache;
 
@@ -70,56 +69,60 @@ import io.wcm.caravan.rhyme.caravan.api.CaravanHalApiClient;
   @Activate
   void setUp() {
 
-<span class="fc" id="L73">    CacheLoader&lt;String, HalResourceLoader&gt; cacheLoader = createCacheLoaderWithBestAvailableCache();</span>
+<span class="fc" id="L72">    CacheLoader&lt;String, HalResourceLoader&gt; cacheLoader = createCacheLoaderWithBestAvailableCache();</span>
 
-<span class="fc" id="L75">    resourceLoaderCache = CacheBuilder.newBuilder().build(cacheLoader);</span>
-<span class="fc" id="L76">  }</span>
+<span class="fc" id="L74">    resourceLoaderCache = CacheBuilder.newBuilder().build(cacheLoader);</span>
+<span class="fc" id="L75">  }</span>
 
   private CacheLoader&lt;String, HalResourceLoader&gt; createCacheLoaderWithBestAvailableCache() {
 
-<span class="fc bfc" id="L80" title="All 2 branches covered.">    if (pipelineFactory != null) {</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">    if (pipelineFactory != null) {</span>
       // an implementation based on Caravan JsonPipeline caching, use it if it's available in the runtime
-<span class="fc" id="L82">      return new JsonPipelineCacheLoader();</span>
+<span class="fc" id="L81">      return new JsonPipelineCacheLoader();</span>
     }
 
     // an alternative implementation with less performance overhead (that doesn't use JsonPipeline,
     // and only has a simple guava based cache that does not evict any item)
-<span class="fc" id="L87">    return new GuavaCacheLoader();</span>
+<span class="fc" id="L86">    return new GuavaCacheLoader();</span>
   }
 
   @Override
   public &lt;T&gt; T getEntryPoint(String serviceId, String uri, Class&lt;T&gt; halApiInterface, RequestMetricsCollector metrics) {
 
-<span class="fc" id="L93">    HalResourceLoader halLoader = getOrCreateHalResourceLoader(serviceId);</span>
+<span class="fc" id="L92">    HalResourceLoader halLoader = getOrCreateHalResourceLoader(serviceId);</span>
 
-<span class="fc" id="L95">    HalApiClient client = HalApiClient.create(halLoader, metrics, annotationSupport, returnTypeSupport);</span>
+<span class="fc" id="L94">    HalApiClient client = HalApiClient.create(halLoader, metrics, annotationSupport, returnTypeSupport);</span>
 
-<span class="fc" id="L97">    return client.getRemoteResource(uri, halApiInterface);</span>
+<span class="fc" id="L96">    return client.getRemoteResource(uri, halApiInterface);</span>
   }
 
-  @SuppressWarnings(&quot;PMD.PreserveStackTrace&quot;)
+
   HalResourceLoader getOrCreateHalResourceLoader(String serviceId) {
     try {
-<span class="fc" id="L103">      return resourceLoaderCache.get(serviceId);</span>
+<span class="fc" id="L102">      return resourceLoaderCache.get(serviceId);</span>
     }
-<span class="nc" id="L105">    catch (ExecutionException | UncheckedExecutionException ex) {</span>
-<span class="nc" id="L106">      throw new HalApiDeveloperException(&quot;Failed to create resource loader for serviceId &quot; + serviceId, ex.getCause());</span>
-    }
-  }
-
-<span class="fc" id="L110">  private final class GuavaCacheLoader extends CacheLoader&lt;String, HalResourceLoader&gt; {</span>
-
-    @Override
-    public HalResourceLoader load(String serviceId) throws Exception {
-<span class="fc" id="L114">      return new CaravanGuavaResourceLoader(httpClient, serviceId, Clock.systemUTC());</span>
+<span class="fc" id="L104">    catch (ExecutionException | RuntimeException ex) {</span>
+<span class="fc" id="L105">      throw new HalApiDeveloperException(&quot;Failed to create resource loader for serviceId &quot; + serviceId, ex);</span>
     }
   }
 
-<span class="fc" id="L118">  private final class JsonPipelineCacheLoader extends CacheLoader&lt;String, HalResourceLoader&gt; {</span>
+<span class="fc" id="L109">  private final class GuavaCacheLoader extends CacheLoader&lt;String, HalResourceLoader&gt; {</span>
 
     @Override
     public HalResourceLoader load(String serviceId) throws Exception {
-<span class="fc" id="L122">      return new CaravanJsonPipelineResourceLoader(pipelineFactory, serviceId);</span>
+
+<span class="fc" id="L114">      return HalResourceLoader.builder()</span>
+<span class="fc" id="L115">          .withCustomHttpClient(new CaravanResilientHttpSupport(httpClient, serviceId))</span>
+<span class="fc" id="L116">          .withMemoryCache()</span>
+<span class="fc" id="L117">          .build();</span>
+    }
+  }
+
+<span class="fc" id="L121">  private final class JsonPipelineCacheLoader extends CacheLoader&lt;String, HalResourceLoader&gt; {</span>
+
+    @Override
+    public HalResourceLoader load(String serviceId) throws Exception {
+<span class="fc" id="L125">      return new CaravanJsonPipelineResourceLoader(pipelineFactory, serviceId);</span>
     }
   }
 }

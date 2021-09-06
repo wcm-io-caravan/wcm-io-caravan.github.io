@@ -88,6 +88,12 @@
 <div class="block">Interfaces for client-side functionality</div>
 </td>
 </tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="#io.wcm.caravan.rhyme.api.spi">io.wcm.caravan.rhyme.api.spi</a></td>
+<td class="colLast">
+<div class="block">SPI interfaces for HTTP transfer, exception handling and extension the annotation support for HAL API interfaces</div>
+</td>
+</tr>
 </tbody>
 </table>
 </li>
@@ -101,10 +107,39 @@
 </tr>
 <tbody>
 <tr class="altColor">
+<td class="colOne"><a href="../../../../../../io/wcm/caravan/rhyme/api/client/class-use/CachingConfiguration.html#io.wcm.caravan.rhyme.api.client">CachingConfiguration</a>
+<div class="block">A configuration instance for the caching <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> implementations created with
+ <a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalResourceLoaderBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalResourceLoaderBuilder</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colOne"><a href="../../../../../../io/wcm/caravan/rhyme/api/client/class-use/HalApiClient.html#io.wcm.caravan.rhyme.api.client">HalApiClient</a>
-<div class="block">A generic HAL API client that will provide a dynamic proxy implementation of a given HAL API interface
- which loads data via HTTP as required when the interface methods annotated with <code>Related</code>,
- <code>ResourceState</code> etc are called.</div>
+<div class="block">A type-safe HAL client that will create a dynamic proxy implementation for a given URI
+ and <code>HalApiInterface</code>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../io/wcm/caravan/rhyme/api/client/class-use/HalResourceLoaderBuilder.html#io.wcm.caravan.rhyme.api.client">HalResourceLoaderBuilder</a>
+<div class="block">A builder to create and configure a <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> instance that is using a custom HTTP client
+ implementation and/or uses a <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResponseCache.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResponseCache</code></a> to cache HTTP responses.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="io.wcm.caravan.rhyme.api.spi">
+<!--   -->
+</a>
+<table class="useSummary" border="0" cellpadding="3" cellspacing="0" summary="Use table, listing classes, and an explanation">
+<caption><span>Classes in <a href="../../../../../../io/wcm/caravan/rhyme/api/client/package-summary.html">io.wcm.caravan.rhyme.api.client</a> used by <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/package-summary.html">io.wcm.caravan.rhyme.api.spi</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Class and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="../../../../../../io/wcm/caravan/rhyme/api/client/class-use/HalResourceLoaderBuilder.html#io.wcm.caravan.rhyme.api.spi">HalResourceLoaderBuilder</a>
+<div class="block">A builder to create and configure a <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> instance that is using a custom HTTP client
+ implementation and/or uses a <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResponseCache.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResponseCache</code></a> to cache HTTP responses.</div>
 </td>
 </tr>
 </tbody>

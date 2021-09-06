@@ -110,11 +110,36 @@
 <tr class="rowColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalResourceLoader</a></td>
 <td class="colLast">
-<div class="block">An interface to delegate the actual loading and caching of a JSON+HAL resource via HTTP to any other HTTP client
- library</div>
+<div class="block">An interface to delegate (or mock) the actual loading (and caching) of all JSON+HAL resources
+ loaded via <a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalApiClient</code></a> and <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> to any other HTTP client
+ client implementation.</div>
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResponseCache.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalResponseCache</a></td>
+<td class="colLast">
+<div class="block">An SPI interface for a cache implementation that can be given to
+ <a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalResourceLoaderBuilder.html#withCustomCache-io.wcm.caravan.rhyme.api.spi.HalResponseCache-"><code>HalResourceLoaderBuilder.withCustomCache(HalResponseCache)</code></a> if you want to store cached HAL+JSON responses
+ in a custom cache (e.g.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HttpClientCallback.html" title="interface in io.wcm.caravan.rhyme.api.spi">HttpClientCallback</a></td>
+<td class="colLast">
+<div class="block">Callback interface used by <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HttpClientSupport.html#executeGetRequest-java.net.URI-io.wcm.caravan.rhyme.api.spi.HttpClientCallback-"><code>HttpClientSupport.executeGetRequest(URI, HttpClientCallback)</code></a>
+ to process a response that has been retrieved, and handle any errors according to the contract
+ of the <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html#getHalResource-java.lang.String-"><code>HalResourceLoader.getHalResource(String)</code></a> method</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HttpClientSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HttpClientSupport</a></td>
+<td class="colLast">
+<div class="block">A simpler callback-style SPI interface that you can implement instead of <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a>
+ if you want to enable <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> or <a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalApiClient</code></a> instances
+ to fetch HTTP resources with a custom client library.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/spi/RhymeDocsSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">RhymeDocsSupport</a></td>
 <td class="colLast">
 <div class="block">SPI interface to customize the integration of HTML documentation generated with

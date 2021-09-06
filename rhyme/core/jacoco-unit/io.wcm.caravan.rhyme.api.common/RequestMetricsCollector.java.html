@@ -25,12 +25,20 @@ import java.util.function.Supplier;
 import org.osgi.annotation.versioning.ProviderType;
 
 import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.rhyme.api.Rhyme;
 import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
 import io.wcm.caravan.rhyme.impl.metadata.ResponseMetadataGenerator;
 
 /**
- * Keeps track of all upstream resource that have been fetched while handling the current-request, and collects
- * additional data for performance analyze and caching.
+ * Keeps track of all upstream resource that have been fetched while handling the current request, and collects
+ * additional data for performance analyze and caching. An instance of this interface is automatically created
+ * for each {@link Rhyme} instance. The collected information will be included in the
+ * responses created by {@link Rhyme#renderResponse(LinkableResource)}.
+ * &lt;p&gt;
+ * If you don't use that method (or {@link AsyncHalResponseRenderer} to render your responses, simply create a default
+ * implementation using {@link RequestMetricsCollector#create()}
+ * &lt;/p&gt;
  */
 @ProviderType
 public interface RequestMetricsCollector {
@@ -96,7 +104,7 @@ public interface RequestMetricsCollector {
    * @return a new instance of {@link RequestMetricsCollector}
    */
   static RequestMetricsCollector create() {
-<span class="fc" id="L99">    return new ResponseMetadataGenerator();</span>
+<span class="fc" id="L107">    return new ResponseMetadataGenerator();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
