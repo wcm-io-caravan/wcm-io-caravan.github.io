@@ -23,6 +23,9 @@ import java.time.Clock;
 import java.time.Duration;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import io.wcm.caravan.rhyme.api.client.CachingConfiguration;
@@ -31,6 +34,8 @@ import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
 import io.wcm.caravan.rhyme.api.spi.HalResponseCache;
 
 public class CachingHalResourceLoader implements HalResourceLoader {
+
+<span class="fc" id="L38">  private static final Logger log = LoggerFactory.getLogger(CachingHalResourceLoader.class);</span>
 
   private final HalResourceLoader upstream;
 
@@ -41,102 +46,111 @@ public class CachingHalResourceLoader implements HalResourceLoader {
   private final Clock clock;
 
   public CachingHalResourceLoader(HalResourceLoader upstream, HalResponseCache cache, CachingConfiguration configuration,
-<span class="fc" id="L44">      Clock clock) {</span>
-<span class="fc" id="L45">    this.upstream = upstream;</span>
-<span class="fc" id="L46">    this.cache = cache;</span>
-<span class="fc" id="L47">    this.configuration = configuration;</span>
-<span class="fc" id="L48">    this.clock = clock;</span>
-<span class="fc" id="L49">  }</span>
+<span class="fc" id="L49">      Clock clock) {</span>
+<span class="fc" id="L50">    log.info(&quot;{} was created using {} as a cache backend. &quot;</span>
+        + &quot;If you are seeing this log message frequently, then you are not re-using your HalResourceLoader instance properly.&quot;,
+<span class="fc" id="L52">        getClass().getSimpleName(), cache.getClass());</span>
+<span class="fc" id="L53">    this.upstream = upstream;</span>
+<span class="fc" id="L54">    this.cache = cache;</span>
+<span class="fc" id="L55">    this.configuration = configuration;</span>
+<span class="fc" id="L56">    this.clock = clock;</span>
+<span class="fc" id="L57">  }</span>
 
   @Override
   public Single&lt;HalResponse&gt; getHalResource(String uri) {
 
-<span class="fc" id="L54">    return loadFromCache(uri)</span>
-<span class="fc" id="L55">        .switchIfEmpty(loadFromUpstreamAndStoreInCache(uri));</span>
+<span class="fc" id="L62">    return loadFromCache(uri)</span>
+<span class="fc" id="L63">        .switchIfEmpty(loadFromUpstreamAndStoreInCache(uri));</span>
   }
 
   private Maybe&lt;HalResponse&gt; loadFromCache(String uri) {
 
-<span class="fc" id="L60">    return cache.load(uri)</span>
-<span class="fc" id="L61">        .map(CachedResponse::new)</span>
-<span class="fc" id="L62">        .filter(CachedResponse::isFresh)</span>
-<span class="fc" id="L63">        .map(CachedResponse::getResponseWithAdjustedMaxAge);</span>
+<span class="fc" id="L68">    return cache.load(uri)</span>
+<span class="fc" id="L69">        .map(CachedResponse::new)</span>
+<span class="fc" id="L70">        .filter(CachedResponse::isFresh)</span>
+<span class="fc" id="L71">        .map(CachedResponse::getResponseWithAdjustedMaxAge)</span>
+<span class="fc" id="L72">        .doOnSuccess(response -&gt; log.debug(&quot;A fresh response for {} was as found in {} with remaining max-age of {}&quot;,</span>
+<span class="fc" id="L73">            uri, cache.getClass().getSimpleName(), response.getMaxAge()));</span>
   }
 
   private Single&lt;HalResponse&gt; loadFromUpstreamAndStoreInCache(String uri) {
 
-<span class="fc" id="L68">    return upstream.getHalResource(uri)</span>
-<span class="fc" id="L69">        .map(this::updateResponse)</span>
-<span class="fc" id="L70">        .doOnSuccess(entry -&gt; storeInCache(uri, entry));</span>
+<span class="fc" id="L78">    return upstream.getHalResource(uri)</span>
+<span class="fc" id="L79">        .map(this::updateResponse)</span>
+<span class="fc" id="L80">        .doOnSuccess(entry -&gt; storeInCache(uri, entry));</span>
   }
 
   private HalResponse updateResponse(HalResponse response) {
 
-<span class="fc" id="L75">    HalResponse updatedResponse = response</span>
-<span class="fc" id="L76">        .withTimestamp(clock.instant());</span>
+<span class="fc" id="L85">    HalResponse updatedResponse = response</span>
+<span class="fc" id="L86">        .withTimestamp(clock.instant());</span>
 
-<span class="fc bfc" id="L78" title="All 2 branches covered.">    if (response.getMaxAge() == null) {</span>
-<span class="fc" id="L79">      Optional&lt;Integer&gt; status = Optional.ofNullable(response.getStatus());</span>
-<span class="fc" id="L80">      int maxAge = configuration.getDefaultMaxAge(status);</span>
-<span class="fc" id="L81">      updatedResponse = updatedResponse.withMaxAge(maxAge);</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (response.getMaxAge() == null) {</span>
+<span class="fc" id="L89">      Optional&lt;Integer&gt; status = Optional.ofNullable(response.getStatus());</span>
+<span class="fc" id="L90">      int maxAge = configuration.getDefaultMaxAge(status);</span>
+<span class="fc" id="L91">      updatedResponse = updatedResponse.withMaxAge(maxAge);</span>
     }
 
-<span class="fc" id="L84">    return updatedResponse;</span>
+<span class="fc" id="L94">    return updatedResponse;</span>
   }
 
   private void storeInCache(String uri, HalResponse response) {
 
-<span class="fc bfc" id="L89" title="All 2 branches covered.">    if (response.getMaxAge() &gt; 0) {</span>
-<span class="fc" id="L90">      cache.store(uri, response);</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">    if (response.getMaxAge() &gt; 0) {</span>
+<span class="fc" id="L100">      log.debug(&quot;Response for {} is being stored in {} with max-age={} seconds&quot;, uri, cache.getClass().getSimpleName(), response.getMaxAge());</span>
+
+<span class="fc" id="L102">      cache.store(uri, response);</span>
     }
-<span class="fc" id="L92">  }</span>
+<span class="fc" id="L104">  }</span>
 
   class CachedResponse {
 
     private final HalResponse response;
 
-<span class="fc" id="L98">    private CachedResponse(HalResponse response) {</span>
-<span class="fc" id="L99">      this.response = response;</span>
-<span class="fc" id="L100">    }</span>
+<span class="fc" id="L110">    private CachedResponse(HalResponse response) {</span>
+<span class="fc" id="L111">      this.response = response;</span>
+<span class="fc" id="L112">    }</span>
 
     private int getSecondsInCache() {
 
-<span class="fc" id="L104">      Duration cachedFor = Duration.between(response.getTimestamp(), clock.instant());</span>
+<span class="fc" id="L116">      Duration cachedFor = Duration.between(response.getTimestamp(), clock.instant());</span>
 
-<span class="fc" id="L106">      return (int)cachedFor.getSeconds();</span>
+<span class="fc" id="L118">      return (int)cachedFor.getSeconds();</span>
     }
 
     boolean isFresh() {
 
-<span class="fc bfc" id="L111" title="All 2 branches covered.">      return getSecondsInCache() &lt; response.getMaxAge();</span>
+<span class="fc" id="L123">      int secondsInCache = getSecondsInCache();</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">      boolean fresh = secondsInCache &lt; response.getMaxAge();</span>
+
+<span class="fc bfc" id="L126" title="All 2 branches covered.">      if (!fresh) {</span>
+<span class="fc" id="L127">        log.debug(&quot;A response found in cache was considered stale, because it was stored {} seconds ago&quot;, secondsInCache);</span>
+      }
+
+<span class="fc" id="L130">      return fresh;</span>
     }
 
     HalResponse getResponseWithAdjustedMaxAge() {
 
-<span class="fc" id="L116">      int newMaxAge = Math.max(0, response.getMaxAge() - getSecondsInCache());</span>
-<span class="fc" id="L117">      return response.withMaxAge(newMaxAge);</span>
+<span class="fc" id="L135">      int newMaxAge = Math.max(0, response.getMaxAge() - getSecondsInCache());</span>
+<span class="fc" id="L136">      return response.withMaxAge(newMaxAge);</span>
     }
   }
 
-
   HalResourceLoader getUpstream() {
-<span class="fc" id="L123">    return this.upstream;</span>
+<span class="fc" id="L141">    return upstream;</span>
   }
-
 
   HalResponseCache getCache() {
-<span class="fc" id="L128">    return this.cache;</span>
+<span class="fc" id="L145">    return cache;</span>
   }
-
 
   CachingConfiguration getConfiguration() {
-<span class="fc" id="L133">    return this.configuration;</span>
+<span class="fc" id="L149">    return configuration;</span>
   }
-
 
   Clock getClock() {
-<span class="fc" id="L138">    return this.clock;</span>
+<span class="fc" id="L153">    return clock;</span>
   }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -5,12 +5,12 @@ Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,TemplateProxyPo
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingResourceAdapterImpl.ResourceFilter,0,62,0,2,0,12,0,3,0,2
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingResourceAdapterImpl,0,495,0,20,0,79,0,52,0,42
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingResourceAdapterImpl.ResourceSelector,0,91,0,4,0,18,0,5,0,3
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.resources,AemApiDiscoveryResourceImpl,0,25,0,0,0,6,0,4,0,4
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,RhymeResourceRegistry,0,138,0,6,0,30,0,16,0,13
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,ResourceLoaderRegistry.ImplementationPickingHalResourceLoader,0,40,0,2,0,5,0,3,0,2
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,SlingRhymeImpl,0,352,0,24,0,71,0,32,0,20
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,HalApiServlet,0,168,0,12,0,35,0,14,0,8
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,ResourceLoaderRegistry,0,13,0,0,0,4,0,3,0,3
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.client,ApacheHttpClientFactorySupport,0,69,0,2,0,15,0,4,0,3
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.client,ResourceLoaderManager,0,18,0,0,0,7,0,3,0,3
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.resources,AemApiDiscoveryResourceImpl,0,25,0,0,0,6,0,4,0,4
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.docs,RhymeDocsBundleTracker,0,75,0,6,0,24,0,11,0,8
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.docs,RhymeDocsOsgiBundleSupport,0,64,0,4,0,18,0,10,0,8
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.docs,RhymeDocsServlet,0,77,0,6,0,18,0,8,0,5

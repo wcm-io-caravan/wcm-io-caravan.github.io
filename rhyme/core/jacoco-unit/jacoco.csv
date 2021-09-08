@@ -21,10 +21,10 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.api.common,HalResponse,0,138,0,2,0,2
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.server,VndErrorResponseRenderer,0,5,0,0,0,1,0,1,0,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.server,ResourceConversions,0,8,0,0,0,2,0,2,0,2
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.server,AsyncHalResponseRenderer,0,45,0,0,0,7,0,3,0,3
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.cache,CachingHalResourceLoader.CachedResponse,0,49,0,2,0,8,0,5,0,4
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.cache,CachingHalResourceLoader.CachedResponse,0,60,0,4,0,12,0,6,0,4
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.cache,GuavaCacheImplementation,0,45,0,2,0,14,0,6,0,5
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.cache,DefaultCachingConfiguration,0,22,0,2,0,6,0,4,0,3
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.cache,CachingHalResourceLoader,0,106,0,4,0,29,0,14,0,12
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.cache,CachingHalResourceLoader,0,165,0,4,0,35,0,16,0,14
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,VndErrorResponseRendererImpl,0,323,0,14,0,65,0,17,0,10
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,CompositeExceptionStatusAndLoggingStrategy,0,77,0,4,0,17,0,10,0,8
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,RelatedResourcesRendererImpl,0,384,0,20,0,75,0,34,0,24
@@ -62,5 +62,5 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.api.exceptions,HalApiClientException
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader,0,68,0,0,0,18,0,7,0,7
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpHeadersParser,0,85,0,6,0,23,0,12,0,9
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpUrlConnectionSupport,0,36,0,2,0,12,0,3,0,2
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader.HttpClientCallbackImpl,0,270,0,20,0,64,0,22,0,12
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader.HttpClientCallbackImpl,0,300,0,20,0,67,0,22,0,12
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader.HttpClientSupportException,0,9,0,0,0,4,0,2,0,2
