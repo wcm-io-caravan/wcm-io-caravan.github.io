@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -166,21 +166,28 @@ extends org.apache.sling.api.adapter.Adaptable</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>io.wcm.caravan.rhyme.api.Rhyme</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/api/SlingRhyme.html#getCoreRhyme--">getCoreRhyme</a></span>()</code>
+<div class="block">Provides access to the underlying <code>Rhyme</code> instance of the core framework, just in case you need
+ to call one of the methods for which there doesn't exist a delegate in the <a href="../../../../../../io/wcm/caravan/rhyme/aem/api/SlingRhyme.html" title="interface in io.wcm.caravan.rhyme.aem.api"><code>SlingRhyme</code></a> interface</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>@NotNull org.apache.sling.api.resource.Resource</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/api/SlingRhyme.html#getCurrentResource--">getCurrentResource</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>&lt;T&gt;&nbsp;T</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/api/SlingRhyme.html#getRemoteResource-java.lang.String-java.lang.Class-">getRemoteResource</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</code>
 <div class="block">Create a dynamic client proxy to load HAL+JSON resources from an upstream service.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>@NotNull org.apache.sling.api.resource.Resource</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/api/SlingRhyme.html#getRequestedResource--">getRequestedResource</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/aem/api/SlingRhyme.html#setResponseMaxAge-java.time.Duration-">setResponseMaxAge</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html?is-external=true" title="class or interface in java.time">Duration</a>&nbsp;duration)</code>
 <div class="block">Limit the maximum time for which the response should be cached by clients and downstream services.</div>
@@ -279,7 +286,7 @@ extends org.apache.sling.api.adapter.Adaptable</pre>
 <a name="getRemoteResource-java.lang.String-java.lang.Class-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getRemoteResource</h4>
 <pre>@NotNull
@@ -295,6 +302,21 @@ extends org.apache.sling.api.adapter.Adaptable</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a dynamic proxy instance of the provided <code>HalApiInterface</code> that you can use to navigate through the
          resources of the service</dd>
+</dl>
+</li>
+</ul>
+<a name="getCoreRhyme--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getCoreRhyme</h4>
+<pre>io.wcm.caravan.rhyme.api.Rhyme&nbsp;getCoreRhyme()</pre>
+<div class="block">Provides access to the underlying <code>Rhyme</code> instance of the core framework, just in case you need
+ to call one of the methods for which there doesn't exist a delegate in the <a href="../../../../../../io/wcm/caravan/rhyme/aem/api/SlingRhyme.html" title="interface in io.wcm.caravan.rhyme.aem.api"><code>SlingRhyme</code></a> interface</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the single <code>Rhyme</code> instance that is used throughout the incoming request</dd>
 </dl>
 </li>
 </ul>

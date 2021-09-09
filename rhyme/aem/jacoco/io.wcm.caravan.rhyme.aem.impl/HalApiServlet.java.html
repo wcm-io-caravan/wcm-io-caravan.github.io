@@ -67,13 +67,13 @@ import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 
 <span class="fc" id="L68">      LinkableResource requestedResource = adaptRequestedResourceToSlingModel(request, rhyme);</span>
 
-<span class="fc" id="L70">      HalResponse halResponse = rhyme.renderResource(requestedResource);</span>
+<span class="fc" id="L70">      HalResponse halResponse = rhyme.getCoreRhyme().renderResponse(requestedResource).blockingGet();</span>
 
 <span class="fc" id="L72">      writeHalResponse(request, halResponse, response);</span>
     }
 <span class="fc" id="L74">    catch (RuntimeException ex) {</span>
 
-<span class="fc" id="L76">      HalResponse errorResponse = rhyme.renderVndErrorResponse(ex);</span>
+<span class="fc" id="L76">      HalResponse errorResponse = rhyme.getCoreRhyme().renderVndErrorResponse(ex);</span>
 
 <span class="fc" id="L78">      writeHalResponse(request, errorResponse, response);</span>
 <span class="fc" id="L79">    }</span>
