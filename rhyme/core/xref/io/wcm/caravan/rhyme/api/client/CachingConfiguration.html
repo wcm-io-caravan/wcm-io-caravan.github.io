@@ -31,24 +31,34 @@
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.osgi.annotation.versioning.ConsumerType;
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> * A configuration instance for the caching {@link HalResourceLoader} implementations created with</em>
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment"> * {@link HalResourceLoaderBuilder}. It needs to be passed to</em>
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> * {@link HalResourceLoaderBuilder#withCachingConfiguration(CachingConfiguration)} to become effective.</em>
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  @ConsumerType
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="CachingConfiguration" href="../../../../../../io/wcm/caravan/rhyme/api/client/CachingConfiguration.html#CachingConfiguration">CachingConfiguration</a> {
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment">   * Determines for how long a cached response that doesn't have a "cache-control: max-age" directive will be used</em>
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">   * (before it is considered stale and retrieved again)</em>
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment">   * @param statusCode of the HTTP response (can be empty if the request failed without a status code)</em>
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment">   * @return the number of seconds the response should be served from cache, or 0 if it shouldn't be cached at all</em>
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">int</strong> getDefaultMaxAge(Optional&lt;Integer&gt; statusCode);
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  }
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.exceptions.HalApiClientException;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment"> * A configuration instance for the caching {@link HalResourceLoader} implementations created with</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> * {@link HalResourceLoaderBuilder}. It needs to be passed to</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * {@link HalResourceLoaderBuilder#withCachingConfiguration(CachingConfiguration)} to become effective.</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  @ConsumerType
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="CachingConfiguration" href="../../../../../../io/wcm/caravan/rhyme/api/client/CachingConfiguration.html#CachingConfiguration">CachingConfiguration</a> {
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">   * Determines for how long a cached response that doesn't have a "cache-control: max-age" directive will be used</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment">   * (before it is considered stale and retrieved again)</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment">   * @param statusCode of the HTTP response (can be empty if the request failed without a status code)</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">   * @return the number of seconds the response should be served from cache, or 0 if it shouldn't be cached at all</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    <strong class="jxr_keyword">int</strong> getDefaultMaxAge(Optional&lt;Integer&gt; statusCode);
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">   * Determines whether the cache should also cover non-successful responses, where a {@link HalApiClientException}</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">   * was caught. Follow-up requests for the same URL will then immediately throw a {@link HalApiClientException} with</em>
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">   * the cached status code and body (unless the cached response is already stale according to the response's or default</em>
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">   * max-age value).</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <em class="jxr_javadoccomment">   * @return true if error responses should be cached as well</em>
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">boolean</strong> isCachingOfHalApiClientExceptionsEnabled();
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014&#x2013;2021 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</div>

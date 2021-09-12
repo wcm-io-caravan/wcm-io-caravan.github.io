@@ -30,12 +30,13 @@ import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import io.wcm.caravan.rhyme.api.client.CachingConfiguration;
 import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiClientException;
 import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
 import io.wcm.caravan.rhyme.api.spi.HalResponseCache;
 
 public class CachingHalResourceLoader implements HalResourceLoader {
 
-<span class="fc" id="L38">  private static final Logger log = LoggerFactory.getLogger(CachingHalResourceLoader.class);</span>
+<span class="fc" id="L39">  private static final Logger log = LoggerFactory.getLogger(CachingHalResourceLoader.class);</span>
 
   private final HalResourceLoader upstream;
 
@@ -46,111 +47,142 @@ public class CachingHalResourceLoader implements HalResourceLoader {
   private final Clock clock;
 
   public CachingHalResourceLoader(HalResourceLoader upstream, HalResponseCache cache, CachingConfiguration configuration,
-<span class="fc" id="L49">      Clock clock) {</span>
-<span class="fc" id="L50">    log.info(&quot;{} was created using {} as a cache backend. &quot;</span>
+<span class="fc" id="L50">      Clock clock) {</span>
+<span class="fc" id="L51">    log.info(&quot;{} was created using {} as a cache backend. &quot;</span>
         + &quot;If you are seeing this log message frequently, then you are not re-using your HalResourceLoader instance properly.&quot;,
-<span class="fc" id="L52">        getClass().getSimpleName(), cache.getClass());</span>
-<span class="fc" id="L53">    this.upstream = upstream;</span>
-<span class="fc" id="L54">    this.cache = cache;</span>
-<span class="fc" id="L55">    this.configuration = configuration;</span>
-<span class="fc" id="L56">    this.clock = clock;</span>
-<span class="fc" id="L57">  }</span>
+<span class="fc" id="L53">        getClass().getSimpleName(), cache.getClass());</span>
+<span class="fc" id="L54">    this.upstream = upstream;</span>
+<span class="fc" id="L55">    this.cache = cache;</span>
+<span class="fc" id="L56">    this.configuration = configuration;</span>
+<span class="fc" id="L57">    this.clock = clock;</span>
+<span class="fc" id="L58">  }</span>
 
   @Override
   public Single&lt;HalResponse&gt; getHalResource(String uri) {
 
-<span class="fc" id="L62">    return loadFromCache(uri)</span>
-<span class="fc" id="L63">        .switchIfEmpty(loadFromUpstreamAndStoreInCache(uri));</span>
+<span class="fc" id="L63">    return loadFromCache(uri)</span>
+<span class="fc" id="L64">        .switchIfEmpty(loadFromUpstreamAndStoreInCache(uri));</span>
   }
 
   private Maybe&lt;HalResponse&gt; loadFromCache(String uri) {
 
-<span class="fc" id="L68">    return cache.load(uri)</span>
-<span class="fc" id="L69">        .map(CachedResponse::new)</span>
-<span class="fc" id="L70">        .filter(CachedResponse::isFresh)</span>
-<span class="fc" id="L71">        .map(CachedResponse::getResponseWithAdjustedMaxAge)</span>
-<span class="fc" id="L72">        .doOnSuccess(response -&gt; log.debug(&quot;A fresh response for {} was as found in {} with remaining max-age of {}&quot;,</span>
-<span class="fc" id="L73">            uri, cache.getClass().getSimpleName(), response.getMaxAge()));</span>
+<span class="fc" id="L69">    return cache.load(uri)</span>
+<span class="fc" id="L70">        .map(CachedResponse::new)</span>
+<span class="fc" id="L71">        .filter(CachedResponse::isFresh)</span>
+<span class="fc" id="L72">        .map(CachedResponse::getResponseWithAdjustedMaxAge)</span>
+<span class="fc" id="L73">        .flatMap(response -&gt; throwExceptionForErrorStatusCodes(uri, response))</span>
+<span class="fc" id="L74">        .doOnSuccess(response -&gt; log.debug(&quot;A fresh response for {} was as found in {} with remaining max-age of {}&quot;,</span>
+<span class="fc" id="L75">            uri, cache.getClass().getSimpleName(), response.getMaxAge()));</span>
   }
 
   private Single&lt;HalResponse&gt; loadFromUpstreamAndStoreInCache(String uri) {
 
-<span class="fc" id="L78">    return upstream.getHalResource(uri)</span>
-<span class="fc" id="L79">        .map(this::updateResponse)</span>
-<span class="fc" id="L80">        .doOnSuccess(entry -&gt; storeInCache(uri, entry));</span>
+<span class="fc" id="L80">    return upstream.getHalResource(uri)</span>
+<span class="fc" id="L81">        .map(this::updateResponseWithTimestampAndDefaultMaxAge)</span>
+<span class="fc" id="L82">        .doOnSuccess(entry -&gt; storeInCache(uri, entry))</span>
+<span class="fc" id="L83">        .doOnError(ex -&gt; handleResourceLoaderException(uri, ex));</span>
   }
 
-  private HalResponse updateResponse(HalResponse response) {
+  private Maybe&lt;HalResponse&gt; throwExceptionForErrorStatusCodes(String uri, HalResponse response) {
 
-<span class="fc" id="L85">    HalResponse updatedResponse = response</span>
-<span class="fc" id="L86">        .withTimestamp(clock.instant());</span>
-
-<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (response.getMaxAge() == null) {</span>
-<span class="fc" id="L89">      Optional&lt;Integer&gt; status = Optional.ofNullable(response.getStatus());</span>
-<span class="fc" id="L90">      int maxAge = configuration.getDefaultMaxAge(status);</span>
-<span class="fc" id="L91">      updatedResponse = updatedResponse.withMaxAge(maxAge);</span>
+<span class="fc bfc" id="L88" title="All 4 branches covered.">    if (response.getStatus() != null &amp;&amp; response.getStatus() &lt; 400) {</span>
+<span class="fc" id="L89">      return Maybe.just(response);</span>
     }
 
-<span class="fc" id="L94">    return updatedResponse;</span>
+<span class="fc" id="L92">    String msg = &quot;An error response with status code &quot; + response.getStatus() + &quot; from a previous request was found in cache,&quot;</span>
+<span class="fc" id="L93">        + &quot; which will still be used for the next &quot; + response.getMaxAge() + &quot; seconds.&quot;;</span>
+
+<span class="fc" id="L95">    log.info(msg);</span>
+
+<span class="fc" id="L97">    RuntimeException cause = new RuntimeException(msg);</span>
+
+<span class="fc" id="L99">    return Maybe.error(new HalApiClientException(response, uri, cause));</span>
+  }
+
+  private HalResponse updateResponseWithTimestampAndDefaultMaxAge(HalResponse response) {
+
+<span class="fc" id="L104">    HalResponse updatedResponse = response</span>
+<span class="fc" id="L105">        .withTimestamp(clock.instant());</span>
+
+<span class="fc bfc" id="L107" title="All 2 branches covered.">    if (updatedResponse.getMaxAge() != null) {</span>
+<span class="fc" id="L108">      return updatedResponse;</span>
+    }
+
+<span class="fc" id="L111">    Optional&lt;Integer&gt; status = Optional.ofNullable(updatedResponse.getStatus());</span>
+<span class="fc" id="L112">    int maxAge = configuration.getDefaultMaxAge(status);</span>
+<span class="fc" id="L113">    return updatedResponse.withMaxAge(maxAge);</span>
   }
 
   private void storeInCache(String uri, HalResponse response) {
 
-<span class="fc bfc" id="L99" title="All 2 branches covered.">    if (response.getMaxAge() &gt; 0) {</span>
-<span class="fc" id="L100">      log.debug(&quot;Response for {} is being stored in {} with max-age={} seconds&quot;, uri, cache.getClass().getSimpleName(), response.getMaxAge());</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">    if (response.getMaxAge() &gt; 0) {</span>
+<span class="fc" id="L119">      log.debug(&quot;Response for {} is being stored in {} with max-age={} seconds&quot;, uri, cache.getClass().getSimpleName(), response.getMaxAge());</span>
 
-<span class="fc" id="L102">      cache.store(uri, response);</span>
+<span class="fc" id="L121">      cache.store(uri, response);</span>
     }
-<span class="fc" id="L104">  }</span>
+<span class="fc" id="L123">  }</span>
+
+  private void handleResourceLoaderException(String uri, Throwable ex) {
+
+<span class="fc bfc" id="L127" title="All 4 branches covered.">    if (!(ex instanceof HalApiClientException) || !configuration.isCachingOfHalApiClientExceptionsEnabled()) {</span>
+<span class="fc" id="L128">      return;</span>
+    }
+
+<span class="fc" id="L131">    HalApiClientException hace = (HalApiClientException)ex;</span>
+
+<span class="fc" id="L133">    HalResponse updatedResponse = updateResponseWithTimestampAndDefaultMaxAge(hace.getErrorResponse());</span>
+
+<span class="fc" id="L135">    storeInCache(uri, updatedResponse);</span>
+<span class="fc" id="L136">  }</span>
 
   class CachedResponse {
 
     private final HalResponse response;
 
-<span class="fc" id="L110">    private CachedResponse(HalResponse response) {</span>
-<span class="fc" id="L111">      this.response = response;</span>
-<span class="fc" id="L112">    }</span>
+<span class="fc" id="L142">    private CachedResponse(HalResponse response) {</span>
+<span class="fc" id="L143">      this.response = response;</span>
+<span class="fc" id="L144">    }</span>
 
     private int getSecondsInCache() {
 
-<span class="fc" id="L116">      Duration cachedFor = Duration.between(response.getTimestamp(), clock.instant());</span>
+<span class="fc" id="L148">      Duration cachedFor = Duration.between(response.getTimestamp(), clock.instant());</span>
 
-<span class="fc" id="L118">      return (int)cachedFor.getSeconds();</span>
+<span class="fc" id="L150">      return (int)cachedFor.getSeconds();</span>
     }
 
     boolean isFresh() {
 
-<span class="fc" id="L123">      int secondsInCache = getSecondsInCache();</span>
-<span class="fc bfc" id="L124" title="All 2 branches covered.">      boolean fresh = secondsInCache &lt; response.getMaxAge();</span>
+<span class="fc" id="L155">      int secondsInCache = getSecondsInCache();</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">      boolean fresh = secondsInCache &lt; response.getMaxAge();</span>
 
-<span class="fc bfc" id="L126" title="All 2 branches covered.">      if (!fresh) {</span>
-<span class="fc" id="L127">        log.debug(&quot;A response found in cache was considered stale, because it was stored {} seconds ago&quot;, secondsInCache);</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">      if (!fresh) {</span>
+<span class="fc" id="L159">        log.debug(&quot;A response found in cache was considered stale, because it was stored {} seconds ago&quot;, secondsInCache);</span>
       }
 
-<span class="fc" id="L130">      return fresh;</span>
+<span class="fc" id="L162">      return fresh;</span>
     }
 
     HalResponse getResponseWithAdjustedMaxAge() {
 
-<span class="fc" id="L135">      int newMaxAge = Math.max(0, response.getMaxAge() - getSecondsInCache());</span>
-<span class="fc" id="L136">      return response.withMaxAge(newMaxAge);</span>
+<span class="fc" id="L167">      int newMaxAge = Math.max(0, response.getMaxAge() - getSecondsInCache());</span>
+<span class="fc" id="L168">      return response.withMaxAge(newMaxAge);</span>
     }
   }
 
   HalResourceLoader getUpstream() {
-<span class="fc" id="L141">    return upstream;</span>
+<span class="fc" id="L173">    return upstream;</span>
   }
 
   HalResponseCache getCache() {
-<span class="fc" id="L145">    return cache;</span>
+<span class="fc" id="L177">    return cache;</span>
   }
 
   CachingConfiguration getConfiguration() {
-<span class="fc" id="L149">    return configuration;</span>
+<span class="fc" id="L181">    return configuration;</span>
   }
 
   Clock getClock() {
-<span class="fc" id="L153">    return clock;</span>
+<span class="fc" id="L185">    return clock;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

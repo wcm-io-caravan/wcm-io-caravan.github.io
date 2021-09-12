@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6};
+var methods = {"i0":6,"i1":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -131,6 +131,13 @@ public interface <span class="typeNameLabel">CachingConfiguration</span></pre>
  (before it is considered stale and retrieved again)</div>
 </td>
 </tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/client/CachingConfiguration.html#isCachingOfHalApiClientExceptionsEnabled--">isCachingOfHalApiClientExceptionsEnabled</a></span>()</code>
+<div class="block">Determines whether the cache should also cover non-successful responses, where a <a href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html" title="class in io.wcm.caravan.rhyme.api.exceptions"><code>HalApiClientException</code></a>
+ was caught.</div>
+</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -149,7 +156,7 @@ public interface <span class="typeNameLabel">CachingConfiguration</span></pre>
 <a name="getDefaultMaxAge-java.util.Optional-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getDefaultMaxAge</h4>
 <pre>int&nbsp;getDefaultMaxAge(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util">Optional</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&gt;&nbsp;statusCode)</pre>
@@ -160,6 +167,23 @@ public interface <span class="typeNameLabel">CachingConfiguration</span></pre>
 <dd><code>statusCode</code> - of the HTTP response (can be empty if the request failed without a status code)</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the number of seconds the response should be served from cache, or 0 if it shouldn't be cached at all</dd>
+</dl>
+</li>
+</ul>
+<a name="isCachingOfHalApiClientExceptionsEnabled--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>isCachingOfHalApiClientExceptionsEnabled</h4>
+<pre>boolean&nbsp;isCachingOfHalApiClientExceptionsEnabled()</pre>
+<div class="block">Determines whether the cache should also cover non-successful responses, where a <a href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html" title="class in io.wcm.caravan.rhyme.api.exceptions"><code>HalApiClientException</code></a>
+ was caught. Follow-up requests for the same URL will then immediately throw a <a href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html" title="class in io.wcm.caravan.rhyme.api.exceptions"><code>HalApiClientException</code></a> with
+ the cached status code and body (unless the cached response is already stale according to the response's or default
+ max-age value).</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if error responses should be cached as well</dd>
 </dl>
 </li>
 </ul>
