@@ -24,11 +24,13 @@ import com.google.common.base.Preconditions;
 import io.wcm.caravan.rhyme.api.client.HalApiClient;
 import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
 import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
+import io.wcm.caravan.rhyme.impl.client.proxy.HalApiClientProxyFactory;
 import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
 
 /**
- * A full implementation of {@link HalApiClientImpl} that delegates the actual loading of resources via the
- * {@link HalResourceLoader} interface
+ * The implementation of {@link HalApiClient} that delegates the actual loading of resources via the
+ * {@link HalResourceLoader} interface to the {@link HalResourceLoaderWrapper}, and creates dynamic
+ * client proxies with the {@link HalApiClientProxyFactory}.
  */
 public class HalApiClientImpl implements HalApiClient {
 
@@ -37,30 +39,30 @@ public class HalApiClientImpl implements HalApiClient {
   private final HalApiTypeSupport typeSupport;
 
   /**
-   * jsonLoader implements the actual loading (and caching) of JSON/HAL resources via any HTTP client library
+   * @param resourceLoader implements the actual loading (and caching) of JSON/HAL resources via any HTTP client library
    * @param metrics an instance of {@link RequestMetricsCollector} to collect performance relevant data for the current
    *          incoming request
    * @param typeSupport the strategy to detect HAL API annotations and perform type conversions
    */
-<span class="fc" id="L45">  public HalApiClientImpl(HalResourceLoader resourceLoader, RequestMetricsCollector metrics, HalApiTypeSupport typeSupport) {</span>
+<span class="fc" id="L47">  public HalApiClientImpl(HalResourceLoader resourceLoader, RequestMetricsCollector metrics, HalApiTypeSupport typeSupport) {</span>
 
-<span class="fc" id="L47">    Preconditions.checkNotNull(resourceLoader, &quot;A &quot; + HalResourceLoader.class.getName() + &quot; instance must be provided&quot;);</span>
-<span class="fc" id="L48">    HalResourceLoaderWrapper wrapper = new HalResourceLoaderWrapper(resourceLoader, metrics);</span>
+<span class="fc" id="L49">    Preconditions.checkNotNull(resourceLoader, &quot;A &quot; + HalResourceLoader.class.getName() + &quot; instance must be provided&quot;);</span>
+<span class="fc" id="L50">    HalResourceLoaderWrapper wrapper = new HalResourceLoaderWrapper(resourceLoader, metrics);</span>
 
-<span class="fc" id="L50">    factory = new HalApiClientProxyFactory(wrapper, metrics, typeSupport);</span>
+<span class="fc" id="L52">    factory = new HalApiClientProxyFactory(wrapper, metrics, typeSupport);</span>
 
-<span class="fc" id="L52">    this.typeSupport = typeSupport;</span>
-<span class="fc" id="L53">  }</span>
+<span class="fc" id="L54">    this.typeSupport = typeSupport;</span>
+<span class="fc" id="L55">  }</span>
 
   @Override
   public &lt;T&gt; T getRemoteResource(String uri, Class&lt;T&gt; halApiInterface) {
 
     // create a proxy instance that loads the entry point lazily when required by any method call on the proxy
-<span class="fc" id="L59">    return factory.createProxyFromUrl(halApiInterface, uri);</span>
+<span class="fc" id="L61">    return factory.createProxyFromUrl(halApiInterface, uri);</span>
   }
 
   public HalApiTypeSupport getTypeSupport() {
-<span class="fc" id="L63">    return typeSupport;</span>
+<span class="fc" id="L65">    return typeSupport;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
