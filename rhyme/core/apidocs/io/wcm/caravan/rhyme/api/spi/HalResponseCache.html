@@ -138,8 +138,7 @@ public interface <span class="typeNameLabel">HalResponseCache</span></pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResponseCache.html#store-java.lang.String-io.wcm.caravan.rhyme.api.common.HalResponse-">store</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
-     <a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;response)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResponseCache.html#store-io.wcm.caravan.rhyme.api.common.HalResponse-">store</a></span>(<a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;response)</code>
 <div class="block">Store a HAL response in the cache.</div>
 </td>
 </tr>
@@ -175,19 +174,17 @@ public interface <span class="typeNameLabel">HalResponseCache</span></pre>
 </dl>
 </li>
 </ul>
-<a name="store-java.lang.String-io.wcm.caravan.rhyme.api.common.HalResponse-">
+<a name="store-io.wcm.caravan.rhyme.api.common.HalResponse-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>store</h4>
-<pre>void&nbsp;store(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
-           <a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;response)</pre>
+<pre>void&nbsp;store(<a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;response)</pre>
 <div class="block">Store a HAL response in the cache. It is essential that all fields from the <a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> are stored, and
  retrieved later without modifications.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>uri</code> - the absolute URI of the resource</dd>
 <dd><code>response</code> - the <a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> to store</dd>
 </dl>
 </li>

@@ -158,16 +158,25 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/RuntimeExce
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException-io.wcm.caravan.rhyme.api.common.HalResponse-java.lang.String-java.lang.Throwable-">HalApiClientException</a></span>(<a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;errorResponse,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;requestUrl,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;cause)</code>
-<div class="block">Constructor to use if the request failed with a non-successful HTTP status code</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">use <a href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException-io.wcm.caravan.rhyme.api.common.HalResponse-java.lang.Throwable-"><code>HalApiClientException(HalResponse, Throwable)</code></a> instead, and make
+             sure that <a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html#withUri-java.lang.String-"><code>HalResponse.withUri(String)</code></a> was called</span></div>
+</div>
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException-io.wcm.caravan.rhyme.api.common.HalResponse-java.lang.Throwable-">HalApiClientException</a></span>(<a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;errorResponse,
+                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;cause)</code>
+<div class="block">Constructor to use if the request failed with a non-successful HTTP status code</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException-java.lang.String-io.wcm.caravan.rhyme.api.exceptions.HalApiClientException-">HalApiClientException</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;message,
                      <a href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html" title="class in io.wcm.caravan.rhyme.api.exceptions">HalApiClientException</a>&nbsp;cause)</code>
 <div class="block">Constructor used to re-throw a <a href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html" title="class in io.wcm.caravan.rhyme.api.exceptions"><code>HalApiClientException</code></a> and add additional context information</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException-java.lang.String-java.lang.Integer-java.lang.String-java.lang.Throwable-">HalApiClientException</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;message,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&nbsp;statusCode,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;requestUrl,
@@ -237,14 +246,33 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/RuntimeExce
 <ul class="blockList">
 <li class="blockList">
 <h4>HalApiClientException</h4>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
+public&nbsp;HalApiClientException(<a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;errorResponse,
+                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;requestUrl,
+                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;cause)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException-io.wcm.caravan.rhyme.api.common.HalResponse-java.lang.Throwable-"><code>HalApiClientException(HalResponse, Throwable)</code></a> instead, and make
+             sure that <a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html#withUri-java.lang.String-"><code>HalResponse.withUri(String)</code></a> was called</span></div>
+<div class="block">Kept for backward compatibility</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>errorResponse</code> - the error response as received from the upstream service</dd>
+<dd><code>requestUrl</code> - the URI of the request that failed</dd>
+<dd><code>cause</code> - the root cause for the failed HTTP request</dd>
+</dl>
+</li>
+</ul>
+<a name="HalApiClientException-io.wcm.caravan.rhyme.api.common.HalResponse-java.lang.Throwable-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>HalApiClientException</h4>
 <pre>public&nbsp;HalApiClientException(<a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;errorResponse,
-                             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;requestUrl,
                              <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;cause)</pre>
 <div class="block">Constructor to use if the request failed with a non-successful HTTP status code</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>errorResponse</code> - the error response as received from the upstream service</dd>
-<dd><code>requestUrl</code> - the URI of the request that failed</dd>
 <dd><code>cause</code> - the root cause for the failed HTTP request</dd>
 </dl>
 </li>

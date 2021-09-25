@@ -188,6 +188,10 @@
 <td class="colFirst"><code><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a></code></td>
 <td class="colLast"><span class="typeNameLabel">HalResponse.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html#withTimestamp-java.time.Instant-">withTimestamp</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/time/Instant.html?is-external=true" title="class or interface in java.time">Instant</a>&nbsp;value)</code>&nbsp;</td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a></code></td>
+<td class="colLast"><span class="typeNameLabel">HalResponse.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html#withUri-java.lang.String-">withUri</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</code>&nbsp;</td>
+</tr>
 </tbody>
 </table>
 </li>
@@ -217,6 +221,15 @@
 <tr class="altColor">
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException-io.wcm.caravan.rhyme.api.common.HalResponse-java.lang.String-java.lang.Throwable-">HalApiClientException</a></span>(<a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;errorResponse,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;requestUrl,
+                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;cause)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">use <a href="../../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException-io.wcm.caravan.rhyme.api.common.HalResponse-java.lang.Throwable-"><code>HalApiClientException(HalResponse, Throwable)</code></a> instead, and make
+             sure that <a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html#withUri-java.lang.String-"><code>withUri(String)</code></a> was called</span></div>
+</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException-io.wcm.caravan.rhyme.api.common.HalResponse-java.lang.Throwable-">HalApiClientException</a></span>(<a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;errorResponse,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a>&nbsp;cause)</code>
 <div class="block">Constructor to use if the request failed with a non-successful HTTP status code</div>
 </td>
@@ -293,8 +306,7 @@
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><span class="typeNameLabel">HalResponseCache.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HalResponseCache.html#store-java.lang.String-io.wcm.caravan.rhyme.api.common.HalResponse-">store</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
-     <a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;response)</code>
+<td class="colLast"><span class="typeNameLabel">HalResponseCache.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HalResponseCache.html#store-io.wcm.caravan.rhyme.api.common.HalResponse-">store</a></span>(<a href="../../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a>&nbsp;response)</code>
 <div class="block">Store a HAL response in the cache.</div>
 </td>
 </tr>

@@ -103,148 +103,155 @@ public class HttpHalResourceLoader implements HalResourceLoader {
 
     void executeRequestAndWaitForCallbacks() {
       try {
-<span class="fc" id="L106">        actualUri = URI.create(originalUri);</span>
+<span class="fc" id="L106">        updateUri(originalUri);</span>
 
-<span class="fc" id="L108">        client.executeGetRequest(actualUri, this);</span>
+<span class="fc" id="L108">        actualUri = URI.create(originalUri);</span>
+
+<span class="fc" id="L110">        client.executeGetRequest(actualUri, this);</span>
       }
-<span class="fc" id="L110">      catch (RuntimeException ex) {</span>
+<span class="fc" id="L112">      catch (RuntimeException ex) {</span>
 
-<span class="fc" id="L112">        emitHalApiClientExceptionWithCause(ex);</span>
-<span class="fc" id="L113">      }</span>
-<span class="fc" id="L114">    }</span>
+<span class="fc" id="L114">        emitHalApiClientExceptionWithCause(ex);</span>
+<span class="fc" id="L115">      }</span>
+<span class="fc" id="L116">    }</span>
+
+    private void updateUri(String uri) {
+<span class="fc" id="L119">      halResponse = halResponse.withUri(uri);</span>
+<span class="fc" id="L120">    }</span>
 
     private void updateStatusCode(Integer statusCode) {
-<span class="fc" id="L117">      halResponse = halResponse.withStatus(statusCode);</span>
-<span class="fc" id="L118">    }</span>
+<span class="fc" id="L123">      halResponse = halResponse.withStatus(statusCode);</span>
+<span class="fc" id="L124">    }</span>
 
     private void updateContentType(String contentType) {
-<span class="fc" id="L121">      halResponse = halResponse.withContentType(contentType);</span>
-<span class="fc" id="L122">    }</span>
+<span class="fc" id="L127">      halResponse = halResponse.withContentType(contentType);</span>
+<span class="fc" id="L128">    }</span>
 
     private void updateMaxAge(Integer maxAge) {
-<span class="fc" id="L125">      halResponse = halResponse.withMaxAge(maxAge);</span>
-<span class="fc" id="L126">    }</span>
+<span class="fc" id="L131">      halResponse = halResponse.withMaxAge(maxAge);</span>
+<span class="fc" id="L132">    }</span>
 
     private void updateBody(JsonNode parsedJson) {
-<span class="fc" id="L129">      halResponse = halResponse.withBody(parsedJson);</span>
-<span class="fc" id="L130">    }</span>
+<span class="fc" id="L135">      halResponse = halResponse.withBody(parsedJson);</span>
+<span class="fc" id="L136">    }</span>
 
     private void emitHalResponse() {
 
-<span class="fc bfc" id="L134" title="All 2 branches covered.">      if (responseOrErrorWasEmitted.compareAndSet(false, true)) {</span>
-<span class="fc" id="L135">        log.debug(&quot;HTTP response from {} was retrieved in {}&quot;, actualUri, stopwatch);</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">      if (responseOrErrorWasEmitted.compareAndSet(false, true)) {</span>
+<span class="fc" id="L141">        log.debug(&quot;HTTP response from {} was retrieved in {}&quot;, actualUri, stopwatch);</span>
 
-<span class="fc" id="L137">        subscriber.onSuccess(halResponse);</span>
+<span class="fc" id="L143">        subscriber.onSuccess(halResponse);</span>
       }
       else {
-<span class="fc" id="L140">        log.warn(&quot;#onBodyAvailable wa called more than once, or after #onExceptionCaught was called &quot;, new RuntimeException());</span>
+<span class="fc" id="L146">        log.warn(&quot;#onBodyAvailable wa called more than once, or after #onExceptionCaught was called &quot;, new RuntimeException());</span>
       }
-<span class="fc" id="L142">    }</span>
+<span class="fc" id="L148">    }</span>
 
     private void emitHalApiClientExceptionWithCause(Throwable cause) {
 
-<span class="fc bfc" id="L146" title="All 2 branches covered.">      if (responseOrErrorWasEmitted.compareAndSet(false, true)) {</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">      if (responseOrErrorWasEmitted.compareAndSet(false, true)) {</span>
 
-<span class="fc bfc" id="L148" title="All 2 branches covered.">        String uri = actualUri != null ? actualUri.toString() : originalUri;</span>
-<span class="fc" id="L149">        HalApiClientException ex = new HalApiClientException(halResponse, uri, cause);</span>
+<span class="fc" id="L154">        HalApiClientException ex = new HalApiClientException(halResponse, cause);</span>
 
-<span class="fc" id="L151">        log.debug(&quot;HTTP request to {} failed with status {} after {}&quot;, uri, halResponse.getStatus(), stopwatch);</span>
+<span class="fc" id="L156">        log.debug(&quot;HTTP request to {} failed with status {} after {}&quot;, halResponse.getUri(), halResponse.getStatus(), stopwatch);</span>
 
-<span class="fc" id="L153">        subscriber.onError(ex);</span>
-<span class="fc" id="L154">      }</span>
+<span class="fc" id="L158">        subscriber.onError(ex);</span>
+<span class="fc" id="L159">      }</span>
       else {
-<span class="fc" id="L156">        log.warn(&quot;An exception was caught after the response (or a previous exception) was already emitted &quot;, cause);</span>
+<span class="fc" id="L161">        log.warn(&quot;An exception was caught after the response (or a previous exception) was already emitted &quot;, cause);</span>
       }
-<span class="fc" id="L158">    }</span>
+<span class="fc" id="L163">    }</span>
 
     @Override
     public void onUrlModified(URI uri) {
 
-<span class="fc" id="L163">      actualUri = uri;</span>
-<span class="fc" id="L164">    }</span>
+<span class="fc" id="L168">      actualUri = uri;</span>
+
+<span class="fc" id="L170">      updateUri(uri.toString());</span>
+<span class="fc" id="L171">    }</span>
 
     @Override
     public void onHeadersAvailable(int statusCode, Map&lt;String, ? extends Collection&lt;String&gt;&gt; headers) {
 
       // HttpURLConnection will sometimes return statusCode -1 for failed requests, which we don't want to forward
-<span class="fc bfc" id="L170" title="All 2 branches covered.">      updateStatusCode(statusCode &gt; 0 ? statusCode : null);</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">      updateStatusCode(statusCode &gt; 0 ? statusCode : null);</span>
 
-<span class="fc" id="L172">      parsedHeaders = new HttpHeadersParser(headers);</span>
+<span class="fc" id="L179">      parsedHeaders = new HttpHeadersParser(headers);</span>
 
-<span class="fc" id="L174">      parsedHeaders.getContentType()</span>
-<span class="fc" id="L175">          .ifPresent(this::updateContentType);</span>
+<span class="fc" id="L181">      parsedHeaders.getContentType()</span>
+<span class="fc" id="L182">          .ifPresent(this::updateContentType);</span>
 
-<span class="fc" id="L177">      parsedHeaders.getMaxAge()</span>
-<span class="fc" id="L178">          .ifPresent(this::updateMaxAge);</span>
-<span class="fc" id="L179">    }</span>
+<span class="fc" id="L184">      parsedHeaders.getMaxAge()</span>
+<span class="fc" id="L185">          .ifPresent(this::updateMaxAge);</span>
+<span class="fc" id="L186">    }</span>
 
     @Override
     public void onBodyAvailable(InputStream is) {
 
-<span class="fc bfc" id="L184" title="All 2 branches covered.">      if (parsedHeaders == null) {</span>
-<span class="fc" id="L185">        throw new HalApiDeveloperException(&quot;onHeadersAvailable() should be called before onBodyAvailable()&quot;);</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">      if (parsedHeaders == null) {</span>
+<span class="fc" id="L192">        throw new HalApiDeveloperException(&quot;onHeadersAvailable() should be called before onBodyAvailable()&quot;);</span>
       }
 
-<span class="fc" id="L188">      Integer status = halResponse.getStatus();</span>
-<span class="fc" id="L189">      String msgPrefix = &quot;An HTTP response with status code &quot; + status + &quot; was retrieved, &quot;;</span>
-<span class="fc bfc" id="L190" title="All 4 branches covered.">      boolean statusIsOk = status != null &amp;&amp; status == 200;</span>
+<span class="fc" id="L195">      Integer status = halResponse.getStatus();</span>
+<span class="fc" id="L196">      String msgPrefix = &quot;An HTTP response with status code &quot; + status + &quot; was retrieved, &quot;;</span>
+<span class="fc bfc" id="L197" title="All 4 branches covered.">      boolean statusIsOk = status != null &amp;&amp; status == 200;</span>
 
       try {
         // we try to parse the JSON and include it in the HalResponse even when the request failed
-<span class="fc" id="L194">        JsonNode parsedJson = parseJson(is);</span>
+<span class="fc" id="L201">        JsonNode parsedJson = parseJson(is);</span>
 
-<span class="fc" id="L196">        updateBody(parsedJson);</span>
+<span class="fc" id="L203">        updateBody(parsedJson);</span>
 
-<span class="fc bfc" id="L198" title="All 2 branches covered.">        if (statusIsOk) {</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">        if (statusIsOk) {</span>
           // this is the only case where the response was successfully retrieved and parsed
-<span class="fc" id="L200">          emitHalResponse();</span>
+<span class="fc" id="L207">          emitHalResponse();</span>
         }
         else {
           // the response code indicates that the request was *not* successful even through the response could be parsed
           String msg;
-<span class="fc bfc" id="L205" title="All 2 branches covered.">          if (StringUtils.equals(halResponse.getContentType(), VndErrorResponseRenderer.CONTENT_TYPE)) {</span>
-<span class="fc" id="L206">            msg = msgPrefix + &quot;which contains a vnd.error body with the following server-side error details&quot;;</span>
+<span class="fc bfc" id="L212" title="All 2 branches covered.">          if (StringUtils.equals(halResponse.getContentType(), VndErrorResponseRenderer.CONTENT_TYPE)) {</span>
+<span class="fc" id="L213">            msg = msgPrefix + &quot;which contains a vnd.error body with the following server-side error details&quot;;</span>
           }
           else {
-<span class="fc" id="L209">            msg = msgPrefix + &quot;and a JSON body that may contain further information is present&quot;;</span>
+<span class="fc" id="L216">            msg = msgPrefix + &quot;and a JSON body that may contain further information is present&quot;;</span>
           }
-<span class="fc" id="L211">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
+<span class="fc" id="L218">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
         }
       }
-<span class="fc" id="L214">      catch (RuntimeException ex) {</span>
-<span class="fc bfc" id="L215" title="All 2 branches covered.">        if (statusIsOk) {</span>
-<span class="fc" id="L216">          String msg = msgPrefix + &quot;but the body could not be successfully read and parsed as a JSON document&quot;;</span>
+<span class="fc" id="L221">      catch (RuntimeException ex) {</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">        if (statusIsOk) {</span>
+<span class="fc" id="L223">          String msg = msgPrefix + &quot;but the body could not be successfully read and parsed as a JSON document&quot;;</span>
 
-<span class="fc" id="L218">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg, ex));</span>
-<span class="fc" id="L219">        }</span>
+<span class="fc" id="L225">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg, ex));</span>
+<span class="fc" id="L226">        }</span>
         else {
           // if JSON parsing failed for a non-ok response, we don't include that exception as a root cause,
           // as we cannot expected the body to be JSON all the time, and don't want confusing information
           // in the stack trace
-<span class="fc" id="L224">          String msg = msgPrefix + &quot;and no JSON body with further information was found&quot;;</span>
-<span class="fc" id="L225">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
+<span class="fc" id="L231">          String msg = msgPrefix + &quot;and no JSON body with further information was found&quot;;</span>
+<span class="fc" id="L232">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
         }
-<span class="fc" id="L227">      }</span>
-<span class="fc" id="L228">    }</span>
+<span class="fc" id="L234">      }</span>
+<span class="fc" id="L235">    }</span>
 
     @Override
     public void onExceptionCaught(Throwable ex) {
 
-<span class="fc" id="L233">      emitHalApiClientExceptionWithCause(ex);</span>
-<span class="fc" id="L234">    }</span>
+<span class="fc" id="L240">      emitHalApiClientExceptionWithCause(ex);</span>
+<span class="fc" id="L241">    }</span>
 
   }
 
   private static JsonNode parseJson(InputStream is) {
 
-<span class="fc" id="L240">    try (InputStream autoClosingStream = is) {</span>
-<span class="fc" id="L241">      return JSON_FACTORY.createParser(autoClosingStream).readValueAsTree();</span>
+<span class="fc" id="L247">    try (InputStream autoClosingStream = is) {</span>
+<span class="fc" id="L248">      return JSON_FACTORY.createParser(autoClosingStream).readValueAsTree();</span>
     }
-<span class="fc" id="L243">    catch (JsonProcessingException ex) {</span>
-<span class="fc" id="L244">      throw new HttpClientSupportException(&quot;The response body was read completely, but it's not valid JSON.&quot;, ex);</span>
+<span class="fc" id="L250">    catch (JsonProcessingException ex) {</span>
+<span class="fc" id="L251">      throw new HttpClientSupportException(&quot;The response body was read completely, but it's not valid JSON.&quot;, ex);</span>
     }
-<span class="fc" id="L246">    catch (IOException ex) {</span>
-<span class="fc" id="L247">      throw new HttpClientSupportException(&quot;The response body could not be read completely from the input stream&quot;, ex);</span>
+<span class="fc" id="L253">    catch (IOException ex) {</span>
+<span class="fc" id="L254">      throw new HttpClientSupportException(&quot;The response body could not be read completely from the input stream&quot;, ex);</span>
     }
   }
 
@@ -253,16 +260,16 @@ public class HttpHalResourceLoader implements HalResourceLoader {
     private static final long serialVersionUID = -1086569417284265963L;
 
     HttpClientSupportException(String msg) {
-<span class="fc" id="L256">      super(msg);</span>
-<span class="fc" id="L257">    }</span>
+<span class="fc" id="L263">      super(msg);</span>
+<span class="fc" id="L264">    }</span>
 
     HttpClientSupportException(String msg, Throwable cause) {
-<span class="fc" id="L260">      super(msg, cause);</span>
-<span class="fc" id="L261">    }</span>
+<span class="fc" id="L267">      super(msg, cause);</span>
+<span class="fc" id="L268">    }</span>
   }
 
   public HttpClientSupport getClient() {
-<span class="fc" id="L265">    return client;</span>
+<span class="fc" id="L272">    return client;</span>
   }
 
 }

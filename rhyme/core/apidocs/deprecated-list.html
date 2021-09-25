@@ -74,6 +74,7 @@
 <h2 title="Contents">Contents</h2>
 <ul>
 <li><a href="#method">Deprecated Methods</a></li>
+<li><a href="#constructor">Deprecated Constructors</a></li>
 </ul>
 </div>
 <div class="contentContainer"><a name="method">
@@ -108,6 +109,27 @@
 <td class="colOne"><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#withoutResourceLoader--">io.wcm.caravan.rhyme.api.RhymeBuilder.withoutResourceLoader()</a>
 <div class="block"><span class="deprecationComment">no longer required because there is now a default <a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> implementation available,
              use <a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#create--"><code>RhymeBuilder.create()</code></a> instead</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<a name="constructor">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table class="deprecatedSummary" border="0" cellpadding="3" cellspacing="0" summary="Deprecated Constructors table, listing deprecated constructors, and an explanation">
+<caption><span>Deprecated Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException-io.wcm.caravan.rhyme.api.common.HalResponse-java.lang.String-java.lang.Throwable-">io.wcm.caravan.rhyme.api.exceptions.HalApiClientException(HalResponse, String, Throwable)</a>
+<div class="block"><span class="deprecationComment">use <a href="io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#HalApiClientException-io.wcm.caravan.rhyme.api.common.HalResponse-java.lang.Throwable-"><code>HalApiClientException(HalResponse, Throwable)</code></a> instead, and make
+             sure that <a href="io/wcm/caravan/rhyme/api/common/HalResponse.html#withUri-java.lang.String-"><code>HalResponse.withUri(String)</code></a> was called</span></div>
 </td>
 </tr>
 </tbody>

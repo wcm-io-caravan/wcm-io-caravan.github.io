@@ -34,19 +34,29 @@ public class HalApiClientException extends RuntimeException {
   private static final long serialVersionUID = -2265405683402689209L;
 
   private final HalResponse errorResponse;
-  private final String requestUrl;
+
+  /**
+   * Kept for backward compatibility
+   * @param errorResponse the error response as received from the upstream service
+   * @param requestUrl the URI of the request that failed
+   * @param cause the root cause for the failed HTTP request
+   * @deprecated use {@link HalApiClientException#HalApiClientException(HalResponse, Throwable)} instead, and make
+   *             sure that {@link HalResponse#withUri(String)} was called
+   */
+  @Deprecated
+  public HalApiClientException(HalResponse errorResponse, String requestUrl, Throwable cause) {
+<span class="fc" id="L48">    this(errorResponse.withUri(requestUrl), cause);</span>
+<span class="fc" id="L49">  }</span>
 
   /**
    * Constructor to use if the request failed with a non-successful HTTP status code
    * @param errorResponse the error response as received from the upstream service
-   * @param requestUrl the URI of the request that failed
    * @param cause the root cause for the failed HTTP request
    */
-  public HalApiClientException(HalResponse errorResponse, String requestUrl, Throwable cause) {
-<span class="fc" id="L46">    super(createMessage(errorResponse, requestUrl), cause);</span>
-<span class="fc" id="L47">    this.errorResponse = errorResponse;</span>
-<span class="fc" id="L48">    this.requestUrl = requestUrl;</span>
-<span class="fc" id="L49">  }</span>
+  public HalApiClientException(HalResponse errorResponse, Throwable cause) {
+<span class="fc" id="L57">    super(createMessage(errorResponse), cause);</span>
+<span class="fc" id="L58">    this.errorResponse = errorResponse;</span>
+<span class="fc" id="L59">  }</span>
 
   /**
    * Constructor to use if no response body was received from the upstream service.
@@ -57,10 +67,11 @@ public class HalApiClientException extends RuntimeException {
    * @param cause the root cause for the failed HTTP request
    */
   public HalApiClientException(String message, Integer statusCode, String requestUrl, Throwable cause) {
-<span class="fc" id="L60">    super(message, cause);</span>
-<span class="fc" id="L61">    this.errorResponse = new HalResponse().withStatus(statusCode);</span>
-<span class="fc" id="L62">    this.requestUrl = requestUrl;</span>
-<span class="fc" id="L63">  }</span>
+<span class="fc" id="L70">    super(message, cause);</span>
+<span class="fc" id="L71">    this.errorResponse = new HalResponse()</span>
+<span class="fc" id="L72">        .withStatus(statusCode)</span>
+<span class="fc" id="L73">        .withUri(requestUrl);</span>
+<span class="fc" id="L74">  }</span>
 
   /**
    * Constructor used to re-throw a {@link HalApiClientException} and add additional context information
@@ -68,23 +79,22 @@ public class HalApiClientException extends RuntimeException {
    * @param cause the exception that was caught and re-thrown
    */
   public HalApiClientException(String message, HalApiClientException cause) {
-<span class="fc" id="L71">    super(message, cause);</span>
-<span class="fc" id="L72">    this.errorResponse = cause.getErrorResponse();</span>
-<span class="fc" id="L73">    this.requestUrl = cause.getRequestUrl();</span>
-<span class="fc" id="L74">  }</span>
+<span class="fc" id="L82">    super(message, cause);</span>
+<span class="fc" id="L83">    this.errorResponse = cause.getErrorResponse();</span>
+<span class="fc" id="L84">  }</span>
 
-  private static String createMessage(HalResponse errorResponse, String requestUrl) {
+  private static String createMessage(HalResponse errorResponse) {
 
-<span class="fc" id="L78">    String msg = &quot;HAL client request to &quot; + requestUrl + &quot; has failed &quot;;</span>
+<span class="fc" id="L88">    String msg = &quot;HAL client request to &quot; + errorResponse.getUri() + &quot; has failed &quot;;</span>
 
-<span class="fc bfc" id="L80" title="All 2 branches covered.">    if (errorResponse.getStatus() == null) {</span>
-<span class="fc" id="L81">      return msg + &quot;before a status code was available&quot;;</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">    if (errorResponse.getStatus() == null) {</span>
+<span class="fc" id="L91">      return msg + &quot;before a status code was available&quot;;</span>
     }
-<span class="fc bfc" id="L83" title="All 2 branches covered.">    if (errorResponse.getStatus() == 200) {</span>
-<span class="fc" id="L84">      return msg + &quot; because the response body is malformed&quot;;</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    if (errorResponse.getStatus() == 200) {</span>
+<span class="fc" id="L94">      return msg + &quot; because the response body is malformed&quot;;</span>
     }
 
-<span class="fc" id="L87">    return msg + &quot;with status code &quot; + errorResponse.getStatus();</span>
+<span class="fc" id="L97">    return msg + &quot;with status code &quot; + errorResponse.getStatus();</span>
   }
 
   /**
@@ -92,7 +102,7 @@ public class HalApiClientException extends RuntimeException {
    *         service's response contained a Vnd+Error body
    */
   public HalResponse getErrorResponse() {
-<span class="fc" id="L95">    return errorResponse;</span>
+<span class="fc" id="L105">    return errorResponse;</span>
   }
 
   /**
@@ -100,14 +110,14 @@ public class HalApiClientException extends RuntimeException {
    *         code)
    */
   public Integer getStatusCode() {
-<span class="fc" id="L103">    return errorResponse.getStatus();</span>
+<span class="fc" id="L113">    return errorResponse.getStatus();</span>
   }
 
   /**
    * @return the URI of the request that failed
    */
   public String getRequestUrl() {
-<span class="fc" id="L110">    return requestUrl;</span>
+<span class="fc" id="L120">    return getErrorResponse().getUri();</span>
   }
 
 }
