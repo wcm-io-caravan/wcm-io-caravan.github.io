@@ -130,7 +130,7 @@ final class HalApiInvocationHandler implements InvocationHandler {
 <span class="fc" id="L130">          .map(hal -&gt; new ResourceStateHandler(hal))</span>
 <span class="fc" id="L131">          .flatMapMaybe(handler -&gt; handler.handleMethodInvocation(invocation));</span>
 
-<span class="fc" id="L133">      return RxJavaReflectionUtils.convertAndCacheReactiveType(state, invocation.getReturnType(), metrics, invocation.getDescription(), typeSupport);</span>
+<span class="fc" id="L133">      return RxJavaReflectionUtils.convertAndCacheReactiveType(state, invocation.getReturnType(), metrics, invocation::getDescription, typeSupport);</span>
     }
 
 <span class="fc bfc" id="L136" title="All 2 branches covered.">    if (invocation.isForMethodAnnotatedWithRelatedResource()) {</span>
@@ -140,7 +140,7 @@ final class HalApiInvocationHandler implements InvocationHandler {
 <span class="fc" id="L140">          .map(hal -&gt; new RelatedResourceHandler(hal, proxyFactory, typeSupport))</span>
 <span class="fc" id="L141">          .flatMapObservable(handler -&gt; handler.handleMethodInvocation(invocation));</span>
 
-<span class="fc" id="L143">      return RxJavaReflectionUtils.convertAndCacheReactiveType(relatedProxies, invocation.getReturnType(), metrics, invocation.getDescription(), typeSupport);</span>
+<span class="fc" id="L143">      return RxJavaReflectionUtils.convertAndCacheReactiveType(relatedProxies, invocation.getReturnType(), metrics, invocation::getDescription, typeSupport);</span>
     }
 
 <span class="fc bfc" id="L146" title="All 2 branches covered.">    if (invocation.isForMethodAnnotatedWithResourceLink()) {</span>
@@ -156,7 +156,7 @@ final class HalApiInvocationHandler implements InvocationHandler {
 <span class="fc" id="L156">          .map(hal -&gt; new ResourceRepresentationHandler(hal))</span>
 <span class="fc" id="L157">          .flatMap(handler -&gt; handler.handleMethodInvocation(invocation));</span>
 
-<span class="fc" id="L159">      return RxJavaReflectionUtils.convertAndCacheReactiveType(representation, invocation.getReturnType(), metrics, invocation.getDescription(), typeSupport);</span>
+<span class="fc" id="L159">      return RxJavaReflectionUtils.convertAndCacheReactiveType(representation, invocation.getReturnType(), metrics, invocation::getDescription, typeSupport);</span>
     }
 
 <span class="fc bfc" id="L162" title="All 2 branches covered.">    if (invocation.toString().endsWith(&quot;#toString()&quot;)) {</span>

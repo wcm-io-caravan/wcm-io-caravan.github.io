@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.reactivestreams.Publisher;
 
@@ -63,29 +64,29 @@ public final class RxJavaReflectionUtils {
   public static Observable&lt;?&gt; invokeMethodAndReturnObservable(Object resourceImplInstance, Method method, RequestMetricsCollector metrics,
       HalApiTypeSupport typeSupport) {
 
-<span class="fc" id="L66">    String fullMethodName = HalApiReflectionUtils.getClassAndMethodName(resourceImplInstance, method, typeSupport);</span>
+<span class="fc" id="L67">    String fullMethodName = HalApiReflectionUtils.getClassAndMethodName(resourceImplInstance, method, typeSupport);</span>
 
-<span class="fc" id="L68">    try (RequestMetricsStopwatch sw = metrics.startStopwatch(AsyncHalResourceRenderer.class, () -&gt; &quot;calls to &quot; + fullMethodName)) {</span>
+<span class="fc" id="L69">    try (RequestMetricsStopwatch sw = metrics.startStopwatch(AsyncHalResourceRenderer.class, () -&gt; &quot;calls to &quot; + fullMethodName)) {</span>
 
-<span class="fc" id="L70">      Object[] args = new Object[method.getParameterCount()];</span>
-<span class="fc" id="L71">      Object returnValue = method.invoke(resourceImplInstance, args);</span>
+<span class="fc" id="L71">      Object[] args = new Object[method.getParameterCount()];</span>
+<span class="fc" id="L72">      Object returnValue = method.invoke(resourceImplInstance, args);</span>
 
-<span class="fc bfc" id="L73" title="All 2 branches covered.">      if (returnValue == null) {</span>
-<span class="fc" id="L74">        throw new HalApiDeveloperException(</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">      if (returnValue == null) {</span>
+<span class="fc" id="L75">        throw new HalApiDeveloperException(</span>
             fullMethodName + &quot; must not return null. You should return an empty Maybe/Observable if the related resource does not exist&quot;);
       }
 
-<span class="fc" id="L78">      return convertToObservable(returnValue, typeSupport);</span>
+<span class="fc" id="L79">      return convertToObservable(returnValue, typeSupport);</span>
     }
-<span class="fc" id="L80">    catch (InvocationTargetException ex) {</span>
-<span class="fc" id="L81">      Throwable cause = ex.getTargetException();</span>
-<span class="fc bfc" id="L82" title="All 2 branches covered.">      if (cause instanceof RuntimeException) {</span>
-<span class="fc" id="L83">        throw ((RuntimeException)cause);</span>
+<span class="fc" id="L81">    catch (InvocationTargetException ex) {</span>
+<span class="fc" id="L82">      Throwable cause = ex.getTargetException();</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">      if (cause instanceof RuntimeException) {</span>
+<span class="fc" id="L84">        throw ((RuntimeException)cause);</span>
       }
-<span class="fc" id="L85">      throw new HalApiServerException(500, &quot;A checked exception was thrown when calling &quot; + fullMethodName, cause);</span>
+<span class="fc" id="L86">      throw new HalApiServerException(500, &quot;A checked exception was thrown when calling &quot; + fullMethodName, cause);</span>
     }
-<span class="fc" id="L87">    catch (IllegalAccessException | IllegalArgumentException ex) {</span>
-<span class="fc" id="L88">      throw new HalApiDeveloperException(&quot;Failed to invoke method &quot; + fullMethodName, ex);</span>
+<span class="fc" id="L88">    catch (IllegalAccessException | IllegalArgumentException ex) {</span>
+<span class="fc" id="L89">      throw new HalApiDeveloperException(&quot;Failed to invoke method &quot; + fullMethodName, ex);</span>
     }
   }
 
@@ -94,28 +95,28 @@ public final class RxJavaReflectionUtils {
    * @return the type of the emitted results
    */
   public static Class&lt;?&gt; getObservableEmissionType(Method method, HalApiTypeSupport typeSupport) {
-<span class="fc" id="L97">    Type returnType = method.getGenericReturnType();</span>
+<span class="fc" id="L98">    Type returnType = method.getGenericReturnType();</span>
 
-<span class="fc bfc" id="L99" title="All 2 branches covered.">    if (!(returnType instanceof ParameterizedType)) {</span>
-<span class="fc" id="L100">      return method.getReturnType();</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">    if (!(returnType instanceof ParameterizedType)) {</span>
+<span class="fc" id="L101">      return method.getReturnType();</span>
     }
 
-<span class="fc" id="L103">    ParameterizedType observableType = (ParameterizedType)returnType;</span>
+<span class="fc" id="L104">    ParameterizedType observableType = (ParameterizedType)returnType;</span>
 
-<span class="fc" id="L105">    Function&lt;Object, Observable&lt;?&gt;&gt; conversion = typeSupport.convertToObservable(method.getReturnType());</span>
+<span class="fc" id="L106">    Function&lt;Object, Observable&lt;?&gt;&gt; conversion = typeSupport.convertToObservable(method.getReturnType());</span>
 
-<span class="fc bfc" id="L107" title="All 2 branches covered.">    if (conversion == null) {</span>
-<span class="fc" id="L108">      throw new HalApiDeveloperException(&quot;The return type &quot; + method.getReturnType().getSimpleName()</span>
-<span class="fc" id="L109">          + &quot; of method &quot; + method.getDeclaringClass().getSimpleName() + &quot;#&quot; + method.getName() + &quot; is not supported.&quot;</span>
-<span class="fc" id="L110">          + &quot; If you do want to use this return type, you can add support for it by using &quot; + RhymeBuilder.class.getSimpleName() + &quot;#withReturnTypeSupport&quot;);</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">    if (conversion == null) {</span>
+<span class="fc" id="L109">      throw new HalApiDeveloperException(&quot;The return type &quot; + method.getReturnType().getSimpleName()</span>
+<span class="fc" id="L110">          + &quot; of method &quot; + method.getDeclaringClass().getSimpleName() + &quot;#&quot; + method.getName() + &quot; is not supported.&quot;</span>
+<span class="fc" id="L111">          + &quot; If you do want to use this return type, you can add support for it by using &quot; + RhymeBuilder.class.getSimpleName() + &quot;#withReturnTypeSupport&quot;);</span>
     }
 
-<span class="fc" id="L113">    Type resourceType = observableType.getActualTypeArguments()[0];</span>
+<span class="fc" id="L114">    Type resourceType = observableType.getActualTypeArguments()[0];</span>
 
-<span class="fc" id="L115">    Preconditions.checkArgument(resourceType instanceof Class,</span>
-<span class="fc" id="L116">        &quot;return types must be generic class with Class type parameters (e.g. List&lt;ObjectNode&gt;), but found &quot; + resourceType.getTypeName());</span>
+<span class="fc" id="L116">    Preconditions.checkArgument(resourceType instanceof Class,</span>
+<span class="fc" id="L117">        &quot;return types must be generic class with Class type parameters (e.g. List&lt;ObjectNode&gt;), but found &quot; + resourceType.getTypeName());</span>
 
-<span class="fc" id="L118">    return (Class)resourceType;</span>
+<span class="fc" id="L119">    return (Class)resourceType;</span>
   }
 
   /**
@@ -127,16 +128,16 @@ public final class RxJavaReflectionUtils {
    * @return an instance of the target type that will replay (and cache!) the items emitted by the given reactive
    *         instance
    */
-  public static Observable&lt;?&gt; convertAndCacheReactiveType(Object reactiveInstance, Class&lt;?&gt; targetType, RequestMetricsCollector metrics, String description,
-      HalApiReturnTypeSupport typeSupport) {
+  public static Observable&lt;?&gt; convertAndCacheReactiveType(Object reactiveInstance, Class&lt;?&gt; targetType, RequestMetricsCollector metrics,
+      Supplier&lt;String&gt; description, HalApiReturnTypeSupport typeSupport) {
 
-<span class="fc" id="L133">    Observable&lt;?&gt; observable = convertToObservable(reactiveInstance, typeSupport)</span>
-<span class="fc" id="L134">        .compose(EmissionStopwatch.collectMetrics(() -&gt; description, metrics));</span>
+<span class="fc" id="L134">    Observable&lt;?&gt; observable = convertToObservable(reactiveInstance, typeSupport)</span>
+<span class="fc" id="L135">        .compose(EmissionStopwatch.collectMetrics(description, metrics));</span>
 
     // do not use Observable#cache() here, because we want consumers to be able to use Observable#retry()
-<span class="fc" id="L137">    Observable&lt;?&gt; cached = observable.compose(RxJavaTransformers.cacheIfCompleted());</span>
+<span class="fc" id="L138">    Observable&lt;?&gt; cached = observable.compose(RxJavaTransformers.cacheIfCompleted());</span>
 
-<span class="fc" id="L139">    return cached;</span>
+<span class="fc" id="L140">    return cached;</span>
   }
 
   /**
@@ -148,26 +149,26 @@ public final class RxJavaReflectionUtils {
    */
   public static Object convertObservableTo(Observable&lt;?&gt; observable, Class&lt;?&gt; targetType, HalApiReturnTypeSupport typeSupport) {
 
-<span class="fc" id="L151">    Preconditions.checkNotNull(targetType, &quot;A target type must be provided&quot;);</span>
+<span class="fc" id="L152">    Preconditions.checkNotNull(targetType, &quot;A target type must be provided&quot;);</span>
 
-<span class="fc" id="L153">    Function&lt;Observable, ?&gt; conversion = typeSupport.convertFromObservable(targetType);</span>
-<span class="fc bfc" id="L154" title="All 2 branches covered.">    if (conversion == null) {</span>
-<span class="fc" id="L155">      throw new HalApiDeveloperException(&quot;The given target type of &quot; + targetType.getName() + &quot; is not a supported return type&quot;);</span>
+<span class="fc" id="L154">    Function&lt;Observable, ?&gt; conversion = typeSupport.convertFromObservable(targetType);</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">    if (conversion == null) {</span>
+<span class="fc" id="L156">      throw new HalApiDeveloperException(&quot;The given target type of &quot; + targetType.getName() + &quot; is not a supported return type&quot;);</span>
     }
 
-<span class="fc" id="L158">    return conversion.apply(observable);</span>
+<span class="fc" id="L159">    return conversion.apply(observable);</span>
   }
 
   private static Observable&lt;?&gt; convertToObservable(Object reactiveInstance, HalApiReturnTypeSupport typeSupport) {
 
-<span class="fc" id="L163">    Preconditions.checkNotNull(reactiveInstance, &quot;Cannot convert null objects&quot;);</span>
+<span class="fc" id="L164">    Preconditions.checkNotNull(reactiveInstance, &quot;Cannot convert null objects&quot;);</span>
 
-<span class="fc" id="L165">    Function&lt;Object, Observable&lt;?&gt;&gt; conversion = typeSupport.convertToObservable(reactiveInstance.getClass());</span>
-<span class="fc bfc" id="L166" title="All 2 branches covered.">    if (conversion == null) {</span>
-<span class="fc" id="L167">      throw new HalApiDeveloperException(&quot;The given instance of &quot; + reactiveInstance.getClass().getName() + &quot; is not a supported return type&quot;);</span>
+<span class="fc" id="L166">    Function&lt;Object, Observable&lt;?&gt;&gt; conversion = typeSupport.convertToObservable(reactiveInstance.getClass());</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">    if (conversion == null) {</span>
+<span class="fc" id="L168">      throw new HalApiDeveloperException(&quot;The given instance of &quot; + reactiveInstance.getClass().getName() + &quot; is not a supported return type&quot;);</span>
     }
 
-<span class="fc" id="L170">    return conversion.apply(reactiveInstance);</span>
+<span class="fc" id="L171">    return conversion.apply(reactiveInstance);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
