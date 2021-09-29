@@ -143,7 +143,7 @@ public class HttpHalResourceLoader implements HalResourceLoader {
 <span class="fc" id="L143">        subscriber.onSuccess(halResponse);</span>
       }
       else {
-<span class="fc" id="L146">        log.warn(&quot;#onBodyAvailable wa called more than once, or after #onExceptionCaught was called &quot;, new RuntimeException());</span>
+<span class="fc" id="L146">        log.warn(&quot;#onBodyAvailable was called more than once, or after #onExceptionCaught was called &quot;, new RuntimeException());</span>
       }
 <span class="fc" id="L148">    }</span>
 
