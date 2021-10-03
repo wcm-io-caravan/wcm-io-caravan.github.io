@@ -21,6 +21,7 @@ package io.wcm.caravan.rhyme.impl.reflection;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -63,12 +64,12 @@ public final class TemplateVariableDetection {
    */
   public static Map&lt;String, Object&gt; getVariablesNameValueMap(Method method, Optional&lt;Object[]&gt; methodArgs) {
 
-<span class="fc" id="L66">    Map&lt;String, Object&gt; map = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L67">    Map&lt;String, Object&gt; map = new LinkedHashMap&lt;&gt;();</span>
 
-<span class="fc" id="L68">    findVariables(method, methodArgs)</span>
-<span class="fc" id="L69">        .forEach(def -&gt; map.put(def.getName(), def.getValue()));</span>
+<span class="fc" id="L69">    findVariables(method, methodArgs)</span>
+<span class="fc" id="L70">        .forEach(def -&gt; map.put(def.getName(), def.getValue()));</span>
 
-<span class="fc" id="L71">    return map;</span>
+<span class="fc" id="L72">    return map;</span>
   }
 
   /**
@@ -80,40 +81,40 @@ public final class TemplateVariableDetection {
   public static List&lt;TemplateVariableWithTypeInfo&gt; findVariables(Method method, Optional&lt;Object[]&gt; methodArgs) {
 
     Object[] args;
-<span class="fc bfc" id="L83" title="All 2 branches covered.">    if (methodArgs.isPresent()) {</span>
-<span class="fc" id="L84">      args = methodArgs.get();</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">    if (methodArgs.isPresent()) {</span>
+<span class="fc" id="L85">      args = methodArgs.get();</span>
     }
     else {
-<span class="fc" id="L87">      args = new Object[method.getParameterCount()];</span>
+<span class="fc" id="L88">      args = new Object[method.getParameterCount()];</span>
     }
 
-<span class="fc" id="L90">    List&lt;TemplateVariableWithTypeInfo&gt; definitions = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L91">    List&lt;TemplateVariableWithTypeInfo&gt; definitions = new ArrayList&lt;&gt;();</span>
 
-<span class="fc bfc" id="L92" title="All 2 branches covered.">    for (int i = 0; i &lt; method.getParameterCount(); i++) {</span>
-<span class="fc" id="L93">      Parameter parameter = method.getParameters()[i];</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    for (int i = 0; i &lt; method.getParameterCount(); i++) {</span>
+<span class="fc" id="L94">      Parameter parameter = method.getParameters()[i];</span>
 
-<span class="fc" id="L95">      TemplateVariables variables = parameter.getAnnotation(TemplateVariables.class);</span>
-<span class="fc" id="L96">      TemplateVariable variable = parameter.getAnnotation(TemplateVariable.class);</span>
-<span class="fc bfc" id="L97" title="All 2 branches covered.">      if (variables != null) {</span>
-<span class="fc" id="L98">        definitions.addAll(getVariableInfos(args[i], parameter.getType()));</span>
+<span class="fc" id="L96">      TemplateVariables variables = parameter.getAnnotation(TemplateVariables.class);</span>
+<span class="fc" id="L97">      TemplateVariable variable = parameter.getAnnotation(TemplateVariable.class);</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">      if (variables != null) {</span>
+<span class="fc" id="L99">        definitions.addAll(getVariableInfos(args[i], parameter.getType()));</span>
       }
-<span class="fc bfc" id="L100" title="All 2 branches covered.">      else if (variable != null) {</span>
-<span class="fc" id="L101">        definitions.add(new TemplateVariableWithTypeInfo(variable.value(), parameter.getType(), args[i]));</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">      else if (variable != null) {</span>
+<span class="fc" id="L102">        definitions.add(new TemplateVariableWithTypeInfo(variable.value(), parameter.getType(), args[i]));</span>
       }
       // if no annotation was used, we can try to extract the parameter name from the method.
       // these arguments will be called &quot;arg0&quot;, &quot;arg1&quot; etc if this information was stripped from the compiler
-<span class="fc bfc" id="L105" title="All 2 branches covered.">      else if (!(&quot;arg&quot; + i).equals(parameter.getName())) {</span>
-<span class="fc" id="L106">        definitions.add(new TemplateVariableWithTypeInfo(parameter.getName(), parameter.getType(), args[i]));</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">      else if (!(&quot;arg&quot; + i).equals(parameter.getName())) {</span>
+<span class="fc" id="L107">        definitions.add(new TemplateVariableWithTypeInfo(parameter.getName(), parameter.getType(), args[i]));</span>
       }
       else {
-<span class="fc" id="L109">        throw new HalApiDeveloperException(&quot;method parameter names have been stripped for  &quot; + method + &quot;, so they do need to be annotated with either&quot;</span>
-<span class="fc" id="L110">            + &quot; @&quot; + TemplateVariable.class.getSimpleName()</span>
-<span class="fc" id="L111">            + &quot; or @&quot; + TemplateVariables.class.getSimpleName());</span>
+<span class="fc" id="L110">        throw new HalApiDeveloperException(&quot;method parameter names have been stripped for  &quot; + method + &quot;, so they do need to be annotated with either&quot;</span>
+<span class="fc" id="L111">            + &quot; @&quot; + TemplateVariable.class.getSimpleName()</span>
+<span class="fc" id="L112">            + &quot; or @&quot; + TemplateVariables.class.getSimpleName());</span>
       }
 
     }
 
-<span class="fc" id="L116">    return definitions;</span>
+<span class="fc" id="L117">    return definitions;</span>
   }
 
   /**
@@ -130,31 +131,31 @@ public final class TemplateVariableDetection {
     private Method dtoMethod;
     private Field dtoField;
 
-<span class="fc" id="L133">    private TemplateVariableWithTypeInfo(String name, Class type, Object value) {</span>
-<span class="fc" id="L134">      this.name = name;</span>
-<span class="fc" id="L135">      this.type = type;</span>
-<span class="fc" id="L136">      this.value = value;</span>
-<span class="fc" id="L137">    }</span>
+<span class="fc" id="L134">    private TemplateVariableWithTypeInfo(String name, Class type, Object value) {</span>
+<span class="fc" id="L135">      this.name = name;</span>
+<span class="fc" id="L136">      this.type = type;</span>
+<span class="fc" id="L137">      this.value = value;</span>
+<span class="fc" id="L138">    }</span>
 
     /**
      * @return the name of the template variable
      */
     public String getName() {
-<span class="fc" id="L143">      return this.name;</span>
+<span class="fc" id="L144">      return this.name;</span>
     }
 
     /**
      * @return the java type of the template variable
      */
     public Class getType() {
-<span class="fc" id="L150">      return this.type;</span>
+<span class="fc" id="L151">      return this.type;</span>
     }
 
     /**
      * @return the value of the template variable (can be null)
      */
     public Object getValue() {
-<span class="fc" id="L157">      return this.value;</span>
+<span class="fc" id="L158">      return this.value;</span>
     }
 
     /**
@@ -163,7 +164,7 @@ public final class TemplateVariableDetection {
      * @return the class/interface of the {@link TemplateVariable} parameter (can be null)
      */
     public Class getDtoClass() {
-<span class="fc" id="L166">      return this.dtoClass;</span>
+<span class="fc" id="L167">      return this.dtoClass;</span>
     }
 
     /**
@@ -172,7 +173,7 @@ public final class TemplateVariableDetection {
      * @return the method (can be null)
      */
     public Method getDtoMethod() {
-<span class="fc" id="L175">      return this.dtoMethod;</span>
+<span class="fc" id="L176">      return this.dtoMethod;</span>
     }
 
     /**
@@ -181,83 +182,90 @@ public final class TemplateVariableDetection {
      * @return the field (can be null)
      */
     public Field getDtoField() {
-<span class="fc" id="L184">      return this.dtoField;</span>
+<span class="fc" id="L185">      return this.dtoField;</span>
     }
   }
 
   private static List&lt;TemplateVariableWithTypeInfo&gt; getVariableInfos(Object instance, Class dtoClass) {
 
-<span class="fc bfc" id="L190" title="All 2 branches covered.">    if (dtoClass.isInterface()) {</span>
-<span class="fc" id="L191">      return getVariableInfosFromPublicGetter(instance, dtoClass);</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">    if (dtoClass.isInterface()) {</span>
+<span class="fc" id="L192">      return getVariableInfosFromPublicGetter(instance, dtoClass);</span>
     }
 
-<span class="fc" id="L194">    return getVariablesInfosFromFields(instance, dtoClass);</span>
+<span class="fc" id="L195">    return getVariablesInfosFromFields(instance, dtoClass);</span>
   }
 
   private static &lt;T&gt; List&lt;TemplateVariableWithTypeInfo&gt; getVariableInfosFromPublicGetter(Object instance, Class dtoClass) {
     try {
-<span class="fc" id="L199">      return Stream.of(Introspector.getBeanInfo(dtoClass).getPropertyDescriptors())</span>
-<span class="fc" id="L200">          .map(property -&gt; {</span>
-<span class="fc" id="L201">            Method readMethod = property.getReadMethod();</span>
-<span class="fc" id="L202">            Object value = invokeMethod(readMethod, instance);</span>
-<span class="fc" id="L203">            TemplateVariableWithTypeInfo variable = new TemplateVariableWithTypeInfo(property.getName(), readMethod.getReturnType(), value);</span>
-<span class="fc" id="L204">            variable.dtoClass = dtoClass;</span>
-<span class="fc" id="L205">            variable.dtoMethod = readMethod;</span>
-<span class="fc" id="L206">            return variable;</span>
+
+<span class="fc" id="L201">      PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(dtoClass).getPropertyDescriptors();</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">      if (propertyDescriptors.length == 0) {</span>
+<span class="fc" id="L203">        String msg = &quot;Not a single getter method following the JavaBeans naming conventions was found in &quot; + dtoClass;</span>
+<span class="fc" id="L204">        throw new HalApiDeveloperException(msg);</span>
+      }
+
+<span class="fc" id="L207">      return Stream.of(propertyDescriptors)</span>
+<span class="fc" id="L208">          .map(property -&gt; {</span>
+<span class="fc" id="L209">            Method readMethod = property.getReadMethod();</span>
+<span class="fc" id="L210">            Object value = invokeMethod(readMethod, instance);</span>
+<span class="fc" id="L211">            TemplateVariableWithTypeInfo variable = new TemplateVariableWithTypeInfo(property.getName(), readMethod.getReturnType(), value);</span>
+<span class="fc" id="L212">            variable.dtoClass = dtoClass;</span>
+<span class="fc" id="L213">            variable.dtoMethod = readMethod;</span>
+<span class="fc" id="L214">            return variable;</span>
           })
-<span class="fc" id="L208">          .collect(Collectors.toList());</span>
+<span class="fc" id="L216">          .collect(Collectors.toList());</span>
     }
-<span class="fc" id="L210">    catch (IntrospectionException | RuntimeException ex) {</span>
-<span class="fc" id="L211">      throw new HalApiDeveloperException(&quot;Failed to extract template variables from interface &quot; + dtoClass.getName() + &quot; through reflection&quot;, ex);</span>
+<span class="fc" id="L218">    catch (IntrospectionException | RuntimeException ex) {</span>
+<span class="fc" id="L219">      throw new HalApiDeveloperException(&quot;Failed to extract template variables from interface &quot; + dtoClass.getName() + &quot; through reflection&quot;, ex);</span>
     }
   }
 
   private static Object invokeMethod(Method readMethod, Object instance) {
 
-<span class="fc bfc" id="L217" title="All 2 branches covered.">    if (instance == null) {</span>
-<span class="fc" id="L218">      return null;</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">    if (instance == null) {</span>
+<span class="fc" id="L226">      return null;</span>
     }
 
     try {
-<span class="fc" id="L222">      return readMethod.invoke(instance, new Object[0]);</span>
+<span class="fc" id="L230">      return readMethod.invoke(instance, new Object[0]);</span>
     }
-<span class="fc" id="L224">    catch (InvocationTargetException | IllegalAccessException | RuntimeException ex) {</span>
-<span class="fc" id="L225">      throw new HalApiDeveloperException(&quot;Failed to invoke getter &quot; + readMethod.getName() + &quot; from class &quot; + instance.getClass().getSimpleName(), ex);</span>
+<span class="fc" id="L232">    catch (InvocationTargetException | IllegalAccessException | RuntimeException ex) {</span>
+<span class="fc" id="L233">      throw new HalApiDeveloperException(&quot;Failed to invoke getter &quot; + readMethod.getName() + &quot; from class &quot; + instance.getClass().getSimpleName(), ex);</span>
     }
   }
 
   private static &lt;T&gt; List&lt;TemplateVariableWithTypeInfo&gt; getVariablesInfosFromFields(Object instance, Class dtoClass) {
 
     try {
-<span class="fc" id="L232">      return Stream.of(FieldUtils.getAllFields(dtoClass))</span>
-<span class="fc bfc" id="L233" title="All 2 branches covered.">          .filter(field -&gt; !field.isSynthetic())</span>
-<span class="fc bfc" id="L234" title="All 2 branches covered.">          .filter(field -&gt; !Modifier.isStatic(field.getModifiers()))</span>
-<span class="fc" id="L235">          .map(field -&gt; {</span>
-<span class="fc" id="L236">            Object value = getFieldValue(field, instance);</span>
-<span class="fc" id="L237">            TemplateVariableWithTypeInfo variable = new TemplateVariableWithTypeInfo(field.getName(), field.getType(), value);</span>
-<span class="fc" id="L238">            variable.dtoClass = dtoClass;</span>
-<span class="fc" id="L239">            variable.dtoField = field;</span>
-<span class="fc" id="L240">            return variable;</span>
+<span class="fc" id="L240">      return Stream.of(FieldUtils.getAllFields(dtoClass))</span>
+<span class="fc bfc" id="L241" title="All 2 branches covered.">          .filter(field -&gt; !field.isSynthetic())</span>
+<span class="fc bfc" id="L242" title="All 2 branches covered.">          .filter(field -&gt; !Modifier.isStatic(field.getModifiers()))</span>
+<span class="fc" id="L243">          .map(field -&gt; {</span>
+<span class="fc" id="L244">            Object value = getFieldValue(field, instance);</span>
+<span class="fc" id="L245">            TemplateVariableWithTypeInfo variable = new TemplateVariableWithTypeInfo(field.getName(), field.getType(), value);</span>
+<span class="fc" id="L246">            variable.dtoClass = dtoClass;</span>
+<span class="fc" id="L247">            variable.dtoField = field;</span>
+<span class="fc" id="L248">            return variable;</span>
           })
-<span class="fc" id="L242">          .collect(Collectors.toList());</span>
+<span class="fc" id="L250">          .collect(Collectors.toList());</span>
     }
-<span class="fc" id="L244">    catch (RuntimeException ex) {</span>
-<span class="fc" id="L245">      throw new HalApiDeveloperException(&quot;Failed to extract template variables from class &quot; + dtoClass.getName() + &quot; through reflection&quot;, ex);</span>
+<span class="fc" id="L252">    catch (RuntimeException ex) {</span>
+<span class="fc" id="L253">      throw new HalApiDeveloperException(&quot;Failed to extract template variables from class &quot; + dtoClass.getName() + &quot; through reflection&quot;, ex);</span>
     }
   }
 
   private static Object getFieldValue(Field field, Object instance) {
 
-<span class="fc bfc" id="L251" title="All 2 branches covered.">    if (instance == null) {</span>
-<span class="fc" id="L252">      return null;</span>
+<span class="fc bfc" id="L259" title="All 2 branches covered.">    if (instance == null) {</span>
+<span class="fc" id="L260">      return null;</span>
     }
 
     try {
-<span class="fc" id="L256">      return FieldUtils.readField(field, instance, false);</span>
+<span class="fc" id="L264">      return FieldUtils.readField(field, instance, false);</span>
     }
-<span class="fc" id="L258">    catch (IllegalAccessException | RuntimeException ex) {</span>
-<span class="fc" id="L259">      throw new HalApiDeveloperException(&quot;Failed to read value of field &quot; + field.getName() + &quot; from class &quot; + instance.getClass().getSimpleName()</span>
-<span class="fc" id="L260">          + &quot;. Make sure that all fields in your classes used as parameters annotated with @&quot; + TemplateVariables.class.getSimpleName() + &quot; are public&quot;, ex);</span>
+<span class="fc" id="L266">    catch (IllegalAccessException | RuntimeException ex) {</span>
+<span class="fc" id="L267">      throw new HalApiDeveloperException(&quot;Failed to read value of field &quot; + field.getName() + &quot; from class &quot; + instance.getClass().getSimpleName()</span>
+<span class="fc" id="L268">          + &quot;. Make sure that all fields in your classes used as parameters annotated with @&quot; + TemplateVariables.class.getSimpleName() + &quot; are public&quot;, ex);</span>
     }
   }
 
