@@ -200,7 +200,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/pipeline/impl//checkstyle.html#io.wcm.caravan.pipeline.impl.JsonPathSelector.java">io/wcm/caravan/pipeline/impl/JsonPathSelector.java</a>
+                  <a href="https://caravan.wcm.io/pipeline/impl//checkstyle.html#io.wcm.caravan.pipeline.impl.cache.MultiLayerCacheAdapter.java">io/wcm/caravan/pipeline/impl/cache/MultiLayerCacheAdapter.java</a>
                 </td>
                 <td>
                   0
@@ -214,7 +214,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/pipeline/impl//checkstyle.html#io.wcm.caravan.pipeline.impl.cache.MultiLayerCacheAdapter.java">io/wcm/caravan/pipeline/impl/cache/MultiLayerCacheAdapter.java</a>
+                  <a href="https://caravan.wcm.io/pipeline/impl//checkstyle.html#io.wcm.caravan.pipeline.impl.JsonPathSelector.java">io/wcm/caravan/pipeline/impl/JsonPathSelector.java</a>
                 </td>
                 <td>
                   0
