@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HalCrawler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - Testing Support</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.testing.client</a> &gt; <span class="el_source">HalCrawler.java</span></div><h1>HalCrawler.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.testing.client;
+
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
+
+/**
+ * A crawler that recursively loads all resources that are linked from the services entry point.
+ */
+public class HalCrawler {
+
+<span class="fc" id="L45">  private static final Logger log = LoggerFactory.getLogger(HalCrawler.class);</span>
+
+  private final HalResourceLoader resourceLoader;
+
+<span class="fc" id="L49">  private final Deque&lt;String&gt; urlsLeftToCrawl = new LinkedList&lt;&gt;();</span>
+
+<span class="fc" id="L51">  private final Map&lt;String, HalResponse&gt; crawledUrlsAndResponses = new LinkedHashMap&lt;&gt;();</span>
+
+<span class="fc" id="L53">  private int limit = 1000;</span>
+
+<span class="fc" id="L55">  private Function&lt;String, String&gt; urlModifier = Function.identity();</span>
+
+  /**
+   * @param resourceLoader used to to load the resources
+   */
+<span class="fc" id="L60">  public HalCrawler(HalResourceLoader resourceLoader) {</span>
+<span class="fc" id="L61">    this.resourceLoader = resourceLoader;</span>
+<span class="fc" id="L62">  }</span>
+
+  /**
+   * Use a different entry point than &quot;/&quot; to start crawling
+   * @param url the first URL to load and look for links
+   * @return this
+   */
+  public HalCrawler withEntryPoint(String url) {
+
+<span class="fc" id="L71">    addUrlUnlessAlreadyProcessed(url);</span>
+<span class="fc" id="L72">    return this;</span>
+  }
+
+  /**
+   * Stop crawling after a specific number of resources has been retrieved.
+   * @param maxNumResources how many resources to load
+   * @return this
+   */
+  public HalCrawler withLimit(int maxNumResources) {
+
+<span class="fc" id="L82">    limit = maxNumResources;</span>
+<span class="fc" id="L83">    return this;</span>
+  }
+
+  /**
+   * @param function to be applied to every URI before it will be crawled
+   * @return this
+   */
+  public HalCrawler withModifiedUrls(Function&lt;String, String&gt; function) {
+
+<span class="fc" id="L92">    urlModifier = function;</span>
+<span class="fc" id="L93">    return this;</span>
+  }
+
+  /**
+   * Start crawling and return all responses
+   * @return a list of all {@link HalResponse}s in the order they have been retrieved
+   */
+  public List&lt;HalResponse&gt; getAllResponses() {
+
+<span class="fc" id="L102">    crawlAllResourcesOnce();</span>
+
+<span class="fc" id="L104">    return new ArrayList&lt;&gt;(crawledUrlsAndResponses.values());</span>
+  }
+
+  private void crawlAllResourcesOnce() {
+
+<span class="fc bfc" id="L109" title="All 2 branches covered.">    if (crawledUrlsAndResponses.isEmpty()) {</span>
+<span class="fc" id="L110">      crawlResourcesRecursively();</span>
+    }
+<span class="fc" id="L112">  }</span>
+
+  private void addUrlUnlessAlreadyProcessed(String url) {
+
+<span class="fc" id="L116">    String urlToCrawl = urlModifier.apply(url);</span>
+
+<span class="fc bfc" id="L118" title="All 2 branches covered.">    if (!crawledUrlsAndResponses.containsKey(urlToCrawl)) {</span>
+<span class="fc" id="L119">      urlsLeftToCrawl.add(urlToCrawl);</span>
+    }
+<span class="fc" id="L121">  }</span>
+
+  private void crawlResourcesRecursively() {
+
+<span class="fc bfc" id="L125" title="All 2 branches covered.">    if (urlsLeftToCrawl.isEmpty()) {</span>
+<span class="fc" id="L126">      addUrlUnlessAlreadyProcessed(&quot;/&quot;);</span>
+    }
+
+<span class="fc bfc" id="L129" title="All 2 branches covered.">    while (!urlsLeftToCrawl.isEmpty()) {</span>
+
+<span class="fc" id="L131">      String nextUrl = urlsLeftToCrawl.pop();</span>
+
+<span class="fc" id="L133">      fetchResourceAndExtractResolvedLinks(nextUrl)</span>
+<span class="fc" id="L134">          .forEach(this::addUrlUnlessAlreadyProcessed);</span>
+
+<span class="fc bfc" id="L136" title="All 2 branches covered.">      if (crawledUrlsAndResponses.size() &gt;= limit) {</span>
+<span class="fc" id="L137">        log.warn(&quot;The limit of {} resources to crawl has been reached&quot;, limit);</span>
+<span class="fc" id="L138">        break;</span>
+      }
+<span class="fc" id="L140">    }</span>
+<span class="fc" id="L141">  }</span>
+
+  private Stream&lt;String&gt; fetchResourceAndExtractResolvedLinks(String url) {
+
+<span class="fc" id="L145">    HalResponse response = resourceLoader.getHalResource(url).blockingGet();</span>
+
+<span class="fc" id="L147">    crawledUrlsAndResponses.put(url, response);</span>
+
+<span class="fc" id="L149">    return collectResolvedLinks(response.getBody())</span>
+<span class="fc" id="L150">        .map(Link::getHref)</span>
+<span class="fc" id="L151">        .distinct();</span>
+  }
+
+  private Stream&lt;Link&gt; collectResolvedLinks(HalResource hal) {
+
+<span class="fc" id="L156">    Stream&lt;Link&gt; directlyLinked = hal.getLinks().entries().stream()</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">        .filter(entry -&gt; !&quot;curies&quot;.equals(entry.getKey()))</span>
+<span class="fc" id="L158">        .map(Entry::getValue)</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        .filter(link -&gt; !link.isTemplated());</span>
+
+<span class="fc" id="L161">    Stream&lt;Link&gt; linkedFromEmbedded = hal.getEmbedded().values().stream()</span>
+<span class="fc" id="L162">        .flatMap(this::collectResolvedLinks);</span>
+
+<span class="fc" id="L164">    return Stream.concat(directlyLinked, linkedFromEmbedded)</span>
+<span class="fc" id="L165">        .distinct();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

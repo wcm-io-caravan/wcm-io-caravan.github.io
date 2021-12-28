@@ -124,12 +124,12 @@ public class HttpHalResourceLoader implements HalResourceLoader {
 <span class="fc" id="L124">    }</span>
 
     private void updateContentType(String contentType) {
-<span class="fc" id="L127">      halResponse = halResponse.withContentType(contentType);</span>
-<span class="fc" id="L128">    }</span>
+<span class="nc" id="L127">      halResponse = halResponse.withContentType(contentType);</span>
+<span class="nc" id="L128">    }</span>
 
     private void updateMaxAge(Integer maxAge) {
-<span class="fc" id="L131">      halResponse = halResponse.withMaxAge(maxAge);</span>
-<span class="fc" id="L132">    }</span>
+<span class="nc" id="L131">      halResponse = halResponse.withMaxAge(maxAge);</span>
+<span class="nc" id="L132">    }</span>
 
     private void updateBody(JsonNode parsedJson) {
 <span class="fc" id="L135">      halResponse = halResponse.withBody(parsedJson);</span>
@@ -174,7 +174,7 @@ public class HttpHalResourceLoader implements HalResourceLoader {
     public void onHeadersAvailable(int statusCode, Map&lt;String, ? extends Collection&lt;String&gt;&gt; headers) {
 
       // HttpURLConnection will sometimes return statusCode -1 for failed requests, which we don't want to forward
-<span class="fc bfc" id="L177" title="All 2 branches covered.">      updateStatusCode(statusCode &gt; 0 ? statusCode : null);</span>
+<span class="pc bpc" id="L177" title="1 of 2 branches missed.">      updateStatusCode(statusCode &gt; 0 ? statusCode : null);</span>
 
 <span class="fc" id="L179">      parsedHeaders = new HttpHeadersParser(headers);</span>
 
@@ -194,7 +194,7 @@ public class HttpHalResourceLoader implements HalResourceLoader {
 
 <span class="fc" id="L195">      Integer status = halResponse.getStatus();</span>
 <span class="fc" id="L196">      String msgPrefix = &quot;An HTTP response with status code &quot; + status + &quot; was retrieved, &quot;;</span>
-<span class="fc bfc" id="L197" title="All 4 branches covered.">      boolean statusIsOk = status != null &amp;&amp; status == 200;</span>
+<span class="pc bpc" id="L197" title="2 of 4 branches missed.">      boolean statusIsOk = status != null &amp;&amp; status == 200;</span>
 
       try {
         // we try to parse the JSON and include it in the HalResponse even when the request failed
@@ -202,34 +202,34 @@ public class HttpHalResourceLoader implements HalResourceLoader {
 
 <span class="fc" id="L203">        updateBody(parsedJson);</span>
 
-<span class="fc bfc" id="L205" title="All 2 branches covered.">        if (statusIsOk) {</span>
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">        if (statusIsOk) {</span>
           // this is the only case where the response was successfully retrieved and parsed
 <span class="fc" id="L207">          emitHalResponse();</span>
         }
         else {
           // the response code indicates that the request was *not* successful even through the response could be parsed
           String msg;
-<span class="fc bfc" id="L212" title="All 2 branches covered.">          if (StringUtils.equals(halResponse.getContentType(), VndErrorResponseRenderer.CONTENT_TYPE)) {</span>
-<span class="fc" id="L213">            msg = msgPrefix + &quot;which contains a vnd.error body with the following server-side error details&quot;;</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">          if (StringUtils.equals(halResponse.getContentType(), VndErrorResponseRenderer.CONTENT_TYPE)) {</span>
+<span class="nc" id="L213">            msg = msgPrefix + &quot;which contains a vnd.error body with the following server-side error details&quot;;</span>
           }
           else {
-<span class="fc" id="L216">            msg = msgPrefix + &quot;and a JSON body that may contain further information is present&quot;;</span>
+<span class="nc" id="L216">            msg = msgPrefix + &quot;and a JSON body that may contain further information is present&quot;;</span>
           }
-<span class="fc" id="L218">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
+<span class="nc" id="L218">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
         }
       }
-<span class="fc" id="L221">      catch (RuntimeException ex) {</span>
-<span class="fc bfc" id="L222" title="All 2 branches covered.">        if (statusIsOk) {</span>
-<span class="fc" id="L223">          String msg = msgPrefix + &quot;but the body could not be successfully read and parsed as a JSON document&quot;;</span>
+<span class="nc" id="L221">      catch (RuntimeException ex) {</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">        if (statusIsOk) {</span>
+<span class="nc" id="L223">          String msg = msgPrefix + &quot;but the body could not be successfully read and parsed as a JSON document&quot;;</span>
 
-<span class="fc" id="L225">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg, ex));</span>
-<span class="fc" id="L226">        }</span>
+<span class="nc" id="L225">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg, ex));</span>
+<span class="nc" id="L226">        }</span>
         else {
           // if JSON parsing failed for a non-ok response, we don't include that exception as a root cause,
           // as we cannot expected the body to be JSON all the time, and don't want confusing information
           // in the stack trace
-<span class="fc" id="L231">          String msg = msgPrefix + &quot;and no JSON body with further information was found&quot;;</span>
-<span class="fc" id="L232">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
+<span class="nc" id="L231">          String msg = msgPrefix + &quot;and no JSON body with further information was found&quot;;</span>
+<span class="nc" id="L232">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
         }
 <span class="fc" id="L234">      }</span>
 <span class="fc" id="L235">    }</span>
@@ -247,11 +247,11 @@ public class HttpHalResourceLoader implements HalResourceLoader {
 <span class="fc" id="L247">    try (InputStream autoClosingStream = is) {</span>
 <span class="fc" id="L248">      return JSON_FACTORY.createParser(autoClosingStream).readValueAsTree();</span>
     }
-<span class="fc" id="L250">    catch (JsonProcessingException ex) {</span>
-<span class="fc" id="L251">      throw new HttpClientSupportException(&quot;The response body was read completely, but it's not valid JSON.&quot;, ex);</span>
+<span class="nc" id="L250">    catch (JsonProcessingException ex) {</span>
+<span class="nc" id="L251">      throw new HttpClientSupportException(&quot;The response body was read completely, but it's not valid JSON.&quot;, ex);</span>
     }
-<span class="fc" id="L253">    catch (IOException ex) {</span>
-<span class="fc" id="L254">      throw new HttpClientSupportException(&quot;The response body could not be read completely from the input stream&quot;, ex);</span>
+<span class="nc" id="L253">    catch (IOException ex) {</span>
+<span class="nc" id="L254">      throw new HttpClientSupportException(&quot;The response body could not be read completely from the input stream&quot;, ex);</span>
     }
   }
 
@@ -260,12 +260,12 @@ public class HttpHalResourceLoader implements HalResourceLoader {
     private static final long serialVersionUID = -1086569417284265963L;
 
     HttpClientSupportException(String msg) {
-<span class="fc" id="L263">      super(msg);</span>
-<span class="fc" id="L264">    }</span>
+<span class="nc" id="L263">      super(msg);</span>
+<span class="nc" id="L264">    }</span>
 
     HttpClientSupportException(String msg, Throwable cause) {
-<span class="fc" id="L267">      super(msg, cause);</span>
-<span class="fc" id="L268">    }</span>
+<span class="nc" id="L267">      super(msg, cause);</span>
+<span class="nc" id="L268">    }</span>
   }
 
   public HttpClientSupport getClient() {

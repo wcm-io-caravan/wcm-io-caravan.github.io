@@ -48,21 +48,21 @@ import io.wcm.caravan.rhyme.api.spi.HttpClientSupport;
     try {
 <span class="fc" id="L49">      HttpURLConnection connection = (HttpURLConnection)uri.toURL().openConnection();</span>
 
-<span class="fc" id="L51">      int statusCode = connection.getResponseCode();</span>
-<span class="fc" id="L52">      Map&lt;String, List&lt;String&gt;&gt; headers = connection.getHeaderFields();</span>
+<span class="nc" id="L51">      int statusCode = connection.getResponseCode();</span>
+<span class="nc" id="L52">      Map&lt;String, List&lt;String&gt;&gt; headers = connection.getHeaderFields();</span>
 
-<span class="fc" id="L54">      callback.onHeadersAvailable(statusCode, headers);</span>
+<span class="nc" id="L54">      callback.onHeadersAvailable(statusCode, headers);</span>
 
-<span class="fc bfc" id="L56" title="All 2 branches covered.">      if (statusCode == 200) {</span>
-<span class="fc" id="L57">        callback.onBodyAvailable(connection.getInputStream());</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">      if (statusCode == 200) {</span>
+<span class="nc" id="L57">        callback.onBodyAvailable(connection.getInputStream());</span>
       }
       else {
-<span class="fc" id="L60">        callback.onBodyAvailable(connection.getErrorStream());</span>
+<span class="nc" id="L60">        callback.onBodyAvailable(connection.getErrorStream());</span>
       }
     }
 <span class="fc" id="L63">    catch (IOException ex) {</span>
 <span class="fc" id="L64">      callback.onExceptionCaught(ex);</span>
-<span class="fc" id="L65">    }</span>
+<span class="nc" id="L65">    }</span>
 <span class="fc" id="L66">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
