@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>QueryParamCollector.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.aem</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.impl.parameters</a> &gt; <span class="el_source">QueryParamCollector.java</span></div><h1>QueryParamCollector.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.aem.impl.parameters;
+
+import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.Self;
+
+import io.wcm.caravan.rhyme.aem.api.SlingRhyme;
+import io.wcm.caravan.rhyme.aem.api.parameters.QueryParam;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+
+<span class="fc" id="L37">public class QueryParamCollector {</span>
+
+  public Map&lt;String, Object&gt; getQueryParameters(Object slingModel) {
+
+<span class="fc" id="L41">    Map&lt;String, Object&gt; map = new LinkedHashMap&lt;String, Object&gt;();</span>
+
+<span class="fc" id="L43">    addQueryParamFieldsFromModel(slingModel, map);</span>
+
+<span class="fc" id="L45">    handleNestedModels(slingModel, map);</span>
+
+<span class="fc" id="L47">    return map;</span>
+  }
+
+  private void addQueryParamFieldsFromModel(Object instance, Map&lt;String, Object&gt; map) {
+
+<span class="fc" id="L52">    List&lt;Field&gt; allFields = FieldUtils.getAllFieldsList(instance.getClass());</span>
+
+<span class="fc" id="L54">    allFields.stream()</span>
+<span class="fc" id="L55">        .filter(field -&gt; field.isAnnotationPresent(QueryParam.class))</span>
+<span class="fc" id="L56">        .forEach(field -&gt; map.put(field.getName(), readField(instance, field)));</span>
+<span class="fc" id="L57">  }</span>
+
+  private void handleNestedModels(Object slingModel, Map&lt;String, Object&gt; map) {
+
+<span class="fc" id="L61">    List&lt;Field&gt; allFields = FieldUtils.getAllFieldsList(slingModel.getClass());</span>
+
+<span class="fc" id="L63">    allFields.stream()</span>
+<span class="fc" id="L64">        .filter(field -&gt; field.isAnnotationPresent(Self.class))</span>
+<span class="fc" id="L65">        .filter(QueryParamCollector::isSlingRhymeModel)</span>
+<span class="fc" id="L66">        .map(field -&gt; readField(slingModel, field))</span>
+<span class="fc" id="L67">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L68">        .forEach(fieldValue -&gt; addQueryParamFieldsFromModel(fieldValue, map));</span>
+<span class="fc" id="L69">  }</span>
+
+  private static boolean isSlingRhymeModel(Field field) {
+
+<span class="fc" id="L73">    Model model = field.getType().getAnnotation(Model.class);</span>
+
+<span class="fc bfc" id="L75" title="All 2 branches covered.">    if (model == null) {</span>
+<span class="fc" id="L76">      return false;</span>
+    }
+
+<span class="fc" id="L79">    return Stream.of(model.adaptables())</span>
+<span class="fc" id="L80">        .anyMatch(clazz -&gt; SlingRhyme.class.isAssignableFrom(clazz));</span>
+  }
+
+
+  static Object readField(Object slingModel, Field field) {
+    try {
+<span class="fc" id="L86">      return FieldUtils.readField(field, slingModel, true);</span>
+    }
+<span class="fc" id="L88">    catch (RuntimeException | IllegalAccessException ex) {</span>
+<span class="fc" id="L89">      throw new HalApiDeveloperException(&quot;Failed to access field &quot; + field + &quot; of  &quot; + slingModel, ex);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

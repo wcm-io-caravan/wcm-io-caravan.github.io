@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JaxRsBundleInfoImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.osgi-jaxrs</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.jaxrs.impl</a> &gt; <span class="el_source">JaxRsBundleInfoImpl.java</span></div><h1>JaxRsBundleInfoImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.jaxrs.impl;
+
+import javax.ws.rs.core.Application;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
+import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.jaxrs.api.JaxRsBundleInfo;
+
+/**
+ * OSGi DS component that implements {@link JaxRsBundleInfo}
+ */
+@Component(service = JaxRsBundleInfo.class, scope = ServiceScope.BUNDLE)
+<span class="fc" id="L43">public class JaxRsBundleInfoImpl implements JaxRsBundleInfo {</span>
+
+<span class="fc" id="L45">  private static final Logger log = LoggerFactory.getLogger(JaxRsBundleInfoImpl.class);</span>
+
+  private String applicationPath;
+  private String bundleVersion;
+
+  @Activate
+  void activate(ComponentContext componentCtx) {
+
+<span class="fc" id="L53">    Bundle usingBundle = componentCtx.getUsingBundle();</span>
+
+<span class="fc" id="L55">    log.debug(&quot;Activating {} service for using bundle {} with id {}&quot;, getClass().getSimpleName(), usingBundle.getSymbolicName(), usingBundle.getBundleId());</span>
+
+<span class="fc" id="L57">    applicationPath = findApplicationBasePath(usingBundle);</span>
+
+<span class="fc" id="L59">    bundleVersion = findBundleVersion(usingBundle);</span>
+<span class="fc" id="L60">  }</span>
+
+  private static String findApplicationBasePath(Bundle bundle) {
+
+<span class="fc" id="L64">    ServiceReference&lt;Application&gt; serviceRef = findJaxRsApplicationServiceInBundle(bundle);</span>
+
+<span class="fc" id="L66">    Object applicationBaseProperty = serviceRef.getProperty(JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">    if (applicationBaseProperty == null) {</span>
+<span class="fc" id="L68">      Application app = bundle.getBundleContext().getService(serviceRef);</span>
+<span class="fc" id="L69">      throw new HalApiDeveloperException(&quot;No @JaxrsApplicationBase annotation present on the &quot; + app.getClass().getName() + &quot; class&quot;);</span>
+    }
+
+<span class="fc" id="L72">    log.info(&quot;Found application base path {} in bundle {}&quot;, applicationBaseProperty, bundle.getSymbolicName());</span>
+
+<span class="fc" id="L74">    return applicationBaseProperty.toString();</span>
+  }
+
+  @SuppressWarnings(&quot;PMD.AvoidRethrowingException&quot;)
+  static ServiceReference&lt;Application&gt; findJaxRsApplicationServiceInBundle(Bundle bundle) {
+
+    try {
+      // there can be multiple Application service registered, so we filter the one that is defined
+      // in the bundle that is referencing this service
+<span class="fc" id="L83">      String filter = &quot;(&amp;(&quot; + Constants.SERVICE_BUNDLEID + &quot;=&quot; + bundle.getBundleId() + &quot;))&quot;;</span>
+
+<span class="fc" id="L85">      return bundle.getBundleContext().getServiceReferences(Application.class, filter).stream()</span>
+<span class="fc" id="L86">          .findFirst()</span>
+<span class="fc" id="L87">          .orElseThrow(() -&gt; new HalApiDeveloperException(&quot;No component extending JAX-RS Application was found in the bundle &quot; + bundle.getSymbolicName()));</span>
+    }
+<span class="fc" id="L89">    catch (HalApiDeveloperException ex) {</span>
+<span class="fc" id="L90">      throw ex;</span>
+    }
+<span class="fc" id="L92">    catch (InvalidSyntaxException | RuntimeException ex) {</span>
+<span class="fc" id="L93">      throw new RuntimeException(&quot;Failed to find JAX-RS Application service for bundle &quot; + bundle.getSymbolicName(), ex);</span>
+    }
+  }
+
+  private static String findBundleVersion(Bundle bundle) {
+
+<span class="fc" id="L99">    String version = bundle.getVersion().toString();</span>
+
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (!version.endsWith(&quot;SNAPSHOT&quot;)) {</span>
+<span class="fc" id="L102">      return version;</span>
+    }
+
+<span class="fc" id="L105">    return version + &quot;-&quot; + bundle.getHeaders().get(&quot;Bnd-LastModified&quot;);</span>
+  }
+
+  @Override
+  public String getApplicationPath() {
+<span class="fc" id="L110">    return applicationPath;</span>
+  }
+
+  @Override
+  public String getBundleVersion() {
+<span class="fc" id="L115">    return bundleVersion;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

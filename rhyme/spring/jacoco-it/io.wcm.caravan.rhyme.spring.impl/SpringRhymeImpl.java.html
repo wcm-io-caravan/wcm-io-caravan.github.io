@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SpringRhymeImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - Spring Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.spring.impl</a> &gt; <span class="el_source">SpringRhymeImpl.java</span></div><h1>SpringRhymeImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.spring.impl;
+
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import io.wcm.caravan.rhyme.api.Rhyme;
+import io.wcm.caravan.rhyme.api.RhymeBuilder;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
+import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
+import io.wcm.caravan.rhyme.spring.api.UrlFingerprinting;
+
+/**
+ * Implementation of the request-scoped {@link SpringRhyme} interface that creates a single {@link Rhyme} instance
+ * using a caching {@link WebClientHalResourceLoader}, {@link SpringExceptionStatusAndLoggingStrategy} and the
+ * {@link SpringRhymeDocsIntegration}. It also contains methods to render a {@link LinkableResource} (or any exception),
+ * as a Spring {@link ResponseEntity}, but these methods are not made public because these conversions are handled by
+ * the {@link LinkableResourceMessageConverter} and {@link VndErrorHandlingControllerAdvice}.
+ */
+@Component
+@RequestScope
+class SpringRhymeImpl implements SpringRhyme {
+
+<span class="nc" id="L58">  private static final Logger log = LoggerFactory.getLogger(SpringRhymeImpl.class);</span>
+
+<span class="nc" id="L60">  private static final SpringExceptionStatusAndLoggingStrategy EXCEPTION_STRATEGY = new SpringExceptionStatusAndLoggingStrategy();</span>
+
+  private final HttpServletRequest request;
+
+  private final Rhyme rhyme;
+
+  private ResponseEntity&lt;JsonNode&gt; renderedResponse;
+
+  SpringRhymeImpl(@Autowired HttpServletRequest httpRequest,
+      @Autowired HalResourceLoader resourceLoader,
+<span class="nc" id="L70">      @Autowired SpringRhymeDocsIntegration rhymeDocs) {</span>
+
+<span class="nc" id="L72">    log.debug(&quot;{} was instantiated for request to {}&quot;, this, httpRequest.getRequestURI());</span>
+
+<span class="nc" id="L74">    this.request = httpRequest;</span>
+
+<span class="nc" id="L76">    this.rhyme = RhymeBuilder</span>
+<span class="nc" id="L77">        .withResourceLoader(resourceLoader)</span>
+<span class="nc" id="L78">        .withRhymeDocsSupport(rhymeDocs)</span>
+<span class="nc" id="L79">        .withExceptionStrategy(EXCEPTION_STRATEGY)</span>
+<span class="nc" id="L80">        .buildForRequestTo(getRequestUrl(httpRequest));</span>
+<span class="nc" id="L81">  }</span>
+
+  private static String getRequestUrl(HttpServletRequest httpRequest) {
+
+<span class="nc" id="L85">    StringBuffer requestUrl = httpRequest.getRequestURL();</span>
+
+<span class="nc bnc" id="L87" title="All 2 branches missed.">    if (httpRequest.getQueryString() != null) {</span>
+<span class="nc" id="L88">      requestUrl.append(&quot;?&quot;);</span>
+<span class="nc" id="L89">      requestUrl.append(httpRequest.getQueryString());</span>
+    }
+
+<span class="nc" id="L92">    return requestUrl.toString();</span>
+  }
+
+  @Override
+  public &lt;T&gt; T getRemoteResource(String uri, Class&lt;T&gt; halApiInterface) {
+
+<span class="nc" id="L98">    return rhyme.getRemoteResource(uri, halApiInterface);</span>
+  }
+
+  @Override
+  public void setResponseMaxAge(Duration duration) {
+
+<span class="nc" id="L104">    rhyme.setResponseMaxAge(duration);</span>
+<span class="nc" id="L105">  }</span>
+
+  @Override
+  public UrlFingerprinting enableUrlFingerprinting() {
+
+<span class="nc" id="L110">    return new UrlFingerprintingImpl(request, rhyme);</span>
+  }
+
+  @Override
+  public Rhyme getCoreRhyme() {
+
+<span class="nc" id="L116">    return rhyme;</span>
+  }
+
+  ResponseEntity&lt;JsonNode&gt; renderVndErrorResponse(Throwable ex) {
+
+<span class="nc" id="L121">    HalResponse response = rhyme.renderVndErrorResponse(ex);</span>
+
+<span class="nc" id="L123">    return createResponseEntity(response);</span>
+  }
+
+  ResponseEntity&lt;JsonNode&gt; renderResponse(LinkableResource resourceImpl) {
+
+    // LinkableResourceMessageConverter and LinkableResourceStatusCodeAdvice are both calling this method
+    // for the same request, as they need access to the rendered response entity.
+    // We are assuming here that no one else is calling this method (with a different resource) and
+    // make sure that the second call just gets the same instance as the first call
+<span class="nc bnc" id="L132" title="All 2 branches missed.">    if (renderedResponse != null) {</span>
+<span class="nc" id="L133">      return renderedResponse;</span>
+    }
+
+<span class="nc" id="L136">    HalResponse halResponse = rhyme.renderResponse(resourceImpl).blockingGet();</span>
+
+<span class="nc" id="L138">    renderedResponse = createResponseEntity(halResponse);</span>
+
+<span class="nc" id="L140">    return renderedResponse;</span>
+  }
+
+  /**
+   * Convert the response rendered by the core Rhyme framework into a Spring {@link ResponseEntity}
+   * @param halResponse a {@link HalResponse}
+   * @return a {@link ResponseEntity} with status, contentType and cache-control header set
+   */
+  private ResponseEntity&lt;JsonNode&gt; createResponseEntity(HalResponse halResponse) {
+
+<span class="nc" id="L150">    BodyBuilder builder = ResponseEntity.status(halResponse.getStatus());</span>
+
+<span class="nc" id="L152">    builder.contentType(MediaType.parseMediaType(halResponse.getContentType()));</span>
+
+<span class="nc bnc" id="L154" title="All 2 branches missed.">    if (halResponse.getMaxAge() != null) {</span>
+<span class="nc" id="L155">      builder.cacheControl(CacheControl.maxAge(halResponse.getMaxAge(), TimeUnit.SECONDS));</span>
+    }
+
+<span class="nc" id="L158">    return builder.body(halResponse.getBody().getModel());</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

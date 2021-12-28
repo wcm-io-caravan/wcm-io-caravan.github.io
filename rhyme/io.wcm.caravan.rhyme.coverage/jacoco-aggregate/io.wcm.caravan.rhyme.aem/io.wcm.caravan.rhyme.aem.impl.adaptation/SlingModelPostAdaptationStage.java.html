@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SlingModelPostAdaptationStage.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.aem</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.impl.adaptation</a> &gt; <span class="el_source">SlingModelPostAdaptationStage.java</span></div><h1>SlingModelPostAdaptationStage.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.aem.impl.adaptation;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import org.apache.sling.api.resource.Resource;
+
+import io.wcm.caravan.rhyme.aem.api.adaptation.PostAdaptationStage;
+import io.wcm.caravan.rhyme.aem.api.resources.SlingLinkableResource;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+
+final class SlingModelPostAdaptationStage&lt;I, M extends I&gt; implements PostAdaptationStage&lt;I, M&gt; {
+
+  private final SlingResourceAdapterImpl adapterImpl;
+
+  private final Class&lt;I&gt; interfaze;
+  private final Class&lt;M&gt; clazz;
+  private final List&lt;Consumer&lt;M&gt;&gt; instanceDecorators;
+
+<span class="fc" id="L43">  SlingModelPostAdaptationStage(SlingResourceAdapterImpl adapterImpl, Class&lt;I&gt; interfaze, Class&lt;M&gt; clazz) {</span>
+<span class="fc" id="L44">    this.adapterImpl = adapterImpl;</span>
+<span class="fc" id="L45">    this.interfaze = interfaze;</span>
+<span class="fc" id="L46">    this.clazz = clazz;</span>
+<span class="fc" id="L47">    this.instanceDecorators = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L48">  }</span>
+
+<span class="fc" id="L50">  private SlingModelPostAdaptationStage(SlingModelPostAdaptationStage&lt;I, M&gt; instance, List&lt;Consumer&lt;M&gt;&gt; instanceDecorators) {</span>
+<span class="fc" id="L51">    this.adapterImpl = instance.adapterImpl;</span>
+<span class="fc" id="L52">    this.interfaze = instance.interfaze;</span>
+<span class="fc" id="L53">    this.clazz = instance.clazz;</span>
+<span class="fc" id="L54">    this.instanceDecorators = instanceDecorators;</span>
+<span class="fc" id="L55">  }</span>
+
+  private SlingModelPostAdaptationStage&lt;I, M&gt; withInstanceDecorator(Consumer&lt;M&gt; decorator) {
+
+<span class="fc" id="L59">    List&lt;Consumer&lt;M&gt;&gt; list = new ArrayList&lt;&gt;(instanceDecorators);</span>
+<span class="fc" id="L60">    list.add(decorator);</span>
+
+<span class="fc" id="L62">    return new SlingModelPostAdaptationStage&lt;&gt;(this, list);</span>
+  }
+
+  private SlingModelPostAdaptationStage&lt;I, M&gt; withLinkDecorator(Consumer&lt;SlingLinkableResource&gt; decorator) {
+
+<span class="fc" id="L67">    return withInstanceDecorator(instance -&gt; {</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">      if (!(instance instanceof SlingLinkableResource)) {</span>
+<span class="fc" id="L69">        throw new HalApiDeveloperException(</span>
+<span class="fc" id="L70">            &quot;Your model class &quot; + instance.getClass().getSimpleName() + &quot; does not implement &quot; + SlingLinkableResource.class.getName()</span>
+                + &quot; (which is required if you want to override link names and titles via SlingResourceAdapter)&quot;);
+      }
+
+<span class="fc" id="L74">      decorator.accept((SlingLinkableResource)instance);</span>
+
+<span class="fc" id="L76">    });</span>
+  }
+
+  @Override
+  public PostAdaptationStage&lt;I, M&gt; withModifications(Consumer&lt;M&gt; consumer) {
+<span class="fc" id="L81">    return withInstanceDecorator(consumer);</span>
+  }
+
+  @Override
+  public PostAdaptationStage&lt;I, M&gt; withLinkTitle(String title) {
+
+<span class="fc" id="L87">    return withLinkDecorator(r -&gt; r.getLinkProperties().setTitle(title));</span>
+  }
+
+  @Override
+  public PostAdaptationStage&lt;I, M&gt; withLinkName(String name) {
+
+<span class="fc" id="L93">    return withLinkDecorator(r -&gt; r.getLinkProperties().setName(name));</span>
+  }
+
+  @Override
+  public PostAdaptationStage&lt;I, M&gt; withPartialLinkTemplate() {
+
+<span class="fc" id="L99">    return withLinkDecorator(r -&gt; r.getLinkProperties().setTemplated(true));</span>
+  }
+
+  @Override
+  public PostAdaptationStage&lt;I, M&gt; withQueryParameterTemplate(String... names) {
+<span class="fc" id="L104">    throw new HalApiDeveloperException(&quot;#withQueryParameterTemplatecan can only be called if you selected a null resource path to create a template&quot;);</span>
+  }
+
+  @Override
+  public M getInstance() {
+
+<span class="fc" id="L110">    return getStreamOfModelType()</span>
+<span class="fc" id="L111">        .findFirst()</span>
+<span class="fc" id="L112">        .orElseThrow(() -&gt; new HalApiDeveloperException(&quot;No resources were found after selecting &quot; + adapterImpl.getSelectedResourcesDescription()));</span>
+  }
+
+  @Override
+  public Optional&lt;I&gt; getOptional() {
+
+<span class="fc" id="L118">    return getStream().findFirst();</span>
+  }
+
+  @Override
+  public Stream&lt;I&gt; getStream() {
+
+<span class="fc" id="L124">    return getResources().map(this::adaptToModelTypeAndDecorateInstances);</span>
+  }
+
+  private Stream&lt;M&gt; getStreamOfModelType() {
+
+<span class="fc" id="L129">    return getResources().map(this::adaptToModelTypeAndDecorateInstances);</span>
+  }
+
+  private Stream&lt;Resource&gt; getResources() {
+<span class="fc" id="L133">    Stream&lt;Resource&gt; resources = adapterImpl.getSelectedResources();</span>
+
+<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (resources == null) {</span>
+<span class="fc" id="L136">      throw new HalApiDeveloperException(&quot;No resources have been selected with this adapter&quot;);</span>
+    }
+
+<span class="fc" id="L139">    Predicate&lt;Resource&gt; predicate = adapterImpl.getResourceFilterPredicate();</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">    if (predicate != null) {</span>
+<span class="fc" id="L141">      resources = resources.filter(predicate);</span>
+    }
+<span class="fc" id="L143">    return resources;</span>
+  }
+
+  private M adaptToModelTypeAndDecorateInstances(Resource res) {
+
+<span class="fc" id="L148">    M model = adapterImpl.getSlingRhyme().adaptResource(res, this.clazz);</span>
+
+<span class="fc" id="L150">    instanceDecorators.forEach(decorator -&gt; decorator.accept(model));</span>
+
+<span class="fc" id="L152">    return model;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

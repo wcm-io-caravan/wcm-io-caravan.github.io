@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HalApiClientException.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.api.exceptions</a> &gt; <span class="el_source">HalApiClientException.java</span></div><h1>HalApiClientException.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.api.exceptions;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import io.wcm.caravan.rhyme.api.client.HalApiClient;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+
+/**
+ * Thrown whenever the {@link HalApiClient} implementation fails to load a HAL resource, and provides
+ * access to the status code and URL of the failed HTTP request.
+ */
+@ProviderType
+public class HalApiClientException extends RuntimeException {
+
+  private static final long serialVersionUID = -2265405683402689209L;
+
+  private final HalResponse errorResponse;
+
+  /**
+   * Kept for backward compatibility
+   * @param errorResponse the error response as received from the upstream service
+   * @param requestUrl the URI of the request that failed
+   * @param cause the root cause for the failed HTTP request
+   * @deprecated use {@link HalApiClientException#HalApiClientException(HalResponse, Throwable)} instead, and make
+   *             sure that {@link HalResponse#withUri(String)} was called
+   */
+  @Deprecated
+  public HalApiClientException(HalResponse errorResponse, String requestUrl, Throwable cause) {
+<span class="fc" id="L48">    this(errorResponse.withUri(requestUrl), cause);</span>
+<span class="fc" id="L49">  }</span>
+
+  /**
+   * Constructor to use if the request failed with a non-successful HTTP status code
+   * @param errorResponse the error response as received from the upstream service
+   * @param cause the root cause for the failed HTTP request
+   */
+  public HalApiClientException(HalResponse errorResponse, Throwable cause) {
+<span class="fc" id="L57">    super(createMessage(errorResponse), cause);</span>
+<span class="fc" id="L58">    this.errorResponse = errorResponse;</span>
+<span class="fc" id="L59">  }</span>
+
+  /**
+   * Constructor to use if no response body was received from the upstream service.
+   * @param message additional information on where and why the exception happened
+   * @param statusCode the status code received from the upstream server (or null if the request failed without
+   *          receiving a status code)
+   * @param requestUrl the URI of the request that failed
+   * @param cause the root cause for the failed HTTP request
+   */
+  public HalApiClientException(String message, Integer statusCode, String requestUrl, Throwable cause) {
+<span class="fc" id="L70">    super(message, cause);</span>
+<span class="fc" id="L71">    this.errorResponse = new HalResponse()</span>
+<span class="fc" id="L72">        .withStatus(statusCode)</span>
+<span class="fc" id="L73">        .withUri(requestUrl);</span>
+<span class="fc" id="L74">  }</span>
+
+  /**
+   * Constructor used to re-throw a {@link HalApiClientException} and add additional context information
+   * @param message additional information on where and why the exception happened
+   * @param cause the exception that was caught and re-thrown
+   */
+  public HalApiClientException(String message, HalApiClientException cause) {
+<span class="fc" id="L82">    super(message, cause);</span>
+<span class="fc" id="L83">    this.errorResponse = cause.getErrorResponse();</span>
+<span class="fc" id="L84">  }</span>
+
+  private static String createMessage(HalResponse errorResponse) {
+
+<span class="fc" id="L88">    String msg = &quot;HAL client request to &quot; + errorResponse.getUri() + &quot; has failed &quot;;</span>
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">    if (errorResponse.getStatus() == null) {</span>
+<span class="fc" id="L91">      return msg + &quot;before a status code was available&quot;;</span>
+    }
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    if (errorResponse.getStatus() == 200) {</span>
+<span class="fc" id="L94">      return msg + &quot; because the response body is malformed&quot;;</span>
+    }
+
+<span class="fc" id="L97">    return msg + &quot;with status code &quot; + errorResponse.getStatus();</span>
+  }
+
+  /**
+   * @return a {@link HalResponse} object that contains additional information in the body only if the upstream
+   *         service's response contained a Vnd+Error body
+   */
+  public HalResponse getErrorResponse() {
+<span class="fc" id="L105">    return errorResponse;</span>
+  }
+
+  /**
+   * @return the HTTP status code from the upstream request (or null if the request failed without receiving a status
+   *         code)
+   */
+  public Integer getStatusCode() {
+<span class="fc" id="L113">    return errorResponse.getStatus();</span>
+  }
+
+  /**
+   * @return the URI of the request that failed
+   */
+  public String getRequestUrl() {
+<span class="fc" id="L120">    return getErrorResponse().getUri();</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

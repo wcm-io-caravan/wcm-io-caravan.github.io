@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RxJavaReflectionUtils.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.reflection</a> &gt; <span class="el_source">RxJavaReflectionUtils.java</span></div><h1>RxJavaReflectionUtils.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl.reflection;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import org.reactivestreams.Publisher;
+
+import com.google.common.base.Preconditions;
+
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
+import io.wcm.caravan.rhyme.api.RhymeBuilder;
+import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
+import io.wcm.caravan.rhyme.api.common.RequestMetricsStopwatch;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiServerException;
+import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
+import io.wcm.caravan.rhyme.impl.metadata.EmissionStopwatch;
+import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRenderer;
+import io.wcm.caravan.rhyme.impl.util.RxJavaTransformers;
+
+/**
+ * Internal utility methods to invoke methods returning reactive streams, and converting between various
+ * reactive types.
+ */
+public final class RxJavaReflectionUtils {
+
+  private RxJavaReflectionUtils() {
+    // this class contains only static methods
+  }
+
+  /**
+   * @param resourceImplInstance the object on which to invoke the method
+   * @param method a method that returns a {@link Single}, {@link Maybe}, {@link Observable} or {@link Publisher}
+   * @param metrics to track the method invocation time
+   * @param typeSupport the strategy to detect HAL API annotations and perform type conversions
+   * @return an {@link Observable} that emits the items from the reactive stream returned by the method
+   */
+  @SuppressWarnings(&quot;PMD.PreserveStackTrace&quot;)
+  public static Observable&lt;?&gt; invokeMethodAndReturnObservable(Object resourceImplInstance, Method method, RequestMetricsCollector metrics,
+      HalApiTypeSupport typeSupport) {
+
+<span class="fc" id="L67">    String fullMethodName = HalApiReflectionUtils.getClassAndMethodName(resourceImplInstance, method, typeSupport);</span>
+
+<span class="fc" id="L69">    try (RequestMetricsStopwatch sw = metrics.startStopwatch(AsyncHalResourceRenderer.class, () -&gt; &quot;calls to &quot; + fullMethodName)) {</span>
+
+<span class="fc" id="L71">      Object[] args = new Object[method.getParameterCount()];</span>
+<span class="fc" id="L72">      Object returnValue = method.invoke(resourceImplInstance, args);</span>
+
+<span class="fc bfc" id="L74" title="All 2 branches covered.">      if (returnValue == null) {</span>
+<span class="fc" id="L75">        throw new HalApiDeveloperException(</span>
+            fullMethodName + &quot; must not return null. You should return an empty Maybe/Observable if the related resource does not exist&quot;);
+      }
+
+<span class="fc" id="L79">      return convertToObservable(returnValue, typeSupport);</span>
+    }
+<span class="fc" id="L81">    catch (InvocationTargetException ex) {</span>
+<span class="fc" id="L82">      Throwable cause = ex.getTargetException();</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">      if (cause instanceof RuntimeException) {</span>
+<span class="fc" id="L84">        throw ((RuntimeException)cause);</span>
+      }
+<span class="fc" id="L86">      throw new HalApiServerException(500, &quot;A checked exception was thrown when calling &quot; + fullMethodName, cause);</span>
+    }
+<span class="fc" id="L88">    catch (IllegalAccessException | IllegalArgumentException ex) {</span>
+<span class="fc" id="L89">      throw new HalApiDeveloperException(&quot;Failed to invoke method &quot; + fullMethodName, ex);</span>
+    }
+  }
+
+  /**
+   * @param method a method that returns a Observable
+   * @return the type of the emitted results
+   */
+  public static Class&lt;?&gt; getObservableEmissionType(Method method, HalApiTypeSupport typeSupport) {
+<span class="fc" id="L98">    Type returnType = method.getGenericReturnType();</span>
+
+<span class="fc bfc" id="L100" title="All 2 branches covered.">    if (!(returnType instanceof ParameterizedType)) {</span>
+<span class="fc" id="L101">      return method.getReturnType();</span>
+    }
+
+<span class="fc" id="L104">    ParameterizedType observableType = (ParameterizedType)returnType;</span>
+
+<span class="fc" id="L106">    Function&lt;Object, Observable&lt;?&gt;&gt; conversion = typeSupport.convertToObservable(method.getReturnType());</span>
+
+<span class="fc bfc" id="L108" title="All 2 branches covered.">    if (conversion == null) {</span>
+<span class="fc" id="L109">      throw new HalApiDeveloperException(&quot;The return type &quot; + method.getReturnType().getSimpleName()</span>
+<span class="fc" id="L110">          + &quot; of method &quot; + method.getDeclaringClass().getSimpleName() + &quot;#&quot; + method.getName() + &quot; is not supported.&quot;</span>
+<span class="fc" id="L111">          + &quot; If you do want to use this return type, you can add support for it by using &quot; + RhymeBuilder.class.getSimpleName() + &quot;#withReturnTypeSupport&quot;);</span>
+    }
+
+<span class="fc" id="L114">    Type resourceType = observableType.getActualTypeArguments()[0];</span>
+
+<span class="fc" id="L116">    Preconditions.checkArgument(resourceType instanceof Class,</span>
+<span class="fc" id="L117">        &quot;return types must be generic class with Class type parameters (e.g. List&lt;ObjectNode&gt;), but found &quot; + resourceType.getTypeName());</span>
+
+<span class="fc" id="L119">    return (Class)resourceType;</span>
+  }
+
+  /**
+   * @param reactiveInstance a {@link Single}, {@link Maybe}, {@link Observable} or {@link Publisher}
+   * @param targetType {@link Single}, {@link Maybe}, {@link Observable} or {@link Publisher} class
+   * @param metrics to collect emission times
+   * @param description for the metrics
+   * @param typeSupport the strategy to perform type conversions of return values
+   * @return an instance of the target type that will replay (and cache!) the items emitted by the given reactive
+   *         instance
+   */
+  public static Observable&lt;?&gt; convertAndCacheReactiveType(Object reactiveInstance, Class&lt;?&gt; targetType, RequestMetricsCollector metrics,
+      Supplier&lt;String&gt; description, HalApiReturnTypeSupport typeSupport) {
+
+<span class="fc" id="L134">    Observable&lt;?&gt; observable = convertToObservable(reactiveInstance, typeSupport)</span>
+<span class="fc" id="L135">        .compose(EmissionStopwatch.collectMetrics(description, metrics));</span>
+
+    // do not use Observable#cache() here, because we want consumers to be able to use Observable#retry()
+<span class="fc" id="L138">    Observable&lt;?&gt; cached = observable.compose(RxJavaTransformers.cacheIfCompleted());</span>
+
+<span class="fc" id="L140">    return cached;</span>
+  }
+
+  /**
+   * Converts the observable into any other type supported by the given {@link HalApiTypeSupport} instance
+   * @param observable to convert
+   * @param targetType to which the observable should be convert
+   * @param typeSupport provides the available conversion functions
+   * @return an object of the given target type
+   */
+  public static Object convertObservableTo(Observable&lt;?&gt; observable, Class&lt;?&gt; targetType, HalApiReturnTypeSupport typeSupport) {
+
+<span class="fc" id="L152">    Preconditions.checkNotNull(targetType, &quot;A target type must be provided&quot;);</span>
+
+<span class="fc" id="L154">    Function&lt;Observable, ?&gt; conversion = typeSupport.convertFromObservable(targetType);</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">    if (conversion == null) {</span>
+<span class="fc" id="L156">      throw new HalApiDeveloperException(&quot;The given target type of &quot; + targetType.getName() + &quot; is not a supported return type&quot;);</span>
+    }
+
+<span class="fc" id="L159">    return conversion.apply(observable);</span>
+  }
+
+  private static Observable&lt;?&gt; convertToObservable(Object reactiveInstance, HalApiReturnTypeSupport typeSupport) {
+
+<span class="fc" id="L164">    Preconditions.checkNotNull(reactiveInstance, &quot;Cannot convert null objects&quot;);</span>
+
+<span class="fc" id="L166">    Function&lt;Object, Observable&lt;?&gt;&gt; conversion = typeSupport.convertToObservable(reactiveInstance.getClass());</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">    if (conversion == null) {</span>
+<span class="fc" id="L168">      throw new HalApiDeveloperException(&quot;The given instance of &quot; + reactiveInstance.getClass().getName() + &quot; is not a supported return type&quot;);</span>
+    }
+
+<span class="fc" id="L171">    return conversion.apply(reactiveInstance);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

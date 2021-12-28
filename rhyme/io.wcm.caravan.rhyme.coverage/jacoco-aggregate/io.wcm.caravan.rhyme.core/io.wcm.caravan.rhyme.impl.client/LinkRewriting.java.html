@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>LinkRewriting.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.client</a> &gt; <span class="el_source">LinkRewriting.java</span></div><h1>LinkRewriting.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl.client;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+
+/**
+ * A class that rewrites all relative link URLs in a {@link HalResponse} to absolute URLs, using protocol, hostname port
+ * etc. from the context URL from which that resource was retrieved.
+ * If that context resource also wasn't fetched with an absolute URL then the links remain unchanged.
+ */
+public class LinkRewriting {
+
+  private static final String PATH_PLACEHOLDER = &quot;/lets/assume/this/technically/valid/path/isnt/actually/used/anywhere&quot;;
+
+<span class="fc" id="L41">  private static final Logger log = LoggerFactory.getLogger(LinkRewriting.class);</span>
+
+  private URI contextUri;
+
+  /**
+   * @param contextUrl the URI from which the resource to be processed was retrieved
+   */
+<span class="fc" id="L48">  LinkRewriting(String contextUrl) {</span>
+    try {
+<span class="fc" id="L50">      this.contextUri = new URI(contextUrl);</span>
+    }
+<span class="fc" id="L52">    catch (URISyntaxException ex) {</span>
+<span class="fc" id="L53">      log.warn(&quot;Failed to parse the context URI {}, so any links from that resource cannot be rewritten&quot;, contextUrl);</span>
+<span class="fc" id="L54">    }</span>
+<span class="fc" id="L55">  }</span>
+
+  /**
+   * Rewrites all relative link URLs in the given to become absolute URLs, using protocol, hostname port
+   * etc. from the context URL given in the constructor.
+   * If that context URL isn't absolute, then the links remain unchanged.
+   * @param response from which the links in the body will be rewritten
+   * @return a new instance with rewritten links
+   */
+  HalResponse resolveRelativeLinks(HalResponse response) {
+
+<span class="fc bfc" id="L66" title="All 4 branches covered.">    if (contextUri == null || !contextUri.isAbsolute()) {</span>
+<span class="fc" id="L67">      return response;</span>
+    }
+
+<span class="fc" id="L70">    HalResource body = response.getBody();</span>
+
+<span class="fc" id="L72">    rewriteLinksRecursively(body);</span>
+
+<span class="fc" id="L74">    return response.withBody(body);</span>
+  }
+
+  private void rewriteLinksRecursively(HalResource resource) {
+
+<span class="fc" id="L79">    resource.getLinks().values().forEach(this::rewriteLink);</span>
+
+<span class="fc" id="L81">    resource.getEmbedded().values().forEach(this::rewriteLinksRecursively);</span>
+<span class="fc" id="L82">  }</span>
+
+  void rewriteLink(Link link) {
+
+<span class="fc" id="L86">    String href = link.getHref();</span>
+
+<span class="fc bfc" id="L88" title="All 4 branches covered.">    if (href.startsWith(&quot;/&quot;) || href.startsWith(&quot;{&quot;)) {</span>
+
+      // URI templates cannot be parsed by the URI class, so we need a workaround for them
+<span class="fc bfc" id="L91" title="All 2 branches covered.">      String newHref = link.isTemplated() ? resolvePathTemplate(href) : resolvePath(href);</span>
+
+<span class="fc" id="L93">      link.setHref(newHref);</span>
+    }
+<span class="fc" id="L95">  }</span>
+
+  private String resolvePath(String path) {
+
+    URI linkTarget;
+    try {
+<span class="fc" id="L101">      linkTarget = new URI(path);</span>
+    }
+<span class="fc" id="L103">    catch (URISyntaxException ex) {</span>
+<span class="fc" id="L104">      log.warn(&quot;Failed to parse the URI {} found in a link within the resource at {}&quot;, path, contextUri);</span>
+<span class="fc" id="L105">      return path;</span>
+<span class="fc" id="L106">    }</span>
+
+<span class="fc" id="L108">    URI uri = contextUri.resolve(linkTarget);</span>
+
+<span class="fc" id="L110">    return uri.toString();</span>
+  }
+
+  private String resolvePathTemplate(String pathTemplate) {
+
+<span class="fc" id="L115">    URI uriWithPlaceholder = contextUri.resolve(PATH_PLACEHOLDER);</span>
+
+<span class="fc" id="L117">    String resolvedTemplate = uriWithPlaceholder.toString()</span>
+<span class="fc" id="L118">        .replace(PATH_PLACEHOLDER, pathTemplate);</span>
+
+<span class="fc" id="L120">    return resolvedTemplate;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

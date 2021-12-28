@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CaravanRhymeRequestCycleImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.osgi-jaxrs</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.caravan.impl</a> &gt; <span class="el_source">CaravanRhymeRequestCycleImpl.java</span></div><h1>CaravanRhymeRequestCycleImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.caravan.impl;
+
+import java.time.Duration;
+import java.util.function.Function;
+
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.core.UriInfo;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
+import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.caravan.api.CaravanHalApiClient;
+import io.wcm.caravan.rhyme.caravan.api.CaravanRhyme;
+import io.wcm.caravan.rhyme.caravan.api.CaravanRhymeRequestCycle;
+import io.wcm.caravan.rhyme.jaxrs.api.JaxRsAsyncHalResponseRenderer;
+
+/**
+ * Implementations of the {@link CaravanRhymeRequestCycle} and {@link CaravanRhyme} interfaces
+ */
+@Component(service = CaravanRhymeRequestCycle.class)
+<span class="fc" id="L42">public class CaravanRhymeRequestCycleImpl implements CaravanRhymeRequestCycle {</span>
+
+  @Reference
+  private JaxRsAsyncHalResponseRenderer responseHandler;
+
+  @Reference
+  private CaravanHalApiClient halApiClient;
+
+  @Override
+  public &lt;RequestContextType&gt; void processRequest(UriInfo requestUri, AsyncResponse response,
+      Function&lt;CaravanRhyme, RequestContextType&gt; requestContextConstructor, Function&lt;RequestContextType, ? extends LinkableResource&gt; resourceImplConstructor) {
+
+<span class="fc" id="L54">    CaravanRhymeImpl rhyme = createRhymeInstance(requestUri);</span>
+
+    try {
+<span class="fc" id="L57">      RequestContextType requestContext = requestContextConstructor.apply(rhyme);</span>
+
+<span class="fc" id="L59">      LinkableResource resource = resourceImplConstructor.apply(requestContext);</span>
+
+<span class="fc" id="L61">      responseHandler.respondWith(resource, requestUri, response, rhyme.metrics);</span>
+    }
+    // CHECKSTYLE:OFF - we really want to catch any exceptions here
+<span class="fc" id="L64">    catch (RuntimeException ex) {</span>
+      // CHECKSTYLE:ON - ... and make sure a proper vnd.error response is rendered
+<span class="fc" id="L66">      responseHandler.respondWithError(ex, requestUri, response, rhyme.metrics);</span>
+<span class="fc" id="L67">    }</span>
+<span class="fc" id="L68">  }</span>
+
+  CaravanRhymeImpl createRhymeInstance(UriInfo requestUri) {
+
+<span class="fc" id="L72">    return new CaravanRhymeImpl(halApiClient, requestUri);</span>
+  }
+
+  static final class CaravanRhymeImpl implements CaravanRhyme {
+
+<span class="fc" id="L77">    private final RequestMetricsCollector metrics = RequestMetricsCollector.create();</span>
+
+    private final CaravanHalApiClient halApiClient;
+
+    private final UriInfo requestUri;
+
+<span class="fc" id="L83">    CaravanRhymeImpl(CaravanHalApiClient halApiClient, UriInfo requestUri) {</span>
+<span class="fc" id="L84">      this.halApiClient = halApiClient;</span>
+<span class="fc" id="L85">      this.requestUri = requestUri;</span>
+<span class="fc" id="L86">    }</span>
+
+    @Override
+    public UriInfo getRequestUri() {
+<span class="fc" id="L90">      return requestUri;</span>
+    }
+
+    @Override
+    public void setResponseMaxAge(Duration duration) {
+
+<span class="fc" id="L96">      metrics.setResponseMaxAge(duration);</span>
+<span class="fc" id="L97">    }</span>
+
+    @Override
+    public &lt;T&gt; T getRemoteResource(String serviceId, String uri, Class&lt;T&gt; halApiInterface) {
+
+<span class="fc" id="L102">      return halApiClient.getEntryPoint(serviceId, uri, halApiInterface, metrics);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

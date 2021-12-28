@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RhymeResourceRegistry.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.aem</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.impl</a> &gt; <span class="el_source">RhymeResourceRegistry.java</span></div><h1>RhymeResourceRegistry.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.aem.impl;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang.StringUtils;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
+
+import io.wcm.caravan.rhyme.aem.api.RhymeResourceRegistration;
+import io.wcm.caravan.rhyme.aem.api.adaptation.SlingResourceAdapter;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+
+@Component(service = RhymeResourceRegistry.class)
+<span class="fc" id="L42">public class RhymeResourceRegistry {</span>
+
+  @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+      policy = ReferencePolicy.STATIC,
+      policyOption = ReferencePolicyOption.GREEDY)
+  private List&lt;RhymeResourceRegistration&gt; registrations;
+
+  public Optional&lt;Class&lt;? extends LinkableResource&gt;&gt; getModelClassForSelectors(Collection&lt;String&gt; selectors) {
+
+<span class="fc" id="L51">    List&lt;Class&lt;? extends LinkableResource&gt;&gt; customModelClasses = registrations.stream()</span>
+<span class="fc" id="L52">        .flatMap(provider -&gt; provider.getModelClassesWithSelectors().entrySet().stream())</span>
+<span class="fc" id="L53">        .filter(entry -&gt; selectors.contains(entry.getValue()))</span>
+<span class="fc" id="L54">        .map(entry -&gt; entry.getKey())</span>
+<span class="fc" id="L55">        .distinct()</span>
+<span class="fc" id="L56">        .collect(Collectors.toList());</span>
+
+<span class="fc bfc" id="L58" title="All 2 branches covered.">    if (customModelClasses.isEmpty()) {</span>
+<span class="fc" id="L59">      return Optional.empty();</span>
+    }
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">    if (customModelClasses.size() &gt; 1) {</span>
+
+<span class="fc" id="L64">      String classNames = customModelClasses.stream()</span>
+<span class="fc" id="L65">          .map(Class::getName)</span>
+<span class="fc" id="L66">          .collect(Collectors.joining(&quot;, &quot;));</span>
+
+<span class="fc" id="L68">      String msg = &quot;More than one resource was registered for selector [&quot; + StringUtils.join(selectors, &quot;,&quot;) + &quot;]: &quot; + classNames;</span>
+
+<span class="fc" id="L70">      throw new HalApiDeveloperException(msg);</span>
+    }
+
+<span class="fc" id="L73">    return Optional.of(customModelClasses.iterator().next());</span>
+  }
+
+  public Optional&lt;String&gt; getSelectorForModelClass(Class&lt;?&gt; clazz) {
+
+<span class="fc" id="L78">    return registrations.stream()</span>
+<span class="fc" id="L79">        .map(provider -&gt; provider.getModelClassesWithSelectors().get(clazz))</span>
+<span class="fc" id="L80">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L81">        .findFirst();</span>
+  }
+
+  public Optional&lt;String&gt; getSelectorForHalApiInterface(Class&lt;?&gt; halApiInterface) {
+
+<span class="fc" id="L86">    Optional&lt;Class&lt;? extends LinkableResource&gt;&gt; modelClass = registrations.stream()</span>
+<span class="fc" id="L87">        .flatMap(provider -&gt; provider.getModelClassesWithSelectors().keySet().stream())</span>
+<span class="fc" id="L88">        .filter(clazz -&gt; halApiInterface.isAssignableFrom(clazz))</span>
+<span class="fc" id="L89">        .findFirst();</span>
+
+<span class="fc" id="L91">    return modelClass</span>
+<span class="fc" id="L92">        .flatMap(this::getSelectorForModelClass);</span>
+  }
+
+  public Stream&lt;LinkableResource&gt; getAllApiEntryPoints(SlingResourceAdapter adapter) {
+
+<span class="fc" id="L97">    return registrations.stream()</span>
+<span class="fc" id="L98">        .map(provider -&gt; provider.getApiEntryPoint(adapter))</span>
+<span class="fc" id="L99">        .flatMap(this::optionalAsStream);</span>
+  }
+
+  private &lt;T&gt; Stream&lt;? extends LinkableResource&gt; optionalAsStream(Optional&lt;? extends LinkableResource&gt; optional) {
+
+<span class="fc bfc" id="L104" title="All 2 branches covered.">    return optional.isPresent() ? Stream.of(optional.get()) : Stream.empty();</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

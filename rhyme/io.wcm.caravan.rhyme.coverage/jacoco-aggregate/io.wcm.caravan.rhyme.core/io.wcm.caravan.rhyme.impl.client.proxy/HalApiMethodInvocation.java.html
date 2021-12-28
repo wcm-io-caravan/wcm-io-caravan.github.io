@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HalApiMethodInvocation.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.client.proxy</a> &gt; <span class="el_source">HalApiMethodInvocation.java</span></div><h1>HalApiMethodInvocation.java</h1><pre class="source lang-java linenums">/*-
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2014 - 2020 wcm.io Caravan
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+package io.wcm.caravan.rhyme.impl.client.proxy;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import com.google.common.base.Preconditions;
+
+import io.wcm.caravan.rhyme.api.annotations.Related;
+import io.wcm.caravan.rhyme.api.client.HalApiClient;
+import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
+import io.wcm.caravan.rhyme.api.common.RequestMetricsStopwatch;
+import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
+import io.wcm.caravan.rhyme.impl.reflection.RxJavaReflectionUtils;
+import io.wcm.caravan.rhyme.impl.reflection.TemplateVariableDetection;
+
+
+class HalApiMethodInvocation {
+
+  private final Class interfaze;
+  private final Method method;
+  private final Class&lt;?&gt; emissionType;
+  private final HalApiTypeSupport typeSupport;
+
+  private final Map&lt;String, Object&gt; templateVariables;
+  private final boolean calledWithOnlyNullParameters;
+
+
+<span class="fc" id="L53">  HalApiMethodInvocation(RequestMetricsCollector metrics, Class interfaze, Method method, Object[] args, HalApiTypeSupport typeSupport) {</span>
+
+<span class="fc" id="L55">    try (RequestMetricsStopwatch sw = metrics.startStopwatch(HalApiClient.class, () -&gt; &quot;creating HalApiMethodInvocation instances&quot;)) {</span>
+<span class="fc" id="L56">      this.interfaze = interfaze;</span>
+<span class="fc" id="L57">      this.method = method;</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">      this.emissionType = hasTemplatedReturnType() ? RxJavaReflectionUtils.getObservableEmissionType(method, typeSupport) : method.getReturnType();</span>
+<span class="fc" id="L59">      this.typeSupport = typeSupport;</span>
+
+<span class="fc" id="L61">      this.templateVariables = TemplateVariableDetection.getVariablesNameValueMap(method, Optional.ofNullable(args));</span>
+
+<span class="fc bfc" id="L63" title="All 4 branches covered.">      this.calledWithOnlyNullParameters = args != null &amp;&amp; Stream.of(args).allMatch(Objects::isNull);</span>
+    }
+<span class="fc" id="L65">  }</span>
+
+
+  String getRelation() {
+<span class="fc" id="L69">    String relation = typeSupport.getRelation(method);</span>
+<span class="fc" id="L70">    Preconditions.checkNotNull(relation, this + &quot; does not have a @&quot; + Related.class.getSimpleName() + &quot; annotation&quot;);</span>
+<span class="fc" id="L71">    return relation;</span>
+  }
+
+  boolean isForMethodAnnotatedWithRelatedResource() {
+<span class="fc" id="L75">    return typeSupport.isRelatedResourceMethod(method);</span>
+  }
+
+  boolean isForMethodAnnotatedWithResourceLink() {
+<span class="fc" id="L79">    return typeSupport.isResourceLinkMethod(method);</span>
+  }
+
+  boolean isForMethodAnnotatedWithResourceState() {
+<span class="fc" id="L83">    return typeSupport.isResourceStateMethod(method);</span>
+  }
+
+  boolean isForMethodAnnotatedWithResourceRepresentation() {
+<span class="fc" id="L87">    return typeSupport.isResourceRepresentationMethod(method);</span>
+  }
+
+  boolean hasTemplatedReturnType() {
+<span class="fc" id="L91">    return method.getGenericReturnType() instanceof ParameterizedType;</span>
+  }
+
+  Class&lt;?&gt; getReturnType() {
+<span class="fc" id="L95">    return method.getReturnType();</span>
+  }
+
+  Class&lt;?&gt; getEmissionType() {
+<span class="fc" id="L99">    return emissionType;</span>
+  }
+
+  boolean isCalledWithOnlyNullParameters() {
+<span class="fc" id="L103">    return calledWithOnlyNullParameters;</span>
+  }
+
+  Map&lt;String, Object&gt; getTemplateVariables() {
+<span class="fc" id="L107">    return templateVariables;</span>
+  }
+
+  String getDescription() {
+
+<span class="fc" id="L112">    StringBuilder desc = new StringBuilder(&quot;emitting &quot;)</span>
+<span class="fc" id="L113">        .append(getEmissionType().getSimpleName());</span>
+
+<span class="fc bfc" id="L115" title="All 2 branches covered.">    if (isForMethodAnnotatedWithRelatedResource()) {</span>
+<span class="fc" id="L116">      desc.append(&quot; client proxies&quot;);</span>
+    }
+    else {
+<span class="fc" id="L119">      desc.append(&quot; client state&quot;);</span>
+    }
+
+<span class="fc" id="L122">    desc.append(&quot; via &quot;).append(toString());</span>
+
+<span class="fc" id="L124">    return desc.toString();</span>
+  }
+
+  public String getResourceInterfaceName() {
+<span class="fc" id="L128">    return interfaze.getSimpleName();</span>
+  }
+
+  @Override
+  public String toString() {
+
+<span class="fc" id="L134">    return interfaze.getSimpleName() + &quot;#&quot; + method.getName() + &quot;(&quot; + getVariableNamesString() + &quot;)&quot;;</span>
+  }
+
+  String getCacheKey() {
+
+<span class="fc" id="L139">    String parameterTypeNames = Stream.of(method.getParameterTypes())</span>
+<span class="fc" id="L140">        .map(Class::getName)</span>
+<span class="fc" id="L141">        .collect(Collectors.joining(&quot;,&quot;));</span>
+
+<span class="fc" id="L143">    return interfaze.getName() + &quot;#&quot; + method.getName() + &quot;/&quot; + parameterTypeNames + &quot;?&quot; + getVariablesString();</span>
+  }
+
+  private String getVariableNamesString() {
+
+<span class="fc" id="L148">    return templateVariables.keySet().stream()</span>
+<span class="fc" id="L149">        .collect(Collectors.joining(&quot;,&quot;));</span>
+  }
+
+  private String getVariablesString() {
+
+<span class="fc" id="L154">    return templateVariables.entrySet().stream()</span>
+<span class="fc" id="L155">        .map(entry -&gt; entry.getKey() + &quot;=&quot; + entry.getValue())</span>
+<span class="fc" id="L156">        .collect(Collectors.joining(&quot;,&quot;));</span>
+  }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

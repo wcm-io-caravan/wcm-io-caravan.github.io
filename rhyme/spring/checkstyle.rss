@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>Rhyme - Spring Integration - Checkstyle report</title>
+    <link>https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring/</link>
+    <description>Rhyme - Spring Integration - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
+    <item>
+      <title>File: 12,
+             Errors: 0,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.SpringRhymeImpl.java">io/wcm/caravan/rhyme/spring/impl/SpringRhymeImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.api.RhymeLinkBuilder.java">io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.SpringRhymeLinkBuilder.java">io/wcm/caravan/rhyme/spring/impl/SpringRhymeLinkBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.SpringRhymeDocsIntegration.java">io/wcm/caravan/rhyme/spring/impl/SpringRhymeDocsIntegration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.LinkableResourceStatusCodeAdvice.java">io/wcm/caravan/rhyme/spring/impl/LinkableResourceStatusCodeAdvice.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.api.SpringRhyme.java">io/wcm/caravan/rhyme/spring/api/SpringRhyme.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.SpringExceptionStatusAndLoggingStrategy.java">io/wcm/caravan/rhyme/spring/impl/SpringExceptionStatusAndLoggingStrategy.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.api.UrlFingerprinting.java">io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.UrlFingerprintingImpl.java">io/wcm/caravan/rhyme/spring/impl/UrlFingerprintingImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.LinkableResourceMessageConverter.java">io/wcm/caravan/rhyme/spring/impl/LinkableResourceMessageConverter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.VndErrorHandlingControllerAdvice.java">io/wcm/caravan/rhyme/spring/impl/VndErrorHandlingControllerAdvice.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.WebClientHalResourceLoader.java">io/wcm/caravan/rhyme/spring/impl/WebClientHalResourceLoader.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

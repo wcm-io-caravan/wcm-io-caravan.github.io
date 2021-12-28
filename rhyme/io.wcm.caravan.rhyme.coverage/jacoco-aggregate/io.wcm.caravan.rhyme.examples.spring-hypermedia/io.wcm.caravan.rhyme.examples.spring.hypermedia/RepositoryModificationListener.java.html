@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RepositoryModificationListener.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.spring-hypermedia</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.examples.spring.hypermedia</a> &gt; <span class="el_source">RepositoryModificationListener.java</span></div><h1>RepositoryModificationListener.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.examples.spring.hypermedia;
+
+import java.time.Instant;
+
+import javax.persistence.PostPersist;
+import javax.persistence.PostRemove;
+import javax.persistence.PostUpdate;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import io.wcm.caravan.rhyme.spring.api.UrlFingerprinting;
+
+/**
+ * Keeps track of any modifications to the repositories for {@link Employee} and {@link Manager} entities, so that
+ * timestamped URLs can be created by the {@link CompanyApiLinkBuilder} using {@link UrlFingerprinting}.
+ */
+@Component
+<span class="fc" id="L39">class RepositoryModificationListener {</span>
+
+<span class="fc" id="L41">  private static final Logger log = LoggerFactory.getLogger(RepositoryModificationListener.class);</span>
+
+<span class="fc" id="L43">  private volatile Instant lastModified = Instant.now();</span>
+
+  @PostPersist
+  @PostUpdate
+  @PostRemove
+  private void afterAnyUpdate(Object entity) {
+
+<span class="fc" id="L50">    log.debug(&quot;An update was detected for {}&quot;, entity);</span>
+
+<span class="fc" id="L52">    lastModified = Instant.now();</span>
+<span class="fc" id="L53">  }</span>
+
+  Instant getLastModified() {
+<span class="fc" id="L56">    return lastModified;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

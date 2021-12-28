@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>UrlFingerprintingImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.spring</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.spring.impl</a> &gt; <span class="el_source">UrlFingerprintingImpl.java</span></div><h1>UrlFingerprintingImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.spring.impl;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+
+import io.wcm.caravan.rhyme.api.Rhyme;
+import io.wcm.caravan.rhyme.spring.api.RhymeLinkBuilder;
+import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
+import io.wcm.caravan.rhyme.spring.api.UrlFingerprinting;
+
+/**
+ * Implemention of {@link UrlFingerprinting} that will be created when {@link SpringRhyme#enableUrlFingerprinting()} is
+ * called.
+ */
+class UrlFingerprintingImpl implements UrlFingerprinting {
+
+  private final HttpServletRequest request;
+  private final Rhyme rhyme;
+
+<span class="fc" id="L47">  private final Map&lt;String, String&gt; timestampParameters = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L48">  private boolean allTimestampsPresentInRequest = true;</span>
+
+  private Duration mutableMaxAge;
+  private Duration immutableMaxAge;
+
+<span class="fc" id="L53">  UrlFingerprintingImpl(HttpServletRequest request, Rhyme rhyme) {</span>
+<span class="fc" id="L54">    this.request = request;</span>
+<span class="fc" id="L55">    this.rhyme = rhyme;</span>
+<span class="fc" id="L56">  }</span>
+
+  @Override
+  public UrlFingerprinting withTimestampParameter(String name, Supplier&lt;Instant&gt; valueSupplier) {
+
+<span class="fc" id="L61">    String value = request.getParameter(name);</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">    if (StringUtils.isBlank(value)) {</span>
+<span class="fc" id="L64">      value = valueSupplier.get().toString();</span>
+<span class="fc" id="L65">      allTimestampsPresentInRequest = false;</span>
+    }
+
+<span class="fc" id="L68">    timestampParameters.put(name, value);</span>
+
+<span class="fc" id="L70">    return this;</span>
+  }
+
+  @Override
+  public UrlFingerprinting withConditionalMaxAge(Duration mutableMaxAgeValue, Duration immutableMaxAgeValue) {
+
+<span class="fc" id="L76">    this.mutableMaxAge = mutableMaxAgeValue;</span>
+<span class="fc" id="L77">    this.immutableMaxAge = immutableMaxAgeValue;</span>
+
+<span class="fc" id="L79">    return this;</span>
+  }
+
+  @Override
+  public boolean isUsedInIncomingRequest() {
+
+<span class="fc" id="L85">    return allTimestampsPresentInRequest;</span>
+  }
+
+  @Override
+  public RhymeLinkBuilder createLinkWith(WebMvcLinkBuilder linkBuilder) {
+
+<span class="fc bfc" id="L91" title="All 2 branches covered.">    if (!timestampParameters.isEmpty()) {</span>
+<span class="fc" id="L92">      applyMaxAge();</span>
+    }
+
+<span class="fc" id="L95">    return new SpringRhymeLinkBuilder(linkBuilder, timestampParameters);</span>
+  }
+
+  private void applyMaxAge() {
+
+<span class="fc bfc" id="L100" title="All 4 branches covered.">    if (allTimestampsPresentInRequest &amp;&amp; immutableMaxAge != null) {</span>
+<span class="fc" id="L101">      rhyme.setResponseMaxAge(immutableMaxAge);</span>
+    }
+<span class="fc bfc" id="L103" title="All 2 branches covered.">    else if (mutableMaxAge != null) {</span>
+<span class="fc" id="L104">      rhyme.setResponseMaxAge(mutableMaxAge);</span>
+    }
+<span class="fc" id="L106">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

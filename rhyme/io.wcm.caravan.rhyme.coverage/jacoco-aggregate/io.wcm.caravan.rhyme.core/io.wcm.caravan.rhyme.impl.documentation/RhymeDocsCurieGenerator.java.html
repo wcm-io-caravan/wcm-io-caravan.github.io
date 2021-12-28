@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RhymeDocsCurieGenerator.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.documentation</a> &gt; <span class="el_source">RhymeDocsCurieGenerator.java</span></div><h1>RhymeDocsCurieGenerator.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl.documentation;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.annotations.HalApiInterface;
+import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
+
+/**
+ * A class that generates links with the &quot;curies&quot; relation which point to the
+ * location where the generated HTML documentation is served
+ */
+public class RhymeDocsCurieGenerator {
+
+  private final String baseUrl;
+  private final boolean includeFragment;
+
+  /**
+   * @param docsSupport documentation integration configuration
+   */
+<span class="fc" id="L46">  public RhymeDocsCurieGenerator(RhymeDocsSupport docsSupport) {</span>
+<span class="fc" id="L47">    this.baseUrl = docsSupport.getRhymeDocsBaseUrl();</span>
+<span class="fc" id="L48">    this.includeFragment = docsSupport.isFragmentAppendedToCuriesLink();</span>
+<span class="fc" id="L49">  }</span>
+
+  /**
+   * Adds a documentation link with &quot;curies&quot; relation for all custom relations present in the given resource.
+   * The link will point to the HTML documentation of the given {@link HalApiInterface}.
+   * @param halResource where the links should be added
+   * @param halApiInterface used to generate the file name of the documentation URL
+   */
+  public void addCuriesTo(HalResource halResource, Class&lt;?&gt; halApiInterface) {
+
+<span class="fc" id="L59">    List&lt;Link&gt; curieLinks = createCurieLinks(halResource, halApiInterface);</span>
+
+<span class="fc" id="L61">    halResource.addLinks(&quot;curies&quot;, curieLinks);</span>
+<span class="fc" id="L62">  }</span>
+
+  private List&lt;Link&gt; createCurieLinks(HalResource halResource, Class&lt;?&gt; halApiInterface) {
+
+<span class="fc" id="L66">    String fileName = halApiInterface.getName() + &quot;.html&quot;;</span>
+
+<span class="fc" id="L68">    Set&lt;String&gt; curieNames = collectCurieNames(halResource);</span>
+
+<span class="fc" id="L70">    return curieNames.stream()</span>
+<span class="fc" id="L71">        .map(curieName -&gt; createCurieLink(curieName, fileName))</span>
+<span class="fc" id="L72">        .collect(Collectors.toList());</span>
+  }
+
+  private Set&lt;String&gt; collectCurieNames(HalResource hal) {
+
+<span class="fc" id="L77">    return collectRelationsRecursively(hal)</span>
+<span class="fc" id="L78">        .distinct()</span>
+<span class="fc" id="L79">        .filter(rel -&gt; rel.contains(&quot;:&quot;))</span>
+<span class="fc" id="L80">        .map(rel -&gt; StringUtils.substringBefore(rel, &quot;:&quot;))</span>
+<span class="fc" id="L81">        .collect(Collectors.toSet());</span>
+  }
+
+  private Stream&lt;String&gt; collectRelationsRecursively(HalResource hal) {
+
+<span class="fc" id="L86">    Stream&lt;String&gt; relationsInThisResource = Stream.concat(</span>
+<span class="fc" id="L87">        hal.getLinks().keys().stream(),</span>
+<span class="fc" id="L88">        hal.getEmbedded().keys().stream())</span>
+<span class="fc" id="L89">        .distinct();</span>
+
+<span class="fc" id="L91">    Stream&lt;String&gt; relationsInEmbeddedResources = hal.getEmbedded().values().stream()</span>
+<span class="fc" id="L92">        .flatMap(this::collectRelationsRecursively)</span>
+<span class="fc" id="L93">        .distinct();</span>
+
+<span class="fc" id="L95">    return Stream.concat(relationsInThisResource, relationsInEmbeddedResources);</span>
+  }
+
+  private Link createCurieLink(String curieName, String fileName) {
+
+<span class="fc" id="L100">    String prefix = baseUrl;</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (!prefix.endsWith(&quot;/&quot;)) {</span>
+<span class="fc" id="L102">      prefix += &quot;/&quot;;</span>
+    }
+
+<span class="fc" id="L105">    String href = prefix + fileName;</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">    if (includeFragment) {</span>
+<span class="fc" id="L107">      href += &quot;#&quot; + curieName + &quot;:{rel}&quot;;</span>
+    }
+
+<span class="fc" id="L110">    return new Link(href)</span>
+<span class="fc" id="L111">        .setName(curieName)</span>
+<span class="fc" id="L112">        .setTitle(&quot;HTML documentation for relations with &quot; + curieName + &quot; prefix&quot;);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

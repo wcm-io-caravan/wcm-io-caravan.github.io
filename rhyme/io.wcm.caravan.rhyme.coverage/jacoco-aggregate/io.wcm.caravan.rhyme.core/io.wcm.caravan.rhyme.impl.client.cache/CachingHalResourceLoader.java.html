@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CachingHalResourceLoader.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.client.cache</a> &gt; <span class="el_source">CachingHalResourceLoader.java</span></div><h1>CachingHalResourceLoader.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl.client.cache;
+
+import java.time.Clock;
+import java.time.Duration;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Single;
+import io.wcm.caravan.rhyme.api.client.CachingConfiguration;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiClientException;
+import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
+import io.wcm.caravan.rhyme.api.spi.HalResponseCache;
+
+public class CachingHalResourceLoader implements HalResourceLoader {
+
+<span class="fc" id="L39">  private static final Logger log = LoggerFactory.getLogger(CachingHalResourceLoader.class);</span>
+
+  private final HalResourceLoader upstream;
+
+  private final HalResponseCache cache;
+
+  private final CachingConfiguration configuration;
+
+  private final Clock clock;
+
+  public CachingHalResourceLoader(HalResourceLoader upstream, HalResponseCache cache, CachingConfiguration configuration,
+<span class="fc" id="L50">      Clock clock) {</span>
+<span class="fc" id="L51">    log.info(&quot;{} was created using {} as a cache backend. &quot;</span>
+        + &quot;If you are seeing this log message frequently, then you are not re-using your HalResourceLoader instance properly.&quot;,
+<span class="fc" id="L53">        getClass().getSimpleName(), cache.getClass());</span>
+<span class="fc" id="L54">    this.upstream = upstream;</span>
+<span class="fc" id="L55">    this.cache = cache;</span>
+<span class="fc" id="L56">    this.configuration = configuration;</span>
+<span class="fc" id="L57">    this.clock = clock;</span>
+<span class="fc" id="L58">  }</span>
+
+  @Override
+  public Single&lt;HalResponse&gt; getHalResource(String uri) {
+
+<span class="fc" id="L63">    return loadFromCache(uri)</span>
+<span class="fc" id="L64">        .switchIfEmpty(loadFromUpstreamAndStoreInCache(uri));</span>
+  }
+
+  private Maybe&lt;HalResponse&gt; loadFromCache(String uri) {
+
+<span class="fc" id="L69">    return cache.load(uri)</span>
+<span class="fc" id="L70">        .map(CachedResponse::new)</span>
+<span class="fc" id="L71">        .filter(CachedResponse::isFresh)</span>
+<span class="fc" id="L72">        .map(CachedResponse::getResponseWithAdjustedMaxAge)</span>
+<span class="fc" id="L73">        .flatMap(this::throwExceptionForErrorStatusCodes)</span>
+<span class="fc" id="L74">        .doOnSuccess(response -&gt; log.debug(&quot;A fresh response for {} was as found in {} with remaining max-age of {}&quot;,</span>
+<span class="fc" id="L75">            uri, cache.getClass().getSimpleName(), response.getMaxAge()));</span>
+  }
+
+  private Single&lt;HalResponse&gt; loadFromUpstreamAndStoreInCache(String uri) {
+
+<span class="fc" id="L80">    return upstream.getHalResource(uri)</span>
+<span class="fc" id="L81">        .map(this::updateResponseWithTimestampAndDefaultMaxAge)</span>
+<span class="fc" id="L82">        .doOnSuccess(this::storeInCache)</span>
+<span class="fc" id="L83">        .doOnError(this::handleResourceLoaderException);</span>
+  }
+
+  private Maybe&lt;HalResponse&gt; throwExceptionForErrorStatusCodes(HalResponse response) {
+
+<span class="fc bfc" id="L88" title="All 4 branches covered.">    if (response.getStatus() != null &amp;&amp; response.getStatus() &lt; 400) {</span>
+<span class="fc" id="L89">      return Maybe.just(response);</span>
+    }
+
+<span class="fc" id="L92">    String msg = &quot;An error response with status code &quot; + response.getStatus() + &quot; from a previous request was found in cache,&quot;</span>
+<span class="fc" id="L93">        + &quot; which will still be used for the next &quot; + response.getMaxAge() + &quot; seconds.&quot;;</span>
+
+<span class="fc" id="L95">    log.info(msg);</span>
+
+<span class="fc" id="L97">    RuntimeException cause = new RuntimeException(msg);</span>
+
+<span class="fc" id="L99">    return Maybe.error(new HalApiClientException(response, cause));</span>
+  }
+
+  private HalResponse updateResponseWithTimestampAndDefaultMaxAge(HalResponse response) {
+
+<span class="fc" id="L104">    HalResponse updatedResponse = response</span>
+<span class="fc" id="L105">        .withTimestamp(clock.instant());</span>
+
+<span class="fc bfc" id="L107" title="All 2 branches covered.">    if (updatedResponse.getMaxAge() != null) {</span>
+<span class="fc" id="L108">      return updatedResponse;</span>
+    }
+
+<span class="fc" id="L111">    Optional&lt;Integer&gt; status = Optional.ofNullable(updatedResponse.getStatus());</span>
+<span class="fc" id="L112">    int maxAge = configuration.getDefaultMaxAge(status);</span>
+<span class="fc" id="L113">    return updatedResponse.withMaxAge(maxAge);</span>
+  }
+
+  private void storeInCache(HalResponse response) {
+
+<span class="fc bfc" id="L118" title="All 2 branches covered.">    if (response.getMaxAge() &gt; 0) {</span>
+<span class="fc" id="L119">      log.debug(&quot;Response for {} is being stored in {} with max-age={} seconds&quot;, response.getUri(), cache.getClass().getSimpleName(), response.getMaxAge());</span>
+
+<span class="fc" id="L121">      cache.store(response);</span>
+    }
+<span class="fc" id="L123">  }</span>
+
+  private void handleResourceLoaderException(Throwable ex) {
+
+<span class="fc bfc" id="L127" title="All 4 branches covered.">    if (!(ex instanceof HalApiClientException) || !configuration.isCachingOfHalApiClientExceptionsEnabled()) {</span>
+<span class="fc" id="L128">      return;</span>
+    }
+
+<span class="fc" id="L131">    HalApiClientException hace = (HalApiClientException)ex;</span>
+
+<span class="fc" id="L133">    HalResponse updatedResponse = updateResponseWithTimestampAndDefaultMaxAge(hace.getErrorResponse());</span>
+
+<span class="fc" id="L135">    storeInCache(updatedResponse);</span>
+<span class="fc" id="L136">  }</span>
+
+  class CachedResponse {
+
+    private final HalResponse response;
+
+<span class="fc" id="L142">    private CachedResponse(HalResponse response) {</span>
+<span class="fc" id="L143">      this.response = response;</span>
+<span class="fc" id="L144">    }</span>
+
+    private int getSecondsInCache() {
+
+<span class="fc" id="L148">      Duration cachedFor = Duration.between(response.getTimestamp(), clock.instant());</span>
+
+<span class="fc" id="L150">      return (int)cachedFor.getSeconds();</span>
+    }
+
+    boolean isFresh() {
+
+<span class="fc" id="L155">      int secondsInCache = getSecondsInCache();</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">      boolean fresh = secondsInCache &lt; response.getMaxAge();</span>
+
+<span class="fc bfc" id="L158" title="All 2 branches covered.">      if (!fresh) {</span>
+<span class="fc" id="L159">        log.debug(&quot;A response found in cache was considered stale, because it was stored {} seconds ago&quot;, secondsInCache);</span>
+      }
+
+<span class="fc" id="L162">      return fresh;</span>
+    }
+
+    HalResponse getResponseWithAdjustedMaxAge() {
+
+<span class="fc" id="L167">      int newMaxAge = Math.max(0, response.getMaxAge() - getSecondsInCache());</span>
+<span class="fc" id="L168">      return response.withMaxAge(newMaxAge);</span>
+    }
+  }
+
+  HalResourceLoader getUpstream() {
+<span class="fc" id="L173">    return upstream;</span>
+  }
+
+  HalResponseCache getCache() {
+<span class="fc" id="L177">    return cache;</span>
+  }
+
+  CachingConfiguration getConfiguration() {
+<span class="fc" id="L181">    return configuration;</span>
+  }
+
+  Clock getClock() {
+<span class="fc" id="L185">    return clock;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

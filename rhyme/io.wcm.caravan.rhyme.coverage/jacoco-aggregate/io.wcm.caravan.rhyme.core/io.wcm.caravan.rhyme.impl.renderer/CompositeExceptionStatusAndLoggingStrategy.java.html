@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CompositeExceptionStatusAndLoggingStrategy.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.renderer</a> &gt; <span class="el_source">CompositeExceptionStatusAndLoggingStrategy.java</span></div><h1>CompositeExceptionStatusAndLoggingStrategy.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl.renderer;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
+import io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy;
+
+/**
+ * Combines the behaviour of multiple {@link ExceptionStatusAndLoggingStrategy} instances
+ */
+public class CompositeExceptionStatusAndLoggingStrategy implements ExceptionStatusAndLoggingStrategy {
+
+  private final List&lt;ExceptionStatusAndLoggingStrategy&gt; strategies;
+
+  /**
+   * @param strategies the strategies to combine
+   */
+<span class="fc" id="L42">  public CompositeExceptionStatusAndLoggingStrategy(List&lt;ExceptionStatusAndLoggingStrategy&gt; strategies) {</span>
+<span class="fc" id="L43">    this.strategies = strategies;</span>
+<span class="fc" id="L44">  }</span>
+
+  @Override
+  public Integer extractStatusCode(Throwable error) {
+
+<span class="fc" id="L49">    return strategies.stream()</span>
+<span class="fc" id="L50">        .map(s -&gt; s.extractStatusCode(error))</span>
+<span class="fc" id="L51">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L52">        .findFirst()</span>
+<span class="fc" id="L53">        .orElse(null);</span>
+  }
+
+  @Override
+  public boolean logAsCompactWarning(Throwable error) {
+
+<span class="fc" id="L59">    return strategies.stream()</span>
+<span class="fc" id="L60">        .map(s -&gt; s.logAsCompactWarning(error))</span>
+<span class="fc bfc" id="L61" title="All 4 branches covered.">        .reduce(false, (logAsWarning1, logAsWarning2) -&gt; logAsWarning1 || logAsWarning2);</span>
+  }
+
+  @Override
+  public String getErrorMessageWithoutRedundantInformation(Throwable error) {
+
+<span class="fc" id="L67">    List&lt;String&gt; messageCandidates = strategies.stream()</span>
+<span class="fc" id="L68">        .map(s -&gt; s.getErrorMessageWithoutRedundantInformation(error))</span>
+<span class="fc" id="L69">        .map(StringUtils::trimToEmpty)</span>
+<span class="fc" id="L70">        .collect(Collectors.toList());</span>
+
+<span class="fc" id="L72">    Collections.sort(messageCandidates, Comparator.comparing(String::length));</span>
+
+<span class="fc" id="L74">    return messageCandidates.get(0);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

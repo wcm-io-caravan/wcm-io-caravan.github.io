@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RhymeDocsHtmlResource.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.osgi-jaxrs</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.jaxrs.impl.docs</a> &gt; <span class="el_source">RhymeDocsHtmlResource.java</span></div><h1>RhymeDocsHtmlResource.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.jaxrs.impl.docs;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.jaxrs.whiteboard.propertytypes.JaxrsApplicationSelect;
+import org.osgi.service.jaxrs.whiteboard.propertytypes.JaxrsResource;
+
+import io.wcm.caravan.rhyme.api.exceptions.HalApiServerException;
+import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
+
+
+/**
+ * A Jax-RS resource that serves the HTML documentation generated with the rhyme-docs-maven-plugin
+ */
+@Component(service = RhymeDocsHtmlResource.class)
+@JaxrsResource
+@JaxrsApplicationSelect(RhymeDocsJaxRsApplication.SELECTOR)
+<span class="fc" id="L43">public class RhymeDocsHtmlResource {</span>
+
+  @Reference
+  private RhymeDocsOsgiBundleSupport rhymeDocs;
+
+  /**
+   * @param fileName of a documentation file in the bundle resources
+   * @return the content of the file
+   */
+  @GET
+  @Path(&quot;{fileName}&quot;)
+  @Produces(&quot;text/html; charset=UTF-8&quot;)
+  public String getHtmlDocumentation(@PathParam(&quot;fileName&quot;) String fileName) {
+
+    try {
+<span class="fc" id="L58">      return RhymeDocsSupport.loadGeneratedHtml(rhymeDocs, fileName);</span>
+    }
+<span class="fc" id="L60">    catch (HalApiServerException ex) {</span>
+<span class="fc" id="L61">      throw new WebApplicationException(ex, ex.getStatusCode());</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

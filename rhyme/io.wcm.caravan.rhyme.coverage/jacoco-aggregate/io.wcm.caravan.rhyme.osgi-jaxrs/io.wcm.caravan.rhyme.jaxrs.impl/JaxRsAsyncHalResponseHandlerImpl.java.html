@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JaxRsAsyncHalResponseHandlerImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.osgi-jaxrs</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.jaxrs.impl</a> &gt; <span class="el_source">JaxRsAsyncHalResponseHandlerImpl.java</span></div><h1>JaxRsAsyncHalResponseHandlerImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.jaxrs.impl;
+
+import static org.osgi.service.component.annotations.ReferenceCardinality.OPTIONAL;
+import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.UriInfo;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.reactivex.rxjava3.core.Single;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
+import io.wcm.caravan.rhyme.api.server.VndErrorResponseRenderer;
+import io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy;
+import io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport;
+import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
+import io.wcm.caravan.rhyme.jaxrs.api.JaxRsAsyncHalResponseRenderer;
+import io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsOsgiBundleSupport;
+
+/**
+ * OSGI DS component that implements the {@link JaxRsAsyncHalResponseRenderer} interface using the
+ * {@link AsyncHalResponseRenderer} and a {@link JaxRsExceptionStrategy}
+ */
+@Component(service = { JaxRsAsyncHalResponseRenderer.class })
+@SuppressFBWarnings(&quot;RV_RETURN_VALUE_IGNORED&quot;)
+<span class="fc" id="L56">public class JaxRsAsyncHalResponseHandlerImpl implements JaxRsAsyncHalResponseRenderer {</span>
+
+<span class="fc" id="L58">  private static final Logger log = LoggerFactory.getLogger(JaxRsAsyncHalResponseHandlerImpl.class);</span>
+
+<span class="fc" id="L60">  private final JaxRsExceptionStrategy exceptionStrategy = new JaxRsExceptionStrategy();</span>
+
+  @Reference
+  private RhymeDocsOsgiBundleSupport rhymeDocsLoader;
+
+  @Reference(cardinality = OPTIONAL, policyOption = GREEDY)
+  private HalApiReturnTypeSupport returnTypeSupport;
+
+  @Reference(cardinality = OPTIONAL, policyOption = GREEDY)
+  private HalApiAnnotationSupport annotationSupport;
+
+  @Override
+  public void respondWith(LinkableResource resourceImpl, UriInfo uriInfo, AsyncResponse suspended, RequestMetricsCollector metrics) {
+
+    try {
+      // create a response renderer with a strategy that is able to extract the status code
+      // from any JAX-RS WebApplicationException that might be thrown in the resource implementations
+<span class="fc" id="L77">      AsyncHalResponseRenderer renderer = AsyncHalResponseRenderer.create(metrics, exceptionStrategy, annotationSupport, returnTypeSupport, rhymeDocsLoader);</span>
+
+      // asynchronously render the given resource (or create a vnd.error response if any exceptions are thrown)
+<span class="fc" id="L80">      String requestUri = getRequestUri(uriInfo);</span>
+<span class="fc" id="L81">      Single&lt;HalResponse&gt; rxResponse = renderer.renderResponse(requestUri, resourceImpl);</span>
+
+<span class="fc" id="L83">      rxResponse.subscribe(</span>
+          // return the HAL or VND+Error response when it is available
+<span class="fc" id="L85">          halResponse -&gt; resumeWithResponse(suspended, halResponse),</span>
+          // or fall back to the regular JAX-RS error handling if an exception was not caught
+<span class="fc" id="L87">          fatalException -&gt; resumeAfterFatalError(uriInfo, suspended, fatalException));</span>
+    }
+    // CHECKSTYLE:OFF - we really want to catch any exceptions here
+<span class="fc" id="L90">    catch (RuntimeException ex) {</span>
+      // CHECKSTYLE:ON
+      // when anything fatal happens we still need the response to be resumed with regular JAX-RS error handling
+<span class="fc" id="L93">      resumeAfterFatalError(uriInfo, suspended, ex);</span>
+<span class="fc" id="L94">    }</span>
+<span class="fc" id="L95">  }</span>
+
+  @Override
+  public void respondWithError(Throwable ex, UriInfo uriInfo, AsyncResponse suspended, RequestMetricsCollector metrics) {
+
+    try {
+<span class="fc" id="L101">      VndErrorResponseRenderer renderer = VndErrorResponseRenderer.create(exceptionStrategy);</span>
+
+<span class="fc" id="L103">      HalResponse response = renderer.renderError(getRequestUri(uriInfo), null, ex, metrics);</span>
+
+<span class="fc" id="L105">      resumeWithResponse(suspended, response);</span>
+    }
+    // CHECKSTYLE:OFF - we really want to catch any exceptions here
+<span class="fc" id="L108">    catch (RuntimeException rex) {</span>
+      // CHECKSTYLE:ON
+      // when anything fatal happens we still need the response to be resumed with regular JAX-RS error handling
+<span class="fc" id="L111">      resumeAfterFatalError(uriInfo, suspended, rex);</span>
+<span class="fc" id="L112">    }</span>
+<span class="fc" id="L113">  }</span>
+
+  private void resumeWithResponse(AsyncResponse suspended, HalResponse halResponse) {
+
+    // build a JAX-RS response from the HAL response created by the AsyncHalResponseRenderer
+<span class="fc" id="L118">    ResponseBuilder jaxRsResponse = Response</span>
+<span class="fc" id="L119">        .status(halResponse.getStatus())</span>
+<span class="fc" id="L120">        .type(halResponse.getContentType())</span>
+<span class="fc" id="L121">        .entity(halResponse.getBody());</span>
+
+    // add a CacheControl header only if a max-age value should be set
+<span class="fc" id="L124">    Integer maxAge = halResponse.getMaxAge();</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">    if (maxAge != null) {</span>
+<span class="fc" id="L126">      CacheControl cacheControl = new CacheControl();</span>
+<span class="fc" id="L127">      cacheControl.setMaxAge(maxAge);</span>
+<span class="fc" id="L128">      jaxRsResponse.cacheControl(cacheControl);</span>
+    }
+
+    // send the response to the client (HalResourceMessageBodyWriter will be responsible to serialise the body)
+<span class="fc" id="L132">    suspended.resume(jaxRsResponse.build());</span>
+<span class="fc" id="L133">  }</span>
+
+  @SuppressWarnings(&quot;PMD.GuardLogStatement&quot;)
+  private void resumeAfterFatalError(UriInfo uriInfo, AsyncResponse suspended, Throwable fatalError) {
+
+    String uri;
+    try {
+<span class="fc" id="L140">      uri = getRequestUri(uriInfo);</span>
+    }
+    // CHECKSTYLE:OFF - we really want to catch any exceptions here
+<span class="fc" id="L143">    catch (RuntimeException ex) {</span>
+      // CHECKSTYLE:ON
+<span class="fc" id="L145">      log.error(&quot;Failed to get request URI from &quot; + uriInfo, ex);</span>
+<span class="fc" id="L146">      uri = &quot;(unknown url)&quot;;</span>
+<span class="fc" id="L147">    }</span>
+
+<span class="fc" id="L149">    log.error(&quot;An exception occured when handling request for &quot; + uri, fatalError);</span>
+
+<span class="fc" id="L151">    suspended.resume(fatalError);</span>
+<span class="fc" id="L152">  }</span>
+
+  private static String getRequestUri(UriInfo uriInfo) {
+<span class="fc bfc" id="L155" title="All 2 branches covered.">    return uriInfo != null ? uriInfo.getRequestUri().toString() : null;</span>
+  }
+
+  /**
+   * This strategy allows server-side resource implementations to throw any subclass of {@link WebApplicationException},
+   * and ensure that the correct status code is actually added to the {@link HalResponse} instance by the
+   * {@link AsyncHalResponseRenderer}
+   */
+  private static class JaxRsExceptionStrategy implements ExceptionStatusAndLoggingStrategy {
+
+    @Override
+    public Integer extractStatusCode(Throwable error) {
+
+<span class="fc bfc" id="L168" title="All 2 branches covered.">      if (error instanceof WebApplicationException) {</span>
+<span class="fc" id="L169">        return ((WebApplicationException)error).getResponse().getStatus();</span>
+      }
+
+<span class="fc" id="L172">      return null;</span>
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

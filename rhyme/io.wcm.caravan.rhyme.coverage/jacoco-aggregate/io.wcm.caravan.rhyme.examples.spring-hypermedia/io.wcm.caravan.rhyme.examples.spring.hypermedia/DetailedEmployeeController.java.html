@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DetailedEmployeeController.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.spring-hypermedia</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.examples.spring.hypermedia</a> &gt; <span class="el_source">DetailedEmployeeController.java</span></div><h1>DetailedEmployeeController.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.examples.spring.hypermedia;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.stream.Stream;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.client.HalApiClient;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiClientException;
+import io.wcm.caravan.rhyme.api.server.ResourceConversions;
+import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
+
+/**
+ * An example for a controller that does not create the resources directly from the database,
+ * but is instead loading other {@link EmployeeResource} and {@link ManagerResource} by HTTP.
+ * It combines them into a {@link DetailedEmployeeResource} with embedded resources, so all of this information
+ * can be fetched with a single request.
+ * While this is a bit over-complicated here (where the repositories are also available locally) all this would work
+ * the same way if you wanted to aggregate or enrich resources from an external API.
+ * @see HalApiClient more details on how the client proxies work
+ */
+@RestController
+<span class="fc" id="L48">class DetailedEmployeeController {</span>
+
+  /**
+   * Inject the same request-scoped {@link SpringRhyme} component that is also used to render the resource.
+   * This allows to include detailed information about all HTTP requests executed by this controller in the
+   * embedded &quot;rhyme:metadata&quot; resource. It also ensures that the max-age cache directives of this controller's
+   * response are properly calculated (i.e. the max-age of upstream resources and cached content is taken
+   * into account)
+   */
+  @Autowired
+  private SpringRhyme rhyme;
+
+  @Autowired
+  private CompanyApiLinkBuilder linkBuilder;
+
+  /**
+   * A controller method to create a {@link DetailedEmployeeResource} for a specific employee. This is called
+   * to render this resource for an incoming HTTP request, but also to render all links to this kind of resource.
+   * @param id of the employee, or null if this method is called to create the link template in the {@link CompanyApi}
+   * @return a server-side implementation of {@link DetailedEmployeeResource}
+   * @throws HalApiClientException if any of the HTTP requests to load required resources failed
+   */
+  @GetMapping(&quot;/employees/{id}/detailed&quot;) //  Note that this is the only location (including tests) where the path of this resource is specified.
+  DetailedEmployeeResource findById(@PathVariable Long id) {
+
+    // Create and return an implementation of the HAL API interface which defines the resource structure.
+    // All methods will be automatically invoked later, when the response is being rendered
+    // by the LinkableResourceMessageConverter.
+<span class="fc" id="L76">    return new DetailedEmployeeResource() {</span>
+
+      // Construct the URL to the CompanyApiController running on localhost
+<span class="fc" id="L79">      private final String entryPointUrl = linkBuilder.getLocalEntryPointUrl();</span>
+
+      /**
+       * Load an employee by HTTP from localhost using a {@link HalApiClient}
+       * @return a client proxy that knows how to fetch the EmployeeResource from the expanded URL.
+       */
+      private EmployeeResource getEmployee() {
+
+        // Create a dynamic client proxy that can load the API's entry point (and all related resources) by HTTP.
+<span class="fc" id="L88">        CompanyApi entryPoint = rhyme.getRemoteResource(entryPointUrl, CompanyApi.class);</span>
+
+        // load the entry point, expand the &quot;company:employee&quot; link template with the given ID and create a new proxy
+<span class="fc" id="L91">        return entryPoint.getEmployeeById(id);</span>
+      }
+
+      @Override
+      public Employee getState() {
+
+        // This fetches the upstream employee resource, and deserializes the state from its JSON properties.
+        // Since this resource should have exactly the same state, we can simply return the instance without modifications.
+<span class="fc" id="L99">        return getEmployee().getState();</span>
+      }
+
+      @Override
+      public ManagerResource getManager() {
+
+        // Get a resource client proxy that follows the link to the manager of the employee.
+        // Even though getEmployee() is called multiple times in this class, it's not required to store that proxy instance anywhere.
+        // This is because the client proxies for each URL are already cached within the Rhyme instance.
+<span class="fc" id="L108">        ManagerResource manager = getEmployee().getManager();</span>
+
+        // We could return this resource proxy directly, but then only a link to the upstream resource would be added.
+        // Since we want to embed the manager resource, we need to convert it to another proxy that also implements EmbeddableResource.
+<span class="fc" id="L112">        return ResourceConversions.asEmbeddedResourceWithoutLink(manager);</span>
+      }
+
+      @Override
+      public Stream&lt;EmployeeResource&gt; getColleagues() {
+
+        // create a stream from the links to all employees managed by the same manager
+<span class="fc" id="L119">        return getEmployee().getManager().getManagedEmployees().stream()</span>
+            // ignore the employee for which we are just generating the detailed resource
+<span class="fc bfc" id="L121" title="All 2 branches covered.">            .filter(employee -&gt; !employee.getState().getId().equals(id))</span>
+            // and again ensure that these resources are embedded rather than linked
+<span class="fc" id="L123">            .map(ResourceConversions::asEmbeddedResourceWithoutLink);</span>
+      }
+
+      @Override
+      public Link createLink() {
+
+        // every link to this type of resource is created here, with the help of CompanyApiLinkBuilder
+<span class="fc" id="L130">        return linkBuilder.create(linkTo(methodOn(DetailedEmployeeController.class).findById(id)))</span>
+<span class="fc" id="L131">            .withTitle(&quot;The employee with ID &quot; + id + &quot;, with embedded resources for her managers and colleagues&quot;)</span>
+<span class="fc" id="L132">            .withTemplateTitle(&quot;A link template to detailed data for a single employee by ID&quot;)</span>
+<span class="fc" id="L133">            .build();</span>
+      }
+    };
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

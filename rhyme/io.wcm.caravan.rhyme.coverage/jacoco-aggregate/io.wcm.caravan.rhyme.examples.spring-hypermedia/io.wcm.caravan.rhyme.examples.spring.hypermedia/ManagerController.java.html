@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ManagerController.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.spring-hypermedia</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.examples.spring.hypermedia</a> &gt; <span class="el_source">ManagerController.java</span></div><h1>ManagerController.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.examples.spring.hypermedia;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Lazy;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiServerException;
+import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
+
+/**
+ * The controller that creates server-side {@link ManagerResource} and {@link ManagerCollectionResource} instances
+ */
+@RestController
+<span class="fc" id="L43">class ManagerController {</span>
+
+  @Autowired
+  private ManagerRepository repository;
+
+  // inject the controllers for all related resources
+  @Autowired
+  private CompanyApiController api;
+  @Autowired
+  private EmployeeController employees;
+
+  @Autowired
+  private CompanyApiLinkBuilder linkBuilder;
+
+  /**
+   * A controller method to create a {@link ManagerCollectionResource} that lists all managers in the database. This
+   * method is called to render that resource for an incoming HTTP request, but also to render any link to this kind of
+   * resource.
+   * @return a server-side implementation of {@link ManagerCollectionResource}
+   */
+  @GetMapping(&quot;/managers&quot;)
+  ManagerCollectionResource findAll() {
+
+<span class="fc" id="L66">    return new ManagerCollectionResource() {</span>
+
+      @Override
+      public List&lt;ManagerResource&gt; getAll() {
+
+<span class="fc" id="L71">        return StreamUtils.createResourcesFrom(repository.findAll(), ManagerResourceImpl::new);</span>
+      }
+
+      @Override
+      public CompanyApi getApi() {
+<span class="fc" id="L76">        return api;</span>
+      }
+
+      @Override
+      public EmployeeCollectionResource getEmployees() {
+<span class="fc" id="L81">        return employees.findAll();</span>
+      }
+
+      @Override
+      public Link createLink() {
+
+        // every link to this type of resource is created here, with the help of CompanyApiLinkBuilder
+<span class="fc" id="L88">        return linkBuilder.create(linkTo(methodOn(ManagerController.class).findAll()))</span>
+<span class="fc" id="L89">            .withTitle(&quot;A collection of all managers&quot;)</span>
+<span class="fc" id="L90">            .build();</span>
+      }
+    };
+  }
+
+  /**
+   * A controller method to create a {@link ManagerResource} for a specific manager. This is called
+   * to render this resource for an incoming HTTP request, but also to render all links to this kind of resource.
+   * @param id of the employee, or null if this method is called to create the link template in the {@link CompanyApi}
+   * @return a server-side implementation of {@link ManagerResource}
+   */
+  @GetMapping(&quot;/managers/{id}&quot;)
+  ManagerResource findById(@PathVariable Long id) {
+
+    // Create and return the resource instance (implemented as an inner class) that can load the entity from the repository
+<span class="fc" id="L105">    return new ManagerResourceImpl(id, () -&gt; repository.findById(id)</span>
+        // If no entity is found with the given ID, then throw an exception from which a status code can be extracted.
+        // This will make Rhyme#renderResponse return a vnd.error response with that status code.
+<span class="fc" id="L108">        .orElseThrow(() -&gt; new HalApiServerException(404, &quot;No entity was found with id &quot; + id)));</span>
+  }
+
+  /**
+   * The server-side implementation of the {@link ManagerResource} interface, which also allows for this resource
+   * to be embedded in the context from which it was created.
+   */
+  private class ManagerResourceImpl implements ManagerResource, EmbeddableResource {
+
+    private final Long id;
+    private final Lazy&lt;Manager&gt; state;
+
+    private final boolean embedded;
+
+    /**
+     * A constructor that defers loading of the {@link Manager} to when {@link #getState()} is called by the renderer.
+     * This is important because instance creation should be as fast as possible, as it also happens when only
+     * a link to an employee with a given ID is rendered (for which we don't need the full Manager entity).
+     * @param id of the manager
+     * @param entityLoader a function that loads the manager from the {@link ManagerRepository}
+     */
+<span class="fc" id="L129">    protected ManagerResourceImpl(Long id, Supplier&lt;Manager&gt; entityLoader) {</span>
+<span class="fc" id="L130">      this.id = id;</span>
+<span class="fc" id="L131">      this.state = Lazy.of(entityLoader);</span>
+<span class="fc" id="L132">      this.embedded = false;</span>
+<span class="fc" id="L133">    }</span>
+
+    /**
+     * The constructor to create an *embedded* resource for an employee that was already loaded from the database
+     * @param manager an entity loaded from the {@link ManagerRepository}
+     */
+<span class="fc" id="L139">    private ManagerResourceImpl(Manager manager) {</span>
+<span class="fc" id="L140">      this.id = manager.getId();</span>
+<span class="fc" id="L141">      this.state = Lazy.of(manager);</span>
+<span class="fc" id="L142">      this.embedded = true;</span>
+<span class="fc" id="L143">    }</span>
+
+    @Override
+    public Manager getState() {
+<span class="fc" id="L147">      return state.get();</span>
+    }
+
+    @Override
+    public List&lt;EmployeeResource&gt; getManagedEmployees() {
+<span class="fc" id="L152">      return employees.findEmployeesOfManagerWithId(id);</span>
+    }
+
+    @Override
+    public Optional&lt;ManagerResource&gt; getCanonical() {
+      // the canonical link is only present for variations of this resource
+      // (which can be done by subclassing as you can see in #findManagerOfEmployeeWithId)
+<span class="fc" id="L159">      return Optional.empty();</span>
+    }
+
+    @Override
+    public boolean isEmbedded() {
+<span class="fc" id="L164">      return embedded;</span>
+    }
+
+    @Override
+    public Link createLink() {
+
+      // every link to this type of resource is created here, with the help of CompanyApiLinkBuilder
+<span class="fc" id="L171">      return linkBuilder.create(linkTo(methodOn(ManagerController.class).findById(id)))</span>
+<span class="fc" id="L172">          .withTitle(&quot;The manager with ID &quot; + id)</span>
+<span class="fc" id="L173">          .withTemplateTitle(&quot;A link template to load a single manager by ID&quot;)</span>
+<span class="fc" id="L174">          .build();</span>
+    }
+  }
+
+  /**
+   * A controller method to create a {@link ManagerResource} for the manager of a given employee (with a path below the
+   * path of the employee)
+   * @param id of the employee,
+   * @return a server-side implementation of {@link ManagerResource}
+   */
+  @GetMapping(&quot;/employees/{id}/manager&quot;)
+  ManagerResource findManagerOfEmployeeWithId(@PathVariable Long id) {
+
+    // find the manager in the repository
+<span class="fc" id="L188">    Manager manager = repository.findByEmployeesId(id);</span>
+
+    // Create a resource implementation (but don't use the constructor used to create embedded resources)
+<span class="fc" id="L191">    return new ManagerResourceImpl(manager.getId(), () -&gt; manager) {</span>
+
+      @Override
+      public Optional&lt;ManagerResource&gt; getCanonical() {
+        // include a link to the version of this resource that uses the /managers/{id} path
+<span class="fc" id="L196">        return Optional.of(findById(manager.getId()));</span>
+      }
+
+      @Override
+      public Link createLink() {
+
+        // overridden so that the path from this controller method is used
+<span class="fc" id="L203">        return linkBuilder.create(linkTo(methodOn(ManagerController.class).findManagerOfEmployeeWithId(id)))</span>
+            // since the manager instance was already loaded, we can also give a bit more context in the link title for this resource
+<span class="fc" id="L205">            .withTitle(&quot;The manager (&quot; + manager.getName() + &quot;)  of the employee with id &quot; + id)</span>
+<span class="fc" id="L206">            .build();</span>
+      }
+    };
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

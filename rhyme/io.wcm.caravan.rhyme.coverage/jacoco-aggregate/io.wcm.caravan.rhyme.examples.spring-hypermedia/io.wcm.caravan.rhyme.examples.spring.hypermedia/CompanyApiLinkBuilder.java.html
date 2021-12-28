@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CompanyApiLinkBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.spring-hypermedia</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.examples.spring.hypermedia</a> &gt; <span class="el_source">CompanyApiLinkBuilder.java</span></div><h1>CompanyApiLinkBuilder.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.examples.spring.hypermedia;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.time.Duration;
+import java.util.function.Function;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
+
+import io.wcm.caravan.rhyme.api.Rhyme;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.spring.api.RhymeLinkBuilder;
+import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
+import io.wcm.caravan.rhyme.spring.api.UrlFingerprinting;
+
+/**
+ * Defines common logic (e.g. URL fingerprinting) for building any link to your resources in this project .
+ * &lt;p&gt;
+ * In general, the core {@link Rhyme} framework only specifies that the {@link LinkableResource#createLink()}
+ * of each server-side resource instance is responsible to create a link for itself that contains all parameters and
+ * context information. But often there is some common logic required to build links that is shared throughout the
+ * project, and having a class like this helps to consolidate and encapsulate that kind of logic.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * In this case links are mostly generated with Spring HATEOAS' {@link WebMvcLinkBuilder}, but additional logic is
+ * added by the {@link UrlFingerprinting} class: Each link will contain a {@value #TIMESTAMP_QUERY_PARAM} query
+ * parameter that contains the last modification date of all the data used to generate the resources. This query
+ * parameter has a single purpose: if it is present, we can instruct clients that responses for this URL can be cached
+ * essentially forever. This is because future requests will be using a different URL with an updated timestamp
+ * if data has changed. All this is implemented by {@link UrlFingerprinting} and we just need to enable and
+ * configure it here.
+ * &lt;/p&gt;
+ * @see UrlFingerprinting
+ * @see WebMvcLinkBuilder
+ */
+@Component
+@RequestScope
+class CompanyApiLinkBuilder {
+
+  private static final String TIMESTAMP_QUERY_PARAM = &quot;timestamp&quot;;
+
+  private final UrlFingerprinting fingerprinting;
+
+<span class="fc" id="L67">  CompanyApiLinkBuilder(@Autowired SpringRhyme rhyme, @Autowired RepositoryModificationListener repositoryListener) {</span>
+
+<span class="fc" id="L69">    this.fingerprinting = rhyme</span>
+<span class="fc" id="L70">        .enableUrlFingerprinting()</span>
+<span class="fc" id="L71">        .withConditionalMaxAge(Duration.ofSeconds(10), Duration.ofDays(100))</span>
+<span class="fc" id="L72">        .withTimestampParameter(TIMESTAMP_QUERY_PARAM, repositoryListener::getLastModified);</span>
+<span class="fc" id="L73">  }</span>
+
+  /**
+   * Start building a link to a controller handler method. The URL for that link is generated
+   * by the {@link WebMvcLinkBuilder} class, but additional query parameters that are not directly
+   * present in the API and controller signatures can be appended by {@link UrlFingerprinting}.
+   * @param linkBuilder created with {@link WebMvcLinkBuilder#linkTo(Class)} and
+   *          {@link WebMvcLinkBuilder#methodOn(Class, Object...)}
+   * @return a {@link RhymeLinkBuilder} that you can use to decorate the link with name and title attributes, and
+   *         then finally build it
+   * @see WebMvcLinkBuilder
+   */
+  RhymeLinkBuilder create(WebMvcLinkBuilder linkBuilder) {
+
+<span class="fc" id="L87">    return fingerprinting.createLinkWith(linkBuilder);</span>
+  }
+
+  /**
+   * An alternative signature to {@link #create(WebMvcLinkBuilder)} that allows you to specify
+   * the controller class and method call directly. It's using {@link WebMvcLinkBuilder} as well,
+   * so note that the function you are passing isn't called on the actual controller class,
+   * but a proxy instance that does nothing else but to capture the method call and the parameters.
+   * @param &lt;T&gt; the type of controller you want to link to
+   * @param controllerClass the controller class you want to link to
+   * @param handlerMethodCall a function that calls a method on a proxy of the given controller,
+   *          to find the path mapping and expand any URI template variables if required
+   * @return a {@link RhymeLinkBuilder} that you can use to decorate the link with name and title attributes, and
+   *         then finally build it
+   * @see WebMvcLinkBuilder
+   */
+  &lt;T&gt; RhymeLinkBuilder createLinkTo(Class&lt;T&gt; controllerClass, Function&lt;T, LinkableResource&gt; handlerMethodCall) {
+
+<span class="fc" id="L105">    WebMvcLinkBuilder linkBuilder = linkTo(handlerMethodCall.apply(methodOn(controllerClass)));</span>
+
+<span class="fc" id="L107">    return create(linkBuilder);</span>
+  }
+
+  /**
+   * Constructs an URL to the {@link CompanyApiController}, where a {@value #TIMESTAMP_QUERY_PARAM} parameter
+   * is appended only if it was also present in the incoming request. This is used by the
+   * {@link DetailedEmployeeController} to ensure that it can serve both immutable and mutable versions of the resource.
+   * @return a fully qualified URL for requests to the {@link CompanyApiController#get()} method
+   */
+  String getLocalEntryPointUrl() {
+
+<span class="fc" id="L118">    return createLinkTo(CompanyApiController.class, CompanyApiController::get)</span>
+<span class="fc" id="L119">        .withFingerprintingOnlyIf(fingerprinting.isUsedInIncomingRequest())</span>
+<span class="fc" id="L120">        .build()</span>
+<span class="fc" id="L121">        .getHref();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

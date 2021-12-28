@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>VndErrorResponseRendererImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.renderer</a> &gt; <span class="el_source">VndErrorResponseRendererImpl.java</span></div><h1>VndErrorResponseRendererImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl.renderer;
+
+import static io.wcm.caravan.rhyme.api.relations.StandardRelations.VIA;
+import static io.wcm.caravan.rhyme.api.relations.VndErrorRelations.ABOUT;
+import static io.wcm.caravan.rhyme.api.relations.VndErrorRelations.ERRORS;
+import static io.wcm.caravan.rhyme.impl.renderer.AsyncHalResponseRendererImpl.addMetadata;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiClientException;
+import io.wcm.caravan.rhyme.api.relations.StandardRelations;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.api.server.VndErrorResponseRenderer;
+import io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy;
+import io.wcm.caravan.rhyme.impl.metadata.ResponseMetadataRelations;
+
+/**
+ * Full implementation of {@link VndErrorResponseRenderer}
+ */
+public class VndErrorResponseRendererImpl implements VndErrorResponseRenderer {
+
+<span class="fc" id="L54">  private static final Logger log = LoggerFactory.getLogger(VndErrorResponseRendererImpl.class);</span>
+
+<span class="fc" id="L56">  private static final DefaultExceptionStatusAndLoggingStrategy DEFAULT_STRATEGY = new DefaultExceptionStatusAndLoggingStrategy();</span>
+
+  private final ExceptionStatusAndLoggingStrategy strategy;
+
+  /**
+   * @param customStrategy allows to control the status code and logging of exceptions
+   */
+<span class="fc" id="L63">  public VndErrorResponseRendererImpl(ExceptionStatusAndLoggingStrategy customStrategy) {</span>
+<span class="fc" id="L64">    this.strategy = DEFAULT_STRATEGY.decorateWith(customStrategy);</span>
+<span class="fc" id="L65">  }</span>
+
+  @Override
+  public HalResponse renderError(String requestUri, LinkableResource resourceImpl, Throwable error, RequestMetricsCollector metrics) {
+
+<span class="fc" id="L70">    HalResource vndResource = new HalResource();</span>
+
+<span class="fc" id="L72">    addProperties(vndResource, error);</span>
+<span class="fc" id="L73">    addAboutAndCanonicalLink(vndResource, resourceImpl, requestUri);</span>
+<span class="fc" id="L74">    addEmbeddedCauses(vndResource, error);</span>
+<span class="fc" id="L75">    addMetadata(metrics, vndResource, resourceImpl);</span>
+
+<span class="fc" id="L77">    int status = ObjectUtils.defaultIfNull(strategy.extractStatusCode(error), 500);</span>
+
+<span class="fc" id="L79">    logError(error, requestUri, status);</span>
+
+<span class="fc" id="L81">    return new HalResponse()</span>
+<span class="fc" id="L82">        .withUri(requestUri)</span>
+<span class="fc" id="L83">        .withStatus(status)</span>
+<span class="fc" id="L84">        .withContentType(VndErrorResponseRenderer.CONTENT_TYPE)</span>
+<span class="fc" id="L85">        .withBody(vndResource);</span>
+  }
+
+  private String getShortErrorMessage(Throwable t) {
+<span class="fc" id="L89">    return strategy.getErrorMessageWithoutRedundantInformation(t);</span>
+  }
+
+  @SuppressWarnings(&quot;PMD.GuardLogStatement&quot;)
+  private void logError(Throwable error, String uri, int status) {
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">    if (strategy.logAsCompactWarning(error)) {</span>
+      // if this error was caused by an upstream request, there is no need to include the full stack traces
+<span class="fc" id="L97">      String messages = Stream.of(ExceptionUtils.getThrowables(error))</span>
+<span class="fc" id="L98">          .map(t -&gt; t.getClass().getSimpleName() + &quot;: &quot; + getShortErrorMessage(t))</span>
+<span class="fc" id="L99">          .collect(Collectors.joining(&quot;\n&quot;));</span>
+
+<span class="fc" id="L101">      log.warn(&quot;Responding with {} for {}:\n{}&quot;, status, uri, messages);</span>
+<span class="fc" id="L102">    }</span>
+    else {
+<span class="fc" id="L104">      log.error(&quot;Responding with &quot; + status + &quot; for &quot; + uri, error);</span>
+    }
+<span class="fc" id="L106">  }</span>
+
+  private void addProperties(HalResource vndResource, Throwable error) {
+
+<span class="fc" id="L110">    vndResource.getModel().put(&quot;message&quot;, getShortErrorMessage(error));</span>
+<span class="fc" id="L111">    vndResource.getModel().put(&quot;class&quot;, error.getClass().getName());</span>
+<span class="fc" id="L112">    vndResource.getModel().put(&quot;title&quot;, error.getClass().getSimpleName() + &quot;: &quot; + getShortErrorMessage(error));</span>
+<span class="fc" id="L113">  }</span>
+
+  private void addAboutAndCanonicalLink(HalResource vndResource, LinkableResource resourceImpl, String requestUri) {
+
+<span class="fc" id="L117">    Link aboutLink = new Link(requestUri).setTitle(&quot;The URI of this resource as it was actually requested&quot;);</span>
+<span class="fc" id="L118">    vndResource.addLinks(ABOUT, aboutLink);</span>
+
+<span class="fc" id="L120">    Link selfLink = null;</span>
+    try {
+<span class="fc" id="L122">      selfLink = resourceImpl.createLink()</span>
+<span class="fc" id="L123">          .setTitle(&quot;The URI as reported by the self-link of this resource&quot;);</span>
+    }
+    // CHECKSTYLE:OFF - we really want to ignore any exceptions that could be thrown when creating the self-link
+<span class="fc" id="L126">    catch (RuntimeException ex) {</span>
+      // CHECKSTYLE:ON
+<span class="fc" id="L128">    }</span>
+
+<span class="fc bfc" id="L130" title="All 2 branches covered.">    if (selfLink != null) {</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">      if (!requestUri.endsWith(selfLink.getHref())) {</span>
+<span class="fc" id="L132">        vndResource.addLinks(StandardRelations.CANONICAL, selfLink);</span>
+      }
+    }
+<span class="fc" id="L135">  }</span>
+
+  private void addEmbeddedCauses(HalResource vndResource, Throwable error) {
+
+<span class="fc" id="L139">    Throwable cause = error.getCause();</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">    if (cause != null) {</span>
+<span class="fc" id="L141">      HalResource embedded = new HalResource();</span>
+<span class="fc" id="L142">      addProperties(embedded, cause);</span>
+
+<span class="fc" id="L144">      vndResource.addEmbedded(ERRORS, embedded);</span>
+<span class="fc" id="L145">      addEmbeddedCauses(vndResource, cause);</span>
+
+<span class="fc bfc" id="L147" title="All 2 branches covered.">      if (cause instanceof HalApiClientException) {</span>
+<span class="fc" id="L148">        List&lt;HalResource&gt; vndErrorsFoundInBody = getErrorsFromUpstreamResponse(vndResource, (HalApiClientException)cause);</span>
+<span class="fc" id="L149">        vndResource.addEmbedded(ERRORS, vndErrorsFoundInBody);</span>
+      }
+    }
+<span class="fc" id="L152">  }</span>
+
+  private List&lt;HalResource&gt; getErrorsFromUpstreamResponse(HalResource context, HalApiClientException cause) {
+
+<span class="fc" id="L156">    HalApiClientException hace = cause;</span>
+
+<span class="fc" id="L158">    Link link = new Link(hace.getRequestUrl()).setTitle(&quot;The upstream resource that could not be loaded&quot;);</span>
+
+<span class="fc" id="L160">    context.addLinks(VIA, link);</span>
+
+<span class="fc" id="L162">    HalResponse upstreamJson = hace.getErrorResponse();</span>
+<span class="fc" id="L163">    HalResource upstreamBody = upstreamJson.getBody();</span>
+
+<span class="fc bfc" id="L165" title="All 4 branches covered.">    if (upstreamBody == null || upstreamBody.getModel().size() == 0) {</span>
+<span class="fc" id="L166">      return Collections.emptyList();</span>
+    }
+
+<span class="fc" id="L169">    HalResource causeFromBody = new HalResource(upstreamBody.getModel().deepCopy());</span>
+<span class="fc" id="L170">    causeFromBody.removeEmbedded(ResponseMetadataRelations.RHYME_METADATA_RELATION);</span>
+
+<span class="fc" id="L172">    List&lt;HalResource&gt; embeddedCauses = causeFromBody.getEmbedded(ERRORS);</span>
+
+<span class="fc" id="L174">    List&lt;HalResource&gt; flatCauses = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L175">    flatCauses.add(causeFromBody);</span>
+<span class="fc" id="L176">    flatCauses.addAll(embeddedCauses);</span>
+
+<span class="fc" id="L178">    causeFromBody.removeEmbedded(ERRORS);</span>
+<span class="fc" id="L179">    return flatCauses;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

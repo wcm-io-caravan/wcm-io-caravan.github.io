@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HttpHeadersParser.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.client.http</a> &gt; <span class="el_source">HttpHeadersParser.java</span></div><h1>HttpHeadersParser.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.impl.client.http;
+
+import java.time.Duration;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.collect.Ordering;
+
+import io.wcm.caravan.rhyme.api.spi.HttpClientCallback;
+
+/**
+ * Extracts the relevant information from the HTTP headers given to
+ * {@link HttpClientCallback#onHeadersAvailable(int, Map)}
+ */
+class HttpHeadersParser {
+
+  private static final String MAX_AGE_REGEX = &quot;.*max-age=([0-9]+).*&quot;;
+
+<span class="fc" id="L26">  private static final Pattern MAX_AGE_PATTERN = Pattern.compile(MAX_AGE_REGEX);</span>
+
+  private final Map&lt;String, ? extends Collection&lt;String&gt;&gt; headers;
+
+<span class="fc" id="L30">  HttpHeadersParser(Map&lt;String, ? extends Collection&lt;String&gt;&gt; headers) {</span>
+<span class="fc" id="L31">    this.headers = headers;</span>
+<span class="fc" id="L32">  }</span>
+
+  Optional&lt;String&gt; getContentType() {
+
+<span class="fc" id="L36">    return findHeader(&quot;content-type&quot;);</span>
+  }
+
+  Optional&lt;Integer&gt; getMaxAge() {
+
+<span class="fc" id="L41">    return findHeaders(&quot;cache-control&quot;)</span>
+<span class="fc" id="L42">        .map(HttpHeadersParser::parseMaxAge)</span>
+<span class="fc" id="L43">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L44">        .max(Ordering.natural());</span>
+  }
+
+  private Optional&lt;String&gt; findHeader(String name) {
+
+<span class="fc" id="L49">    return findHeaders(name)</span>
+<span class="fc" id="L50">        .findFirst();</span>
+  }
+
+  Stream&lt;String&gt; findHeaders(String name) {
+<span class="fc" id="L54">    return headers.entrySet().stream()</span>
+<span class="fc" id="L55">        .filter(entry -&gt; StringUtils.equalsIgnoreCase(name, entry.getKey()))</span>
+<span class="fc" id="L56">        .flatMap(entry -&gt; entry.getValue().stream());</span>
+  }
+
+  private static Integer parseMaxAge(String cacheControl) {
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    if (cacheControl.contains(&quot;immutable&quot;)) {</span>
+<span class="fc" id="L62">      return (int)Duration.ofDays(365).getSeconds();</span>
+    }
+
+<span class="fc" id="L65">    Matcher matcher = MAX_AGE_PATTERN.matcher(cacheControl);</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">    if (!matcher.matches()) {</span>
+<span class="fc" id="L67">      return null;</span>
+    }
+
+<span class="fc" id="L70">    long maxAge = Long.parseLong(matcher.group(1));</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (maxAge &gt; Integer.MAX_VALUE) {</span>
+<span class="fc" id="L72">      return Integer.MAX_VALUE;</span>
+    }
+<span class="fc" id="L74">    return (int)maxAge;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
