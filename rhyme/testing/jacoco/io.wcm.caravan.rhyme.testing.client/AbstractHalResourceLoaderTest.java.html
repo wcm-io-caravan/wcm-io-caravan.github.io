@@ -44,14 +44,14 @@ import wiremock.org.apache.http.client.utils.URIBuilder;
  */
 <span class="fc" id="L45">public abstract class AbstractHalResourceLoaderTest {</span>
 
-  private static final String UNKNOWN_HOST_URL = &quot;http://foo.bar&quot;;
+  protected static final String UNKNOWN_HOST_URL = &quot;http://foo.bar&quot;;
 
-  private static final String TEST_PATH = &quot;/test&quot;;
+  protected static final String TEST_PATH = &quot;/test&quot;;
 
   private static WireMockServer wireMockServer;
 
-  private static String testUrl;
-  private static String sslTestUrl;
+  protected static String testUrl;
+  protected static String sslTestUrl;
 
   @BeforeAll
   static void init() throws URISyntaxException {
@@ -164,7 +164,7 @@ import wiremock.org.apache.http.client.utils.URIBuilder;
 <span class="fc" id="L164">            .withStatus(statusCode)));</span>
 <span class="fc" id="L165">  }</span>
 
-  private void stubFaultyResponseWithStatusCode(int statusCode, Fault fault) {
+  protected void stubFaultyResponseWithStatusCode(int statusCode, Fault fault) {
 
 <span class="fc" id="L169">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
 <span class="fc" id="L170">        .willReturn(aResponse()</span>
@@ -182,19 +182,19 @@ import wiremock.org.apache.http.client.utils.URIBuilder;
    */
   protected abstract HalResourceLoader createLoaderUnderTest();
 
-  private HalResponse loadResource() {
+  protected HalResponse loadResource() {
 
 <span class="fc" id="L187">    String uri = testUrl;</span>
 
 <span class="fc" id="L189">    return createLoaderUnderTest().getHalResource(uri).blockingGet();</span>
   }
 
-  private HalApiClientException loadResourceAndExpectClientException() {
+  protected HalApiClientException loadResourceAndExpectClientException() {
 
 <span class="fc" id="L194">    return loadResourceAndExpectClientException(testUrl);</span>
   }
 
-  private HalApiClientException loadResourceAndExpectClientException(String url) {
+  protected HalApiClientException loadResourceAndExpectClientException(String url) {
 <span class="fc" id="L198">    Single&lt;HalResponse&gt; rxResponse = createLoaderUnderTest().getHalResource(url);</span>
 
 <span class="pc" id="L200">    Throwable ex = catchThrowable(() -&gt; rxResponse.blockingGet());</span>
