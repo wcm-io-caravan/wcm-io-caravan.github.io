@@ -25,7 +25,7 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.cache,CachingHalResource
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.cache,GuavaCacheImplementation,0,46,0,2,0,14,0,6,0,5
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.cache,DefaultCachingConfiguration,0,17,0,0,0,5,0,4,0,4
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.cache,CachingHalResourceLoader,0,228,0,12,0,50,0,21,0,15
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,VndErrorResponseRendererImpl,0,325,0,14,0,66,0,17,0,10
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,VndErrorResponseRendererImpl,0,334,0,18,0,70,0,20,0,11
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,CompositeExceptionStatusAndLoggingStrategy,0,77,0,4,0,17,0,10,0,8
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,RelatedResourcesRendererImpl,0,384,0,20,0,75,0,34,0,24
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,AsyncHalResourceRendererImpl,0,265,0,12,0,45,0,20,0,14
