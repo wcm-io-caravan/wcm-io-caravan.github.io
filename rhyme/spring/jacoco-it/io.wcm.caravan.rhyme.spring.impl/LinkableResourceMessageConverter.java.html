@@ -49,20 +49,20 @@ import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 @Component
 class LinkableResourceMessageConverter extends AbstractHttpMessageConverter&lt;LinkableResource&gt; {
 
-<span class="nc" id="L52">  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();</span>
+<span class="fc" id="L52">  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();</span>
 
   private final SpringRhymeImpl rhyme;
 
   LinkableResourceMessageConverter(@Autowired SpringRhymeImpl rhyme) {
-<span class="nc" id="L57">    super(MediaTypes.HAL_JSON, MediaTypes.HAL_FORMS_JSON);</span>
+<span class="fc" id="L57">    super(MediaTypes.HAL_JSON, MediaTypes.HAL_FORMS_JSON);</span>
 
-<span class="nc" id="L59">    this.rhyme = rhyme;</span>
-<span class="nc" id="L60">  }</span>
+<span class="fc" id="L59">    this.rhyme = rhyme;</span>
+<span class="fc" id="L60">  }</span>
 
   @Override
   protected boolean supports(Class&lt;?&gt; clazz) {
 
-<span class="nc" id="L65">    return LinkableResource.class.isAssignableFrom(clazz);</span>
+<span class="fc" id="L65">    return LinkableResource.class.isAssignableFrom(clazz);</span>
   }
 
   @Override

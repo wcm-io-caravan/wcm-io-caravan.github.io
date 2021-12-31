@@ -42,9 +42,9 @@ class LinkableResourceStatusCodeAdvice implements ResponseBodyAdvice&lt;Linkable
 
   private final SpringRhymeImpl rhyme;
 
-<span class="nc" id="L45">  LinkableResourceStatusCodeAdvice(@Autowired SpringRhymeImpl rhyme) {</span>
-<span class="nc" id="L46">    this.rhyme = rhyme;</span>
-<span class="nc" id="L47">  }</span>
+<span class="fc" id="L45">  LinkableResourceStatusCodeAdvice(@Autowired SpringRhymeImpl rhyme) {</span>
+<span class="fc" id="L46">    this.rhyme = rhyme;</span>
+<span class="fc" id="L47">  }</span>
 
   @Override
   public boolean supports(MethodParameter returnType, Class&lt;? extends HttpMessageConverter&lt;?&gt;&gt; converterType) {

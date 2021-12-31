@@ -45,9 +45,9 @@ class VndErrorHandlingControllerAdvice {
 
   private final SpringRhymeImpl rhyme;
 
-<span class="nc" id="L48">  VndErrorHandlingControllerAdvice(@Autowired SpringRhymeImpl rhyme) {</span>
-<span class="nc" id="L49">    this.rhyme = rhyme;</span>
-<span class="nc" id="L50">  }</span>
+<span class="fc" id="L48">  VndErrorHandlingControllerAdvice(@Autowired SpringRhymeImpl rhyme) {</span>
+<span class="fc" id="L49">    this.rhyme = rhyme;</span>
+<span class="fc" id="L50">  }</span>
 
   private ResponseEntity&lt;JsonNode&gt; renderAsBadRequest(String msg, Throwable ex) {
 

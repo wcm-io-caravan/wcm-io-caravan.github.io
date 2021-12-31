@@ -76,13 +76,13 @@ var activeTableTab = "activeTableTab";
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -112,10 +112,9 @@ var activeTableTab = "activeTableTab";
 <pre>@TestConfiguration
 public class <span class="typeNameLabel">MockMvcHalResourceLoaderConfiguration</span>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
-<div class="block">An implementation of <code>HalResourceLoader</code> for integration-tests that is using the <code>MockMvc</code> class
- to fetch resources from the currently running <code>WebApplicationContext</code>. It allows you to create
- a <code>HalApiClient</code> to navigate through your resources running in your application the same way as an external
- client would. These tests can cover all of the following aspects with very little code:
+<div class="block">A Spring configuration that will replace the default <code>HalResourceLoader</code> bean
+ with one that fetches resources from the currently running <code>WebApplicationContext</code> using the Spring
+ <code>MockMvc</code> class.
  <ul>
  <li>the calls to the controller methods that create your server-side resource implementations</li>
  <li>the rendering / serialization of these resources to the HAL+JSON format</li>
@@ -128,6 +127,23 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor.summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/testing/spring/MockMvcHalResourceLoaderConfiguration.html#MockMvcHalResourceLoaderConfiguration--">MockMvcHalResourceLoaderConfiguration</a></span>()</code>&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -142,7 +158,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>io.wcm.caravan.rhyme.api.spi.HalResourceLoader</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/testing/spring/MockMvcHalResourceLoaderConfiguration.html#getResourceLoader--">getResourceLoader</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/testing/spring/MockMvcHalResourceLoaderConfiguration.html#halResourceLoader-org.springframework.web.context.WebApplicationContext-">halResourceLoader</a></span>(org.springframework.web.context.WebApplicationContext&nbsp;applicationContext)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -160,21 +176,37 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor.detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="MockMvcHalResourceLoaderConfiguration--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>MockMvcHalResourceLoaderConfiguration</h4>
+<pre>public&nbsp;MockMvcHalResourceLoaderConfiguration()</pre>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getResourceLoader--">
+<a name="halResourceLoader-org.springframework.web.context.WebApplicationContext-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>getResourceLoader</h4>
-<pre>@Primary
- @Bean
-public&nbsp;io.wcm.caravan.rhyme.api.spi.HalResourceLoader&nbsp;getResourceLoader()</pre>
+<h4>halResourceLoader</h4>
+<pre>@Bean
+public&nbsp;io.wcm.caravan.rhyme.api.spi.HalResourceLoader&nbsp;halResourceLoader(org.springframework.web.context.WebApplicationContext&nbsp;applicationContext)</pre>
 </li>
 </ul>
 </li>
@@ -232,13 +264,13 @@ public&nbsp;io.wcm.caravan.rhyme.api.spi.HalResourceLoader&nbsp;getResourceLoade
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

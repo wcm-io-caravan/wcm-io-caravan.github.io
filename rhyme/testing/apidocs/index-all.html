@@ -176,8 +176,6 @@
 <dd>
 <div class="block">Start crawling and return all responses</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/testing/spring/MockMvcHalResourceLoaderConfiguration.html#getResourceLoader--">getResourceLoader()</a></span> - Method in class io.wcm.caravan.rhyme.testing.spring.<a href="io/wcm/caravan/rhyme/testing/spring/MockMvcHalResourceLoaderConfiguration.html" title="class in io.wcm.caravan.rhyme.testing.spring">MockMvcHalResourceLoaderConfiguration</a></dt>
-<dd>&nbsp;</dd>
 </dl>
 <a name="I:H">
 <!--   -->
@@ -189,6 +187,8 @@
 <div class="block">A crawler that recursively loads all resources that are linked from the services entry point.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/testing/client/HalCrawler.html#HalCrawler-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-">HalCrawler(HalResourceLoader)</a></span> - Constructor for class io.wcm.caravan.rhyme.testing.client.<a href="io/wcm/caravan/rhyme/testing/client/HalCrawler.html" title="class in io.wcm.caravan.rhyme.testing.client">HalCrawler</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/testing/spring/MockMvcHalResourceLoaderConfiguration.html#halResourceLoader-org.springframework.web.context.WebApplicationContext-">halResourceLoader(WebApplicationContext)</a></span> - Method in class io.wcm.caravan.rhyme.testing.spring.<a href="io/wcm/caravan/rhyme/testing/spring/MockMvcHalResourceLoaderConfiguration.html" title="class in io.wcm.caravan.rhyme.testing.spring">MockMvcHalResourceLoaderConfiguration</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <a name="I:I">
@@ -230,9 +230,12 @@
 <dd>&nbsp;</dd>
 <dt><a href="io/wcm/caravan/rhyme/testing/spring/MockMvcHalResourceLoaderConfiguration.html" title="class in io.wcm.caravan.rhyme.testing.spring"><span class="typeNameLink">MockMvcHalResourceLoaderConfiguration</span></a> - Class in <a href="io/wcm/caravan/rhyme/testing/spring/package-summary.html">io.wcm.caravan.rhyme.testing.spring</a></dt>
 <dd>
-<div class="block">An implementation of <code>HalResourceLoader</code> for integration-tests that is using the <code>MockMvc</code> class
- to fetch resources from the currently running <code>WebApplicationContext</code>.</div>
+<div class="block">A Spring configuration that will replace the default <code>HalResourceLoader</code> bean
+ with one that fetches resources from the currently running <code>WebApplicationContext</code> using the Spring
+ <code>MockMvc</code> class.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/testing/spring/MockMvcHalResourceLoaderConfiguration.html#MockMvcHalResourceLoaderConfiguration--">MockMvcHalResourceLoaderConfiguration()</a></span> - Constructor for class io.wcm.caravan.rhyme.testing.spring.<a href="io/wcm/caravan/rhyme/testing/spring/MockMvcHalResourceLoaderConfiguration.html" title="class in io.wcm.caravan.rhyme.testing.spring">MockMvcHalResourceLoaderConfiguration</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <a name="I:N">
 <!--   -->

@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
     <item>
-      <title>File: 12,
+      <title>File: 13,
              Errors: 0,
              Warnings: 0,
              Infos: 0
@@ -74,20 +74,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.SpringRhymeLinkBuilder.java">io/wcm/caravan/rhyme/spring/impl/SpringRhymeLinkBuilder.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.SpringRhymeDocsIntegration.java">io/wcm/caravan/rhyme/spring/impl/SpringRhymeDocsIntegration.java</a>
                 </td>
                 <td>
@@ -116,7 +102,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.api.SpringRhyme.java">io/wcm/caravan/rhyme/spring/api/SpringRhyme.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.SpringExceptionStatusAndLoggingStrategy.java">io/wcm/caravan/rhyme/spring/impl/SpringExceptionStatusAndLoggingStrategy.java</a>
                 </td>
                 <td>
                   0
@@ -130,7 +116,35 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.SpringExceptionStatusAndLoggingStrategy.java">io/wcm/caravan/rhyme/spring/impl/SpringExceptionStatusAndLoggingStrategy.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.SpringRhymeAutoConfiguration.java">io/wcm/caravan/rhyme/spring/impl/SpringRhymeAutoConfiguration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.SpringRhymeLinkBuilder.java">io/wcm/caravan/rhyme/spring/impl/SpringRhymeLinkBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.api.SpringRhyme.java">io/wcm/caravan/rhyme/spring/api/SpringRhyme.java</a>
                 </td>
                 <td>
                   0
@@ -200,7 +214,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.WebClientHalResourceLoader.java">io/wcm/caravan/rhyme/spring/impl/WebClientHalResourceLoader.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/spring/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.spring//checkstyle.html#io.wcm.caravan.rhyme.spring.impl.WebClientSupport.java">io/wcm/caravan/rhyme/spring/impl/WebClientSupport.java</a>
                 </td>
                 <td>
                   0
