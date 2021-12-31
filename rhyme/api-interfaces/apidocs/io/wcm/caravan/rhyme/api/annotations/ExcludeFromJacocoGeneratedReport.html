@@ -96,8 +96,9 @@
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true" title="class or interface in java.lang.annotation">@Retention</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/RetentionPolicy.html?is-external=true#RUNTIME" title="class or interface in java.lang.annotation">RUNTIME</a>)
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true" title="class or interface in java.lang.annotation">@Target</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/ElementType.html?is-external=true#METHOD" title="class or interface in java.lang.annotation">METHOD</a>)
 public @interface <span class="memberNameLabel">ExcludeFromJacocoGeneratedReport</span></pre>
-<div class="block">A marker annotation that you can use to annotated methods that don't need to be covered by tests,
- and will be excluded when JaCoCo is calculating the code coverage.</div>
+<div class="block">A marker annotation that you can use on methods that can't be covered by tests,
+ and will be excluded when JaCoCo is calculating the code coverage. It's based on
+ the convention that JaCoCO will ignore all methods with an annotation that contains 'Generated' in its name.</div>
 </li>
 </ul>
 </div>
