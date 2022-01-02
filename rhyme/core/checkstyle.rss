@@ -23,11 +23,11 @@ under the License.
     <link>https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core/</link>
     <description>Rhyme - Core Framework - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
+    <copyright>&#169;2014 - 2022 wcm.io Caravan</copyright>
     <item>
-      <title>File: 66,
+      <title>File: 67,
              Errors: 0,
-             Warnings: 27,
+             Warnings: 28,
              Infos: 0
       </title>
             <link>https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html</link>
@@ -346,7 +346,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  3
                 </td>
                 <td>
                   0
@@ -803,6 +803,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupportAdapter.java">io/wcm/caravan/rhyme/impl/reflection/HalApiTypeSupportAdapter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.client.proxy.ResourcePropertyHandler.java">io/wcm/caravan/rhyme/impl/client/proxy/ResourcePropertyHandler.java</a>
                 </td>
                 <td>
                   0

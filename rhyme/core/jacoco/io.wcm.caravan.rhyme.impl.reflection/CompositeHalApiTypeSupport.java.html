@@ -91,37 +91,50 @@ public class CompositeHalApiTypeSupport implements HalApiTypeSupport {
   }
 
   @Override
+  public boolean isResourcePropertyMethod(Method method) {
+
+<span class="fc" id="L96">    return anyMatch(delegate -&gt; delegate.isResourcePropertyMethod(method));</span>
+  }
+
+  @Override
+  public String getPropertyName(Method method) {
+
+<span class="fc" id="L102">    return firstNonNull(delegate -&gt; delegate.getPropertyName(method));</span>
+  }
+
+  @Override
   public String getRelation(Method method) {
 
-<span class="fc" id="L96">    return firstNonNull(delegate -&gt; delegate.getRelation(method));</span>
+<span class="fc" id="L108">    return firstNonNull(delegate -&gt; delegate.getRelation(method));</span>
   }
 
   @Override
   public &lt;T&gt; Function&lt;Observable, T&gt; convertFromObservable(Class&lt;T&gt; targetType) {
 
-<span class="fc" id="L102">    return firstNonNull(delegate -&gt; delegate.convertFromObservable(targetType));</span>
+<span class="fc" id="L114">    return firstNonNull(delegate -&gt; delegate.convertFromObservable(targetType));</span>
   }
 
   @Override
   public Function&lt;? super Object, Observable&lt;?&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType) {
 
-<span class="fc" id="L108">    return firstNonNull(delegate -&gt; delegate.convertToObservable(sourceType));</span>
+<span class="fc" id="L120">    return firstNonNull(delegate -&gt; delegate.convertToObservable(sourceType));</span>
   }
 
   @Override
   public boolean isProviderOfMultiplerValues(Class&lt;?&gt; returnType) {
 
-<span class="fc" id="L114">    return anyMatch(delegate -&gt; delegate.isProviderOfMultiplerValues(returnType));</span>
+<span class="fc" id="L126">    return anyMatch(delegate -&gt; delegate.isProviderOfMultiplerValues(returnType));</span>
   }
 
   @Override
   public boolean isProviderOfOptionalValue(Class&lt;?&gt; returnType) {
 
-<span class="fc" id="L120">    return anyMatch(delegate -&gt; delegate.isProviderOfOptionalValue(returnType));</span>
+<span class="fc" id="L132">    return anyMatch(delegate -&gt; delegate.isProviderOfOptionalValue(returnType));</span>
   }
 
   List&lt;HalApiTypeSupport&gt; getDelegates() {
-<span class="fc" id="L124">    return delegates;</span>
+<span class="fc" id="L136">    return delegates;</span>
   }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -23,9 +23,9 @@ under the License.
     <link>https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces/</link>
     <description>Rhyme - API Interfaces and Annotations - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2014 - 2021 wcm.io Caravan</copyright>
+    <copyright>&#169;2014 - 2022 wcm.io Caravan</copyright>
     <item>
-      <title>File: 15,
+      <title>File: 16,
              Errors: 0,
              Warnings: 0,
              Infos: 0
@@ -117,6 +117,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.api.resources.EmbeddableResource.java">io/wcm/caravan/rhyme/api/resources/EmbeddableResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.api.annotations.ResourceProperty.java">io/wcm/caravan/rhyme/api/annotations/ResourceProperty.java</a>
                 </td>
                 <td>
                   0

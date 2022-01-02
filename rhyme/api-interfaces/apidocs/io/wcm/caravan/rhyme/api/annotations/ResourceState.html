@@ -96,9 +96,10 @@
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true" title="class or interface in java.lang.annotation">@Retention</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/RetentionPolicy.html?is-external=true#RUNTIME" title="class or interface in java.lang.annotation">RUNTIME</a>)
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true" title="class or interface in java.lang.annotation">@Target</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/ElementType.html?is-external=true#METHOD" title="class or interface in java.lang.annotation">METHOD</a>)
 public @interface <span class="memberNameLabel">ResourceState</span></pre>
-<div class="block">Used to annotate the method that allows to access the state/properties of a HAL resource.
- The return value of the method must be a reactive single of a JSON node or Java
- class that matches the JSON object structure (either with public properties or following bean conventions)</div>
+<div class="block">Identifies a method that allows to access the state/properties of a HAL resource all at once.
+ The method must provide a Jackson <code>ObjectNode</code> or a Java object that that matches the JSON object structure
+ (and which can be deserialised by a default Jackson <code>ObjectMapper</code>). This object can either be returned
+ directly from the annotated method, but can also be wrapped with <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util"><code>Optional</code></a> or a reactive type.</div>
 </li>
 </ul>
 </div>
@@ -164,6 +165,6 @@ public @interface <span class="memberNameLabel">ResourceState</span></pre>
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small>Copyright &#169; 2014&#x2013;2021 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</small></p>
+<p class="legalCopy"><small>Copyright &#169; 2014&#x2013;2022 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</small></p>
 </body>
 </html>

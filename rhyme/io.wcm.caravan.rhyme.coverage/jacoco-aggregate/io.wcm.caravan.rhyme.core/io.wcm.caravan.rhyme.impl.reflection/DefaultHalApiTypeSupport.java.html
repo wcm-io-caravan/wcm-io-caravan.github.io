@@ -36,6 +36,7 @@ import io.reactivex.rxjava3.core.Single;
 import io.wcm.caravan.rhyme.api.annotations.HalApiInterface;
 import io.wcm.caravan.rhyme.api.annotations.Related;
 import io.wcm.caravan.rhyme.api.annotations.ResourceLink;
+import io.wcm.caravan.rhyme.api.annotations.ResourceProperty;
 import io.wcm.caravan.rhyme.api.annotations.ResourceRepresentation;
 import io.wcm.caravan.rhyme.api.annotations.ResourceState;
 import io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport;
@@ -46,47 +47,60 @@ import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
  * for methods annotated with {@link Related} and {@link ResourceState}:
  * {@link Observable}, {@link Single}, {@link Maybe}, {@link Publisher}, {@link Optional}, {@link List}
  */
-<span class="fc" id="L49">public class DefaultHalApiTypeSupport implements HalApiTypeSupport {</span>
+<span class="fc" id="L50">public class DefaultHalApiTypeSupport implements HalApiTypeSupport {</span>
 
   @Override
   public boolean isHalApiInterface(Class&lt;?&gt; interfaze) {
-<span class="fc" id="L53">    return interfaze.isAnnotationPresent(HalApiInterface.class);</span>
+<span class="fc" id="L54">    return interfaze.isAnnotationPresent(HalApiInterface.class);</span>
   }
 
   @Override
   public boolean isResourceStateMethod(Method method) {
-<span class="fc" id="L58">    return method.isAnnotationPresent(ResourceState.class);</span>
+<span class="fc" id="L59">    return method.isAnnotationPresent(ResourceState.class);</span>
+  }
+
+  @Override
+  public boolean isResourcePropertyMethod(Method method) {
+<span class="fc" id="L64">    return method.isAnnotationPresent(ResourceProperty.class);</span>
+  }
+
+  @Override
+  public String getPropertyName(Method method) {
+<span class="fc bfc" id="L69" title="All 2 branches covered.">    if (isResourcePropertyMethod(method)) {</span>
+<span class="fc" id="L70">      return method.getAnnotation(ResourceProperty.class).value();</span>
+    }
+<span class="fc" id="L72">    return null;</span>
   }
 
   @Override
   public boolean isRelatedResourceMethod(Method method) {
-<span class="fc" id="L63">    return method.isAnnotationPresent(Related.class);</span>
+<span class="fc" id="L77">    return method.isAnnotationPresent(Related.class);</span>
   }
 
   @Override
   public boolean isResourceRepresentationMethod(Method method) {
-<span class="fc" id="L68">    return method.isAnnotationPresent(ResourceRepresentation.class);</span>
+<span class="fc" id="L82">    return method.isAnnotationPresent(ResourceRepresentation.class);</span>
   }
 
   @Override
   public boolean isResourceLinkMethod(Method method) {
-<span class="fc" id="L73">    return method.isAnnotationPresent(ResourceLink.class);</span>
+<span class="fc" id="L87">    return method.isAnnotationPresent(ResourceLink.class);</span>
   }
 
   @Override
   public String getContentType(Class&lt;?&gt; halApiInterface) {
-<span class="fc bfc" id="L78" title="All 2 branches covered.">    if (isHalApiInterface(halApiInterface)) {</span>
-<span class="fc" id="L79">      return halApiInterface.getAnnotation(HalApiInterface.class).contentType();</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">    if (isHalApiInterface(halApiInterface)) {</span>
+<span class="fc" id="L93">      return halApiInterface.getAnnotation(HalApiInterface.class).contentType();</span>
     }
-<span class="fc" id="L81">    return null;</span>
+<span class="fc" id="L95">    return null;</span>
   }
 
   @Override
   public String getRelation(Method method) {
-<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (isRelatedResourceMethod(method)) {</span>
-<span class="fc" id="L87">      return method.getAnnotation(Related.class).value();</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">    if (isRelatedResourceMethod(method)) {</span>
+<span class="fc" id="L101">      return method.getAnnotation(Related.class).value();</span>
     }
-<span class="fc" id="L89">    return null;</span>
+<span class="fc" id="L103">    return null;</span>
   }
 
 
@@ -94,88 +108,88 @@ import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
   @Override
   public &lt;T&gt; Function&lt;Observable, T&gt; convertFromObservable(Class&lt;T&gt; targetType) {
 
-<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (targetType.isAssignableFrom(Observable.class)) {</span>
-<span class="fc" id="L98">      return obs -&gt; (T)obs;</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">    if (targetType.isAssignableFrom(Observable.class)) {</span>
+<span class="fc" id="L112">      return obs -&gt; (T)obs;</span>
     }
-<span class="fc bfc" id="L100" title="All 2 branches covered.">    if (targetType.isAssignableFrom(Single.class)) {</span>
-<span class="fc" id="L101">      return obs -&gt; (T)obs.singleOrError();</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">    if (targetType.isAssignableFrom(Single.class)) {</span>
+<span class="fc" id="L115">      return obs -&gt; (T)obs.singleOrError();</span>
     }
-<span class="fc bfc" id="L103" title="All 2 branches covered.">    if (targetType.isAssignableFrom(Maybe.class)) {</span>
-<span class="fc" id="L104">      return obs -&gt; (T)obs.singleElement();</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    if (targetType.isAssignableFrom(Maybe.class)) {</span>
+<span class="fc" id="L118">      return obs -&gt; (T)obs.singleElement();</span>
     }
-<span class="fc bfc" id="L106" title="All 2 branches covered.">    if (targetType.isAssignableFrom(Publisher.class)) {</span>
-<span class="fc" id="L107">      return obs -&gt; (T)obs.toFlowable(BackpressureStrategy.BUFFER);</span>
-    }
-
-<span class="fc bfc" id="L110" title="All 2 branches covered.">    if (targetType.isAssignableFrom(Optional.class)) {</span>
-<span class="fc" id="L111">      return obs -&gt; (T)obs.singleElement()</span>
-<span class="fc" id="L112">          .map(Optional::of)</span>
-<span class="fc" id="L113">          .defaultIfEmpty(Optional.empty())</span>
-<span class="fc" id="L114">          .blockingGet();</span>
-    }
-<span class="fc bfc" id="L116" title="All 2 branches covered.">    if (targetType.isAssignableFrom(List.class)) {</span>
-<span class="fc" id="L117">      return obs -&gt; (T)obs.toList().blockingGet();</span>
-    }
-<span class="fc bfc" id="L119" title="All 2 branches covered.">    if (targetType.isAssignableFrom(Stream.class)) {</span>
-<span class="fc" id="L120">      return obs -&gt; (T)((List&lt;?&gt;)obs.toList().blockingGet()).stream();</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">    if (targetType.isAssignableFrom(Publisher.class)) {</span>
+<span class="fc" id="L121">      return obs -&gt; (T)obs.toFlowable(BackpressureStrategy.BUFFER);</span>
     }
 
-<span class="fc bfc" id="L123" title="All 2 branches covered.">    if (targetType.getTypeParameters().length == 0) {</span>
-<span class="fc" id="L124">      return obs -&gt; (T)obs.singleOrError().blockingGet();</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">    if (targetType.isAssignableFrom(Optional.class)) {</span>
+<span class="fc" id="L125">      return obs -&gt; (T)obs.singleElement()</span>
+<span class="fc" id="L126">          .map(Optional::of)</span>
+<span class="fc" id="L127">          .defaultIfEmpty(Optional.empty())</span>
+<span class="fc" id="L128">          .blockingGet();</span>
+    }
+<span class="fc bfc" id="L130" title="All 2 branches covered.">    if (targetType.isAssignableFrom(List.class)) {</span>
+<span class="fc" id="L131">      return obs -&gt; (T)obs.toList().blockingGet();</span>
+    }
+<span class="fc bfc" id="L133" title="All 2 branches covered.">    if (targetType.isAssignableFrom(Stream.class)) {</span>
+<span class="fc" id="L134">      return obs -&gt; (T)((List&lt;?&gt;)obs.toList().blockingGet()).stream();</span>
     }
 
-<span class="fc" id="L127">    return null;</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">    if (targetType.getTypeParameters().length == 0) {</span>
+<span class="fc" id="L138">      return obs -&gt; (T)obs.singleOrError().blockingGet();</span>
+    }
+
+<span class="fc" id="L141">    return null;</span>
   }
 
   @Override
   public Function&lt;? super Object, Observable&lt;?&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType) {
 
-<span class="fc bfc" id="L133" title="All 2 branches covered.">    if (Observable.class.isAssignableFrom(sourceType)) {</span>
-<span class="fc" id="L134">      return o -&gt; (Observable)o;</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">    if (Observable.class.isAssignableFrom(sourceType)) {</span>
+<span class="fc" id="L148">      return o -&gt; (Observable)o;</span>
     }
-<span class="fc bfc" id="L136" title="All 2 branches covered.">    if (Single.class.isAssignableFrom(sourceType)) {</span>
-<span class="fc" id="L137">      return o -&gt; ((Single)o).toObservable();</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">    if (Single.class.isAssignableFrom(sourceType)) {</span>
+<span class="fc" id="L151">      return o -&gt; ((Single)o).toObservable();</span>
     }
-<span class="fc bfc" id="L139" title="All 2 branches covered.">    if (Maybe.class.isAssignableFrom(sourceType)) {</span>
-<span class="fc" id="L140">      return o -&gt; ((Maybe)o).toObservable();</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">    if (Maybe.class.isAssignableFrom(sourceType)) {</span>
+<span class="fc" id="L154">      return o -&gt; ((Maybe)o).toObservable();</span>
     }
-<span class="fc bfc" id="L142" title="All 2 branches covered.">    if (Publisher.class.isAssignableFrom(sourceType)) {</span>
-<span class="fc" id="L143">      return o -&gt; Observable.fromPublisher((Publisher&lt;?&gt;)o);</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">    if (Publisher.class.isAssignableFrom(sourceType)) {</span>
+<span class="fc" id="L157">      return o -&gt; Observable.fromPublisher((Publisher&lt;?&gt;)o);</span>
     }
 
-<span class="fc bfc" id="L146" title="All 2 branches covered.">    if (Optional.class.isAssignableFrom(sourceType)) {</span>
-<span class="fc" id="L147">      return o -&gt; {</span>
-<span class="fc" id="L148">        Optional&lt;?&gt; optional = (Optional)o;</span>
-<span class="fc bfc" id="L149" title="All 2 branches covered.">        return optional.isPresent() ? Observable.just(optional.get()) : Observable.empty();</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">    if (Optional.class.isAssignableFrom(sourceType)) {</span>
+<span class="fc" id="L161">      return o -&gt; {</span>
+<span class="fc" id="L162">        Optional&lt;?&gt; optional = (Optional)o;</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">        return optional.isPresent() ? Observable.just(optional.get()) : Observable.empty();</span>
       };
     }
-<span class="fc bfc" id="L152" title="All 2 branches covered.">    if (List.class.isAssignableFrom(sourceType)) {</span>
-<span class="fc" id="L153">      return o -&gt; Observable.fromIterable((List&lt;?&gt;)o);</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">    if (List.class.isAssignableFrom(sourceType)) {</span>
+<span class="fc" id="L167">      return o -&gt; Observable.fromIterable((List&lt;?&gt;)o);</span>
     }
-<span class="fc bfc" id="L155" title="All 2 branches covered.">    if (Stream.class.isAssignableFrom(sourceType)) {</span>
-<span class="fc" id="L156">      return o -&gt; Observable.fromStream((Stream&lt;?&gt;)o);</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">    if (Stream.class.isAssignableFrom(sourceType)) {</span>
+<span class="fc" id="L170">      return o -&gt; Observable.fromStream((Stream&lt;?&gt;)o);</span>
     }
-<span class="fc bfc" id="L158" title="All 2 branches covered.">    if (sourceType.getTypeParameters().length == 0) {</span>
-<span class="fc" id="L159">      return o -&gt; Observable.just(o);</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">    if (sourceType.getTypeParameters().length == 0) {</span>
+<span class="fc" id="L173">      return o -&gt; Observable.just(o);</span>
     }
 
-<span class="fc" id="L162">    return null;</span>
+<span class="fc" id="L176">    return null;</span>
   }
 
   @Override
   public boolean isProviderOfMultiplerValues(Class&lt;?&gt; returnType) {
 
-<span class="fc bfc" id="L168" title="All 2 branches covered.">    return List.class.isAssignableFrom(returnType)</span>
-<span class="fc bfc" id="L169" title="All 2 branches covered.">        || Stream.class.isAssignableFrom(returnType)</span>
-<span class="fc bfc" id="L170" title="All 2 branches covered.">        || Observable.class.isAssignableFrom(returnType)</span>
-<span class="fc bfc" id="L171" title="All 2 branches covered.">        || Publisher.class.isAssignableFrom(returnType);</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">    return List.class.isAssignableFrom(returnType)</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">        || Stream.class.isAssignableFrom(returnType)</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">        || Observable.class.isAssignableFrom(returnType)</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">        || Publisher.class.isAssignableFrom(returnType);</span>
   }
 
   @Override
   public boolean isProviderOfOptionalValue(Class&lt;?&gt; returnType) {
 
-<span class="fc bfc" id="L177" title="All 2 branches covered.">    return Optional.class.isAssignableFrom(returnType)</span>
-<span class="fc bfc" id="L178" title="All 2 branches covered.">        || Maybe.class.isAssignableFrom(returnType);</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">    return Optional.class.isAssignableFrom(returnType)</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        || Maybe.class.isAssignableFrom(returnType);</span>
   }
 
   /**
@@ -186,10 +200,10 @@ import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
    */
   public static HalApiTypeSupport extendWith(HalApiAnnotationSupport annotationSupport, HalApiReturnTypeSupport returnTypeSupport) {
 
-<span class="fc" id="L189">    DefaultHalApiTypeSupport defaultSupport = new DefaultHalApiTypeSupport();</span>
-<span class="fc" id="L190">    HalApiTypeSupportAdapter adapter = new HalApiTypeSupportAdapter(annotationSupport, returnTypeSupport);</span>
+<span class="fc" id="L203">    DefaultHalApiTypeSupport defaultSupport = new DefaultHalApiTypeSupport();</span>
+<span class="fc" id="L204">    HalApiTypeSupportAdapter adapter = new HalApiTypeSupportAdapter(annotationSupport, returnTypeSupport);</span>
 
-<span class="fc" id="L192">    return new CompositeHalApiTypeSupport(ImmutableList.of(defaultSupport, adapter));</span>
+<span class="fc" id="L206">    return new CompositeHalApiTypeSupport(ImmutableList.of(defaultSupport, adapter));</span>
   }
 
 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ResourcePropertyHandler.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.impl.client.proxy</a> &gt; <span class="el_source">ResourcePropertyHandler.java</span></div><h1>ResourcePropertyHandler.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.impl.client.proxy;
+
+import static io.wcm.caravan.rhyme.impl.client.proxy.ResourceStateHandler.OBJECT_MAPPER;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import io.reactivex.rxjava3.core.Maybe;
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.annotations.ResourceProperty;
+import io.wcm.caravan.rhyme.api.annotations.ResourceState;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.impl.reflection.HalApiReflectionUtils;
+import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
+
+class ResourcePropertyHandler {
+
+  private final HalResource contextResource;
+  private final HalApiTypeSupport typeSupport;
+
+<span class="fc" id="L40">  ResourcePropertyHandler(HalResource contextResource, HalApiTypeSupport typeSupport) {</span>
+<span class="fc" id="L41">    this.contextResource = contextResource;</span>
+<span class="fc" id="L42">    this.typeSupport = typeSupport;</span>
+<span class="fc" id="L43">  }</span>
+
+  Maybe&lt;Object&gt; handleMethodInvocation(HalApiMethodInvocation invocation) {
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">    if (typeSupport.isProviderOfMultiplerValues(invocation.getReturnType())) {</span>
+<span class="fc" id="L48">      String msg = &quot;@&quot; + ResourceProperty.class.getSimpleName() + &quot; cannot be used for arrays, but &quot; + invocation + &quot; is using &quot; + invocation.getReturnType()</span>
+<span class="fc" id="L49">          + &quot; as return type. Consider using @&quot; + ResourceState.class.getSimpleName() + &quot; instead&quot;;</span>
+<span class="fc" id="L50">      return Maybe.error(new HalApiDeveloperException(msg));</span>
+    }
+
+<span class="fc" id="L53">    String propertyName = HalApiReflectionUtils.getPropertyName(invocation.getMethod(), typeSupport);</span>
+
+<span class="fc" id="L55">    JsonNode jsonNode = contextResource.getModel().path(propertyName);</span>
+
+<span class="fc bfc" id="L57" title="All 4 branches covered.">    if (jsonNode.isMissingNode() || jsonNode.isNull()) {</span>
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">      if (!typeSupport.isProviderOfOptionalValue(invocation.getReturnType())) {</span>
+
+<span class="fc" id="L61">        String msg = &quot;The JSON property '&quot; + propertyName + &quot;' is &quot; + jsonNode.getNodeType()</span>
+            + &quot;. You must use Maybe or Optional as return type to support this. &quot;;
+
+<span class="fc" id="L64">        Link link = contextResource.getLink();</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (link != null) {</span>
+<span class="fc" id="L66">          msg += &quot; (The error was triggered by resource at &quot; + link.getHref() + &quot;)&quot;;</span>
+        }
+
+<span class="fc" id="L69">        return Maybe.error(new HalApiDeveloperException(msg));</span>
+      }
+<span class="fc" id="L71">      return Maybe.empty();</span>
+    }
+
+<span class="fc" id="L74">    Object propertyValue = OBJECT_MAPPER.convertValue(jsonNode, invocation.getEmissionType());</span>
+
+<span class="fc" id="L76">    return Maybe.just(propertyValue);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

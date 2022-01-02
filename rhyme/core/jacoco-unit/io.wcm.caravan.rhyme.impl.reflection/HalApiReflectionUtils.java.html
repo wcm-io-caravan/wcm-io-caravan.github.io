@@ -19,6 +19,7 @@
  */
 package io.wcm.caravan.rhyme.impl.reflection;
 
+import java.beans.Introspector;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -32,6 +33,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Lists;
 
@@ -55,33 +58,33 @@ public final class HalApiReflectionUtils {
 
   static Set&lt;Class&lt;?&gt;&gt; collectInterfaces(Class clazz) {
 
-<span class="fc" id="L58">    return new InterfaceCollector()</span>
-<span class="fc" id="L59">        .collectFromClassAndAllSuperClasses(clazz);</span>
+<span class="fc" id="L61">    return new InterfaceCollector()</span>
+<span class="fc" id="L62">        .collectFromClassAndAllSuperClasses(clazz);</span>
   }
 
-<span class="fc" id="L62">  private static final class InterfaceCollector {</span>
+<span class="fc" id="L65">  private static final class InterfaceCollector {</span>
 
-<span class="fc" id="L64">    private final Set&lt;Class&lt;?&gt;&gt; collected = new LinkedHashSet&lt;&gt;();</span>
+<span class="fc" id="L67">    private final Set&lt;Class&lt;?&gt;&gt; collected = new LinkedHashSet&lt;&gt;();</span>
 
     Set&lt;Class&lt;?&gt;&gt; collectFromClassAndAllSuperClasses(Class clazz) {
 
-<span class="fc" id="L68">      Class c = clazz;</span>
-<span class="fc bfc" id="L69" title="All 2 branches covered.">      while (c != null) {</span>
-<span class="fc" id="L70">        addInterfacesImplementedBy(c);</span>
-<span class="fc" id="L71">        c = c.getSuperclass();</span>
+<span class="fc" id="L71">      Class c = clazz;</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">      while (c != null) {</span>
+<span class="fc" id="L73">        addInterfacesImplementedBy(c);</span>
+<span class="fc" id="L74">        c = c.getSuperclass();</span>
       }
 
-<span class="fc" id="L74">      return collected;</span>
+<span class="fc" id="L77">      return collected;</span>
     }
 
     private void addInterfacesImplementedBy(Class&lt;?&gt; clazz) {
-<span class="fc" id="L78">      ArrayList&lt;Class&lt;?&gt;&gt; interfaces = Lists.newArrayList(clazz.getInterfaces());</span>
+<span class="fc" id="L81">      ArrayList&lt;Class&lt;?&gt;&gt; interfaces = Lists.newArrayList(clazz.getInterfaces());</span>
 
-<span class="fc" id="L80">      interfaces.forEach(this.collected::add);</span>
+<span class="fc" id="L83">      interfaces.forEach(this.collected::add);</span>
 
       // each interface can extend other interfaces
-<span class="fc" id="L83">      interfaces.forEach(this::addInterfacesImplementedBy);</span>
-<span class="fc" id="L84">    }</span>
+<span class="fc" id="L86">      interfaces.forEach(this::addInterfacesImplementedBy);</span>
+<span class="fc" id="L87">    }</span>
   }
 
   /**
@@ -93,20 +96,20 @@ public final class HalApiReflectionUtils {
    */
   public static Class&lt;?&gt; findHalApiInterface(Object resourceImplInstance, HalApiAnnotationSupport annotationSupport) {
 
-<span class="fc" id="L96">    Class&lt;?&gt; halApiInterface = collectInterfaces(resourceImplInstance.getClass()).stream()</span>
-<span class="fc" id="L97">        .filter(annotationSupport::isHalApiInterface)</span>
-<span class="fc" id="L98">        .findFirst()</span>
-<span class="fc" id="L99">        .orElseThrow(</span>
-<span class="fc" id="L100">            () -&gt; new HalApiDeveloperException(</span>
-<span class="fc" id="L101">                &quot;None of the interfaces implemented by the given class &quot; + resourceImplInstance.getClass().getName() + &quot; has a @&quot;</span>
-<span class="fc" id="L102">                    + HalApiInterface.class.getSimpleName() + &quot; annotation&quot;));</span>
+<span class="fc" id="L99">    Class&lt;?&gt; halApiInterface = collectInterfaces(resourceImplInstance.getClass()).stream()</span>
+<span class="fc" id="L100">        .filter(annotationSupport::isHalApiInterface)</span>
+<span class="fc" id="L101">        .findFirst()</span>
+<span class="fc" id="L102">        .orElseThrow(</span>
+<span class="fc" id="L103">            () -&gt; new HalApiDeveloperException(</span>
+<span class="fc" id="L104">                &quot;None of the interfaces implemented by the given class &quot; + resourceImplInstance.getClass().getName() + &quot; has a @&quot;</span>
+<span class="fc" id="L105">                    + HalApiInterface.class.getSimpleName() + &quot; annotation&quot;));</span>
 
-<span class="fc bfc" id="L104" title="All 2 branches covered.">    if (!Modifier.isPublic(halApiInterface.getModifiers())) {</span>
-<span class="fc" id="L105">      throw new HalApiDeveloperException(</span>
-<span class="fc" id="L106">          &quot;The interface &quot; + halApiInterface.getName() + &quot; is annotated with @HalApiInterface but it also has to be public&quot;);</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">    if (!Modifier.isPublic(halApiInterface.getModifiers())) {</span>
+<span class="fc" id="L108">      throw new HalApiDeveloperException(</span>
+<span class="fc" id="L109">          &quot;The interface &quot; + halApiInterface.getName() + &quot; is annotated with @HalApiInterface but it also has to be public&quot;);</span>
     }
 
-<span class="fc" id="L109">    return halApiInterface;</span>
+<span class="fc" id="L112">    return halApiInterface;</span>
   }
 
   /**
@@ -116,16 +119,16 @@ public final class HalApiReflectionUtils {
    */
   public static boolean isHalApiInterface(Class&lt;?&gt; relatedResourceType, HalApiAnnotationSupport annotationSupport) {
 
-<span class="fc bfc" id="L119" title="All 2 branches covered.">    if (!relatedResourceType.isInterface()) {</span>
-<span class="fc" id="L120">      return false;</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">    if (!relatedResourceType.isInterface()) {</span>
+<span class="fc" id="L123">      return false;</span>
     }
 
-<span class="fc bfc" id="L123" title="All 2 branches covered.">    if (annotationSupport.isHalApiInterface(relatedResourceType)) {</span>
-<span class="fc" id="L124">      return true;</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">    if (annotationSupport.isHalApiInterface(relatedResourceType)) {</span>
+<span class="fc" id="L127">      return true;</span>
     }
 
-<span class="fc" id="L127">    return collectInterfaces(relatedResourceType).stream()</span>
-<span class="fc" id="L128">        .anyMatch(annotationSupport::isHalApiInterface);</span>
+<span class="fc" id="L130">    return collectInterfaces(relatedResourceType).stream()</span>
+<span class="fc" id="L131">        .anyMatch(annotationSupport::isHalApiInterface);</span>
   }
 
   /**
@@ -135,9 +138,21 @@ public final class HalApiReflectionUtils {
    */
   public static Optional&lt;Method&gt; findResourceStateMethod(Class&lt;?&gt; apiInterface, HalApiAnnotationSupport annotationSupport) {
 
-<span class="fc" id="L138">    return Stream.of(apiInterface.getMethods())</span>
-<span class="fc" id="L139">        .filter(annotationSupport::isResourceStateMethod)</span>
-<span class="fc" id="L140">        .findFirst();</span>
+<span class="fc" id="L141">    return Stream.of(apiInterface.getMethods())</span>
+<span class="fc" id="L142">        .filter(annotationSupport::isResourceStateMethod)</span>
+<span class="fc" id="L143">        .findFirst();</span>
+  }
+
+  /**
+   * @param apiInterface an interface annotated with {@link HalApiInterface} (either directly or by extending)
+   * @param annotationSupport the strategy to detect HAL API annotations
+   * @return the method annotated with {@link ResourceState}
+   */
+  public static List&lt;Method&gt; findResourcePropertyMethods(Class&lt;?&gt; apiInterface, HalApiAnnotationSupport annotationSupport) {
+
+<span class="fc" id="L153">    return Stream.of(apiInterface.getMethods())</span>
+<span class="fc" id="L154">        .filter(annotationSupport::isResourcePropertyMethod)</span>
+<span class="fc" id="L155">        .collect(Collectors.toList());</span>
   }
 
   /**
@@ -147,12 +162,12 @@ public final class HalApiReflectionUtils {
    */
   public static List&lt;Method&gt; getSortedRelatedResourceMethods(Class&lt;?&gt; apiInterface, HalApiAnnotationSupport annotationSupport) {
 
-<span class="fc" id="L150">    MethodRelationComparator comparator = new MethodRelationComparator(annotationSupport);</span>
+<span class="fc" id="L165">    MethodRelationComparator comparator = new MethodRelationComparator(annotationSupport);</span>
 
-<span class="fc" id="L152">    return Stream.of(apiInterface.getMethods())</span>
-<span class="fc" id="L153">        .filter(annotationSupport::isRelatedResourceMethod)</span>
-<span class="fc" id="L154">        .sorted(comparator)</span>
-<span class="fc" id="L155">        .collect(Collectors.toList());</span>
+<span class="fc" id="L167">    return Stream.of(apiInterface.getMethods())</span>
+<span class="fc" id="L168">        .filter(annotationSupport::isRelatedResourceMethod)</span>
+<span class="fc" id="L169">        .sorted(comparator)</span>
+<span class="fc" id="L170">        .collect(Collectors.toList());</span>
   }
 
   /**
@@ -162,19 +177,19 @@ public final class HalApiReflectionUtils {
    */
   public static String getSimpleClassName(Object resourceImplInstance, HalApiAnnotationSupport annotationSupport) {
 
-<span class="fc" id="L165">    Class&lt;?&gt; implClass = resourceImplInstance.getClass();</span>
+<span class="fc" id="L180">    Class&lt;?&gt; implClass = resourceImplInstance.getClass();</span>
 
-<span class="fc bfc" id="L167" title="All 2 branches covered.">    if (!implClass.isAnonymousClass()) {</span>
-<span class="fc" id="L168">      return implClass.getSimpleName();</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">    if (!implClass.isAnonymousClass()) {</span>
+<span class="fc" id="L183">      return implClass.getSimpleName();</span>
     }
 
     try {
-<span class="fc" id="L172">      Class&lt;?&gt; apiInterface = findHalApiInterface(resourceImplInstance, annotationSupport);</span>
+<span class="fc" id="L187">      Class&lt;?&gt; apiInterface = findHalApiInterface(resourceImplInstance, annotationSupport);</span>
 
-<span class="fc" id="L174">      return &quot;anonymous &quot; + apiInterface.getSimpleName() + &quot; (defined in &quot; + implClass.getEnclosingClass().getSimpleName() + &quot;)&quot;;</span>
+<span class="fc" id="L189">      return &quot;anonymous &quot; + apiInterface.getSimpleName() + &quot; (defined in &quot; + implClass.getEnclosingClass().getSimpleName() + &quot;)&quot;;</span>
     }
-<span class="fc" id="L176">    catch (HalApiDeveloperException ex) {</span>
-<span class="fc" id="L177">      return implClass.getName();</span>
+<span class="fc" id="L191">    catch (HalApiDeveloperException ex) {</span>
+<span class="fc" id="L192">      return implClass.getName();</span>
     }
   }
 
@@ -186,35 +201,35 @@ public final class HalApiReflectionUtils {
    */
   public static String getClassAndMethodName(Object instance, Method method, HalApiAnnotationSupport annotationSupport) {
 
-<span class="fc" id="L189">    String simpleClassName = getSimpleClassName(instance, annotationSupport);</span>
-<span class="fc" id="L190">    String methodName = method.getName();</span>
+<span class="fc" id="L204">    String simpleClassName = getSimpleClassName(instance, annotationSupport);</span>
+<span class="fc" id="L205">    String methodName = method.getName();</span>
 
-<span class="fc" id="L192">    return &quot;#&quot; + methodName + &quot; of &quot; + simpleClassName;</span>
+<span class="fc" id="L207">    return &quot;#&quot; + methodName + &quot; of &quot; + simpleClassName;</span>
   }
 
   private static final class MethodRelationComparator implements Comparator&lt;Method&gt; {
 
     private final HalApiAnnotationSupport annotationSupport;
 
-<span class="fc" id="L199">    private MethodRelationComparator(HalApiAnnotationSupport annotationSupport) {</span>
-<span class="fc" id="L200">      this.annotationSupport = annotationSupport;</span>
-<span class="fc" id="L201">    }</span>
+<span class="fc" id="L214">    private MethodRelationComparator(HalApiAnnotationSupport annotationSupport) {</span>
+<span class="fc" id="L215">      this.annotationSupport = annotationSupport;</span>
+<span class="fc" id="L216">    }</span>
 
     @Override
     public int compare(Method method1, Method method2) {
-<span class="fc" id="L205">      String curi1 = annotationSupport.getRelation(method1);</span>
-<span class="fc" id="L206">      String curi2 = annotationSupport.getRelation(method2);</span>
+<span class="fc" id="L220">      String curi1 = annotationSupport.getRelation(method1);</span>
+<span class="fc" id="L221">      String curi2 = annotationSupport.getRelation(method2);</span>
 
       // make sure that all standard link relations always come before custom relations
-<span class="fc bfc" id="L209" title="All 4 branches covered.">      if (curi2.contains(&quot;:&quot;) &amp;&amp; !curi1.contains(&quot;:&quot;)) {</span>
-<span class="fc" id="L210">        return -1;</span>
+<span class="pc bpc" id="L224" title="1 of 4 branches missed.">      if (curi2.contains(&quot;:&quot;) &amp;&amp; !curi1.contains(&quot;:&quot;)) {</span>
+<span class="nc" id="L225">        return -1;</span>
       }
-<span class="fc bfc" id="L212" title="All 4 branches covered.">      if (curi1.contains(&quot;:&quot;) &amp;&amp; !curi2.contains(&quot;:&quot;)) {</span>
-<span class="fc" id="L213">        return 1;</span>
+<span class="fc bfc" id="L227" title="All 4 branches covered.">      if (curi1.contains(&quot;:&quot;) &amp;&amp; !curi2.contains(&quot;:&quot;)) {</span>
+<span class="fc" id="L228">        return 1;</span>
       }
 
       // otherwise the links should be sorted alphabetically
-<span class="fc" id="L217">      return curi1.compareTo(curi2);</span>
+<span class="fc" id="L232">      return curi1.compareTo(curi2);</span>
     }
 
   }
@@ -222,12 +237,12 @@ public final class HalApiReflectionUtils {
   @SuppressWarnings(&quot;unchecked&quot;)
   public static &lt;T&gt; T createEmbeddedResourceProxy(T linkableResource, boolean linkedWhenEmbedded) {
 
-<span class="fc" id="L225">    Set&lt;Class&lt;?&gt;&gt; interfaces = collectInterfaces(linkableResource.getClass());</span>
+<span class="fc" id="L240">    Set&lt;Class&lt;?&gt;&gt; interfaces = collectInterfaces(linkableResource.getClass());</span>
 
-<span class="fc" id="L227">    interfaces.add(EmbeddableResource.class);</span>
+<span class="fc" id="L242">    interfaces.add(EmbeddableResource.class);</span>
 
-<span class="fc" id="L229">    return (T)Proxy.newProxyInstance(linkableResource.getClass().getClassLoader(),</span>
-<span class="fc" id="L230">        interfaces.stream().toArray(Class[]::new),</span>
+<span class="fc" id="L244">    return (T)Proxy.newProxyInstance(linkableResource.getClass().getClassLoader(),</span>
+<span class="fc" id="L245">        interfaces.stream().toArray(Class[]::new),</span>
         new EmbeddedResourceProxyInvocationHandler&lt;T&gt;(linkableResource, linkedWhenEmbedded));
   }
 
@@ -236,40 +251,57 @@ public final class HalApiReflectionUtils {
     private final T linkableResource;
     private final boolean linkedWhenEmbedded;
 
-<span class="fc" id="L239">    EmbeddedResourceProxyInvocationHandler(T linkableResource, boolean linkedWhenEmbedded) {</span>
-<span class="fc" id="L240">      this.linkableResource = linkableResource;</span>
-<span class="fc" id="L241">      this.linkedWhenEmbedded = linkedWhenEmbedded;</span>
-<span class="fc" id="L242">    }</span>
+<span class="fc" id="L254">    EmbeddedResourceProxyInvocationHandler(T linkableResource, boolean linkedWhenEmbedded) {</span>
+<span class="fc" id="L255">      this.linkableResource = linkableResource;</span>
+<span class="fc" id="L256">      this.linkedWhenEmbedded = linkedWhenEmbedded;</span>
+<span class="fc" id="L257">    }</span>
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
 
       try {
-<span class="fc bfc" id="L248" title="All 2 branches covered.">        if (&quot;isEmbedded&quot;.equals(method.getName())) {</span>
-<span class="fc" id="L249">          return true;</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">        if (&quot;isEmbedded&quot;.equals(method.getName())) {</span>
+<span class="fc" id="L264">          return true;</span>
         }
-<span class="fc bfc" id="L251" title="All 2 branches covered.">        if (&quot;isLinkedWhenEmbedded&quot;.equals(method.getName())) {</span>
-<span class="fc" id="L252">          return this.linkedWhenEmbedded;</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">        if (&quot;isLinkedWhenEmbedded&quot;.equals(method.getName())) {</span>
+<span class="fc" id="L267">          return this.linkedWhenEmbedded;</span>
         }
 
-<span class="fc" id="L255">        return method.invoke(this.linkableResource, args);</span>
+<span class="fc" id="L270">        return method.invoke(this.linkableResource, args);</span>
       }
-<span class="fc" id="L257">      catch (IllegalAccessException | InvocationTargetException | RuntimeException ex) {</span>
+<span class="fc" id="L272">      catch (IllegalAccessException | InvocationTargetException | RuntimeException ex) {</span>
 
         // if the original implementation method just threw a runtime exception then re-throw that cause
-<span class="fc bfc" id="L260" title="All 2 branches covered.">        if (ex instanceof InvocationTargetException) {</span>
-<span class="fc bfc" id="L261" title="All 2 branches covered.">          if (ex.getCause() instanceof RuntimeException) {</span>
-<span class="fc" id="L262">            throw (RuntimeException)ex.getCause();</span>
+<span class="fc bfc" id="L275" title="All 2 branches covered.">        if (ex instanceof InvocationTargetException) {</span>
+<span class="fc bfc" id="L276" title="All 2 branches covered.">          if (ex.getCause() instanceof RuntimeException) {</span>
+<span class="fc" id="L277">            throw (RuntimeException)ex.getCause();</span>
           }
         }
 
-<span class="fc" id="L266">        throw new HalApiServerException(500,</span>
-<span class="fc" id="L267">            &quot;Failed to invoke method &quot; + method.getName() + &quot; on proxy created with class &quot;</span>
-<span class="fc" id="L268">                + ResourceConversions.class.getSimpleName(),</span>
+<span class="fc" id="L281">        throw new HalApiServerException(500,</span>
+<span class="fc" id="L282">            &quot;Failed to invoke method &quot; + method.getName() + &quot; on proxy created with class &quot;</span>
+<span class="fc" id="L283">                + ResourceConversions.class.getSimpleName(),</span>
             ex);
       }
 
     }
+  }
+
+  public static String getPropertyName(Method method, HalApiTypeSupport typeSupport) {
+  
+<span class="fc" id="L292">    String fromAnnotation = typeSupport.getPropertyName(method);</span>
+<span class="fc bfc" id="L293" title="All 2 branches covered.">    if (StringUtils.isNotBlank(fromAnnotation)) {</span>
+<span class="fc" id="L294">      return fromAnnotation;</span>
+    }
+  
+<span class="fc" id="L297">    String name = method.getName();</span>
+<span class="fc bfc" id="L298" title="All 2 branches covered.">    if (name.startsWith(&quot;get&quot;)) {</span>
+<span class="fc" id="L299">      return Introspector.decapitalize(name.substring(3));</span>
+    }
+<span class="fc bfc" id="L301" title="All 2 branches covered.">    if (name.startsWith(&quot;is&quot;)) {</span>
+<span class="fc" id="L302">      return Introspector.decapitalize(name.substring(2));</span>
+    }
+<span class="fc" id="L304">    return Introspector.decapitalize(name);</span>
   }
 
 }
