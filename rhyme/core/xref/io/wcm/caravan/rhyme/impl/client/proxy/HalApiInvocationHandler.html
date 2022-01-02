@@ -143,10 +143,10 @@
 <a class="jxr_linenumber" name="L135" href="#L135">135</a> 
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>     <strong class="jxr_keyword">if</strong> (invocation.isForMethodAnnotatedWithResourceProperties()) {
 <a class="jxr_linenumber" name="L137" href="#L137">137</a> 
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>       Maybe&lt;Object&gt; property = rxResource
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>       Observable&lt;Object&gt; property = rxResource
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>           .onErrorResumeNext(ex -&gt; addContextToHalApiClientException(ex, invocation))
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>           .map(hal -&gt; <strong class="jxr_keyword">new</strong> <a name="ResourcePropertyHandler" href="../../../../../../../io/wcm/caravan/rhyme/impl/client/proxy/ResourcePropertyHandler.html#ResourcePropertyHandler">ResourcePropertyHandler</a>(hal, typeSupport))
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>           .flatMapMaybe(handler -&gt; handler.handleMethodInvocation(invocation));
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>           .flatMapObservable(handler -&gt; handler.handleMethodInvocation(invocation));
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> 
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>       <strong class="jxr_keyword">return</strong> RxJavaReflectionUtils.convertAndCacheReactiveType(property, invocation.getReturnType(), metrics, invocation::getDescription, typeSupport);
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>     }

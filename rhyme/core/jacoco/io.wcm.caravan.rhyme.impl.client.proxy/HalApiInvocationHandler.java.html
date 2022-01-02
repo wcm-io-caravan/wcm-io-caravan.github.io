@@ -135,10 +135,10 @@ final class HalApiInvocationHandler implements InvocationHandler {
 
 <span class="fc bfc" id="L136" title="All 2 branches covered.">    if (invocation.isForMethodAnnotatedWithResourceProperties()) {</span>
 
-<span class="fc" id="L138">      Maybe&lt;Object&gt; property = rxResource</span>
+<span class="fc" id="L138">      Observable&lt;Object&gt; property = rxResource</span>
 <span class="pc" id="L139">          .onErrorResumeNext(ex -&gt; addContextToHalApiClientException(ex, invocation))</span>
 <span class="fc" id="L140">          .map(hal -&gt; new ResourcePropertyHandler(hal, typeSupport))</span>
-<span class="fc" id="L141">          .flatMapMaybe(handler -&gt; handler.handleMethodInvocation(invocation));</span>
+<span class="fc" id="L141">          .flatMapObservable(handler -&gt; handler.handleMethodInvocation(invocation));</span>
 
 <span class="fc" id="L143">      return RxJavaReflectionUtils.convertAndCacheReactiveType(property, invocation.getReturnType(), metrics, invocation::getDescription, typeSupport);</span>
     }

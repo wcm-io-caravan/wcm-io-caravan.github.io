@@ -23,11 +23,9 @@ import static io.wcm.caravan.rhyme.impl.client.proxy.ResourceStateHandler.OBJECT
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Observable;
 import io.wcm.caravan.hal.resource.HalResource;
 import io.wcm.caravan.hal.resource.Link;
-import io.wcm.caravan.rhyme.api.annotations.ResourceProperty;
-import io.wcm.caravan.rhyme.api.annotations.ResourceState;
 import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
 import io.wcm.caravan.rhyme.impl.reflection.HalApiReflectionUtils;
 import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
@@ -37,43 +35,62 @@ class ResourcePropertyHandler {
   private final HalResource contextResource;
   private final HalApiTypeSupport typeSupport;
 
-<span class="fc" id="L40">  ResourcePropertyHandler(HalResource contextResource, HalApiTypeSupport typeSupport) {</span>
-<span class="fc" id="L41">    this.contextResource = contextResource;</span>
-<span class="fc" id="L42">    this.typeSupport = typeSupport;</span>
-<span class="fc" id="L43">  }</span>
+<span class="fc" id="L38">  ResourcePropertyHandler(HalResource contextResource, HalApiTypeSupport typeSupport) {</span>
+<span class="fc" id="L39">    this.contextResource = contextResource;</span>
+<span class="fc" id="L40">    this.typeSupport = typeSupport;</span>
+<span class="fc" id="L41">  }</span>
 
-  Maybe&lt;Object&gt; handleMethodInvocation(HalApiMethodInvocation invocation) {
+  Observable&lt;Object&gt; handleMethodInvocation(HalApiMethodInvocation invocation) {
 
-<span class="fc bfc" id="L47" title="All 2 branches covered.">    if (typeSupport.isProviderOfMultiplerValues(invocation.getReturnType())) {</span>
-<span class="fc" id="L48">      String msg = &quot;@&quot; + ResourceProperty.class.getSimpleName() + &quot; cannot be used for arrays, but &quot; + invocation + &quot; is using &quot; + invocation.getReturnType()</span>
-<span class="fc" id="L49">          + &quot; as return type. Consider using @&quot; + ResourceState.class.getSimpleName() + &quot; instead&quot;;</span>
-<span class="fc" id="L50">      return Maybe.error(new HalApiDeveloperException(msg));</span>
-    }
+<span class="fc" id="L45">    String propertyName = HalApiReflectionUtils.getPropertyName(invocation.getMethod(), typeSupport);</span>
 
-<span class="fc" id="L53">    String propertyName = HalApiReflectionUtils.getPropertyName(invocation.getMethod(), typeSupport);</span>
+<span class="fc" id="L47">    JsonNode jsonNode = contextResource.getModel().path(propertyName);</span>
 
-<span class="fc" id="L55">    JsonNode jsonNode = contextResource.getModel().path(propertyName);</span>
+<span class="fc bfc" id="L49" title="All 4 branches covered.">    if (jsonNode.isMissingNode() || jsonNode.isNull()) {</span>
 
-<span class="fc bfc" id="L57" title="All 4 branches covered.">    if (jsonNode.isMissingNode() || jsonNode.isNull()) {</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">      if (!typeSupport.isProviderOfOptionalValue(invocation.getReturnType())) {</span>
 
-<span class="fc bfc" id="L59" title="All 2 branches covered.">      if (!typeSupport.isProviderOfOptionalValue(invocation.getReturnType())) {</span>
-
-<span class="fc" id="L61">        String msg = &quot;The JSON property '&quot; + propertyName + &quot;' is &quot; + jsonNode.getNodeType()</span>
+<span class="fc" id="L53">        String msg = &quot;The JSON property '&quot; + propertyName + &quot;' is &quot; + jsonNode.getNodeType()</span>
             + &quot;. You must use Maybe or Optional as return type to support this. &quot;;
 
-<span class="fc" id="L64">        Link link = contextResource.getLink();</span>
-<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (link != null) {</span>
-<span class="fc" id="L66">          msg += &quot; (The error was triggered by resource at &quot; + link.getHref() + &quot;)&quot;;</span>
-        }
-
-<span class="fc" id="L69">        return Maybe.error(new HalApiDeveloperException(msg));</span>
+<span class="fc" id="L56">        return errorObservable(msg);</span>
       }
-<span class="fc" id="L71">      return Maybe.empty();</span>
+<span class="fc" id="L58">      return Observable.empty();</span>
     }
 
-<span class="fc" id="L74">    Object propertyValue = OBJECT_MAPPER.convertValue(jsonNode, invocation.getEmissionType());</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    if (typeSupport.isProviderOfMultiplerValues(invocation.getReturnType())) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">      if (!jsonNode.isArray()) {</span>
+<span class="fc" id="L63">        return errorObservable(&quot;The JSON property '&quot; + propertyName + &quot;' is of type &quot; + jsonNode.getNodeType()</span>
+            + &quot; but an array was expected. Please adjust &quot; + invocation + &quot; accordingly&quot;);
+      }
 
-<span class="fc" id="L76">    return Maybe.just(propertyValue);</span>
+<span class="fc" id="L67">      return Observable.fromIterable(jsonNode)</span>
+<span class="fc" id="L68">          .map(arrayElement -&gt; convertToJavaObject(invocation, arrayElement));</span>
+    }
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (jsonNode.isArray()) {</span>
+<span class="fc" id="L72">      return errorObservable(&quot;The JSON property '&quot; + propertyName + &quot;' is an array, but a primitive or object &quot;</span>
+<span class="fc" id="L73">          + &quot;(&quot; + invocation.getReturnType().getSimpleName() + &quot;) was expected&quot;);</span>
+    }
+
+<span class="fc" id="L76">    return Observable.just(convertToJavaObject(invocation, jsonNode));</span>
+  }
+
+  Object convertToJavaObject(HalApiMethodInvocation invocation, JsonNode jsonNode) {
+<span class="fc" id="L80">    Object propertyValue = OBJECT_MAPPER.convertValue(jsonNode, invocation.getEmissionType());</span>
+<span class="fc" id="L81">    return propertyValue;</span>
+  }
+
+  Observable&lt;Object&gt; errorObservable(String msg) {
+
+<span class="fc" id="L86">    String fullMsg = msg;</span>
+
+<span class="fc" id="L88">    Link link = contextResource.getLink();</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">    if (link != null) {</span>
+<span class="fc" id="L90">      fullMsg += &quot; (The error was triggered by resource at &quot; + link.getHref() + &quot;)&quot;;</span>
+    }
+
+<span class="fc" id="L93">    return Observable.error(new HalApiDeveloperException(fullMsg));</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

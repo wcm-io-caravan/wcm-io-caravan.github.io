@@ -37,11 +37,8 @@ import com.google.common.base.Preconditions;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.wcm.caravan.hal.resource.HalResource;
-import io.wcm.caravan.rhyme.api.annotations.ResourceProperty;
-import io.wcm.caravan.rhyme.api.annotations.ResourceState;
 import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
 import io.wcm.caravan.rhyme.api.common.RequestMetricsStopwatch;
-import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
 import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 import io.wcm.caravan.rhyme.impl.metadata.EmissionStopwatch;
 import io.wcm.caravan.rhyme.impl.reflection.HalApiReflectionUtils;
@@ -55,7 +52,7 @@ import io.wcm.caravan.rhyme.impl.renderer.RelatedResourcesRendererImpl.RelationR
  */
 public final class AsyncHalResourceRendererImpl implements AsyncHalResourceRenderer {
 
-<span class="fc" id="L58">  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();</span>
+<span class="fc" id="L55">  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();</span>
 
   private final RelatedResourcesRendererImpl relatedRenderer;
   private final RequestMetricsCollector metrics;
@@ -67,141 +64,142 @@ public final class AsyncHalResourceRendererImpl implements AsyncHalResourceRende
    *          the current incoming request
    * @param typeSupport the strategy to detect HAL API annotations and perform type conversions
    */
-<span class="fc" id="L70">  public AsyncHalResourceRendererImpl(RequestMetricsCollector metrics, HalApiTypeSupport typeSupport) {</span>
-<span class="fc" id="L71">    this.relatedRenderer = new RelatedResourcesRendererImpl(this::renderResourceAndEmbedded, metrics, typeSupport);</span>
-<span class="fc" id="L72">    this.metrics = metrics;</span>
-<span class="fc" id="L73">    this.typeSupport = typeSupport;</span>
-<span class="fc" id="L74">  }</span>
+<span class="fc" id="L67">  public AsyncHalResourceRendererImpl(RequestMetricsCollector metrics, HalApiTypeSupport typeSupport) {</span>
+<span class="fc" id="L68">    this.relatedRenderer = new RelatedResourcesRendererImpl(this::renderResourceAndEmbedded, metrics, typeSupport);</span>
+<span class="fc" id="L69">    this.metrics = metrics;</span>
+<span class="fc" id="L70">    this.typeSupport = typeSupport;</span>
+<span class="fc" id="L71">  }</span>
 
   @Override
   public Single&lt;HalResource&gt; renderResource(LinkableResource resourceImpl) {
 
-<span class="fc" id="L79">    return renderResourceAndEmbedded(resourceImpl);</span>
+<span class="fc" id="L76">    return renderResourceAndEmbedded(resourceImpl);</span>
   }
 
   Single&lt;HalResource&gt; renderResourceAndEmbedded(Object resourceImplInstance) {
 
-<span class="fc" id="L84">    try (RequestMetricsStopwatch sw = metrics.startStopwatch(AsyncHalResourceRenderer.class,</span>
-<span class="fc" id="L85">        () -&gt; &quot;calls to #renderResourceAndEmbedded with &quot; + getSimpleClassName(resourceImplInstance, typeSupport))) {</span>
+<span class="fc" id="L81">    try (RequestMetricsStopwatch sw = metrics.startStopwatch(AsyncHalResourceRenderer.class,</span>
+<span class="fc" id="L82">        () -&gt; &quot;calls to #renderResourceAndEmbedded with &quot; + getSimpleClassName(resourceImplInstance, typeSupport))) {</span>
 
-<span class="fc" id="L87">      Preconditions.checkNotNull(resourceImplInstance, &quot;Cannot create a HalResource from a null reference&quot;);</span>
+<span class="fc" id="L84">      Preconditions.checkNotNull(resourceImplInstance, &quot;Cannot create a HalResource from a null reference&quot;);</span>
 
       // find the interface annotated with @HalApiInterface
-<span class="fc" id="L90">      Class&lt;?&gt; apiInterface = findHalApiInterface(resourceImplInstance, typeSupport);</span>
+<span class="fc" id="L87">      Class&lt;?&gt; apiInterface = findHalApiInterface(resourceImplInstance, typeSupport);</span>
 
       // get the JSON resource state from the method annotated with @ResourceState
-<span class="fc" id="L93">      Single&lt;ObjectNode&gt; rxState = renderResourceStateAndProperties(apiInterface, resourceImplInstance);</span>
+<span class="fc" id="L90">      Single&lt;ObjectNode&gt; rxState = renderResourceStateAndProperties(apiInterface, resourceImplInstance);</span>
 
       // render links and embedded resources for each method annotated with @RelatedResource
-<span class="fc" id="L96">      Single&lt;List&lt;RelationRenderResult&gt;&gt; rxRelated = relatedRenderer.renderRelated(apiInterface, resourceImplInstance);</span>
+<span class="fc" id="L93">      Single&lt;List&lt;RelationRenderResult&gt;&gt; rxRelated = relatedRenderer.renderRelated(apiInterface, resourceImplInstance);</span>
 
-<span class="fc" id="L98">      String simpleClassName = getSimpleClassName(resourceImplInstance, typeSupport);</span>
+<span class="fc" id="L95">      String simpleClassName = getSimpleClassName(resourceImplInstance, typeSupport);</span>
 
       // wait until all this is available...
-<span class="fc" id="L101">      Single&lt;HalResource&gt; rxHalResource = Single.zip(rxState, rxRelated,</span>
+<span class="fc" id="L98">      Single&lt;HalResource&gt; rxHalResource = Single.zip(rxState, rxRelated,</span>
           // ...and then create the HalResource instance
-<span class="fc" id="L103">          (stateNode, listOfRelated) -&gt; createHalResource(resourceImplInstance, stateNode, listOfRelated))</span>
+<span class="fc" id="L100">          (stateNode, listOfRelated) -&gt; createHalResource(resourceImplInstance, stateNode, listOfRelated))</span>
           // and measure the time of the emissions
-<span class="fc" id="L105">          .compose(EmissionStopwatch.collectMetrics(() -&gt; &quot;rendering &quot; + simpleClassName + &quot; instances&quot;, metrics));</span>
+<span class="fc" id="L102">          .compose(EmissionStopwatch.collectMetrics(() -&gt; &quot;rendering &quot; + simpleClassName + &quot; instances&quot;, metrics));</span>
 
-<span class="fc" id="L107">      return rxHalResource;</span>
+<span class="fc" id="L104">      return rxHalResource;</span>
     }
   }
 
   Single&lt;ObjectNode&gt; renderResourceStateAndProperties(Class&lt;?&gt; apiInterface, Object resourceImplInstance) {
 
-<span class="fc" id="L113">    Single&lt;ObjectNode&gt; rxState = renderResourceState(apiInterface, resourceImplInstance);</span>
+<span class="fc" id="L110">    Single&lt;ObjectNode&gt; rxState = renderResourceState(apiInterface, resourceImplInstance);</span>
 
-<span class="fc" id="L115">    Single&lt;List&lt;Pair&lt;String, JsonNode&gt;&gt;&gt; rxProperties = renderResourceProperties(apiInterface, resourceImplInstance).toList();</span>
+<span class="fc" id="L112">    Single&lt;List&lt;Pair&lt;String, JsonNode&gt;&gt;&gt; rxProperties = renderResourceProperties(apiInterface, resourceImplInstance).toList();</span>
 
-<span class="fc" id="L117">    return Single.zip(rxState, rxProperties, (state, properties) -&gt; {</span>
+<span class="fc" id="L114">    return Single.zip(rxState, rxProperties, (state, properties) -&gt; {</span>
 
-<span class="fc" id="L119">      properties.forEach(pair -&gt; state.set(pair.getKey(), pair.getValue()));</span>
+<span class="fc" id="L116">      properties.forEach(pair -&gt; state.set(pair.getKey(), pair.getValue()));</span>
 
-<span class="fc" id="L121">      return state;</span>
+<span class="fc" id="L118">      return state;</span>
     })
         // and measure the total time of the emissions
-<span class="fc" id="L124">        .compose(EmissionStopwatch.collectMetrics(() -&gt; &quot;rendering resource state of &quot; + getSimpleClassName(resourceImplInstance, typeSupport), metrics));</span>
+<span class="fc" id="L121">        .compose(EmissionStopwatch.collectMetrics(() -&gt; &quot;rendering resource state of &quot; + getSimpleClassName(resourceImplInstance, typeSupport), metrics));</span>
   }
 
   Single&lt;ObjectNode&gt; renderResourceState(Class&lt;?&gt; apiInterface, Object resourceImplInstance) {
 
-<span class="fc" id="L129">    Single&lt;ObjectNode&gt; emptyObject = Single.fromCallable(() -&gt; JsonNodeFactory.instance.objectNode());</span>
+<span class="fc" id="L126">    Single&lt;ObjectNode&gt; emptyObject = Single.fromCallable(() -&gt; JsonNodeFactory.instance.objectNode());</span>
 
     // find the first method annotated with @ResourceState (and return an empty object if there is none)
-<span class="fc" id="L132">    Optional&lt;Method&gt; method = HalApiReflectionUtils.findResourceStateMethod(apiInterface, typeSupport);</span>
-<span class="fc bfc" id="L133" title="All 2 branches covered.">    if (!method.isPresent()) {</span>
-<span class="fc" id="L134">      return emptyObject;</span>
+<span class="fc" id="L129">    Optional&lt;Method&gt; method = HalApiReflectionUtils.findResourceStateMethod(apiInterface, typeSupport);</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">    if (!method.isPresent()) {</span>
+<span class="fc" id="L131">      return emptyObject;</span>
     }
 
     // invoke the method to get the state observable
-<span class="fc" id="L138">    return RxJavaReflectionUtils.invokeMethodAndReturnObservable(resourceImplInstance, method.get(), metrics, typeSupport)</span>
+<span class="fc" id="L135">    return RxJavaReflectionUtils.invokeMethodAndReturnObservable(resourceImplInstance, method.get(), metrics, typeSupport)</span>
         // convert the emitted state instance to a JSON object node
-<span class="fc" id="L140">        .map(object -&gt; OBJECT_MAPPER.convertValue(object, ObjectNode.class))</span>
+<span class="fc" id="L137">        .map(object -&gt; OBJECT_MAPPER.convertValue(object, ObjectNode.class))</span>
         // or use an empty object if the method returned an empty Maybe or Observable
-<span class="fc" id="L142">        .singleElement()</span>
-<span class="fc" id="L143">        .switchIfEmpty(emptyObject);</span>
+<span class="fc" id="L139">        .singleElement()</span>
+<span class="fc" id="L140">        .switchIfEmpty(emptyObject);</span>
   }
 
   private Observable&lt;Pair&lt;String, JsonNode&gt;&gt; renderResourceProperties(Class&lt;?&gt; apiInterface, Object resourceImplInstance) {
 
-<span class="fc" id="L148">    List&lt;Method&gt; methods = HalApiReflectionUtils.findResourcePropertyMethods(apiInterface, typeSupport);</span>
+<span class="fc" id="L145">    List&lt;Method&gt; methods = HalApiReflectionUtils.findResourcePropertyMethods(apiInterface, typeSupport);</span>
 
-<span class="fc" id="L150">    return Observable.fromIterable(methods)</span>
-<span class="fc" id="L151">        .concatMap(method -&gt; {</span>
+<span class="fc" id="L147">    return Observable.fromIterable(methods)</span>
+<span class="fc" id="L148">        .concatMap(method -&gt; {</span>
 
-<span class="fc bfc" id="L153" title="All 2 branches covered.">          if (typeSupport.isProviderOfMultiplerValues(method.getReturnType())) {</span>
-<span class="fc" id="L154">            String methodName = HalApiReflectionUtils.getClassAndMethodName(resourceImplInstance, method, typeSupport);</span>
-<span class="fc" id="L155">            String msg = &quot;@&quot; + ResourceProperty.class.getSimpleName() + &quot; cannot be used for arrays, but &quot; + methodName + &quot; is using &quot; + method.getReturnType()</span>
-<span class="fc" id="L156">                + &quot; as return type. Consider using @&quot; + ResourceState.class.getSimpleName() + &quot; instead&quot;;</span>
-<span class="fc" id="L157">            return Observable.error(new HalApiDeveloperException(msg));</span>
+<span class="fc" id="L150">          String propertyName = HalApiReflectionUtils.getPropertyName(method, typeSupport);</span>
+
+<span class="fc" id="L152">          Observable&lt;?&gt; rxReturnValue = RxJavaReflectionUtils.invokeMethodAndReturnObservable(resourceImplInstance, method, metrics, typeSupport);</span>
+
+          // if the getter methods are returning an Observable, Stream or List, then the invocation above would give us a single
+          // observable that emits multiple item. We do however want to convert this all into one array, so we'll convert the observable to a list first
+<span class="fc bfc" id="L156" title="All 2 branches covered.">          if (typeSupport.isProviderOfMultiplerValues(method.getReturnType())) {</span>
+<span class="fc" id="L157">            rxReturnValue = rxReturnValue.toList().toObservable();</span>
           }
 
-<span class="fc" id="L160">          String propertyName = HalApiReflectionUtils.getPropertyName(method, typeSupport);</span>
-
-<span class="fc" id="L162">          return RxJavaReflectionUtils.invokeMethodAndReturnObservable(resourceImplInstance, method, metrics, typeSupport)</span>
+<span class="fc" id="L160">          return rxReturnValue</span>
               // convert the emitted property value to a JSON  node
-<span class="fc" id="L164">              .map(returnValue -&gt; OBJECT_MAPPER.convertValue(returnValue, JsonNode.class))</span>
-<span class="fc" id="L165">              .map(jsonNode -&gt; Pair.of(propertyName, jsonNode));</span>
+<span class="fc" id="L162">              .map(returnValue -&gt; OBJECT_MAPPER.convertValue(returnValue, JsonNode.class))</span>
+<span class="fc" id="L163">              .map(jsonNode -&gt; Pair.of(propertyName, jsonNode));</span>
         });
   }
 
 
   HalResource createHalResource(Object resourceImplInstance, ObjectNode stateNode, List&lt;RelationRenderResult&gt; listOfRelated) {
 
-<span class="fc" id="L172">    HalResource hal = new HalResource(stateNode);</span>
+<span class="fc" id="L170">    HalResource hal = new HalResource(stateNode);</span>
 
-<span class="fc bfc" id="L174" title="All 2 branches covered.">    if (resourceImplInstance instanceof LinkableResource) {</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">    if (resourceImplInstance instanceof LinkableResource) {</span>
 
-<span class="fc" id="L176">      try (RequestMetricsStopwatch sw = metrics.startStopwatch(AsyncHalResourceRenderer.class,</span>
-<span class="fc" id="L177">          () -&gt; &quot;calls to #createLink of &quot; + getSimpleClassName(resourceImplInstance, typeSupport))) {</span>
+<span class="fc" id="L174">      try (RequestMetricsStopwatch sw = metrics.startStopwatch(AsyncHalResourceRenderer.class,</span>
+<span class="fc" id="L175">          () -&gt; &quot;calls to #createLink of &quot; + getSimpleClassName(resourceImplInstance, typeSupport))) {</span>
 
-<span class="fc" id="L179">        hal.setLink(((LinkableResource)resourceImplInstance).createLink());</span>
+<span class="fc" id="L177">        hal.setLink(((LinkableResource)resourceImplInstance).createLink());</span>
       }
     }
 
-<span class="fc bfc" id="L183" title="All 2 branches covered.">    for (RelationRenderResult related : listOfRelated) {</span>
-<span class="fc" id="L184">      String relation = related.getRelation();</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">    for (RelationRenderResult related : listOfRelated) {</span>
+<span class="fc" id="L182">      String relation = related.getRelation();</span>
 
-<span class="fc bfc" id="L186" title="All 2 branches covered.">      if (related.isMultiValue()) {</span>
-<span class="fc" id="L187">        hal.addLinks(relation, related.getLinks());</span>
-<span class="fc" id="L188">        hal.addEmbedded(relation, related.getEmbedded());</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">      if (related.isMultiValue()) {</span>
+<span class="fc" id="L185">        hal.addLinks(relation, related.getLinks());</span>
+<span class="fc" id="L186">        hal.addEmbedded(relation, related.getEmbedded());</span>
       }
       else {
-<span class="fc bfc" id="L191" title="All 2 branches covered.">        if (!related.getLinks().isEmpty()) {</span>
-<span class="fc" id="L192">          hal.setLink(relation, related.getLinks().get(0));</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">        if (!related.getLinks().isEmpty()) {</span>
+<span class="fc" id="L190">          hal.setLink(relation, related.getLinks().get(0));</span>
         }
-<span class="fc bfc" id="L194" title="All 2 branches covered.">        if (!related.getEmbedded().isEmpty()) {</span>
-<span class="fc" id="L195">          hal.setEmbedded(relation, related.getEmbedded().get(0));</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        if (!related.getEmbedded().isEmpty()) {</span>
+<span class="fc" id="L193">          hal.setEmbedded(relation, related.getEmbedded().get(0));</span>
         }
       }
-<span class="fc" id="L198">    }</span>
+<span class="fc" id="L196">    }</span>
 
-<span class="fc" id="L200">    return hal;</span>
+<span class="fc" id="L198">    return hal;</span>
   }
 
   public HalApiTypeSupport getTypeSupport() {
-<span class="fc" id="L204">    return typeSupport;</span>
+<span class="fc" id="L202">    return typeSupport;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
