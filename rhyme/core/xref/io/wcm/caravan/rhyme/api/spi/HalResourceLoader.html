@@ -54,7 +54,7 @@
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment"> * If you need full control over the HTTP client implementation to be used, and/or want to enable</em>
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment"> * caching of HAL responses, you should call {@link #builder()} to configure and build</em>
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment"> * a {@link HalResourceLoader} instance with the methods from {@link HalResourceLoaderBuilderImpl}.</em>
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment"> * a {@link HalResourceLoader} instance with the methods from {@link HalResourceLoaderBuilder}.</em>
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  <em class="jxr_javadoccomment"> * For caching to work properly, it is important that you'll then store and re-use the same</em>
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  <em class="jxr_javadoccomment"> * {@link HalResourceLoader} instance when creating {@link Rhyme} or {@link HalApiClient} objects</em>
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
@@ -63,14 +63,14 @@
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment"> * also implement the JSON parsing and exception handling according to the expectations of the</em>
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment"> * {@link HalApiClient} implementation. A simpler way is to implement the callback-style</em>
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment"> * {@link HttpClientSupport} interface, and then use</em>
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment"> * {@link HalResourceLoaderBuilderImpl#withCustomHttpClient(HttpClientSupport)}</em>
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment"> * {@link HalResourceLoaderBuilder#withCustomHttpClient(HttpClientSupport)}</em>
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment"> * to adapt it. In both cases, you should extend</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment"> * the io.wcm.caravan.rhyme.testing.client.AbstractHalResourceLoaderTest (from the test-jar)</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment"> * the io.wcm.caravan.rhyme.testing.client.AbstractHalResourceLoaderTest (from the testing module)</em>
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment"> * to test your implementation against a Wiremock server, to ensure that all expectations</em>
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment"> * regarding response and error handling are met.</em>
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment"> * @see HttpClientSupport</em>
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment"> * @see HalResourceLoaderBuilderImpl</em>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment"> * @see HalResourceLoaderBuilder</em>
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment"> * @see RhymeBuilder#withResourceLoader(HalResourceLoader)</em>
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment"> * @see HalApiClient#create(HalResourceLoader)</em>
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment"> */</em>
