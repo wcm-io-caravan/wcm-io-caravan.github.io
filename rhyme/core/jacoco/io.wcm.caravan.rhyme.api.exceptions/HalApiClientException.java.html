@@ -90,8 +90,8 @@ public class HalApiClientException extends RuntimeException {
 <span class="fc bfc" id="L90" title="All 2 branches covered.">    if (errorResponse.getStatus() == null) {</span>
 <span class="fc" id="L91">      return msg + &quot;before a status code was available&quot;;</span>
     }
-<span class="pc bpc" id="L93" title="1 of 2 branches missed.">    if (errorResponse.getStatus() == 200) {</span>
-<span class="nc" id="L94">      return msg + &quot; because the response body is malformed&quot;;</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    if (errorResponse.getStatus() == 200) {</span>
+<span class="fc" id="L94">      return msg + &quot;because the response body is malformed&quot;;</span>
     }
 
 <span class="fc" id="L97">    return msg + &quot;with status code &quot; + errorResponse.getStatus();</span>

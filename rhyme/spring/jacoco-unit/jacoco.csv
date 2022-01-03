@@ -1,6 +1,6 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,SpringExceptionStatusAndLoggingStrategy,35,24,6,4,8,7,5,3,0,3
-Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,WebClientSupport,0,99,0,0,0,23,0,8,0,8
+Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,WebClientSupport,0,104,0,0,0,24,0,8,0,8
 Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,LinkableResourceStatusCodeAdvice,21,0,0,0,7,0,3,0,3,0
 Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,SpringRhymeAutoConfiguration,16,0,0,0,7,0,3,0,3,0
 Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,SpringRhymeDocsIntegration,19,0,0,0,6,0,5,0,5,0

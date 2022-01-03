@@ -245,13 +245,17 @@ public class HttpHalResourceLoader implements HalResourceLoader {
   private static JsonNode parseJson(InputStream is) {
 
 <span class="fc" id="L247">    try (InputStream autoClosingStream = is) {</span>
-<span class="fc" id="L248">      return JSON_FACTORY.createParser(autoClosingStream).readValueAsTree();</span>
+<span class="fc" id="L248">      JsonNode jsonNode = JSON_FACTORY.createParser(autoClosingStream).readValueAsTree();</span>
+<span class="fc bfc" id="L249" title="All 2 branches covered.">      if (jsonNode == null) {</span>
+<span class="fc" id="L250">        throw new HttpClientSupportException(&quot;The response body was completely empty (or consisted only of whitespace)&quot;);</span>
+      }
+<span class="fc" id="L252">      return jsonNode;</span>
     }
-<span class="fc" id="L250">    catch (JsonProcessingException ex) {</span>
-<span class="fc" id="L251">      throw new HttpClientSupportException(&quot;The response body was read completely, but it's not valid JSON.&quot;, ex);</span>
+<span class="fc" id="L254">    catch (JsonProcessingException ex) {</span>
+<span class="fc" id="L255">      throw new HttpClientSupportException(&quot;The response body was read completely, but it's not valid JSON.&quot;, ex);</span>
     }
-<span class="fc" id="L253">    catch (IOException ex) {</span>
-<span class="fc" id="L254">      throw new HttpClientSupportException(&quot;The response body could not be read completely from the input stream&quot;, ex);</span>
+<span class="fc" id="L257">    catch (IOException ex) {</span>
+<span class="fc" id="L258">      throw new HttpClientSupportException(&quot;The response body could not be read completely from the input stream&quot;, ex);</span>
     }
   }
 
@@ -260,16 +264,16 @@ public class HttpHalResourceLoader implements HalResourceLoader {
     private static final long serialVersionUID = -1086569417284265963L;
 
     HttpClientSupportException(String msg) {
-<span class="fc" id="L263">      super(msg);</span>
-<span class="fc" id="L264">    }</span>
+<span class="fc" id="L267">      super(msg);</span>
+<span class="fc" id="L268">    }</span>
 
     HttpClientSupportException(String msg, Throwable cause) {
-<span class="fc" id="L267">      super(msg, cause);</span>
-<span class="fc" id="L268">    }</span>
+<span class="fc" id="L271">      super(msg, cause);</span>
+<span class="fc" id="L272">    }</span>
   }
 
   public HttpClientSupport getClient() {
-<span class="fc" id="L272">    return client;</span>
+<span class="fc" id="L276">    return client;</span>
   }
 
 }

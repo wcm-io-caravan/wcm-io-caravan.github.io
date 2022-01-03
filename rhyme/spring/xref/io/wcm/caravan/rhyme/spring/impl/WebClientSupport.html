@@ -30,73 +30,76 @@
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.io.ByteArrayInputStream;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.net.URI;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.ResponseEntity;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.client.reactive.ReactorClientHttpConnector;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.reactive.function.client.WebClient;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.reactive.function.client.WebClientResponseException;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HttpClientCallback;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HttpClientSupport;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> reactor.core.publisher.Mono;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> reactor.netty.http.client.HttpClient;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> reactor.netty.resources.ConnectionProvider;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="WebClientSupport" href="../../../../../../io/wcm/caravan/rhyme/spring/impl/WebClientSupport.html#WebClientSupport">WebClientSupport</a> <strong class="jxr_keyword">implements</strong> HttpClientSupport {
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> ConnectionProvider connectionProvider = ConnectionProvider
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>        .builder(WebClientSupport.<strong class="jxr_keyword">class</strong>.getSimpleName())
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>        .maxConnections(5000)
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>        .build();
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>    <strong class="jxr_keyword">private</strong> WebClient createDefaultWebClient() {
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>      HttpClient httpClient = HttpClient.create(connectionProvider);
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">return</strong> WebClient.builder()
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>          .codecs(configurer -&gt; configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024))
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>          .clientConnector(<strong class="jxr_keyword">new</strong> ReactorClientHttpConnector(httpClient))
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>          .build();
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>    }
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>    @Override
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> executeGetRequest(URI uri, HttpClientCallback callback) {
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      WebClient client = createDefaultWebClient();
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>      client.get().uri(uri).retrieve()
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>          <em class="jxr_comment">// any 200 responses will be parsed as a string and forwarded to the callback</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>          .toEntity(byte[].<strong class="jxr_keyword">class</strong>).doOnSuccess(entity -&gt; handleOkResponse(callback, entity))
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>          <em class="jxr_comment">// any responses with error status should be handled specifically, as we want to</em>
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          <em class="jxr_comment">// pass the status code and headers to the callback, and try to parse the body</em>
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>          <em class="jxr_comment">// as it may contain vnd.error information</em>
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          .onErrorResume(WebClientResponseException.<strong class="jxr_keyword">class</strong>, ex -&gt; handleErrorResponse(callback, ex))
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          <em class="jxr_comment">// any other exceptions thrown during the request or while handling the response</em>
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>          <em class="jxr_comment">// should be caught as well</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>          .doOnError(callback::onExceptionCaught)
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          <em class="jxr_comment">// finally subscribe so that the request is actually executed</em>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          .subscribe();
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>    }
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> handleOkResponse(HttpClientCallback callback, ResponseEntity&lt;byte[]&gt; entity) {
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      callback.onHeadersAvailable(entity.getStatusCodeValue(), entity.getHeaders());
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>      callback.onBodyAvailable(<strong class="jxr_keyword">new</strong> ByteArrayInputStream(entity.getBody()));
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>    }
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.ObjectUtils;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.ResponseEntity;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.client.reactive.ReactorClientHttpConnector;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.reactive.function.client.WebClient;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.reactive.function.client.WebClientResponseException;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HttpClientCallback;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HttpClientSupport;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> reactor.core.publisher.Mono;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> reactor.netty.http.client.HttpClient;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> reactor.netty.resources.ConnectionProvider;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="WebClientSupport" href="../../../../../../io/wcm/caravan/rhyme/spring/impl/WebClientSupport.html#WebClientSupport">WebClientSupport</a> <strong class="jxr_keyword">implements</strong> HttpClientSupport {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> ConnectionProvider connectionProvider = ConnectionProvider
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>        .builder(WebClientSupport.<strong class="jxr_keyword">class</strong>.getSimpleName())
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>        .maxConnections(5000)
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>        .build();
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>    <strong class="jxr_keyword">private</strong> WebClient createDefaultWebClient() {
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      HttpClient httpClient = HttpClient.create(connectionProvider);
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>      <strong class="jxr_keyword">return</strong> WebClient.builder()
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          .codecs(configurer -&gt; configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024))
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          .clientConnector(<strong class="jxr_keyword">new</strong> ReactorClientHttpConnector(httpClient))
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          .build();
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>    }
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>    @Override
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> executeGetRequest(URI uri, HttpClientCallback callback) {
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      WebClient client = createDefaultWebClient();
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      client.get().uri(uri).retrieve()
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          <em class="jxr_comment">// any 200 responses will be parsed as a string and forwarded to the callback</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          .toEntity(byte[].<strong class="jxr_keyword">class</strong>).doOnSuccess(entity -&gt; handleOkResponse(callback, entity))
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          <em class="jxr_comment">// any responses with error status should be handled specifically, as we want to</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          <em class="jxr_comment">// pass the status code and headers to the callback, and try to parse the body</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          <em class="jxr_comment">// as it may contain vnd.error information</em>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          .onErrorResume(WebClientResponseException.<strong class="jxr_keyword">class</strong>, ex -&gt; handleErrorResponse(callback, ex))
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          <em class="jxr_comment">// any other exceptions thrown during the request or while handling the response</em>
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          <em class="jxr_comment">// should be caught as well</em>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          .doOnError(callback::onExceptionCaught)
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <em class="jxr_comment">// finally subscribe so that the request is actually executed</em>
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          .subscribe();
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>    }
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> handleOkResponse(HttpClientCallback callback, ResponseEntity&lt;byte[]&gt; entity) {
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      callback.onHeadersAvailable(entity.getStatusCodeValue(), entity.getHeaders());
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      byte[] body = ObjectUtils.defaultIfNull(entity.getBody(), <strong class="jxr_keyword">new</strong> byte[0]);
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>    <strong class="jxr_keyword">private</strong> Mono&lt;ResponseEntity&lt;byte[]&gt;&gt; handleErrorResponse(HttpClientCallback callback,
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>        WebClientResponseException ex) {
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      callback.onBodyAvailable(<strong class="jxr_keyword">new</strong> ByteArrayInputStream(body));
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>    }
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>      callback.onHeadersAvailable(ex.getRawStatusCode(), ex.getHeaders());
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>  
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>      callback.onBodyAvailable(<strong class="jxr_keyword">new</strong> ByteArrayInputStream(ex.getResponseBodyAsByteArray()));
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <em class="jxr_comment">// since we have successfully called onBodyAvailable, all information from the</em>
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <em class="jxr_comment">// exception has been collected by the callback, and there is no need for</em>
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>      <em class="jxr_comment">// further error exception handling</em>
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>      <strong class="jxr_keyword">return</strong> Mono.empty();
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>    }
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>  }
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>    <strong class="jxr_keyword">private</strong> Mono&lt;ResponseEntity&lt;byte[]&gt;&gt; handleErrorResponse(HttpClientCallback callback,
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>        WebClientResponseException ex) {
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      callback.onHeadersAvailable(ex.getRawStatusCode(), ex.getHeaders());
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      callback.onBodyAvailable(<strong class="jxr_keyword">new</strong> ByteArrayInputStream(ex.getResponseBodyAsByteArray()));
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      <em class="jxr_comment">// since we have successfully called onBodyAvailable, all information from the</em>
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <em class="jxr_comment">// exception has been collected by the callback, and there is no need for</em>
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <em class="jxr_comment">// further error exception handling</em>
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">return</strong> Mono.empty();
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>    }
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014&#x2013;2022 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</div>

@@ -4,5 +4,5 @@ Rhyme - Testing Support,io.wcm.caravan.rhyme.testing.spring,MockMvcHalResourceLo
 Rhyme - Testing Support,io.wcm.caravan.rhyme.testing.client,HalCrawler,0,172,0,14,0,47,0,20,0,13
 Rhyme - Testing Support,io.wcm.caravan.rhyme.testing.client,ApacheBlockingHttpSupport,0,90,0,4,0,24,0,6,0,4
 Rhyme - Testing Support,io.wcm.caravan.rhyme.testing.client,ApacheAsyncHttpSupport.new FutureCallback() {...},0,41,0,0,0,12,0,3,0,3
-Rhyme - Testing Support,io.wcm.caravan.rhyme.testing.client,AbstractHalResourceLoaderTest,5,704,0,6,0,231,1,50,1,47
+Rhyme - Testing Support,io.wcm.caravan.rhyme.testing.client,AbstractHalResourceLoaderTest,5,724,0,6,0,239,1,51,1,48
 Rhyme - Testing Support,io.wcm.caravan.rhyme.testing.client,ApacheAsyncHttpSupport,0,44,0,2,0,13,0,4,0,3

@@ -446,38 +446,38 @@ import wiremock.org.apache.http.client.utils.URIBuilder;
 <span class="fc" id="L446">  }</span>
 
   @Test
-  public void cause_should_be_present_in_HalApiClientException_for_malformed_200_response() throws Exception {
+  public void cause_should_be_present_in_HalApiClientException_for_failure_to_parse_empty_string() throws Exception {
 
-<span class="fc" id="L451">    stubFaultyResponseWithStatusCode(200, Fault.MALFORMED_RESPONSE_CHUNK);</span>
+<span class="fc" id="L451">    stubEmptyResponseWithStatusCode(200);</span>
 
 <span class="fc" id="L453">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+
+<span class="fc" id="L455">    assertThat(ex)</span>
+<span class="fc" id="L456">        .hasMessageContaining(&quot;has failed because the response body is malformed&quot;);</span>
+
+<span class="fc" id="L458">    assertThat(ex.getCause())</span>
+<span class="fc" id="L459">        .hasMessage(&quot;An HTTP response with status code 200 was retrieved, but the body could not be successfully read and parsed as a JSON document&quot;)</span>
+<span class="fc" id="L460">        .hasRootCauseMessage(&quot;The response body was completely empty (or consisted only of whitespace)&quot;);</span>
+<span class="fc" id="L461">  }</span>
+
+  @Test
+  public void cause_should_be_present_in_HalApiClientException_for_malformed_200_response() throws Exception {
+
+<span class="fc" id="L466">    stubFaultyResponseWithStatusCode(200, Fault.MALFORMED_RESPONSE_CHUNK);</span>
+
+<span class="fc" id="L468">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
     // the behaviour for this edge cases varies between implementations:
     // sometimes the response code is sucessfully extracted, sometimes not.
     // the only thing they have in common is that at some point, an IOException is caught
-<span class="fc" id="L458">    assertThat(ex)</span>
-<span class="fc" id="L459">        .hasRootCauseInstanceOf(IOException.class);</span>
-<span class="fc" id="L460">  }</span>
-
-  @Test
-  public void cause_should_be_present_in_HalApiClientException_for_connection_reset_on_200_response() throws Exception {
-
-<span class="fc" id="L465">    stubFaultyResponseWithStatusCode(200, Fault.CONNECTION_RESET_BY_PEER);</span>
-
-<span class="fc" id="L467">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
-
-<span class="fc" id="L469">    assertThat(ex.getStatusCode())</span>
-<span class="fc" id="L470">        .isEqualTo(null);</span>
-
-<span class="fc" id="L472">    assertThat(ex)</span>
-<span class="fc" id="L473">        .hasMessageContaining(&quot;has failed before a status code was available&quot;)</span>
+<span class="fc" id="L473">    assertThat(ex)</span>
 <span class="fc" id="L474">        .hasRootCauseInstanceOf(IOException.class);</span>
 <span class="fc" id="L475">  }</span>
 
   @Test
-  public void cause_should_be_present_in_HalApiClientException_for_random_data_on_200_response() throws Exception {
+  public void cause_should_be_present_in_HalApiClientException_for_connection_reset_on_200_response() throws Exception {
 
-<span class="fc" id="L480">    stubFaultyResponseWithStatusCode(200, Fault.RANDOM_DATA_THEN_CLOSE);</span>
+<span class="fc" id="L480">    stubFaultyResponseWithStatusCode(200, Fault.CONNECTION_RESET_BY_PEER);</span>
 
 <span class="fc" id="L482">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
@@ -485,55 +485,70 @@ import wiremock.org.apache.http.client.utils.URIBuilder;
 <span class="fc" id="L485">        .isEqualTo(null);</span>
 
 <span class="fc" id="L487">    assertThat(ex)</span>
-<span class="fc" id="L488">        .hasMessageContaining(&quot;has failed before a status code was available&quot;);</span>
-<span class="fc" id="L489">  }</span>
+<span class="fc" id="L488">        .hasMessageContaining(&quot;has failed before a status code was available&quot;)</span>
+<span class="fc" id="L489">        .hasRootCauseInstanceOf(IOException.class);</span>
+<span class="fc" id="L490">  }</span>
+
+  @Test
+  public void cause_should_be_present_in_HalApiClientException_for_random_data_on_200_response() throws Exception {
+
+<span class="fc" id="L495">    stubFaultyResponseWithStatusCode(200, Fault.RANDOM_DATA_THEN_CLOSE);</span>
+
+<span class="fc" id="L497">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+
+<span class="fc" id="L499">    assertThat(ex.getStatusCode())</span>
+<span class="fc" id="L500">        .isEqualTo(null);</span>
+
+<span class="fc" id="L502">    assertThat(ex)</span>
+<span class="fc" id="L503">        .hasMessageContaining(&quot;has failed before a status code was available&quot;);</span>
+<span class="fc" id="L504">  }</span>
 
   @Test
   public void status_code_should_be_null_in_HalApiClientException_for_network_errors() throws Exception {
 
-<span class="fc" id="L494">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
+<span class="fc" id="L509">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
 
-<span class="fc" id="L496">    assertThat(ex.getStatusCode())</span>
-<span class="fc" id="L497">        .isNull();</span>
-<span class="fc" id="L498">  }</span>
+<span class="fc" id="L511">    assertThat(ex.getStatusCode())</span>
+<span class="fc" id="L512">        .isNull();</span>
+<span class="fc" id="L513">  }</span>
 
   @Test
   public void request_url_should_be_present_in_HalApiClientException_for_network_errors() throws Exception {
 
-<span class="fc" id="L503">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
+<span class="fc" id="L518">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
 
-<span class="fc" id="L505">    assertThat(ex.getRequestUrl())</span>
-<span class="fc" id="L506">        .isEqualTo(UNKNOWN_HOST_URL);</span>
-<span class="fc" id="L507">  }</span>
+<span class="fc" id="L520">    assertThat(ex.getRequestUrl())</span>
+<span class="fc" id="L521">        .isEqualTo(UNKNOWN_HOST_URL);</span>
+<span class="fc" id="L522">  }</span>
 
   @Test
   public void error_body_should_be_null_in_HalApiClientException_for_network_errors() throws Exception {
 
-<span class="fc" id="L512">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
+<span class="fc" id="L527">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
 
-<span class="fc" id="L514">    assertThat(ex.getErrorResponse())</span>
-<span class="fc" id="L515">        .isNotNull();</span>
-<span class="fc" id="L516">    assertThat(ex.getErrorResponse().getBody())</span>
-<span class="fc" id="L517">        .isNull();</span>
-<span class="fc" id="L518">  }</span>
+<span class="fc" id="L529">    assertThat(ex.getErrorResponse())</span>
+<span class="fc" id="L530">        .isNotNull();</span>
+<span class="fc" id="L531">    assertThat(ex.getErrorResponse().getBody())</span>
+<span class="fc" id="L532">        .isNull();</span>
+<span class="fc" id="L533">  }</span>
 
   @Test
   public void cause_should_be_present_in_HalApiClientException_for_for_network_errors() throws Exception {
 
-<span class="fc" id="L523">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
+<span class="fc" id="L538">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
 
-<span class="fc" id="L525">    assertThat(ex)</span>
-<span class="fc" id="L526">        .hasCauseInstanceOf(UnknownHostException.class);</span>
-<span class="fc" id="L527">  }</span>
+<span class="fc" id="L540">    assertThat(ex)</span>
+<span class="fc" id="L541">        .hasCauseInstanceOf(UnknownHostException.class);</span>
+<span class="fc" id="L542">  }</span>
 
   @Test
   public void cause_should_be_present_in_HalApiClientException_for_for_ssl_errors() throws Exception {
 
-<span class="fc" id="L532">    HalApiClientException ex = loadResourceAndExpectClientException(sslTestUrl);</span>
+<span class="fc" id="L547">    HalApiClientException ex = loadResourceAndExpectClientException(sslTestUrl);</span>
 
-<span class="fc" id="L534">    assertThat(ex)</span>
-<span class="fc" id="L535">        .hasCauseInstanceOf(SSLHandshakeException.class);</span>
-<span class="fc" id="L536">  }</span>
+<span class="fc" id="L549">    assertThat(ex)</span>
+<span class="fc" id="L550">        .hasCauseInstanceOf(SSLHandshakeException.class);</span>
+<span class="fc" id="L551">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
