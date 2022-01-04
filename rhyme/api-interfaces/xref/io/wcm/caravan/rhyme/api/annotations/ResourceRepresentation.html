@@ -37,15 +37,22 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.hal.resource.HalResource;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * Used to annotate a method that allows clients to get the full JSON representation of the resource</em>
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> * (including the _links and _embedded properties). The return type of the method must be a reactive</em>
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> * stream of {@link JsonNode} or {@link HalResource}.</em>
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  @Retention(RetentionPolicy.RUNTIME)
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  @Target(ElementType.METHOD)
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">public</strong> @<strong class="jxr_keyword">interface</strong> <a name="ResourceRepresentation" href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceRepresentation.html#ResourceRepresentation">ResourceRepresentation</a> {
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <em class="jxr_comment">// this is just a marker interface that does not have any configurable options</em>
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  }
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * Used to define a method that allows clients to get the full JSON representation of the resource</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> * (including the _links and _embedded properties).</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment"> * Adding a method with this annotation is only required if you want your clients to conveniently process the HAL</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> * resources manually (or with another HAL library). It's not required if you are working exclusively with Rhyme.</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> * The method must return a {@link JsonNode} or {@link HalResource} (either directly or wrapped in a supported reactive</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment"> * type).</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  @Retention(RetentionPolicy.RUNTIME)
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  @Target(ElementType.METHOD)
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">public</strong> @<strong class="jxr_keyword">interface</strong> <a name="ResourceRepresentation" href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceRepresentation.html#ResourceRepresentation">ResourceRepresentation</a> {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <em class="jxr_comment">// this is just a marker interface that does not have any configurable options</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014&#x2013;2022 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</div>

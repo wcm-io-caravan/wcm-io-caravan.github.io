@@ -33,17 +33,26 @@
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> java.lang.annotation.Target;
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment"> * Annotation to be used on parameters of methods annotated with {@link Related} to mark</em>
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> * a single DTO parameter that is used to expand multiple template variables. This can be used</em>
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment"> * to simply method signatures with a lot of parameters, by defining a single composite DTO type with</em>
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> * multiple fields that are named exactly as the corresponding template variables. Parameters with</em>
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * this annotation can either be of a class with public fields, or an interface with public getters.</em>
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  @Retention(RetentionPolicy.RUNTIME)
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  @Target(ElementType.PARAMETER)
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">public</strong> @<strong class="jxr_keyword">interface</strong> <a name="TemplateVariables" href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariables.html#TemplateVariables">TemplateVariables</a> {
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <em class="jxr_comment">// this is just a marker interface that does not have any configurable options</em>
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  }
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment"> * Annotation to be used on parameters of methods annotated with {@link Related} to define</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> * a single DTO parameter that is used to expand multiple template variables.</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> * This can be used to simply method signatures with a lot of parameters, and making it easier to extend additional</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * variables later without breaking your method signatures.</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment"> * To use this annotation you also need to define a single composite DTO type</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> * with multiple fields that are named exactly as the corresponding template variables. DTO types to be used with</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> * this annotation must either be a class with only public fields, or an interface with public getters. If you are using</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> * interfaces then the variable names will be derived using Java bean conventions.</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment"> * @see TemplateVariable</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment"> * @see Related</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  @Retention(RetentionPolicy.RUNTIME)
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  @Target(ElementType.PARAMETER)
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">public</strong> @<strong class="jxr_keyword">interface</strong> <a name="TemplateVariables" href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariables.html#TemplateVariables">TemplateVariables</a> {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <em class="jxr_comment">// this is just a marker interface that does not have any configurable options</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014&#x2013;2022 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</div>

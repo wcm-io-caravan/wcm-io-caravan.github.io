@@ -96,9 +96,12 @@
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true" title="class or interface in java.lang.annotation">@Retention</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/RetentionPolicy.html?is-external=true#RUNTIME" title="class or interface in java.lang.annotation">RUNTIME</a>)
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true" title="class or interface in java.lang.annotation">@Target</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/ElementType.html?is-external=true#METHOD" title="class or interface in java.lang.annotation">METHOD</a>)
 public @interface <span class="memberNameLabel">ResourceLink</span></pre>
-<div class="block">Used to define methods that allow clients to only access URI of a resource, or the
- <code>Link</code> instance that is pointing to a resource (without actually fetching the resource).
- The return type of the method must be <code>Link</code> or <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a></div>
+<div class="block">Used to define methods that allow clients to access only the <code>Link</code> or URI that is pointing to a resource
+ (without actually fetching it). The return type of the method must be a <code>Link</code> or <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a>.
+ <p>
+ If your interface extends from <a href="../../../../../../io/wcm/caravan/rhyme/api/resources/LinkableResource.html" title="interface in io.wcm.caravan.rhyme.api.resources"><code>LinkableResource</code></a> then you won't need to add this annotation yourself, as
+ <a href="../../../../../../io/wcm/caravan/rhyme/api/resources/LinkableResource.html#createLink--"><code>LinkableResource.createLink()</code></a> is already annotated.
+ </p></div>
 </li>
 </ul>
 </div>

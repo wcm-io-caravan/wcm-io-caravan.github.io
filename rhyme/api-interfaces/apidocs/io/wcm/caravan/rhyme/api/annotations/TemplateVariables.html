@@ -96,11 +96,23 @@
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true" title="class or interface in java.lang.annotation">@Retention</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/RetentionPolicy.html?is-external=true#RUNTIME" title="class or interface in java.lang.annotation">RUNTIME</a>)
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true" title="class or interface in java.lang.annotation">@Target</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/ElementType.html?is-external=true#PARAMETER" title="class or interface in java.lang.annotation">PARAMETER</a>)
 public @interface <span class="memberNameLabel">TemplateVariables</span></pre>
-<div class="block">Annotation to be used on parameters of methods annotated with <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> to mark
- a single DTO parameter that is used to expand multiple template variables. This can be used
- to simply method signatures with a lot of parameters, by defining a single composite DTO type with
- multiple fields that are named exactly as the corresponding template variables. Parameters with
- this annotation can either be of a class with public fields, or an interface with public getters.</div>
+<div class="block">Annotation to be used on parameters of methods annotated with <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> to define
+ a single DTO parameter that is used to expand multiple template variables.
+ <p>
+ This can be used to simply method signatures with a lot of parameters, and making it easier to extend additional
+ variables later without breaking your method signatures.
+ </p>
+ <p>
+ To use this annotation you also need to define a single composite DTO type
+ with multiple fields that are named exactly as the corresponding template variables. DTO types to be used with
+ this annotation must either be a class with only public fields, or an interface with public getters. If you are using
+ interfaces then the variable names will be derived using Java bean conventions.
+ </p></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariable.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>TemplateVariable</code></a>, 
+<a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a></dd>
+</dl>
 </li>
 </ul>
 </div>

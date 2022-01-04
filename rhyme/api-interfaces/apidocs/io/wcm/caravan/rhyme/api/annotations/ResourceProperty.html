@@ -96,12 +96,20 @@
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true" title="class or interface in java.lang.annotation">@Retention</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/RetentionPolicy.html?is-external=true#RUNTIME" title="class or interface in java.lang.annotation">RUNTIME</a>)
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true" title="class or interface in java.lang.annotation">@Target</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/ElementType.html?is-external=true#METHOD" title="class or interface in java.lang.annotation">METHOD</a>)
 public @interface <span class="memberNameLabel">ResourceProperty</span></pre>
-<div class="block">Identifies a method that allows to access a single JSON property of a HAL resource's state.
- The method must provide a value that can be easily serialised to JSON. This value can either be returned
- directly from the annotated method, but can also be wrapped with <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util"><code>Optional</code></a> or a reactive type.
- If you do have existing domain model classes in your project that can be easily (de)serialised, or
+<div class="block">Used to define methods that allow to access a single JSON property of a HAL resource's state.
+ <p>
+ The method must provide a value that can be easily transformed from/to JSON. This value can either be returned
+ directly from the annotated method, but can also be wrapped with <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util"><code>Optional</code></a> or a supported reactive type.
+ </p>
+ <p>
+ If you do have existing domain model classes in your project that can be easily (de)serialized, or
  you feel that you are adding to many <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceProperty.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>ResourceProperty</code></a> methods to your resource interface,
- then consider using <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceState.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>ResourceState</code></a> instead:</div>
+ then consider using <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceState.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>ResourceState</code></a> instead.
+ </p></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceState.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>ResourceState</code></a></dd>
+</dl>
 </li>
 </ul>
 </div>

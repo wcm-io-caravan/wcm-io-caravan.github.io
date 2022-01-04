@@ -105,10 +105,22 @@ var activeTableTab = "activeTableTab";
 public interface <span class="typeNameLabel">EmbeddableResource</span></pre>
 <div class="block">An interface that server-side resources should implement if it's reasonable to embed their HAL representation into
  their context resource.
+ <p>
  For each related resource that implements this interface, <a href="../../../../../../io/wcm/caravan/rhyme/api/resources/EmbeddableResource.html#isEmbedded--"><code>isEmbedded()</code></a> will be called (when the resource
  is rendered server-side) to determine whether to embed the resource. It's up to the resource implementation
  to either decide this on it's own (e.g. depending on the amount of content), or also provide a setter so that other
- resources can decide this after creating a resource instance to which they are linking to.</div>
+ resources can decide this after creating a resource instance to which they are linking to.
+ </p>
+ <p>
+ You shouldn't make your <b>interfaces</b> annotated with <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a>
+ extend this interface (since it's only being used server-side, and clients shouldn't need to know whether a resource
+ is embedded or linked).
+ </p></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../io/wcm/caravan/rhyme/api/resources/LinkableResource.html" title="interface in io.wcm.caravan.rhyme.api.resources"><code>LinkableResource</code></a>, 
+<a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -130,14 +142,14 @@ public interface <span class="typeNameLabel">EmbeddableResource</span></pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>default boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/resources/EmbeddableResource.html#isEmbedded--">isEmbedded</a></span>()</code>
-<div class="block">Determines if this resource should be embedded (rather then just linked to) from the context resource that created
+<div class="block">Determines if this resource should be embedded (rather than just linked to) from the context resource that created
  the resource implementation instance</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>default boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/resources/EmbeddableResource.html#isLinkedWhenEmbedded--">isLinkedWhenEmbedded</a></span>()</code>
-<div class="block">Determines if this resource should also be linked if it's already embedded in its context resource</div>
+<div class="block">Determines if this resource should also be linked when it's already embedded in its context resource</div>
 </td>
 </tr>
 </table>
@@ -162,7 +174,7 @@ public interface <span class="typeNameLabel">EmbeddableResource</span></pre>
 <li class="blockList">
 <h4>isEmbedded</h4>
 <pre>default&nbsp;boolean&nbsp;isEmbedded()</pre>
-<div class="block">Determines if this resource should be embedded (rather then just linked to) from the context resource that created
+<div class="block">Determines if this resource should be embedded (rather than just linked to) from the context resource that created
  the resource implementation instance</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -177,7 +189,7 @@ public interface <span class="typeNameLabel">EmbeddableResource</span></pre>
 <li class="blockList">
 <h4>isLinkedWhenEmbedded</h4>
 <pre>default&nbsp;boolean&nbsp;isLinkedWhenEmbedded()</pre>
-<div class="block">Determines if this resource should also be linked if it's already embedded in its context resource</div>
+<div class="block">Determines if this resource should also be linked when it's already embedded in its context resource</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>true if links to the embedded resources should be included</dd>

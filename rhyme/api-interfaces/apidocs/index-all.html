@@ -80,7 +80,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/relations/VndErrorRelations.html#ABOUT">ABOUT</a></span> - Static variable in class io.wcm.caravan.rhyme.api.relations.<a href="io/wcm/caravan/rhyme/api/relations/VndErrorRelations.html" title="class in io.wcm.caravan.rhyme.api.relations">VndErrorRelations</a></dt>
 <dd>
-<div class="block">Relation to use for links to the resources for which an error has occured</div>
+<div class="block">Relation to use for links to the resources for which an error has occurred</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html#ALTERNATE">ALTERNATE</a></span> - Static variable in class io.wcm.caravan.rhyme.api.relations.<a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html" title="class in io.wcm.caravan.rhyme.api.relations">StandardRelations</a></dt>
 <dd>
@@ -117,12 +117,11 @@
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/relations/VndErrorRelations.html#ERRORS">ERRORS</a></span> - Static variable in class io.wcm.caravan.rhyme.api.relations.<a href="io/wcm/caravan/rhyme/api/relations/VndErrorRelations.html" title="class in io.wcm.caravan.rhyme.api.relations">VndErrorRelations</a></dt>
 <dd>
-<div class="block">Relation to use for embedded resources with add</div>
+<div class="block">Relation to use for embedded resources with additional information on the root cause</div>
 </dd>
-<dt><a href="io/wcm/caravan/rhyme/api/annotations/ExcludeFromJacocoGeneratedReport.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">ExcludeFromJacocoGeneratedReport</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
+<dt><a href="io/wcm/caravan/rhyme/tooling/annotations/ExcludeFromJacocoGeneratedReport.html" title="annotation in io.wcm.caravan.rhyme.tooling.annotations"><span class="typeNameLink">ExcludeFromJacocoGeneratedReport</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/tooling/annotations/package-summary.html">io.wcm.caravan.rhyme.tooling.annotations</a></dt>
 <dd>
-<div class="block">A marker annotation that you can use on methods that can't be covered by tests,
- and will be excluded when JaCoCo is calculating the code coverage.</div>
+<div class="block">A marker annotation only relevant for static code analysis.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html#EXTERNAL">EXTERNAL</a></span> - Static variable in class io.wcm.caravan.rhyme.api.relations.<a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html" title="class in io.wcm.caravan.rhyme.api.relations">StandardRelations</a></dt>
 <dd>
@@ -146,8 +145,7 @@
 <dl>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">HalApiInterface</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
-<div class="block">A marker annotation that is required for all HAL API interfaces, to indicate that it should be scanned for the
- presence of methods annotated with <a href="io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a>, <a href="io/wcm/caravan/rhyme/api/annotations/ResourceState.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>ResourceState</code></a>, etc that actually define the API.</div>
+<div class="block">A marker annotation that is required for all HAL API interfaces to be used with the Rhyme framework.</div>
 </dd>
 </dl>
 <a name="I:I">
@@ -161,7 +159,7 @@
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a> - package io.wcm.caravan.rhyme.api.annotations</dt>
 <dd>
-<div class="block">The annotations used to define HAL API interfaces</div>
+<div class="block">The annotations used on interface to define HAL APIs</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/relations/package-summary.html">io.wcm.caravan.rhyme.api.relations</a> - package io.wcm.caravan.rhyme.api.relations</dt>
 <dd>
@@ -171,14 +169,18 @@
 <dd>
 <div class="block">Base interfaces for server-side HAL resource implementations</div>
 </dd>
+<dt><a href="io/wcm/caravan/rhyme/tooling/annotations/package-summary.html">io.wcm.caravan.rhyme.tooling.annotations</a> - package io.wcm.caravan.rhyme.tooling.annotations</dt>
+<dd>
+<div class="block">Additional annotations that are only used at build time</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/resources/EmbeddableResource.html#isEmbedded--">isEmbedded()</a></span> - Method in interface io.wcm.caravan.rhyme.api.resources.<a href="io/wcm/caravan/rhyme/api/resources/EmbeddableResource.html" title="interface in io.wcm.caravan.rhyme.api.resources">EmbeddableResource</a></dt>
 <dd>
-<div class="block">Determines if this resource should be embedded (rather then just linked to) from the context resource that created
+<div class="block">Determines if this resource should be embedded (rather than just linked to) from the context resource that created
  the resource implementation instance</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/resources/EmbeddableResource.html#isLinkedWhenEmbedded--">isLinkedWhenEmbedded()</a></span> - Method in interface io.wcm.caravan.rhyme.api.resources.<a href="io/wcm/caravan/rhyme/api/resources/EmbeddableResource.html" title="interface in io.wcm.caravan.rhyme.api.resources">EmbeddableResource</a></dt>
 <dd>
-<div class="block">Determines if this resource should also be linked if it's already embedded in its context resource</div>
+<div class="block">Determines if this resource should also be linked when it's already embedded in its context resource</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html#ITEM">ITEM</a></span> - Static variable in class io.wcm.caravan.rhyme.api.relations.<a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html" title="class in io.wcm.caravan.rhyme.api.relations">StandardRelations</a></dt>
 <dd>
@@ -196,7 +198,8 @@
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/resources/LinkableResource.html" title="interface in io.wcm.caravan.rhyme.api.resources"><span class="typeNameLink">LinkableResource</span></a> - Interface in <a href="io/wcm/caravan/rhyme/api/resources/package-summary.html">io.wcm.caravan.rhyme.api.resources</a></dt>
 <dd>
-<div class="block">An interface to be implemented by all resources that should be accessible directly via a http(s) URL.</div>
+<div class="block">An interface to be implemented by all resources that should be accessible directly via a URL (and therefore can be
+ linked to from another resource).</div>
 </dd>
 </dl>
 <a name="I:M">
@@ -236,7 +239,7 @@
 <dl>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">Related</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
-<div class="block">Used to annotate methods that allow access to linked or embedded resources.</div>
+<div class="block">Used to annotate methods in a <a href="io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a> which allow access to linked or embedded resources.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html#RELATED">RELATED</a></span> - Static variable in class io.wcm.caravan.rhyme.api.relations.<a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html" title="class in io.wcm.caravan.rhyme.api.relations">StandardRelations</a></dt>
 <dd>
@@ -244,21 +247,21 @@
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/ResourceLink.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">ResourceLink</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
-<div class="block">Used to define methods that allow clients to only access URI of a resource, or the
- <code>Link</code> instance that is pointing to a resource (without actually fetching the resource).</div>
+<div class="block">Used to define methods that allow clients to access only the <code>Link</code> or URI that is pointing to a resource
+ (without actually fetching it).</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/ResourceProperty.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">ResourceProperty</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
-<div class="block">Identifies a method that allows to access a single JSON property of a HAL resource's state.</div>
+<div class="block">Used to define methods that allow to access a single JSON property of a HAL resource's state.</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/ResourceRepresentation.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">ResourceRepresentation</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
-<div class="block">Used to annotate a method that allows clients to get the full JSON representation of the resource
+<div class="block">Used to define a method that allows clients to get the full JSON representation of the resource
  (including the _links and _embedded properties).</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/ResourceState.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">ResourceState</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
-<div class="block">Identifies a method that allows to access the state/properties of a HAL resource all at once.</div>
+<div class="block">Used to define a method that allows to access the HAL resources' state (i.e.</div>
 </dd>
 </dl>
 <a name="I:S">
@@ -295,11 +298,11 @@
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/TemplateVariable.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">TemplateVariable</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
 <div class="block">Annotation to be used on parameters of methods annotated with <a href="io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> to define
- which variable in the URI template should be expanded with the given parameter value.</div>
+ the name of the variable in the URI template that corresponds to the given parameter value.</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/TemplateVariables.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">TemplateVariables</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
-<div class="block">Annotation to be used on parameters of methods annotated with <a href="io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> to mark
+<div class="block">Annotation to be used on parameters of methods annotated with <a href="io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> to define
  a single DTO parameter that is used to expand multiple template variables.</div>
 </dd>
 </dl>

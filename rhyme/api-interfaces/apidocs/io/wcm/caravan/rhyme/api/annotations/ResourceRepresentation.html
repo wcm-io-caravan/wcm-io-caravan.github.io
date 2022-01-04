@@ -96,9 +96,16 @@
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true" title="class or interface in java.lang.annotation">@Retention</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/RetentionPolicy.html?is-external=true#RUNTIME" title="class or interface in java.lang.annotation">RUNTIME</a>)
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true" title="class or interface in java.lang.annotation">@Target</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/ElementType.html?is-external=true#METHOD" title="class or interface in java.lang.annotation">METHOD</a>)
 public @interface <span class="memberNameLabel">ResourceRepresentation</span></pre>
-<div class="block">Used to annotate a method that allows clients to get the full JSON representation of the resource
- (including the _links and _embedded properties). The return type of the method must be a reactive
- stream of <code>JsonNode</code> or <code>HalResource</code>.</div>
+<div class="block">Used to define a method that allows clients to get the full JSON representation of the resource
+ (including the _links and _embedded properties).
+ <p>
+ Adding a method with this annotation is only required if you want your clients to conveniently process the HAL
+ resources manually (or with another HAL library). It's not required if you are working exclusively with Rhyme.
+ </p>
+ <p>
+ The method must return a <code>JsonNode</code> or <code>HalResource</code> (either directly or wrapped in a supported reactive
+ type).
+ </p></div>
 </li>
 </ul>
 </div>

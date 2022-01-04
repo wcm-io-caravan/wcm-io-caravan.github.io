@@ -74,7 +74,7 @@
 </p>
 <h1 title="Package" class="title">Package&nbsp;io.wcm.caravan.rhyme.api.annotations</h1>
 <div class="docSummary">
-<div class="block">The annotations used to define HAL API interfaces</div>
+<div class="block">The annotations used on interface to define HAL APIs</div>
 </div>
 <p>See:&nbsp;<a href="#package.description">Description</a></p>
 </div>
@@ -89,62 +89,54 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ExcludeFromJacocoGeneratedReport.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">ExcludeFromJacocoGeneratedReport</a></td>
-<td class="colLast">
-<div class="block">A marker annotation that you can use on methods that can't be covered by tests,
- and will be excluded when JaCoCo is calculating the code coverage.</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">HalApiInterface</a></td>
 <td class="colLast">
-<div class="block">A marker annotation that is required for all HAL API interfaces, to indicate that it should be scanned for the
- presence of methods annotated with <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a>, <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceState.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>ResourceState</code></a>, etc that actually define the API.</div>
+<div class="block">A marker annotation that is required for all HAL API interfaces to be used with the Rhyme framework.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">Related</a></td>
 <td class="colLast">
-<div class="block">Used to annotate methods that allow access to linked or embedded resources.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceLink.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">ResourceLink</a></td>
-<td class="colLast">
-<div class="block">Used to define methods that allow clients to only access URI of a resource, or the
- <code>Link</code> instance that is pointing to a resource (without actually fetching the resource).</div>
+<div class="block">Used to annotate methods in a <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a> which allow access to linked or embedded resources.</div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceProperty.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">ResourceProperty</a></td>
+<td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceLink.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">ResourceLink</a></td>
 <td class="colLast">
-<div class="block">Identifies a method that allows to access a single JSON property of a HAL resource's state.</div>
+<div class="block">Used to define methods that allow clients to access only the <code>Link</code> or URI that is pointing to a resource
+ (without actually fetching it).</div>
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceProperty.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">ResourceProperty</a></td>
+<td class="colLast">
+<div class="block">Used to define methods that allow to access a single JSON property of a HAL resource's state.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceRepresentation.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">ResourceRepresentation</a></td>
 <td class="colLast">
-<div class="block">Used to annotate a method that allows clients to get the full JSON representation of the resource
+<div class="block">Used to define a method that allows clients to get the full JSON representation of the resource
  (including the _links and _embedded properties).</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceState.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">ResourceState</a></td>
 <td class="colLast">
-<div class="block">Identifies a method that allows to access the state/properties of a HAL resource all at once.</div>
+<div class="block">Used to define a method that allows to access the HAL resources' state (i.e.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariable.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">TemplateVariable</a></td>
 <td class="colLast">
 <div class="block">Annotation to be used on parameters of methods annotated with <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> to define
- which variable in the URI template should be expanded with the given parameter value.</div>
+ the name of the variable in the URI template that corresponds to the given parameter value.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariables.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">TemplateVariables</a></td>
 <td class="colLast">
-<div class="block">Annotation to be used on parameters of methods annotated with <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> to mark
+<div class="block">Annotation to be used on parameters of methods annotated with <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> to define
  a single DTO parameter that is used to expand multiple template variables.</div>
 </td>
 </tr>
@@ -156,7 +148,7 @@
 <!--   -->
 </a>
 <h2 title="Package io.wcm.caravan.rhyme.api.annotations Description">Package io.wcm.caravan.rhyme.api.annotations Description</h2>
-<div class="block">The annotations used to define HAL API interfaces</div>
+<div class="block">The annotations used on interface to define HAL APIs</div>
 </div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
 <div class="bottomNav"><a name="navbar.bottom">

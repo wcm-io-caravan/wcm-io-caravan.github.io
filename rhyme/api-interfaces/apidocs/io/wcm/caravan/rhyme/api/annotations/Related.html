@@ -96,11 +96,26 @@
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true" title="class or interface in java.lang.annotation">@Retention</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/RetentionPolicy.html?is-external=true#RUNTIME" title="class or interface in java.lang.annotation">RUNTIME</a>)
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true" title="class or interface in java.lang.annotation">@Target</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/ElementType.html?is-external=true#METHOD" title="class or interface in java.lang.annotation">METHOD</a>)
 public @interface <span class="memberNameLabel">Related</span></pre>
-<div class="block">Used to annotate methods that allow access to linked or embedded resources. The return value of methods
- annotated with <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> must provide one ore more instances of other <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a> objects.
+<div class="block">Used to annotate methods in a <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a> which allow access to linked or embedded resources.
+ <p>
+ The return value of the methods must provide one ore more instances of another <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a> type.
+ These can either be returned directly, or wrapped in an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util"><code>Optional</code></a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html?is-external=true" title="class or interface in java.util.stream"><code>Stream</code></a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util"><code>List</code></a>,
+ or one of the supported reactive types (e.g. Single, Maybe, Observable).
+ </p>
+ <p>
+ You can also represent links to other non-HAL resources (e.g. HTML, text or binary) by using <a href="../../../../../../io/wcm/caravan/rhyme/api/resources/LinkableResource.html" title="interface in io.wcm.caravan.rhyme.api.resources"><code>LinkableResource</code></a>
+ as return type.
+ </p>
+ <p>
  Methods with this annotation can have parameters with <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariable.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>TemplateVariable</code></a> or
- <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariables.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>TemplateVariables</code></a> annotations to allow clients to expand link templates with the values specified
- in those parameters.</div>
+ <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariables.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>TemplateVariables</code></a> annotations to define URI templates that clients can expand with the values
+ specified in those parameters.
+ </p></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariables.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>TemplateVariables</code></a>, 
+<a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariable.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>TemplateVariable</code></a></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -122,7 +137,7 @@ public @interface <span class="memberNameLabel">Related</span></pre>
 <tr class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html#value--">value</a></span></code>
-<div class="block">Defines the relation of the target resource to this context resource.</div>
+<div class="block">Defines the relation of the linked or embedded resource to this context resource.</div>
 </td>
 </tr>
 </table>
@@ -147,7 +162,7 @@ public @interface <span class="memberNameLabel">Related</span></pre>
 <li class="blockList">
 <h4>value</h4>
 <pre>public abstract&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value</pre>
-<div class="block">Defines the relation of the target resource to this context resource.</div>
+<div class="block">Defines the relation of the linked or embedded resource to this context resource.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a standard relation or CURI of a custom relation (i.e. "prefix:relation")</dd>

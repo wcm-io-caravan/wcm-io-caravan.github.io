@@ -97,9 +97,21 @@
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true" title="class or interface in java.lang.annotation">@Target</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/ElementType.html?is-external=true#PARAMETER" title="class or interface in java.lang.annotation">PARAMETER</a>)
 public @interface <span class="memberNameLabel">TemplateVariable</span></pre>
 <div class="block">Annotation to be used on parameters of methods annotated with <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> to define
- which variable in the URI template should be expanded with the given parameter value. If you
- have link templates with many variables, consider using <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariables.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>TemplateVariables</code></a> to simplify
- your method signatures.</div>
+ the name of the variable in the URI template that corresponds to the given parameter value.
+ <p>
+ If the template variable should have the same name as the parameter in the java method, then
+ you can omit this annotation, but you have to ensure that your parameter names are not stripped
+ out during compilation.
+ </p>
+ <p>
+ If you have link templates with many variables, consider using <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariables.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>TemplateVariables</code></a> to simplify
+ your method signatures.
+ </p></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariables.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>TemplateVariables</code></a>, 
+<a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a></dd>
+</dl>
 </li>
 </ul>
 </div>
