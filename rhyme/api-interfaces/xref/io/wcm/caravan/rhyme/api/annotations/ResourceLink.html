@@ -36,18 +36,22 @@
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.resources.LinkableResource;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> * Used to define methods that allow clients to access only the {@link Link} or URI that is pointing to a resource</em>
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * (without actually fetching it). The return type of the method must be a {@link Link} or {@link String}.</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> * Used to declare a method that provide a link to the resource instance. The return type of the method must be a</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * {@link Link} or {@link String}.</em>
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> * If your interface extends from {@link LinkableResource} then you won't need to add this annotation yourself, as</em>
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment"> * {@link LinkableResource#createLink()} is already annotated.</em>
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  @Retention(RetentionPolicy.RUNTIME)
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  @Target(ElementType.METHOD)
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">public</strong> @<strong class="jxr_keyword">interface</strong> <a name="ResourceLink" href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceLink.html#ResourceLink">ResourceLink</a> {
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>    <em class="jxr_comment">// this is just a marker interface that does not have any configurable options</em>
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  }
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> * On the client side, it will allow to access only the {@link Link} or URI that is pointing to a resource</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment"> * (without actually fetching it). On the server side, this annotation is usually used only indirectly</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> * by implementing {@link LinkableResource#createLink()}.</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> * If your interface extends from {@link LinkableResource} then you won't need to add this annotation yourself, as</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> * {@link LinkableResource#createLink()} is already annotated.</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  @Retention(RetentionPolicy.RUNTIME)
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  @Target(ElementType.METHOD)
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">public</strong> @<strong class="jxr_keyword">interface</strong> <a name="ResourceLink" href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceLink.html#ResourceLink">ResourceLink</a> {
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    <em class="jxr_comment">// this is just a marker interface that does not have any configurable options</em>
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014&#x2013;2022 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</div>

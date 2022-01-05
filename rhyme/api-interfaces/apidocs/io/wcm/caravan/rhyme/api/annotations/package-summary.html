@@ -74,7 +74,7 @@
 </p>
 <h1 title="Package" class="title">Package&nbsp;io.wcm.caravan.rhyme.api.annotations</h1>
 <div class="docSummary">
-<div class="block">The annotations used on interfaces to define HAL APIs</div>
+<div class="block">The annotations used in interfaces that define HAL APIs</div>
 </div>
 <p>See:&nbsp;<a href="#package.description">Description</a></p>
 </div>
@@ -97,33 +97,33 @@
 <tr class="rowColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">Related</a></td>
 <td class="colLast">
-<div class="block">Used to annotate methods in a <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a> which allow access to linked or embedded resources.</div>
+<div class="block">Used to declare methods which defines a link relation and the expected type for linked or embedded resources.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceLink.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">ResourceLink</a></td>
 <td class="colLast">
-<div class="block">Used to define methods that allow clients to access only the <code>Link</code> or URI that is pointing to a resource
- (without actually fetching it).</div>
+<div class="block">Used to declare a method that provide a link to the resource instance.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceProperty.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">ResourceProperty</a></td>
 <td class="colLast">
-<div class="block">Used to define methods that allow to access a single JSON property of a HAL resource's state.</div>
+<div class="block">Used to declare methods that allow to access a single JSON property of a HAL resource's state.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceRepresentation.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">ResourceRepresentation</a></td>
 <td class="colLast">
-<div class="block">Used to define a method that allows clients to get the full JSON representation of the resource
+<div class="block">Used to declare the method that allows clients to get the full JSON representation of the resource
  (including the _links and _embedded properties).</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/ResourceState.html" title="annotation in io.wcm.caravan.rhyme.api.annotations">ResourceState</a></td>
 <td class="colLast">
-<div class="block">Used to define a method that allows to access the HAL resources' state (i.e.</div>
+<div class="block">Used to declare the method that allows to access the HAL resources' state (all JSON properties except for
+ "_links" and "_embedded") as a single object.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -148,7 +148,7 @@
 <!--   -->
 </a>
 <h2 title="Package io.wcm.caravan.rhyme.api.annotations Description">Package io.wcm.caravan.rhyme.api.annotations Description</h2>
-<div class="block">The annotations used on interfaces to define HAL APIs</div>
+<div class="block">The annotations used in interfaces that define HAL APIs</div>
 </div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
 <div class="bottomNav"><a name="navbar.bottom">

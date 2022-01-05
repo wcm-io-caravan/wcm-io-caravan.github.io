@@ -106,7 +106,11 @@ public interface <span class="typeNameLabel">Rhyme</span></pre>
 <div class="block">A facade interface that simplifies all interaction with the core framework to handle an incoming request for a
  HAL+JSON resource. You should create a <a href="../../../../../io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> instance immediately after
  accepting an incoming request (using a <a href="../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api"><code>RhymeBuilder</code></a>) and then use this single instance to fetch all upstream
- resource and render the response.</div>
+ resource and render the response.
+ <p>
+ If you are only using the Rhyme framework as a HAL client library (but not to render HAL resources) then you can use
+ <a href="../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalApiClient</code></a> directly.
+ </p></div>
 </li>
 </ul>
 </div>

@@ -107,13 +107,15 @@ public interface <span class="typeNameLabel">LinkableResource</span></pre>
  linked to from another resource).
  <p>
  You <b>can</b> make your <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a>s extends this interface directly, and doing so will make it possible
- for clients to extract the resource link and URL from a client proxy. This can be useful if the client need to select
- one of multiple links based on the link properties, or do other processing that requires the knowledge of the URLs.
+ for clients to extract the resource link and URL from a client proxy by calling <a href="../../../../../../io/wcm/caravan/rhyme/api/resources/LinkableResource.html#createLink--"><code>createLink()</code></a>. This can be
+ useful if the client need to select one of multiple links based on the link properties, or do other processing that
+ requires the knowledge of the URLs.
  </p>
  <p>
- But you can also hide the link URLs completely from the client, if you only want them to work with the methods
- available in your <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a>. In that case, you would <b>not</b> make your <b>interface</b> extend
- <a href="../../../../../../io/wcm/caravan/rhyme/api/resources/LinkableResource.html" title="interface in io.wcm.caravan.rhyme.api.resources"><code>LinkableResource</code></a>, but only implement in in the server-side implementation class.
+ You may want want to keep the option of having certain small resources only be available as embedded resource, and
+ not let your clients know that they can also fetch an it directly through an URL. In that case, you would <b>not</b>
+ make your <b>interface</b> extend <a href="../../../../../../io/wcm/caravan/rhyme/api/resources/LinkableResource.html" title="interface in io.wcm.caravan.rhyme.api.resources"><code>LinkableResource</code></a>, but only implement it in the server-side implementation
+ class.
  </p>
  <p>
  If you don't implement this interface in your server-side implementation of a HAL API interface, then that resource
@@ -172,7 +174,12 @@ public interface <span class="typeNameLabel">LinkableResource</span></pre>
 <pre>io.wcm.caravan.hal.resource.Link&nbsp;createLink()</pre>
 <div class="block">Create a link to this resource, including meaningful title and name properties where appropriate. If all required
  parameters of the resource are set, then the link should have a resolved URI as href property. If some or all
- required parameters are null, a link with a URI template should be created instead.</div>
+ required parameters are null, a link with a URI template should be created instead.
+ <p>
+ Note that the Link instance doesn't have a relation property, because that is derived from the <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a>
+ annotation of the method that defines the links to this resource. The same resource can be linked from multiple
+ other resources using different relations, but all links are created on the server side using the same method.
+ </p></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a <code>Link</code> instance where href, title and name properties are already set as required</dd>

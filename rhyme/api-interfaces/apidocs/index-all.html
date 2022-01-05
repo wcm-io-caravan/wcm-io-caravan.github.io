@@ -112,8 +112,8 @@
 <dl>
 <dt><a href="io/wcm/caravan/rhyme/api/resources/EmbeddableResource.html" title="interface in io.wcm.caravan.rhyme.api.resources"><span class="typeNameLink">EmbeddableResource</span></a> - Interface in <a href="io/wcm/caravan/rhyme/api/resources/package-summary.html">io.wcm.caravan.rhyme.api.resources</a></dt>
 <dd>
-<div class="block">An interface that server-side resources should implement if it's reasonable to embed their HAL representation into
- their context resource.</div>
+<div class="block">An interface that server-side resources should implement if it's reasonable to embed them into
+ the context resource.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/relations/VndErrorRelations.html#ERRORS">ERRORS</a></span> - Static variable in class io.wcm.caravan.rhyme.api.relations.<a href="io/wcm/caravan/rhyme/api/relations/VndErrorRelations.html" title="class in io.wcm.caravan.rhyme.api.relations">VndErrorRelations</a></dt>
 <dd>
@@ -159,7 +159,7 @@
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a> - package io.wcm.caravan.rhyme.api.annotations</dt>
 <dd>
-<div class="block">The annotations used on interfaces to define HAL APIs</div>
+<div class="block">The annotations used in interfaces that define HAL APIs</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/relations/package-summary.html">io.wcm.caravan.rhyme.api.relations</a> - package io.wcm.caravan.rhyme.api.relations</dt>
 <dd>
@@ -239,7 +239,7 @@
 <dl>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">Related</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
-<div class="block">Used to annotate methods in a <a href="io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a> which allow access to linked or embedded resources.</div>
+<div class="block">Used to declare methods which defines a link relation and the expected type for linked or embedded resources.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html#RELATED">RELATED</a></span> - Static variable in class io.wcm.caravan.rhyme.api.relations.<a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html" title="class in io.wcm.caravan.rhyme.api.relations">StandardRelations</a></dt>
 <dd>
@@ -247,21 +247,21 @@
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/ResourceLink.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">ResourceLink</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
-<div class="block">Used to define methods that allow clients to access only the <code>Link</code> or URI that is pointing to a resource
- (without actually fetching it).</div>
+<div class="block">Used to declare a method that provide a link to the resource instance.</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/ResourceProperty.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">ResourceProperty</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
-<div class="block">Used to define methods that allow to access a single JSON property of a HAL resource's state.</div>
+<div class="block">Used to declare methods that allow to access a single JSON property of a HAL resource's state.</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/ResourceRepresentation.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">ResourceRepresentation</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
-<div class="block">Used to define a method that allows clients to get the full JSON representation of the resource
+<div class="block">Used to declare the method that allows clients to get the full JSON representation of the resource
  (including the _links and _embedded properties).</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/annotations/ResourceState.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><span class="typeNameLink">ResourceState</span></a> - Annotation Type in <a href="io/wcm/caravan/rhyme/api/annotations/package-summary.html">io.wcm.caravan.rhyme.api.annotations</a></dt>
 <dd>
-<div class="block">Used to define a method that allows to access the HAL resources' state (i.e.</div>
+<div class="block">Used to declare the method that allows to access the HAL resources' state (all JSON properties except for
+ "_links" and "_embedded") as a single object.</div>
 </dd>
 </dl>
 <a name="I:S">
@@ -283,7 +283,7 @@
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html" title="class in io.wcm.caravan.rhyme.api.relations"><span class="typeNameLink">StandardRelations</span></a> - Class in <a href="io/wcm/caravan/rhyme/api/relations/package-summary.html">io.wcm.caravan.rhyme.api.relations</a></dt>
 <dd>
-<div class="block">Constants for standard link relations used in <a href="io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> annotations.</div>
+<div class="block">Constants for some standard link relations used in <a href="io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> annotations.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html#SUBSECTION">SUBSECTION</a></span> - Static variable in class io.wcm.caravan.rhyme.api.relations.<a href="io/wcm/caravan/rhyme/api/relations/StandardRelations.html" title="class in io.wcm.caravan.rhyme.api.relations">StandardRelations</a></dt>
 <dd>

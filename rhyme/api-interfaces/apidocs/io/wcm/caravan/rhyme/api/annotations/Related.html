@@ -96,7 +96,8 @@
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true" title="class or interface in java.lang.annotation">@Retention</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/RetentionPolicy.html?is-external=true#RUNTIME" title="class or interface in java.lang.annotation">RUNTIME</a>)
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true" title="class or interface in java.lang.annotation">@Target</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/ElementType.html?is-external=true#METHOD" title="class or interface in java.lang.annotation">METHOD</a>)
 public @interface <span class="memberNameLabel">Related</span></pre>
-<div class="block">Used to annotate methods in a <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a> which allow access to linked or embedded resources.
+<div class="block">Used to declare methods which defines a link relation and the expected type for linked or embedded resources.
+ For each link relation there must be only one corresponding <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/Related.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>Related</code></a> method in your <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a>.
  <p>
  The return value of the methods must provide one ore more instances of another <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/HalApiInterface.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>HalApiInterface</code></a> type.
  These can either be returned directly, or wrapped in an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util"><code>Optional</code></a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html?is-external=true" title="class or interface in java.util.stream"><code>Stream</code></a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util"><code>List</code></a>,
@@ -110,6 +111,10 @@ public @interface <span class="memberNameLabel">Related</span></pre>
  Methods with this annotation can have parameters with <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariable.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>TemplateVariable</code></a> or
  <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariables.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>TemplateVariables</code></a> annotations to define URI templates that clients can expand with the values
  specified in those parameters.
+ </p>
+ <p>
+ On the server side, these methods will be called by the framework when the resource is rendered. Any parameters for
+ template parameters will be invoked with a null value.
  </p></div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -166,6 +171,8 @@ public @interface <span class="memberNameLabel">Related</span></pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a standard relation or CURI of a custom relation (i.e. "prefix:relation")</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../io/wcm/caravan/rhyme/api/relations/StandardRelations.html" title="class in io.wcm.caravan.rhyme.api.relations"><code>StandardRelations</code></a></dd>
 </dl>
 </li>
 </ul>

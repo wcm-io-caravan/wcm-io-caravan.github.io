@@ -96,11 +96,11 @@
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true" title="class or interface in java.lang.annotation">@Retention</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Retention.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/RetentionPolicy.html?is-external=true#RUNTIME" title="class or interface in java.lang.annotation">RUNTIME</a>)
  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true" title="class or interface in java.lang.annotation">@Target</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/Target.html?is-external=true#value--" title="class or interface in java.lang.annotation">value</a>=<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/annotation/ElementType.html?is-external=true#METHOD" title="class or interface in java.lang.annotation">METHOD</a>)
 public @interface <span class="memberNameLabel">ResourceState</span></pre>
-<div class="block">Used to define a method that allows to access the HAL resources' state (i.e. all but the reserved properties) as a
- single object
+<div class="block">Used to declare the method that allows to access the HAL resources' state (all JSON properties except for
+ "_links" and "_embedded") as a single object.
  <p>
- The method must provide a Jackson <code>ObjectNode</code> or a Java object that that matches the JSON object structure
- (and can be deserialised by a default Jackson <code>ObjectMapper</code>). This object can either be returned
+ The method must provide either a Jackson <code>ObjectNode</code> or a Java object that that matches the JSON object
+ structure (and can be deserialised by a default Jackson <code>ObjectMapper</code>). This object can either be returned
  directly from the annotated method, but can also be wrapped with <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html?is-external=true" title="class or interface in java.util"><code>Optional</code></a> or a supported reactive type.
  </p></div>
 <dl>
