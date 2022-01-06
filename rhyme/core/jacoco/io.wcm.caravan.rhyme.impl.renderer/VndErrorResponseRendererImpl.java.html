@@ -87,7 +87,7 @@ public class VndErrorResponseRendererImpl implements VndErrorResponseRenderer {
   private int getNonZeroStatusCode(Throwable error) {
 
 <span class="fc" id="L89">    Integer statusFromStrategy = strategy.extractStatusCode(error);</span>
-<span class="fc bfc" id="L90" title="All 4 branches covered.">    if (statusFromStrategy == null || statusFromStrategy == 0) {</span>
+<span class="fc bfc" id="L90" title="All 4 branches covered.">    if (statusFromStrategy == null || statusFromStrategy &lt;= 0) {</span>
 <span class="fc" id="L91">      return 500;</span>
     }
 
