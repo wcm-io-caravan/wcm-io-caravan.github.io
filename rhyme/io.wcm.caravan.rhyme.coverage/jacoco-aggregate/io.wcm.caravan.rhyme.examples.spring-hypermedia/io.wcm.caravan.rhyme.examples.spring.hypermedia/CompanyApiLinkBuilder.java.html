@@ -115,10 +115,13 @@ class CompanyApiLinkBuilder {
    */
   String getLocalEntryPointUrl() {
 
-<span class="fc" id="L118">    return createLinkTo(CompanyApiController.class, CompanyApiController::get)</span>
-<span class="fc" id="L119">        .withFingerprintingOnlyIf(fingerprinting.isUsedInIncomingRequest())</span>
-<span class="fc" id="L120">        .build()</span>
-<span class="fc" id="L121">        .getHref();</span>
+<span class="fc" id="L118">    RhymeLinkBuilder linkBuilder = createLinkTo(CompanyApiController.class, CompanyApiController::get);</span>
+
+<span class="fc bfc" id="L120" title="All 2 branches covered.">    if (!fingerprinting.isUsedInIncomingRequest()) {</span>
+<span class="fc" id="L121">      linkBuilder = linkBuilder.withoutFingerprint();</span>
+    }
+
+<span class="fc" id="L124">    return linkBuilder.build().getHref();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

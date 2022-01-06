@@ -136,7 +136,7 @@
 <dt><a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api"><span class="typeNameLink">RhymeLinkBuilder</span></a> - Interface in <a href="io/wcm/caravan/rhyme/spring/api/package-summary.html">io.wcm.caravan.rhyme.spring.api</a></dt>
 <dd>
 <div class="block">An intermediate stage during link generation that is returned by
- <a href="io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#createLinkWith-org.springframework.hateoas.server.mvc.WebMvcLinkBuilder-"><code>createLinkWith(WebMvcLinkBuilder)</code></a> that allows
+ <a href="io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#createLinkWith-org.springframework.hateoas.server.mvc.WebMvcLinkBuilder-"><code>createLinkWith(WebMvcLinkBuilder)</code></a> and allows
  adding adding name and title attributes before calling <a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#build--"><code>RhymeLinkBuilder.build()</code></a> to finally create the link.</div>
 </dd>
 </dl>
@@ -178,12 +178,12 @@
 <div class="block">Allows the URL fingerprinting logic to modify the max-age cache-control directive for the response that is
  currently rendered, depending on whether the incoming request is using a fingerprinted URL.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withFingerprintingOnlyIf-boolean-">withFingerprintingOnlyIf(boolean)</a></span> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></dt>
-<dd>
-<div class="block">Allows to conditionally disable the URL fingerprinting for the link being build</div>
-</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withName-java.lang.String-">withName(String)</a></span> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withoutFingerprint--">withoutFingerprint()</a></span> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></dt>
+<dd>
+<div class="block">Allows to disable the addition of fingerprinting parameters only for the link that is currently being built</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withTemplateTitle-java.lang.String-">withTemplateTitle(String)</a></span> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></dt>
 <dd>
 <div class="block">Used to set a different title attribute only if the generated link contains URI template variables</div>

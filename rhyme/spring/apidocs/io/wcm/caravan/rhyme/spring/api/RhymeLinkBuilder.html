@@ -102,7 +102,7 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public interface <span class="typeNameLabel">RhymeLinkBuilder</span></pre>
 <div class="block">An intermediate stage during link generation that is returned by
- <a href="../../../../../../io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#createLinkWith-org.springframework.hateoas.server.mvc.WebMvcLinkBuilder-"><code>UrlFingerprinting.createLinkWith(WebMvcLinkBuilder)</code></a> that allows
+ <a href="../../../../../../io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#createLinkWith-org.springframework.hateoas.server.mvc.WebMvcLinkBuilder-"><code>UrlFingerprinting.createLinkWith(WebMvcLinkBuilder)</code></a> and allows
  adding adding name and title attributes before calling <a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#build--"><code>build()</code></a> to finally create the link.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -134,13 +134,13 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withFingerprintingOnlyIf-boolean-">withFingerprintingOnlyIf</a></span>(boolean&nbsp;condition)</code>
-<div class="block">Allows to conditionally disable the URL fingerprinting for the link being build</div>
-</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withName-java.lang.String-">withName</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withName-java.lang.String-">withName</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withoutFingerprint--">withoutFingerprint</a></span>()</code>
+<div class="block">Allows to disable the addition of fingerprinting parameters only for the link that is currently being built</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></code></td>
@@ -167,22 +167,6 @@ var activeTableTab = "activeTableTab";
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="withFingerprintingOnlyIf-boolean-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>withFingerprintingOnlyIf</h4>
-<pre><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a>&nbsp;withFingerprintingOnlyIf(boolean&nbsp;condition)</pre>
-<div class="block">Allows to conditionally disable the URL fingerprinting for the link being build</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>condition</code> - true if URL fingerprinting parameters should be added</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>this</dd>
-</dl>
-</li>
-</ul>
 <a name="withName-java.lang.String-">
 <!--   -->
 </a>
@@ -224,6 +208,20 @@ var activeTableTab = "activeTableTab";
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>title</code> - the title attribute for the generated link template</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this</dd>
+</dl>
+</li>
+</ul>
+<a name="withoutFingerprint--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withoutFingerprint</h4>
+<pre><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a>&nbsp;withoutFingerprint()</pre>
+<div class="block">Allows to disable the addition of fingerprinting parameters only for the link that is currently being built</div>
+<dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>this</dd>
 </dl>
