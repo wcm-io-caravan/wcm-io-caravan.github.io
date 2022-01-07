@@ -116,9 +116,12 @@ var activeTableTab = "activeTableTab";
 <pre>public class <span class="typeNameLabel">ApacheAsyncHttpSupport</span>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>
 implements io.wcm.caravan.rhyme.api.spi.HttpClientSupport</pre>
-<div class="block">An HTTP client implementation to be used with
- <code>HalResourceLoaderBuilder.withCustomHttpClient(HttpClientSupport)</code>
- that is using the asynchronous Apache HTTP client to execute requests.</div>
+<div class="block">An HTTP client implementation that is using the asynchronous Apache HTTP client to execute requests.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><code>HalResourceLoader.create(HttpClientSupport)</code>, 
+<code>HalResourceLoaderBuilder.withCustomHttpClient(HttpClientSupport)</code></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -138,10 +141,16 @@ implements io.wcm.caravan.rhyme.api.spi.HttpClientSupport</pre>
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/testing/client/ApacheAsyncHttpSupport.html#ApacheAsyncHttpSupport--">ApacheAsyncHttpSupport</a></span>()</code>
-<div class="block">Default constructor that can be used if all URIs are fully qualified</div>
+<div class="block">Default constructor that can be used if all URIs are fully qualified and requests
+ can be executed with a default HTTP client created with <code>HttpAsyncClientBuilder</code></div>
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/testing/client/ApacheAsyncHttpSupport.html#ApacheAsyncHttpSupport-org.apache.http.impl.nio.client.CloseableHttpAsyncClient-">ApacheAsyncHttpSupport</a></span>(org.apache.http.impl.nio.client.CloseableHttpAsyncClient&nbsp;client)</code>
+<div class="block">Allows to provide a customised <code>CloseableHttpAsyncClient</code> instance to be used for all requests.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/testing/client/ApacheAsyncHttpSupport.html#ApacheAsyncHttpSupport-java.net.URI-">ApacheAsyncHttpSupport</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html?is-external=true" title="class or interface in java.net">URI</a>&nbsp;baseUri)</code>
 <div class="block">An alternative constructor that will resolve all paths against the given Base URI</div>
 </td>
@@ -195,7 +204,22 @@ implements io.wcm.caravan.rhyme.api.spi.HttpClientSupport</pre>
 <li class="blockList">
 <h4>ApacheAsyncHttpSupport</h4>
 <pre>public&nbsp;ApacheAsyncHttpSupport()</pre>
-<div class="block">Default constructor that can be used if all URIs are fully qualified</div>
+<div class="block">Default constructor that can be used if all URIs are fully qualified and requests
+ can be executed with a default HTTP client created with <code>HttpAsyncClientBuilder</code></div>
+</li>
+</ul>
+<a name="ApacheAsyncHttpSupport-org.apache.http.impl.nio.client.CloseableHttpAsyncClient-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ApacheAsyncHttpSupport</h4>
+<pre>public&nbsp;ApacheAsyncHttpSupport(org.apache.http.impl.nio.client.CloseableHttpAsyncClient&nbsp;client)</pre>
+<div class="block">Allows to provide a customised <code>CloseableHttpAsyncClient</code> instance to be used for all requests.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>client</code> - to use for all requests</dd>
+</dl>
 </li>
 </ul>
 <a name="ApacheAsyncHttpSupport-java.net.URI-">

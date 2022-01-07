@@ -70,7 +70,7 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.common.RequestMetricsStopwatch;
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.relations.StandardRelations;
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.resources.LinkableResource;
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRenderer;
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment"> * Full implementation of {@link RequestMetricsCollector} that keeps track of all upstream resources that have been</em>
@@ -78,16 +78,16 @@
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="ResponseMetadataGenerator" href="../../../../../../io/wcm/caravan/rhyme/impl/metadata/ResponseMetadataGenerator.html#ResponseMetadataGenerator">ResponseMetadataGenerator</a> <strong class="jxr_keyword">implements</strong> <a name="RequestMetricsCollector" href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#RequestMetricsCollector">RequestMetricsCollector</a> {
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger log = LoggerFactory.getLogger(ResponseMetadataGenerator.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Stopwatch overalResponseTimeStopwatch = Stopwatch.createStarted();
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>  
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Map&lt;TimeUnit, String&gt; TIME_UNIT_ABBRS = ImmutableMap.of(
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>        TimeUnit.MINUTES, <span class="jxr_string">"m"</span>,
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>        TimeUnit.SECONDS, <span class="jxr_string">"s"</span>,
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>        TimeUnit.MILLISECONDS, <span class="jxr_string">"ms"</span>,
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>        TimeUnit.MICROSECONDS, <span class="jxr_string">"μs"</span>,
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>        TimeUnit.NANOSECONDS, <span class="jxr_string">"ns"</span>);
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>  
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Stopwatch overalResponseTimeStopwatch = Stopwatch.createStarted();
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger log = LoggerFactory.getLogger(ResponseMetadataGenerator.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Map&lt;TimeUnit, String&gt; TIME_UNIT_ABBRS = ImmutableMap.of(
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>        TimeUnit.MINUTES, <span class="jxr_string">"m"</span>,
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>        TimeUnit.SECONDS, <span class="jxr_string">"s"</span>,
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>        TimeUnit.MILLISECONDS, <span class="jxr_string">"ms"</span>,
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>        TimeUnit.MICROSECONDS, <span class="jxr_string">"μs"</span>,
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>        TimeUnit.NANOSECONDS, <span class="jxr_string">"ns"</span>);
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> List&lt;TimeMeasurement&gt; inputMaxAgeSeconds = Collections.synchronizedList(<strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;());
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> List&lt;TimeMeasurement&gt; inputResponseTimes = Collections.synchronizedList(<strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;());
@@ -285,7 +285,7 @@
 <a class="jxr_linenumber" name="L277" href="#L277">277</a> 
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>     <em class="jxr_comment">// and a summary of the important timing results</em>
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>     metadataResource.getModel().put(<span class="jxr_string">"sumOfProxyInvocationTime"</span>, getSumOfInvocationMillis(HalApiClient.<strong class="jxr_keyword">class</strong>) + <span class="jxr_string">"ms"</span>);
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>     metadataResource.getModel().put(<span class="jxr_string">"sumOfResourceAssemblyTime"</span>, getSumOfInvocationMillis(AsyncHalResourceRenderer.<strong class="jxr_keyword">class</strong>) + <span class="jxr_string">"ms"</span>);
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>     metadataResource.getModel().put(<span class="jxr_string">"sumOfResourceAssemblyTime"</span>, getSumOfInvocationMillis(AsyncHalResponseRenderer.<strong class="jxr_keyword">class</strong>) + <span class="jxr_string">"ms"</span>);
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>     metadataResource.getModel().put(<span class="jxr_string">"sumOfResponseAndParseTimes"</span>, getSumOfResponseTimeMillis() + <span class="jxr_string">"ms"</span>);
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>     metadataResource.getModel().put(<span class="jxr_string">"overallServerSideResponseTime"</span>, getOverallResponseTimeMillis() + <span class="jxr_string">"ms"</span>);
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>     metadataResource.getModel().put(<span class="jxr_string">"metricsCollectionTime"</span>, TimeUnit.NANOSECONDS.toMillis(metricsCollectionNanos.get()) + <span class="jxr_string">"ms"</span>);
@@ -323,8 +323,8 @@
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>             <span class="jxr_string">"A breakdown of time spent in blocking HalApiClient proxy method calls"</span>,
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>             <strong class="jxr_keyword">null</strong>, false),
 <a class="jxr_linenumber" name="L317" href="#L317">317</a> 
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>         <strong class="jxr_keyword">new</strong> TimingResourceCategory(AsyncHalResourceRenderer.<strong class="jxr_keyword">class</strong>.getSimpleName(), RENDERING_TIMES,
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>             <span class="jxr_string">"A breakdown of time spent in blocking method calls by AsyncHalResourceRenderer"</span>,
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>         <strong class="jxr_keyword">new</strong> TimingResourceCategory(AsyncHalResponseRenderer.<strong class="jxr_keyword">class</strong>.getSimpleName(), RENDERING_TIMES,
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>             <span class="jxr_string">"A breakdown of time spent in blocking method calls while rendering resources"</span>,
 <a class="jxr_linenumber" name="L320" href="#L320">320</a>             <strong class="jxr_keyword">null</strong>, false),
 <a class="jxr_linenumber" name="L321" href="#L321">321</a> 
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>         <strong class="jxr_keyword">new</strong> TimingResourceCategory(<span class="jxr_string">"SlingRhymeImpl"</span>, SLING_MODELS,

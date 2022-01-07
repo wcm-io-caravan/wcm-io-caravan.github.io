@@ -111,6 +111,10 @@ public interface <span class="typeNameLabel">Rhyme</span></pre>
  If you are only using the Rhyme framework as a HAL client library (but not to render HAL resources) then you can use
  <a href="../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalApiClient</code></a> directly.
  </p></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api"><code>RhymeBuilder</code></a></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -133,7 +137,7 @@ public interface <span class="typeNameLabel">Rhyme</span></pre>
 <td class="colFirst"><code>&lt;T&gt;&nbsp;T</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#getRemoteResource-java.lang.String-java.lang.Class-">getRemoteResource</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</code>
-<div class="block">Create a dynamic client proxy to load HAL+JSON resources from an upstream service.</div>
+<div class="block">Create a dynamic client proxy to load and navigate through HAL+JSON resources from an upstream service.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -185,7 +189,9 @@ public interface <span class="typeNameLabel">Rhyme</span></pre>
 <h4>getRemoteResource</h4>
 <pre>&lt;T&gt;&nbsp;T&nbsp;getRemoteResource(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;uri,
                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</pre>
-<div class="block">Create a dynamic client proxy to load HAL+JSON resources from an upstream service.</div>
+<div class="block">Create a dynamic client proxy to load and navigate through HAL+JSON resources from an upstream service.
+ Any interaction with the proxies will be recorded and used to generate embedded metadata about the upstream
+ requests when <a href="../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-"><code>renderResponse(LinkableResource)</code></a> is called later.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>T</code> - an interface annotated with <code>HalApiInterface</code></dd>
@@ -193,8 +199,10 @@ public interface <span class="typeNameLabel">Rhyme</span></pre>
 <dd><code>uri</code> - the URI of the entry point, in any format that the <a href="../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> being used can understand</dd>
 <dd><code>halApiInterface</code> - an interface annotated with <code>HalApiInterface</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a dynamic proxy instance of the provided <code>HalApiInterface</code> that you can use to navigate through the
+<dd>a dynamic proxy instance of the provided interface that you can use to navigate through the
          resources of the service</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalApiClient</code></a></dd>
 </dl>
 </li>
 </ul>

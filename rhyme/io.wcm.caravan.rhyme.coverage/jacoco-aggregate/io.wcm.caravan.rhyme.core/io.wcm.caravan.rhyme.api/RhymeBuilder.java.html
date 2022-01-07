@@ -29,11 +29,11 @@ import io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport;
 import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
 import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
 import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
-import io.wcm.caravan.rhyme.impl.RhymeBuilderImpl;
+import io.wcm.caravan.rhyme.impl.RhymeBuilders;
 
 /**
- * A builder to configure and create a {@link Rhyme} instance to be used throughout the lifecycle of the incoming
- * request.
+ * A fluent builder to configure and create a single {@link Rhyme} instance, which then should be used throughout the
+ * lifecycle of the current incoming request.
  * &lt;p&gt;
  * If you are only using {@link Rhyme} as a HAL client library
  * (but not to render HAL+JSON responses), you can also use {@link HalApiClient} directly.
@@ -53,7 +53,7 @@ public interface RhymeBuilder {
   @Deprecated
   static RhymeBuilder withoutResourceLoader() {
 
-<span class="fc" id="L56">    return RhymeBuilder.create();</span>
+<span class="fc" id="L56">    return create();</span>
   }
 
   /**
@@ -64,9 +64,7 @@ public interface RhymeBuilder {
    */
   static RhymeBuilder create() {
 
-<span class="fc" id="L67">    HalResourceLoader defaultLoader = HalResourceLoader.builder().build();</span>
-
-<span class="fc" id="L69">    return new RhymeBuilderImpl(defaultLoader);</span>
+<span class="fc" id="L67">    return RhymeBuilders.rhyme();</span>
   }
 
   /**
@@ -76,7 +74,7 @@ public interface RhymeBuilder {
    */
   static RhymeBuilder withResourceLoader(HalResourceLoader resourceLoader) {
 
-<span class="fc" id="L79">    return new RhymeBuilderImpl(resourceLoader);</span>
+<span class="fc" id="L77">    return RhymeBuilders.rhyme(resourceLoader);</span>
   }
 
   /**

@@ -2,14 +2,14 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2021 wcm.io
+ * Copyright (C) 2022 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,77 +31,53 @@ import io.wcm.caravan.rhyme.api.common.RequestMetricsStopwatch;
 import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
 import io.wcm.caravan.rhyme.api.server.VndErrorResponseRenderer;
-import io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy;
-import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
-import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
-import io.wcm.caravan.rhyme.impl.client.HalApiClientImpl;
-import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
-import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRenderer;
-import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRendererImpl;
-import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResponseRendererImpl;
 
 final class RhymeImpl implements Rhyme {
 
-<span class="fc" id="L45">  private final RequestMetricsCollector metrics = RequestMetricsCollector.create();</span>
-
-  private final String requestUri;
-  private final HalResourceLoader resourceLoader;
-  private final ExceptionStatusAndLoggingStrategy exceptionStrategy;
-
+  private final String incomingRequestUri;
+  private final VndErrorResponseRenderer errorRenderer;
   private final HalApiClient client;
   private final AsyncHalResponseRenderer renderer;
+  private final RequestMetricsCollector metrics;
 
-  RhymeImpl(String requestUri, HalResourceLoader resourceLoader, ExceptionStatusAndLoggingStrategy exceptionStrategy, HalApiTypeSupport typeSupport,
-<span class="fc" id="L55">      RhymeDocsSupport rhymeDocsSupport) {</span>
-<span class="fc" id="L56">    this.requestUri = requestUri;</span>
-<span class="fc" id="L57">    this.resourceLoader = resourceLoader;</span>
-<span class="fc" id="L58">    this.exceptionStrategy = exceptionStrategy;</span>
-<span class="fc" id="L59">    this.client = createHalApiClient(typeSupport);</span>
-<span class="fc" id="L60">    this.renderer = createResponseRenderer(typeSupport, rhymeDocsSupport);</span>
-<span class="fc" id="L61">  }</span>
+  RhymeImpl(String incomingRequestUri, HalApiClient client, AsyncHalResponseRenderer renderer, VndErrorResponseRenderer errorRenderer,
+<span class="fc" id="L44">      RequestMetricsCollector metrics) {</span>
 
-  private HalApiClient createHalApiClient(HalApiTypeSupport typeSupport) {
-
-<span class="fc" id="L65">    return new HalApiClientImpl(resourceLoader, metrics, typeSupport);</span>
-  }
-
-  private AsyncHalResponseRenderer createResponseRenderer(HalApiTypeSupport typeSupport, RhymeDocsSupport docsSupport) {
-
-<span class="fc" id="L70">    AsyncHalResourceRenderer resourceRenderer = new AsyncHalResourceRendererImpl(metrics, typeSupport);</span>
-
-<span class="fc" id="L72">    return new AsyncHalResponseRendererImpl(resourceRenderer, metrics, exceptionStrategy, typeSupport, docsSupport);</span>
-  }
+<span class="fc" id="L46">    this.incomingRequestUri = incomingRequestUri;</span>
+<span class="fc" id="L47">    this.errorRenderer = errorRenderer;</span>
+<span class="fc" id="L48">    this.client = client;</span>
+<span class="fc" id="L49">    this.renderer = renderer;</span>
+<span class="fc" id="L50">    this.metrics = metrics;</span>
+<span class="fc" id="L51">  }</span>
 
   @Override
   public &lt;T&gt; T getRemoteResource(String uri, Class&lt;T&gt; halApiInterface) {
 
-<span class="fc" id="L78">    return client.getRemoteResource(uri, halApiInterface);</span>
+<span class="fc" id="L56">    return client.getRemoteResource(uri, halApiInterface);</span>
   }
 
   @Override
   public void setResponseMaxAge(Duration duration) {
 
-<span class="fc" id="L84">    metrics.setResponseMaxAge(duration);</span>
-<span class="fc" id="L85">  }</span>
+<span class="fc" id="L62">    metrics.setResponseMaxAge(duration);</span>
+<span class="fc" id="L63">  }</span>
 
   @Override
   public Single&lt;HalResponse&gt; renderResponse(LinkableResource resourceImpl) {
 
-<span class="fc" id="L90">    return renderer.renderResponse(requestUri, resourceImpl);</span>
+<span class="fc" id="L68">    return renderer.renderResponse(incomingRequestUri, resourceImpl);</span>
   }
 
   @Override
   public HalResponse renderVndErrorResponse(Throwable error) {
 
-<span class="fc" id="L96">    VndErrorResponseRenderer errorRenderer = VndErrorResponseRenderer.create(exceptionStrategy);</span>
-
-<span class="fc" id="L98">    return errorRenderer.renderError(requestUri, null, error, metrics);</span>
+<span class="fc" id="L74">    return errorRenderer.renderError(incomingRequestUri, null, error, metrics);</span>
   }
 
   @Override
   public RequestMetricsStopwatch startStopwatch(Class clazz, Supplier&lt;String&gt; taskDescription) {
 
-<span class="fc" id="L104">    return metrics.startStopwatch(clazz, taskDescription);</span>
+<span class="fc" id="L80">    return metrics.startStopwatch(clazz, taskDescription);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -95,11 +95,13 @@
 </a>
 <h2 class="title">B</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#build--">build()</a></span> - Method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClientBuilder</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalResourceLoaderBuilder.html#build--">build()</a></span> - Method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalResourceLoaderBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client">HalResourceLoaderBuilder</a></dt>
 <dd>
 <div class="block">Create the <a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> with the HTTP and caching configuration defined by the previous methods calls</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html#builder--">builder()</a></span> - Static method in interface io.wcm.caravan.rhyme.api.spi.<a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalResourceLoader</a></dt>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html#build--">build()</a></span> - Method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server">HalResponseRendererBuilder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#buildForRequestTo-java.lang.String-">buildForRequestTo(String)</a></span> - Method in interface io.wcm.caravan.rhyme.api.<a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></dt>
 <dd>
@@ -140,14 +142,17 @@
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalApiClient.html#create-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">create(HalResourceLoader, RequestMetricsCollector)</a></span> - Static method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClient</a></dt>
 <dd>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="block"><span class="deprecationComment">to create a stand-alone instance use <a href="io/wcm/caravan/rhyme/api/client/HalApiClient.html#create-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-"><code>HalApiClient.create(HalResourceLoader)</code></a> instead</span></div>
+<div class="block"><span class="deprecationComment">use <a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalApiClientBuilder</code></a> instead</span></div>
 </div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalApiClient.html#create-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-">create(HalResourceLoader, RequestMetricsCollector, HalApiAnnotationSupport, HalApiReturnTypeSupport)</a></span> - Static method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClient</a></dt>
 <dd>
-<div class="block">An advanced overload <a href="io/wcm/caravan/rhyme/api/client/HalApiClient.html#create-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-"><code>HalApiClient.create(HalResourceLoader, RequestMetricsCollector)</code></a> that allows
- to the client to be used with interfaces using non-standard annotations or return types.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="block"><span class="deprecationComment">use <a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalApiClientBuilder</code></a> instead</span></div>
+</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#create--">create()</a></span> - Static method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClientBuilder</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalResourceLoaderBuilder.html#create--">create()</a></span> - Static method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalResourceLoaderBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client">HalResourceLoaderBuilder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#create--">create()</a></span> - Static method in interface io.wcm.caravan.rhyme.api.common.<a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a></dt>
@@ -160,21 +165,30 @@
  to load upstream resources.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html#create-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-">create(RequestMetricsCollector, ExceptionStatusAndLoggingStrategy)</a></span> - Static method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server">AsyncHalResponseRenderer</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="block"><span class="deprecationComment">Use <a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>HalResponseRendererBuilder</code></a> instead</span></div>
+</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html#create-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-">create(RequestMetricsCollector, ExceptionStatusAndLoggingStrategy, HalApiAnnotationSupport, HalApiReturnTypeSupport)</a></span> - Static method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server">AsyncHalResponseRenderer</a></dt>
 <dd>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="block"><span class="deprecationComment">Use
-             <a href="io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html#create-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport-"><code>AsyncHalResponseRenderer.create(RequestMetricsCollector,ExceptionStatusAndLoggingStrategy,HalApiAnnotationSupport,HalApiReturnTypeSupport,RhymeDocsSupport)</code></a>
-             instead</span></div>
+<div class="block"><span class="deprecationComment">Use <a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>HalResponseRendererBuilder</code></a> instead</span></div>
 </div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html#create-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport-">create(RequestMetricsCollector, ExceptionStatusAndLoggingStrategy, HalApiAnnotationSupport, HalApiReturnTypeSupport, RhymeDocsSupport)</a></span> - Static method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server">AsyncHalResponseRenderer</a></dt>
-<dd>
-<div class="block">Alternative factory method that allows to support different HAL API annotations or method return types</div>
-</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html#create--">create()</a></span> - Static method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server">HalResponseRendererBuilder</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/VndErrorResponseRenderer.html#create-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-">create(ExceptionStatusAndLoggingStrategy)</a></span> - Static method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/VndErrorResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server">VndErrorResponseRenderer</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html#create--">create()</a></span> - Static method in interface io.wcm.caravan.rhyme.api.spi.<a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalResourceLoader</a></dt>
+<dd>
+<div class="block">Create a <a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> that uses a <a href="https://docs.oracle.com/javase/8/docs/api/java/net/HttpURLConnection.html?is-external=true" title="class or interface in java.net"><code>HttpURLConnection</code></a> with default configuration to
+ load the upstream resources.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html#create-io.wcm.caravan.rhyme.api.spi.HttpClientSupport-">create(HttpClientSupport)</a></span> - Static method in interface io.wcm.caravan.rhyme.api.spi.<a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalResourceLoader</a></dt>
+<dd>
+<div class="block">Create a <a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> that uses a custom HTTP client, but does not implement any caching.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#createMetadataResource-io.wcm.caravan.rhyme.api.resources.LinkableResource-">createMetadataResource(LinkableResource)</a></span> - Method in interface io.wcm.caravan.rhyme.api.common.<a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a></dt>
 <dd>
 <div class="block">Create a resource with performance analysis data that can be embedded in the response</div>
@@ -246,10 +260,12 @@
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html#getRelation-java.lang.reflect.Method-">getRelation(Method)</a></span> - Method in interface io.wcm.caravan.rhyme.api.spi.<a href="io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiAnnotationSupport</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalApiClient.html#getRemoteResource-java.lang.String-java.lang.Class-">getRemoteResource(String, Class&lt;T&gt;)</a></span> - Method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClient</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Create a dynamic client proxy to load and navigate through HAL+JSON resources</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/Rhyme.html#getRemoteResource-java.lang.String-java.lang.Class-">getRemoteResource(String, Class&lt;T&gt;)</a></span> - Method in interface io.wcm.caravan.rhyme.api.<a href="io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api">Rhyme</a></dt>
 <dd>
-<div class="block">Create a dynamic client proxy to load HAL+JSON resources from an upstream service.</div>
+<div class="block">Create a dynamic client proxy to load and navigate through HAL+JSON resources from an upstream service.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html#getRequestUrl--">getRequestUrl()</a></span> - Method in exception io.wcm.caravan.rhyme.api.exceptions.<a href="io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html" title="class in io.wcm.caravan.rhyme.api.exceptions">HalApiClientException</a></dt>
 <dd>&nbsp;</dd>
@@ -286,6 +302,10 @@
 <dd>
 <div class="block">A type-safe HAL client that will create a dynamic proxy implementation for a given URI
  and <code>HalApiInterface</code>.</div>
+</dd>
+<dt><a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client"><span class="typeNameLink">HalApiClientBuilder</span></a> - Interface in <a href="io/wcm/caravan/rhyme/api/client/package-summary.html">io.wcm.caravan.rhyme.api.client</a></dt>
+<dd>
+<div class="block">A fluent builder to create and customize <a href="io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalApiClient</code></a> instances for advanced integration or test scenarios.</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.html" title="class in io.wcm.caravan.rhyme.api.exceptions"><span class="typeNameLink">HalApiClientException</span></a> - Exception in <a href="io/wcm/caravan/rhyme/api/exceptions/package-summary.html">io.wcm.caravan.rhyme.api.exceptions</a></dt>
 <dd>
@@ -356,8 +376,13 @@
 <dt><a href="io/wcm/caravan/rhyme/api/spi/HalResponseCache.html" title="interface in io.wcm.caravan.rhyme.api.spi"><span class="typeNameLink">HalResponseCache</span></a> - Interface in <a href="io/wcm/caravan/rhyme/api/spi/package-summary.html">io.wcm.caravan.rhyme.api.spi</a></dt>
 <dd>
 <div class="block">An SPI interface for a cache implementation that can be given to
- <a href="io/wcm/caravan/rhyme/api/client/HalResourceLoaderBuilder.html#withCustomCache-io.wcm.caravan.rhyme.api.spi.HalResponseCache-"><code>HalResourceLoaderBuilder.withCustomCache(HalResponseCache)</code></a> if you want to store cached HAL+JSON responses
+ <a href="io/wcm/caravan/rhyme/api/client/HalResourceLoaderBuilder.html#withCustomCache-io.wcm.caravan.rhyme.api.spi.HalResponseCache-"><code>HalResourceLoaderBuilder.withCustomCache(HalResponseCache)</code></a> if you want to store HAL+JSON responses
  in a custom cache (e.g.</div>
+</dd>
+<dt><a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server"><span class="typeNameLink">HalResponseRendererBuilder</span></a> - Interface in <a href="io/wcm/caravan/rhyme/api/server/package-summary.html">io.wcm.caravan.rhyme.api.server</a></dt>
+<dd>
+<div class="block">A fluent builder for <a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>HalResponseRendererBuilder</code></a> instances which is only used in advanced integration
+ scenarios.</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/spi/HttpClientCallback.html" title="interface in io.wcm.caravan.rhyme.api.spi"><span class="typeNameLink">HttpClientCallback</span></a> - Interface in <a href="io/wcm/caravan/rhyme/api/spi/package-summary.html">io.wcm.caravan.rhyme.api.spi</a></dt>
 <dd>
@@ -460,7 +485,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/spi/HttpClientCallback.html#onHeadersAvailable-int-java.util.Map-">onHeadersAvailable(int, Map&lt;String, ? extends Collection&lt;String&gt;&gt;)</a></span> - Method in interface io.wcm.caravan.rhyme.api.spi.<a href="io/wcm/caravan/rhyme/api/spi/HttpClientCallback.html" title="interface in io.wcm.caravan.rhyme.api.spi">HttpClientCallback</a></dt>
 <dd>
-<div class="block">This should be called as soon as the HTTP response headers are available.</div>
+<div class="block">This *must* be called as soon as the HTTP response headers are available.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#onMethodInvocationFinished-java.lang.Class-java.lang.String-long-">onMethodInvocationFinished(Class, String, long)</a></span> - Method in interface io.wcm.caravan.rhyme.api.common.<a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a></dt>
 <dd>
@@ -493,7 +518,9 @@
 <div class="block">Asynchronously render the given resource as a <a href="io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> instance.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html#renderResponse-java.lang.String-io.wcm.caravan.rhyme.api.resources.LinkableResource-">renderResponse(String, LinkableResource)</a></span> - Method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server">AsyncHalResponseRenderer</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Asynchronously render the given resource as a <a href="io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a> instance.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/Rhyme.html#renderVndErrorResponse-java.lang.Throwable-">renderVndErrorResponse(Throwable)</a></span> - Method in interface io.wcm.caravan.rhyme.api.<a href="io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api">Rhyme</a></dt>
 <dd>
 <div class="block">Render a vnd.error response for an error that happened before the <code>LinkableResource</code> instance was created
@@ -522,8 +549,8 @@
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api"><span class="typeNameLink">RhymeBuilder</span></a> - Interface in <a href="io/wcm/caravan/rhyme/api/package-summary.html">io.wcm.caravan.rhyme.api</a></dt>
 <dd>
-<div class="block">A builder to configure and create a <a href="io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> instance to be used throughout the lifecycle of the incoming
- request.</div>
+<div class="block">A fluent builder to configure and create a single <a href="io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> instance, which then should be used throughout the
+ lifecycle of the current incoming request.</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/spi/RhymeDocsSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi"><span class="typeNameLink">RhymeDocsSupport</span></a> - Interface in <a href="io/wcm/caravan/rhyme/api/spi/package-summary.html">io.wcm.caravan.rhyme.api.spi</a></dt>
 <dd>
@@ -565,7 +592,7 @@
 <dt><a href="io/wcm/caravan/rhyme/api/server/VndErrorResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server"><span class="typeNameLink">VndErrorResponseRenderer</span></a> - Interface in <a href="io/wcm/caravan/rhyme/api/server/package-summary.html">io.wcm.caravan.rhyme.api.server</a></dt>
 <dd>
 <div class="block">Creates an error response according to the "application/vnd.error+json" media type for any
- exception thrown when rendering HAL</div>
+ exception thrown and caught during request processing.</div>
 </dd>
 </dl>
 <a name="I:W">
@@ -573,7 +600,15 @@
 </a>
 <h2 class="title">W</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#withAnnotationTypeSupport-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-">withAnnotationTypeSupport(HalApiAnnotationSupport)</a></span> - Method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClientBuilder</a></dt>
+<dd>
+<div class="block">Extend the core framework to support additional annotation types in your annotated HAL API interfaces.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#withAnnotationTypeSupport-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-">withAnnotationTypeSupport(HalApiAnnotationSupport)</a></span> - Method in interface io.wcm.caravan.rhyme.api.<a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></dt>
+<dd>
+<div class="block">Extend the core framework to support additional annotation types in your annotated HAL API interfaces.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html#withAnnotationTypeSupport-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-">withAnnotationTypeSupport(HalApiAnnotationSupport)</a></span> - Method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server">HalResponseRendererBuilder</a></dt>
 <dd>
 <div class="block">Extend the core framework to support additional annotation types in your annotated HAL API interfaces.</div>
 </dd>
@@ -600,12 +635,11 @@
 <dd>
 <div class="block">Replace the default HTTP client with the given implementation.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html#withDefaultHttpClient--">withDefaultHttpClient()</a></span> - Static method in interface io.wcm.caravan.rhyme.api.spi.<a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalResourceLoader</a></dt>
-<dd>
-<div class="block">Create a <a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> that uses a <a href="https://docs.oracle.com/javase/8/docs/api/java/net/HttpURLConnection.html?is-external=true" title="class or interface in java.net"><code>HttpURLConnection</code></a> with default configuration to
- load the upstream resources.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#withExceptionStrategy-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-">withExceptionStrategy(ExceptionStatusAndLoggingStrategy)</a></span> - Method in interface io.wcm.caravan.rhyme.api.<a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></dt>
+<dd>
+<div class="block">Allow the exception handling of the core framework to support additional platform / framework specific exceptions.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html#withExceptionStrategy-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-">withExceptionStrategy(ExceptionStatusAndLoggingStrategy)</a></span> - Method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server">HalResponseRendererBuilder</a></dt>
 <dd>
 <div class="block">Allow the exception handling of the core framework to support additional platform / framework specific exceptions.</div>
 </dd>
@@ -623,6 +657,16 @@
 <dd>
 <div class="block">Enable in-memory caching of responses with custom settings</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#withMetrics-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">withMetrics(RequestMetricsCollector)</a></span> - Method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClientBuilder</a></dt>
+<dd>
+<div class="block">A <a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common"><code>RequestMetricsCollector</code></a> instance can be used to track all upstream resources that have been retrieved,
+ and collect metrics and response metadata from the interaction with the proxy objects.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html#withMetrics-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">withMetrics(RequestMetricsCollector)</a></span> - Method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server">HalResponseRendererBuilder</a></dt>
+<dd>
+<div class="block">Provide the <a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common"><code>RequestMetricsCollector</code></a> instance that was used to capture and measure
+ all interaction with the <a href="io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalApiClient</code></a> for the current incoming request.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#withoutResourceLoader--">withoutResourceLoader()</a></span> - Static method in interface io.wcm.caravan.rhyme.api.<a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></dt>
 <dd>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>
@@ -630,15 +674,30 @@
              use <a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#create--"><code>RhymeBuilder.create()</code></a> instead</span></div>
 </div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#withResourceLoader-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-">withResourceLoader(HalResourceLoader)</a></span> - Method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClientBuilder</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#withResourceLoader-io.wcm.caravan.rhyme.api.spi.HalResourceLoader-">withResourceLoader(HalResourceLoader)</a></span> - Static method in interface io.wcm.caravan.rhyme.api.<a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></dt>
 <dd>
 <div class="block">Create a <a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api"><code>RhymeBuilder</code></a> to build <a href="io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> instances that use the given <a href="io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a></div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#withReturnTypeSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-">withReturnTypeSupport(HalApiReturnTypeSupport)</a></span> - Method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClientBuilder</a></dt>
+<dd>
+<div class="block">Extend the core framework to support additional return types in your annotated HAL API interfaces.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#withReturnTypeSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-">withReturnTypeSupport(HalApiReturnTypeSupport)</a></span> - Method in interface io.wcm.caravan.rhyme.api.<a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></dt>
 <dd>
 <div class="block">Extend the core framework to support additional return types in your annotated HAL API interfaces.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html#withReturnTypeSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-">withReturnTypeSupport(HalApiReturnTypeSupport)</a></span> - Method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server">HalResponseRendererBuilder</a></dt>
+<dd>
+<div class="block">Extend the core framework to support additional return types in your annotated HAL API interfaces.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#withRhymeDocsSupport-io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport-">withRhymeDocsSupport(RhymeDocsSupport)</a></span> - Method in interface io.wcm.caravan.rhyme.api.<a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></dt>
+<dd>
+<div class="block">Enable generation of "curies" links (to HTML documentation generated with the rhyme-docs-maven-plugin)
+ when rendering <a href="io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a>s with <a href="io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-"><code>Rhyme.renderResponse(LinkableResource)</code></a>.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html#withRhymeDocsSupport-io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport-">withRhymeDocsSupport(RhymeDocsSupport)</a></span> - Method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server">HalResponseRendererBuilder</a></dt>
 <dd>
 <div class="block">Enable generation of "curies" links (to HTML documentation generated with the rhyme-docs-maven-plugin)
  when rendering <a href="io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common"><code>HalResponse</code></a>s with <a href="io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-"><code>Rhyme.renderResponse(LinkableResource)</code></a>.</div>

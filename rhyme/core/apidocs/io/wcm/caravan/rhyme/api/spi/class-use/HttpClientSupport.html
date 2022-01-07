@@ -88,6 +88,12 @@
 <div class="block">Interfaces for client-side functionality</div>
 </td>
 </tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="#io.wcm.caravan.rhyme.api.spi">io.wcm.caravan.rhyme.api.spi</a></td>
+<td class="colLast">
+<div class="block">SPI interfaces for HTTP transfer, exception handling and extension the annotation support for HAL API interfaces</div>
+</td>
+</tr>
 </tbody>
 </table>
 </li>
@@ -108,6 +114,26 @@
 <td class="colFirst"><code><a href="../../../../../../../io/wcm/caravan/rhyme/api/client/HalResourceLoaderBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client">HalResourceLoaderBuilder</a></code></td>
 <td class="colLast"><span class="typeNameLabel">HalResourceLoaderBuilder.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/client/HalResourceLoaderBuilder.html#withCustomHttpClient-io.wcm.caravan.rhyme.api.spi.HttpClientSupport-">withCustomHttpClient</a></span>(<a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HttpClientSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HttpClientSupport</a>&nbsp;client)</code>
 <div class="block">Replace the default HTTP client with the given implementation.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="io.wcm.caravan.rhyme.api.spi">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HttpClientSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HttpClientSupport</a> in <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/package-summary.html">io.wcm.caravan.rhyme.api.spi</a></h3>
+<table class="useSummary" border="0" cellpadding="3" cellspacing="0" summary="Use table, listing methods, and an explanation">
+<caption><span>Methods in <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/package-summary.html">io.wcm.caravan.rhyme.api.spi</a> with parameters of type <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HttpClientSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HttpClientSupport</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalResourceLoader</a></code></td>
+<td class="colLast"><span class="typeNameLabel">HalResourceLoader.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html#create-io.wcm.caravan.rhyme.api.spi.HttpClientSupport-">create</a></span>(<a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HttpClientSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HttpClientSupport</a>&nbsp;client)</code>
+<div class="block">Create a <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>HalResourceLoader</code></a> that uses a custom HTTP client, but does not implement any caching.</div>
 </td>
 </tr>
 </tbody>

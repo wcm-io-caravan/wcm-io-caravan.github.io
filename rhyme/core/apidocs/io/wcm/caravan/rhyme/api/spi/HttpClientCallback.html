@@ -147,7 +147,7 @@ public interface <span class="typeNameLabel">HttpClientCallback</span></pre>
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/spi/HttpClientCallback.html#onHeadersAvailable-int-java.util.Map-">onHeadersAvailable</a></span>(int&nbsp;statusCode,
                   <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,? extends <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;headers)</code>
-<div class="block">This should be called as soon as the HTTP response headers are available.</div>
+<div class="block">This *must* be called as soon as the HTTP response headers are available.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -195,7 +195,7 @@ public interface <span class="typeNameLabel">HttpClientCallback</span></pre>
 <h4>onHeadersAvailable</h4>
 <pre>void&nbsp;onHeadersAvailable(int&nbsp;statusCode,
                         <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,? extends <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;headers)</pre>
-<div class="block">This should be called as soon as the HTTP response headers are available. It will ensure that
+<div class="block">This *must* be called as soon as the HTTP response headers are available. It will ensure that
  <a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html#getStatus--"><code>HalResponse.getStatus()</code></a>, <a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html#getContentType--"><code>HalResponse.getContentType()</code></a> and <a href="../../../../../../io/wcm/caravan/rhyme/api/common/HalResponse.html#getMaxAge--"><code>HalResponse.getMaxAge()</code></a> will
  return the values from your response</div>
 <dl>

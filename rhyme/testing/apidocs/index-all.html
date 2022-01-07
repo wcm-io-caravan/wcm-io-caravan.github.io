@@ -83,13 +83,16 @@
 <dd>&nbsp;</dd>
 <dt><a href="io/wcm/caravan/rhyme/testing/client/ApacheAsyncHttpSupport.html" title="class in io.wcm.caravan.rhyme.testing.client"><span class="typeNameLink">ApacheAsyncHttpSupport</span></a> - Class in <a href="io/wcm/caravan/rhyme/testing/client/package-summary.html">io.wcm.caravan.rhyme.testing.client</a></dt>
 <dd>
-<div class="block">An HTTP client implementation to be used with
- <code>HalResourceLoaderBuilder.withCustomHttpClient(HttpClientSupport)</code>
- that is using the asynchronous Apache HTTP client to execute requests.</div>
+<div class="block">An HTTP client implementation that is using the asynchronous Apache HTTP client to execute requests.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/testing/client/ApacheAsyncHttpSupport.html#ApacheAsyncHttpSupport--">ApacheAsyncHttpSupport()</a></span> - Constructor for class io.wcm.caravan.rhyme.testing.client.<a href="io/wcm/caravan/rhyme/testing/client/ApacheAsyncHttpSupport.html" title="class in io.wcm.caravan.rhyme.testing.client">ApacheAsyncHttpSupport</a></dt>
 <dd>
-<div class="block">Default constructor that can be used if all URIs are fully qualified</div>
+<div class="block">Default constructor that can be used if all URIs are fully qualified and requests
+ can be executed with a default HTTP client created with <code>HttpAsyncClientBuilder</code></div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/testing/client/ApacheAsyncHttpSupport.html#ApacheAsyncHttpSupport-org.apache.http.impl.nio.client.CloseableHttpAsyncClient-">ApacheAsyncHttpSupport(CloseableHttpAsyncClient)</a></span> - Constructor for class io.wcm.caravan.rhyme.testing.client.<a href="io/wcm/caravan/rhyme/testing/client/ApacheAsyncHttpSupport.html" title="class in io.wcm.caravan.rhyme.testing.client">ApacheAsyncHttpSupport</a></dt>
+<dd>
+<div class="block">Allows to provide a customised <code>CloseableHttpAsyncClient</code> instance to be used for all requests.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/testing/client/ApacheAsyncHttpSupport.html#ApacheAsyncHttpSupport-java.net.URI-">ApacheAsyncHttpSupport(URI)</a></span> - Constructor for class io.wcm.caravan.rhyme.testing.client.<a href="io/wcm/caravan/rhyme/testing/client/ApacheAsyncHttpSupport.html" title="class in io.wcm.caravan.rhyme.testing.client">ApacheAsyncHttpSupport</a></dt>
 <dd>
@@ -97,13 +100,16 @@
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/testing/client/ApacheBlockingHttpSupport.html" title="class in io.wcm.caravan.rhyme.testing.client"><span class="typeNameLink">ApacheBlockingHttpSupport</span></a> - Class in <a href="io/wcm/caravan/rhyme/testing/client/package-summary.html">io.wcm.caravan.rhyme.testing.client</a></dt>
 <dd>
-<div class="block">An HTTP client implementation to be used with
- <code>HalResourceLoaderBuilder.withCustomHttpClient(HttpClientSupport)</code>
- that is using the synchronous Apache HTTP client to execute requests.</div>
+<div class="block">An HTTP client implementation that is using the synchronous Apache HTTP client to execute requests.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/testing/client/ApacheBlockingHttpSupport.html#ApacheBlockingHttpSupport--">ApacheBlockingHttpSupport()</a></span> - Constructor for class io.wcm.caravan.rhyme.testing.client.<a href="io/wcm/caravan/rhyme/testing/client/ApacheBlockingHttpSupport.html" title="class in io.wcm.caravan.rhyme.testing.client">ApacheBlockingHttpSupport</a></dt>
 <dd>
-<div class="block">Default constructor that can be used if all URIs are fully qualified</div>
+<div class="block">Default constructor that can be used if all URIs are fully qualified and requests
+ can be executed with a default HTTP client created with <code>HttpClientBuilder</code></div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/testing/client/ApacheBlockingHttpSupport.html#ApacheBlockingHttpSupport-org.apache.http.impl.client.CloseableHttpClient-">ApacheBlockingHttpSupport(CloseableHttpClient)</a></span> - Constructor for class io.wcm.caravan.rhyme.testing.client.<a href="io/wcm/caravan/rhyme/testing/client/ApacheBlockingHttpSupport.html" title="class in io.wcm.caravan.rhyme.testing.client">ApacheBlockingHttpSupport</a></dt>
+<dd>
+<div class="block">Allows to provide a customised <code>CloseableHttpClient</code> instance to be used for all requests.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/testing/client/ApacheBlockingHttpSupport.html#ApacheBlockingHttpSupport-java.net.URI-">ApacheBlockingHttpSupport(URI)</a></span> - Constructor for class io.wcm.caravan.rhyme.testing.client.<a href="io/wcm/caravan/rhyme/testing/client/ApacheBlockingHttpSupport.html" title="class in io.wcm.caravan.rhyme.testing.client">ApacheBlockingHttpSupport</a></dt>
 <dd>
@@ -145,10 +151,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/testing/client/AbstractHalResourceLoaderTest.html#createLoaderUnderTest--">createLoaderUnderTest()</a></span> - Method in class io.wcm.caravan.rhyme.testing.client.<a href="io/wcm/caravan/rhyme/testing/client/AbstractHalResourceLoaderTest.html" title="class in io.wcm.caravan.rhyme.testing.client">AbstractHalResourceLoaderTest</a></dt>
 <dd>
-<div class="block">Implement this to return your implementation of <code>HalResourceLoader</code>,
- or (if you are implementing <code>HttpClientSupport</code> then use
- <code>HalResourceLoaderBuilder.withCustomHttpClient(HttpClientSupport)</code> to
- create the instance under test</div>
+<div class="block">Implement this to return your implementation of <code>HalResourceLoader</code> to be tested.</div>
 </dd>
 </dl>
 <a name="I:E">

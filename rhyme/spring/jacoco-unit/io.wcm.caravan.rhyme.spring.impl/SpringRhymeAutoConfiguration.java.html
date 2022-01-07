@@ -64,7 +64,7 @@ import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
 
 <span class="nc" id="L65">    WebClientSupport client = new WebClientSupport();</span>
 
-<span class="nc" id="L67">    return HalResourceLoader.builder()</span>
+<span class="nc" id="L67">    return HalResourceLoaderBuilder.create()</span>
 <span class="nc" id="L68">        .withCustomHttpClient(client);</span>
   }
 }

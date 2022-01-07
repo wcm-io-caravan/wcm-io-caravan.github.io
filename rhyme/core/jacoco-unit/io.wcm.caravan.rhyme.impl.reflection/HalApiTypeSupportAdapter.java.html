@@ -128,83 +128,75 @@ public class HalApiTypeSupportAdapter implements HalApiTypeSupport {
 <span class="fc" id="L128">    return returnTypeSupport.isProviderOfOptionalValue(returnType);</span>
   }
 
-  HalApiAnnotationSupport getAnnotationSupport() {
-<span class="fc" id="L132">    return annotationSupport;</span>
-  }
-
-  HalApiReturnTypeSupport getReturnTypeSupport() {
-<span class="fc" id="L136">    return returnTypeSupport;</span>
-  }
-
-<span class="fc" id="L139">  static class NoAdditionalReturnTypeSupport implements HalApiReturnTypeSupport {</span>
+<span class="fc" id="L131">  static class NoAdditionalReturnTypeSupport implements HalApiReturnTypeSupport {</span>
 
     @Override
     public &lt;T&gt; Function&lt;Observable, T&gt; convertFromObservable(Class&lt;T&gt; targetType) {
-<span class="fc" id="L143">      return null;</span>
+<span class="fc" id="L135">      return null;</span>
     }
 
     @Override
     public Function&lt;? super Object, Observable&lt;?&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType) {
-<span class="fc" id="L148">      return null;</span>
+<span class="fc" id="L140">      return null;</span>
     }
 
     @Override
     public boolean isProviderOfMultiplerValues(Class&lt;?&gt; returnType) {
-<span class="fc" id="L153">      return false;</span>
+<span class="fc" id="L145">      return false;</span>
     }
 
     @Override
     public boolean isProviderOfOptionalValue(Class&lt;?&gt; returnType) {
-<span class="fc" id="L158">      return false;</span>
+<span class="fc" id="L150">      return false;</span>
     }
 
   }
 
-<span class="fc" id="L163">  static class NoAdditionalAnnotationSupport implements HalApiAnnotationSupport {</span>
+<span class="fc" id="L155">  static class NoAdditionalAnnotationSupport implements HalApiAnnotationSupport {</span>
 
     @Override
     public boolean isHalApiInterface(Class&lt;?&gt; interfaze) {
-<span class="fc" id="L167">      return false;</span>
+<span class="fc" id="L159">      return false;</span>
     }
 
     @Override
     public String getContentType(Class&lt;?&gt; halApiInterface) {
-<span class="fc" id="L172">      return null;</span>
+<span class="fc" id="L164">      return null;</span>
     }
 
     @Override
     public boolean isResourceLinkMethod(Method method) {
-<span class="fc" id="L177">      return false;</span>
+<span class="fc" id="L169">      return false;</span>
     }
 
     @Override
     public boolean isResourceRepresentationMethod(Method method) {
-<span class="fc" id="L182">      return false;</span>
+<span class="fc" id="L174">      return false;</span>
     }
 
     @Override
     public boolean isRelatedResourceMethod(Method method) {
-<span class="fc" id="L187">      return false;</span>
+<span class="fc" id="L179">      return false;</span>
     }
 
     @Override
     public boolean isResourceStateMethod(Method method) {
-<span class="fc" id="L192">      return false;</span>
+<span class="fc" id="L184">      return false;</span>
     }
 
     @Override
     public boolean isResourcePropertyMethod(Method method) {
-<span class="fc" id="L197">      return false;</span>
+<span class="fc" id="L189">      return false;</span>
     }
 
     @Override
     public String getPropertyName(Method method) {
-<span class="fc" id="L202">      return null;</span>
+<span class="fc" id="L194">      return null;</span>
     }
 
     @Override
     public String getRelation(Method method) {
-<span class="fc" id="L207">      return null;</span>
+<span class="fc" id="L199">      return null;</span>
     }
 
 

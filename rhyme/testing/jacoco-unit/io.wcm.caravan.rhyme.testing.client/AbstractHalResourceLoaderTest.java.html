@@ -28,7 +28,6 @@ import com.google.common.net.HttpHeaders;
 
 import io.reactivex.rxjava3.core.Single;
 import io.wcm.caravan.hal.resource.HalResource;
-import io.wcm.caravan.rhyme.api.client.HalResourceLoaderBuilder;
 import io.wcm.caravan.rhyme.api.common.HalResponse;
 import io.wcm.caravan.rhyme.api.exceptions.HalApiClientException;
 import io.wcm.caravan.rhyme.api.server.VndErrorResponseRenderer;
@@ -42,7 +41,7 @@ import wiremock.org.apache.http.client.utils.URIBuilder;
  * It will run a extensive suite of tests where a {@link WireMockServer} will respond
  * with a variety of responses, including client/server errors and corrupt responses.
  */
-<span class="fc" id="L45">public abstract class AbstractHalResourceLoaderTest {</span>
+<span class="fc" id="L44">public abstract class AbstractHalResourceLoaderTest {</span>
 
   protected static final String UNKNOWN_HOST_URL = &quot;http://foo.bar&quot;;
 
@@ -55,500 +54,498 @@ import wiremock.org.apache.http.client.utils.URIBuilder;
 
   @BeforeAll
   static void init() throws URISyntaxException {
-<span class="fc" id="L58">    wireMockServer = new WireMockServer(new WireMockConfiguration().dynamicPort().dynamicHttpsPort());</span>
-<span class="fc" id="L59">    wireMockServer.start();</span>
+<span class="fc" id="L57">    wireMockServer = new WireMockServer(new WireMockConfiguration().dynamicPort().dynamicHttpsPort());</span>
+<span class="fc" id="L58">    wireMockServer.start();</span>
 
-<span class="fc" id="L61">    testUrl = buildTestUrl(false);</span>
-<span class="fc" id="L62">    sslTestUrl = buildTestUrl(true);</span>
-<span class="fc" id="L63">  }</span>
+<span class="fc" id="L60">    testUrl = buildTestUrl(false);</span>
+<span class="fc" id="L61">    sslTestUrl = buildTestUrl(true);</span>
+<span class="fc" id="L62">  }</span>
 
   private static String buildTestUrl(boolean useSsl) throws URISyntaxException {
 
-<span class="fc bfc" id="L67" title="All 2 branches covered.">    return new URIBuilder()</span>
-<span class="fc" id="L68">        .setScheme(useSsl ? &quot;https&quot; : &quot;http&quot;)</span>
-<span class="fc bfc" id="L69" title="All 2 branches covered.">        .setHost(&quot;localhost&quot;)</span>
-<span class="fc" id="L70">        .setPort(useSsl ? wireMockServer.httpsPort() : wireMockServer.port())</span>
-<span class="fc" id="L71">        .setPath(TEST_PATH)</span>
-<span class="fc" id="L72">        .build().toString();</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">    return new URIBuilder()</span>
+<span class="fc" id="L67">        .setScheme(useSsl ? &quot;https&quot; : &quot;http&quot;)</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        .setHost(&quot;localhost&quot;)</span>
+<span class="fc" id="L69">        .setPort(useSsl ? wireMockServer.httpsPort() : wireMockServer.port())</span>
+<span class="fc" id="L70">        .setPath(TEST_PATH)</span>
+<span class="fc" id="L71">        .build().toString();</span>
   }
 
   @AfterEach
   void tearDown() {
-<span class="fc" id="L77">    wireMockServer.resetAll();</span>
-<span class="fc" id="L78">  }</span>
-
-
-  private static HalResource createHalResource() {
-
-<span class="fc" id="L83">    return new HalResource(TEST_PATH).addState(createJsonResource());</span>
-  }
-
-  private static ObjectNode createJsonResource() {
-
-<span class="fc" id="L88">    return JsonNodeFactory.instance.objectNode().put(&quot;föö&quot;, &quot;官ar&quot;);</span>
-  }
-
-  private static ResponseDefinitionBuilder get200HalResponseWithCacheControl(String... values) {
-
-<span class="fc" id="L93">    HalResource hal = createHalResource();</span>
-
-<span class="fc" id="L95">    ResponseDefinitionBuilder response = aResponse()</span>
-<span class="fc" id="L96">        .withHeader(HttpHeaders.CONTENT_TYPE, HalResource.CONTENT_TYPE)</span>
-<span class="fc" id="L97">        .withStatus(200)</span>
-<span class="fc" id="L98">        .withBody(hal.getModel().toString());</span>
-
-<span class="fc bfc" id="L100" title="All 2 branches covered.">    for (String value : values) {</span>
-<span class="fc" id="L101">      response = response.withHeader(HttpHeaders.CACHE_CONTROL, value);</span>
-    }
-
-<span class="fc" id="L104">    return response;</span>
-  }
-
-  private static void stub200HalResponseWithMaxAge(Integer maxAge) {
-
-<span class="fc" id="L109">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
-<span class="fc" id="L110">        .willReturn(get200HalResponseWithCacheControl(&quot;max-age=&quot; + maxAge)));</span>
-<span class="fc" id="L111">  }</span>
-
-  private static void stub200HalResponseWithCacheControl(String... cacheControl) {
-
-<span class="fc" id="L115">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
-<span class="fc" id="L116">        .willReturn(get200HalResponseWithCacheControl(cacheControl)));</span>
-<span class="fc" id="L117">  }</span>
-
-  private static void stub200HalResponse() {
-
-<span class="fc" id="L121">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
-<span class="fc" id="L122">        .willReturn(get200HalResponseWithCacheControl()));</span>
-<span class="fc" id="L123">  }</span>
-
-  private static void stubHtmlResponseWithStatusCode(int statusCode) {
-
-<span class="fc" id="L127">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
-<span class="fc" id="L128">        .willReturn(aResponse()</span>
-<span class="fc" id="L129">            .withStatus(statusCode)</span>
-<span class="fc" id="L130">            .withHeader(HttpHeaders.CONTENT_TYPE, &quot;text/html&quot;)</span>
-<span class="fc" id="L131">            .withBody(&quot;&lt;h1&gt;This is an HTML document&lt;/h1&gt;&quot;)));</span>
-<span class="fc" id="L132">  }</span>
-
-  private static void stubJsonResponseWithStatusCode(int statusCode) {
-
-<span class="fc" id="L136">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
-<span class="fc" id="L137">        .willReturn(aResponse()</span>
-<span class="fc" id="L138">            .withStatus(statusCode)</span>
-<span class="fc" id="L139">            .withHeader(HttpHeaders.CONTENT_TYPE, &quot;application/json&quot;)</span>
-<span class="fc" id="L140">            .withBody(createJsonResource().toString())));</span>
-<span class="fc" id="L141">  }</span>
-
-  private static void stubErrorResponseWithoutContentType(int statusCode) {
-
-<span class="fc" id="L145">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
-<span class="fc" id="L146">        .willReturn(aResponse()</span>
-<span class="fc" id="L147">            .withStatus(statusCode)</span>
-<span class="fc" id="L148">            .withBody(&quot;Foo&quot;)));</span>
-<span class="fc" id="L149">  }</span>
-
-  private static void stub500VndErrorResponse() {
-
-<span class="fc" id="L153">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
-<span class="fc" id="L154">        .willReturn(aResponse()</span>
-<span class="fc" id="L155">            .withStatus(500)</span>
-<span class="fc" id="L156">            .withHeader(HttpHeaders.CONTENT_TYPE.toLowerCase(), VndErrorResponseRenderer.CONTENT_TYPE)</span>
-<span class="fc" id="L157">            .withBody(&quot;{}&quot;)));</span>
-<span class="fc" id="L158">  }</span>
-
-  private void stubEmptyResponseWithStatusCode(int statusCode) {
-
-<span class="fc" id="L162">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
-<span class="fc" id="L163">        .willReturn(aResponse()</span>
-<span class="fc" id="L164">            .withStatus(statusCode)));</span>
-<span class="fc" id="L165">  }</span>
-
-  protected void stubFaultyResponseWithStatusCode(int statusCode, Fault fault) {
-
-<span class="fc" id="L169">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
-<span class="fc" id="L170">        .willReturn(aResponse()</span>
-<span class="fc" id="L171">            .withStatus(statusCode)</span>
-<span class="fc" id="L172">            .withFault(fault)));</span>
-<span class="fc" id="L173">  }</span>
-
+<span class="fc" id="L76">    wireMockServer.resetAll();</span>
+<span class="fc" id="L77">  }</span>
 
   /**
-   * Implement this to return your implementation of {@link HalResourceLoader},
-   * or (if you are implementing {@link HttpClientSupport} then use
-   * {@link HalResourceLoaderBuilder#withCustomHttpClient(HttpClientSupport)} to
-   * create the instance under test
+   * Implement this to return your implementation of {@link HalResourceLoader} to be tested.
+   * If you are implementing {@link HttpClientSupport}) then use
+   * {@link HalResourceLoader#create()} to create the instance under test
    * @return the instance to be tested
    */
   protected abstract HalResourceLoader createLoaderUnderTest();
 
+  private static HalResource createHalResource() {
+
+<span class="fc" id="L89">    return new HalResource(TEST_PATH).addState(createJsonResource());</span>
+  }
+
+  private static ObjectNode createJsonResource() {
+
+<span class="fc" id="L94">    return JsonNodeFactory.instance.objectNode().put(&quot;föö&quot;, &quot;官ar&quot;);</span>
+  }
+
+  private static ResponseDefinitionBuilder get200HalResponseWithCacheControl(String... values) {
+
+<span class="fc" id="L99">    HalResource hal = createHalResource();</span>
+
+<span class="fc" id="L101">    ResponseDefinitionBuilder response = aResponse()</span>
+<span class="fc" id="L102">        .withHeader(HttpHeaders.CONTENT_TYPE, HalResource.CONTENT_TYPE)</span>
+<span class="fc" id="L103">        .withStatus(200)</span>
+<span class="fc" id="L104">        .withBody(hal.getModel().toString());</span>
+
+<span class="fc bfc" id="L106" title="All 2 branches covered.">    for (String value : values) {</span>
+<span class="fc" id="L107">      response = response.withHeader(HttpHeaders.CACHE_CONTROL, value);</span>
+    }
+
+<span class="fc" id="L110">    return response;</span>
+  }
+
+  private static void stub200HalResponseWithMaxAge(Integer maxAge) {
+
+<span class="fc" id="L115">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
+<span class="fc" id="L116">        .willReturn(get200HalResponseWithCacheControl(&quot;max-age=&quot; + maxAge)));</span>
+<span class="fc" id="L117">  }</span>
+
+  private static void stub200HalResponseWithCacheControl(String... cacheControl) {
+
+<span class="fc" id="L121">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
+<span class="fc" id="L122">        .willReturn(get200HalResponseWithCacheControl(cacheControl)));</span>
+<span class="fc" id="L123">  }</span>
+
+  private static void stub200HalResponse() {
+
+<span class="fc" id="L127">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
+<span class="fc" id="L128">        .willReturn(get200HalResponseWithCacheControl()));</span>
+<span class="fc" id="L129">  }</span>
+
+  private static void stubHtmlResponseWithStatusCode(int statusCode) {
+
+<span class="fc" id="L133">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
+<span class="fc" id="L134">        .willReturn(aResponse()</span>
+<span class="fc" id="L135">            .withStatus(statusCode)</span>
+<span class="fc" id="L136">            .withHeader(HttpHeaders.CONTENT_TYPE, &quot;text/html&quot;)</span>
+<span class="fc" id="L137">            .withBody(&quot;&lt;h1&gt;This is an HTML document&lt;/h1&gt;&quot;)));</span>
+<span class="fc" id="L138">  }</span>
+
+  private static void stubJsonResponseWithStatusCode(int statusCode) {
+
+<span class="fc" id="L142">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
+<span class="fc" id="L143">        .willReturn(aResponse()</span>
+<span class="fc" id="L144">            .withStatus(statusCode)</span>
+<span class="fc" id="L145">            .withHeader(HttpHeaders.CONTENT_TYPE, &quot;application/json&quot;)</span>
+<span class="fc" id="L146">            .withBody(createJsonResource().toString())));</span>
+<span class="fc" id="L147">  }</span>
+
+  private static void stubErrorResponseWithoutContentType(int statusCode) {
+
+<span class="fc" id="L151">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
+<span class="fc" id="L152">        .willReturn(aResponse()</span>
+<span class="fc" id="L153">            .withStatus(statusCode)</span>
+<span class="fc" id="L154">            .withBody(&quot;Foo&quot;)));</span>
+<span class="fc" id="L155">  }</span>
+
+  private static void stub500VndErrorResponse() {
+
+<span class="fc" id="L159">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
+<span class="fc" id="L160">        .willReturn(aResponse()</span>
+<span class="fc" id="L161">            .withStatus(500)</span>
+<span class="fc" id="L162">            .withHeader(HttpHeaders.CONTENT_TYPE.toLowerCase(), VndErrorResponseRenderer.CONTENT_TYPE)</span>
+<span class="fc" id="L163">            .withBody(&quot;{}&quot;)));</span>
+<span class="fc" id="L164">  }</span>
+
+  private void stubEmptyResponseWithStatusCode(int statusCode) {
+
+<span class="fc" id="L168">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
+<span class="fc" id="L169">        .willReturn(aResponse()</span>
+<span class="fc" id="L170">            .withStatus(statusCode)));</span>
+<span class="fc" id="L171">  }</span>
+
+  protected void stubFaultyResponseWithStatusCode(int statusCode, Fault fault) {
+
+<span class="fc" id="L175">    wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))</span>
+<span class="fc" id="L176">        .willReturn(aResponse()</span>
+<span class="fc" id="L177">            .withStatus(statusCode)</span>
+<span class="fc" id="L178">            .withFault(fault)));</span>
+<span class="fc" id="L179">  }</span>
+
+
   protected HalResponse loadResource() {
 
-<span class="fc" id="L187">    String uri = testUrl;</span>
+<span class="fc" id="L184">    String uri = testUrl;</span>
 
-<span class="fc" id="L189">    return createLoaderUnderTest().getHalResource(uri).blockingGet();</span>
+<span class="fc" id="L186">    return createLoaderUnderTest().getHalResource(uri).blockingGet();</span>
   }
 
   protected HalApiClientException loadResourceAndExpectClientException() {
 
-<span class="fc" id="L194">    return loadResourceAndExpectClientException(testUrl);</span>
+<span class="fc" id="L191">    return loadResourceAndExpectClientException(testUrl);</span>
   }
 
   protected HalApiClientException loadResourceAndExpectClientException(String url) {
-<span class="fc" id="L198">    Single&lt;HalResponse&gt; rxResponse = createLoaderUnderTest().getHalResource(url);</span>
+<span class="fc" id="L195">    Single&lt;HalResponse&gt; rxResponse = createLoaderUnderTest().getHalResource(url);</span>
 
-<span class="pc" id="L200">    Throwable ex = catchThrowable(() -&gt; rxResponse.blockingGet());</span>
+<span class="pc" id="L197">    Throwable ex = catchThrowable(() -&gt; rxResponse.blockingGet());</span>
 
-<span class="fc" id="L202">    assertThat(ex)</span>
-<span class="fc" id="L203">        .isInstanceOf(HalApiClientException.class)</span>
-<span class="fc" id="L204">        .hasMessageStartingWith(&quot;HAL client request to&quot;)</span>
-<span class="fc" id="L205">        .hasMessageContaining(&quot;has failed&quot;);</span>
+<span class="fc" id="L199">    assertThat(ex)</span>
+<span class="fc" id="L200">        .isInstanceOf(HalApiClientException.class)</span>
+<span class="fc" id="L201">        .hasMessageStartingWith(&quot;HAL client request to&quot;)</span>
+<span class="fc" id="L202">        .hasMessageContaining(&quot;has failed&quot;);</span>
 
-<span class="fc" id="L207">    return (HalApiClientException)ex;</span>
+<span class="fc" id="L204">    return (HalApiClientException)ex;</span>
   }
 
   @Test
   public void response_code_should_be_set_for_200_hal_response() throws Exception {
 
-<span class="fc" id="L213">    stub200HalResponse();</span>
+<span class="fc" id="L210">    stub200HalResponse();</span>
 
-<span class="fc" id="L215">    HalResponse response = loadResource();</span>
+<span class="fc" id="L212">    HalResponse response = loadResource();</span>
 
-<span class="fc" id="L217">    assertThat(response.getStatus())</span>
-<span class="fc" id="L218">        .isEqualTo(200);</span>
-<span class="fc" id="L219">  }</span>
+<span class="fc" id="L214">    assertThat(response.getStatus())</span>
+<span class="fc" id="L215">        .isEqualTo(200);</span>
+<span class="fc" id="L216">  }</span>
 
   @Test
   public void content_type_should_be_set_for_200_hal_response() throws Exception {
 
-<span class="fc" id="L224">    stub200HalResponse();</span>
+<span class="fc" id="L221">    stub200HalResponse();</span>
 
-<span class="fc" id="L226">    HalResponse response = loadResource();</span>
+<span class="fc" id="L223">    HalResponse response = loadResource();</span>
 
-<span class="fc" id="L228">    assertThat(response.getContentType())</span>
-<span class="fc" id="L229">        .isEqualTo(HalResource.CONTENT_TYPE);</span>
-<span class="fc" id="L230">  }</span>
+<span class="fc" id="L225">    assertThat(response.getContentType())</span>
+<span class="fc" id="L226">        .isEqualTo(HalResource.CONTENT_TYPE);</span>
+<span class="fc" id="L227">  }</span>
 
   @Test
   public void body_should_be_set_for_200_hal_response() throws Exception {
 
-<span class="fc" id="L235">    stub200HalResponse();</span>
+<span class="fc" id="L232">    stub200HalResponse();</span>
 
-<span class="fc" id="L237">    HalResponse response = loadResource();</span>
+<span class="fc" id="L234">    HalResponse response = loadResource();</span>
 
-<span class="fc" id="L239">    assertThat(response.getBody())</span>
-<span class="fc" id="L240">        .isNotNull();</span>
+<span class="fc" id="L236">    assertThat(response.getBody())</span>
+<span class="fc" id="L237">        .isNotNull();</span>
 
-<span class="fc" id="L242">    assertThat(response.getBody().getModel())</span>
-<span class="fc" id="L243">        .isEqualTo(createHalResource().getModel());</span>
-<span class="fc" id="L244">  }</span>
+<span class="fc" id="L239">    assertThat(response.getBody().getModel())</span>
+<span class="fc" id="L240">        .isEqualTo(createHalResource().getModel());</span>
+<span class="fc" id="L241">  }</span>
 
   @Test
   public void maxAge_should_be_null_for_200_hal_response_without_cache_control() throws Exception {
 
-<span class="fc" id="L249">    stub200HalResponseWithCacheControl();</span>
+<span class="fc" id="L246">    stub200HalResponseWithCacheControl();</span>
 
-<span class="fc" id="L251">    HalResponse response = loadResource();</span>
+<span class="fc" id="L248">    HalResponse response = loadResource();</span>
 
-<span class="fc" id="L253">    assertThat(response.getMaxAge())</span>
-<span class="fc" id="L254">        .isNull();</span>
-<span class="fc" id="L255">  }</span>
+<span class="fc" id="L250">    assertThat(response.getMaxAge())</span>
+<span class="fc" id="L251">        .isNull();</span>
+<span class="fc" id="L252">  }</span>
 
   @Test
   public void non_zero_maxAge_should_be_taken_from_200_hal_response() throws Exception {
 
-<span class="fc" id="L260">    stub200HalResponseWithMaxAge(100);</span>
+<span class="fc" id="L257">    stub200HalResponseWithMaxAge(100);</span>
 
-<span class="fc" id="L262">    HalResponse response = loadResource();</span>
+<span class="fc" id="L259">    HalResponse response = loadResource();</span>
 
-<span class="fc" id="L264">    assertThat(response.getMaxAge())</span>
-<span class="fc" id="L265">        .isEqualTo(100);</span>
-<span class="fc" id="L266">  }</span>
+<span class="fc" id="L261">    assertThat(response.getMaxAge())</span>
+<span class="fc" id="L262">        .isEqualTo(100);</span>
+<span class="fc" id="L263">  }</span>
 
   @Test
   public void zero_maxAge_should_be_taken_from_200_hal_response() throws Exception {
 
-<span class="fc" id="L271">    stub200HalResponseWithMaxAge(0);</span>
+<span class="fc" id="L268">    stub200HalResponseWithMaxAge(0);</span>
 
-<span class="fc" id="L273">    HalResponse response = loadResource();</span>
+<span class="fc" id="L270">    HalResponse response = loadResource();</span>
 
-<span class="fc" id="L275">    assertThat(response.getMaxAge())</span>
-<span class="fc" id="L276">        .isEqualTo(0);</span>
-<span class="fc" id="L277">  }</span>
+<span class="fc" id="L272">    assertThat(response.getMaxAge())</span>
+<span class="fc" id="L273">        .isEqualTo(0);</span>
+<span class="fc" id="L274">  }</span>
 
   @Test
   public void maxAge_should_be_found_if_seperated_in_multiple_cache_control_headers() throws Exception {
 
-<span class="fc" id="L282">    stub200HalResponseWithCacheControl(&quot;public&quot;, &quot;no-transform&quot;, &quot;max-age=86400&quot;);</span>
+<span class="fc" id="L279">    stub200HalResponseWithCacheControl(&quot;public&quot;, &quot;no-transform&quot;, &quot;max-age=86400&quot;);</span>
 
-<span class="fc" id="L284">    HalResponse response = loadResource();</span>
+<span class="fc" id="L281">    HalResponse response = loadResource();</span>
 
-<span class="fc" id="L286">    assertThat(response.getMaxAge())</span>
-<span class="fc" id="L287">        .isEqualTo(86400);</span>
-<span class="fc" id="L288">  }</span>
+<span class="fc" id="L283">    assertThat(response.getMaxAge())</span>
+<span class="fc" id="L284">        .isEqualTo(86400);</span>
+<span class="fc" id="L285">  }</span>
 
   @Test
   public void immutable_should_override_max_age() throws Exception {
 
-<span class="fc" id="L293">    stub200HalResponseWithCacheControl(&quot;public&quot;, &quot;max-age=86400&quot;, &quot;immutable&quot;);</span>
+<span class="fc" id="L290">    stub200HalResponseWithCacheControl(&quot;public&quot;, &quot;max-age=86400&quot;, &quot;immutable&quot;);</span>
 
-<span class="fc" id="L295">    HalResponse response = loadResource();</span>
+<span class="fc" id="L292">    HalResponse response = loadResource();</span>
 
-<span class="fc" id="L297">    assertThat(response.getMaxAge())</span>
-<span class="fc" id="L298">        .isEqualTo(Duration.ofDays(365).getSeconds());</span>
-<span class="fc" id="L299">  }</span>
+<span class="fc" id="L294">    assertThat(response.getMaxAge())</span>
+<span class="fc" id="L295">        .isEqualTo(Duration.ofDays(365).getSeconds());</span>
+<span class="fc" id="L296">  }</span>
 
   @Test
   public void maxAge_should_be_ignored_if_it_contains_invalid_value() throws Exception {
 
-<span class="fc" id="L304">    stub200HalResponseWithCacheControl(&quot;max-age=foo&quot;);</span>
+<span class="fc" id="L301">    stub200HalResponseWithCacheControl(&quot;max-age=foo&quot;);</span>
 
-<span class="fc" id="L306">    HalResponse response = loadResource();</span>
+<span class="fc" id="L303">    HalResponse response = loadResource();</span>
 
-<span class="fc" id="L308">    assertThat(response.getMaxAge())</span>
-<span class="fc" id="L309">        .isNull();</span>
-<span class="fc" id="L310">  }</span>
+<span class="fc" id="L305">    assertThat(response.getMaxAge())</span>
+<span class="fc" id="L306">        .isNull();</span>
+<span class="fc" id="L307">  }</span>
 
   @Test
   public void maxAge_should_be_properly_capped_to_max_int_value() throws Exception {
 
-<span class="fc" id="L315">    stub200HalResponseWithCacheControl(&quot;max-age=&quot; + (1000l + Integer.MAX_VALUE));</span>
+<span class="fc" id="L312">    stub200HalResponseWithCacheControl(&quot;max-age=&quot; + (1000l + Integer.MAX_VALUE));</span>
 
-<span class="fc" id="L317">    HalResponse response = loadResource();</span>
+<span class="fc" id="L314">    HalResponse response = loadResource();</span>
 
-<span class="fc" id="L319">    assertThat(response.getMaxAge())</span>
-<span class="fc" id="L320">        .isEqualTo(Integer.MAX_VALUE);</span>
-<span class="fc" id="L321">  }</span>
+<span class="fc" id="L316">    assertThat(response.getMaxAge())</span>
+<span class="fc" id="L317">        .isEqualTo(Integer.MAX_VALUE);</span>
+<span class="fc" id="L318">  }</span>
 
   @Test
   public void status_code_should_be_present_in_HalApiClientException_for_non_ok_response() throws Exception {
 
-<span class="fc" id="L326">    stubHtmlResponseWithStatusCode(503);</span>
+<span class="fc" id="L323">    stubHtmlResponseWithStatusCode(503);</span>
 
-<span class="fc" id="L328">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L325">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L330">    assertThat(ex.getStatusCode())</span>
-<span class="fc" id="L331">        .isEqualTo(503);</span>
-<span class="fc" id="L332">  }</span>
+<span class="fc" id="L327">    assertThat(ex.getStatusCode())</span>
+<span class="fc" id="L328">        .isEqualTo(503);</span>
+<span class="fc" id="L329">  }</span>
 
   @Test
   public void content_type_should_be_set_for_500_vnd_error_response() throws Exception {
 
-<span class="fc" id="L337">    stub500VndErrorResponse();</span>
+<span class="fc" id="L334">    stub500VndErrorResponse();</span>
 
-<span class="fc" id="L339">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L336">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L341">    assertThat(ex.getErrorResponse().getContentType())</span>
-<span class="fc" id="L342">        .isEqualTo(VndErrorResponseRenderer.CONTENT_TYPE);</span>
-<span class="fc" id="L343">  }</span>
+<span class="fc" id="L338">    assertThat(ex.getErrorResponse().getContentType())</span>
+<span class="fc" id="L339">        .isEqualTo(VndErrorResponseRenderer.CONTENT_TYPE);</span>
+<span class="fc" id="L340">  }</span>
 
   @Test
   public void content_type_should_be_null_if_not_present_in_error_response() throws Exception {
 
-<span class="fc" id="L348">    stubErrorResponseWithoutContentType(501);</span>
+<span class="fc" id="L345">    stubErrorResponseWithoutContentType(501);</span>
 
-<span class="fc" id="L350">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L347">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L352">    assertThat(ex.getErrorResponse().getContentType())</span>
-<span class="fc" id="L353">        .isNull();</span>
-<span class="fc" id="L354">  }</span>
+<span class="fc" id="L349">    assertThat(ex.getErrorResponse().getContentType())</span>
+<span class="fc" id="L350">        .isNull();</span>
+<span class="fc" id="L351">  }</span>
 
   @Test
   public void request_url_should_be_present_in_HalApiClientException_for_non_ok_response() throws Exception {
 
-<span class="fc" id="L359">    stubHtmlResponseWithStatusCode(503);</span>
+<span class="fc" id="L356">    stubHtmlResponseWithStatusCode(503);</span>
 
-<span class="fc" id="L361">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L358">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L363">    assertThat(ex.getRequestUrl())</span>
-<span class="fc" id="L364">        .isEqualTo(testUrl);</span>
-<span class="fc" id="L365">  }</span>
+<span class="fc" id="L360">    assertThat(ex.getRequestUrl())</span>
+<span class="fc" id="L361">        .isEqualTo(testUrl);</span>
+<span class="fc" id="L362">  }</span>
 
   @Test
   public void error_body_should_be_null_in_HalApiClientException_for_non_ok_html_response() throws Exception {
 
-<span class="fc" id="L370">    stubHtmlResponseWithStatusCode(503);</span>
+<span class="fc" id="L367">    stubHtmlResponseWithStatusCode(503);</span>
 
-<span class="fc" id="L372">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L369">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L374">    assertThat(ex.getErrorResponse())</span>
-<span class="fc" id="L375">        .isNotNull();</span>
-<span class="fc" id="L376">    assertThat(ex.getErrorResponse().getBody())</span>
-<span class="fc" id="L377">        .isNull();</span>
-<span class="fc" id="L378">  }</span>
+<span class="fc" id="L371">    assertThat(ex.getErrorResponse())</span>
+<span class="fc" id="L372">        .isNotNull();</span>
+<span class="fc" id="L373">    assertThat(ex.getErrorResponse().getBody())</span>
+<span class="fc" id="L374">        .isNull();</span>
+<span class="fc" id="L375">  }</span>
 
   @Test
   public void error_body_should_be_null_in_HalApiClientException_for_non_ok_response_without_body() throws Exception {
 
-<span class="fc" id="L383">    stubEmptyResponseWithStatusCode(204);</span>
+<span class="fc" id="L380">    stubEmptyResponseWithStatusCode(204);</span>
 
-<span class="fc" id="L385">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L382">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L387">    assertThat(ex.getErrorResponse())</span>
-<span class="fc" id="L388">        .isNotNull();</span>
-<span class="fc" id="L389">    assertThat(ex.getErrorResponse().getBody())</span>
-<span class="fc" id="L390">        .isNull();</span>
-<span class="fc" id="L391">  }</span>
+<span class="fc" id="L384">    assertThat(ex.getErrorResponse())</span>
+<span class="fc" id="L385">        .isNotNull();</span>
+<span class="fc" id="L386">    assertThat(ex.getErrorResponse().getBody())</span>
+<span class="fc" id="L387">        .isNull();</span>
+<span class="fc" id="L388">  }</span>
 
   @Test
   public void error_body_should_be_present_in_HalApiClientException_for_non_ok_json_response() throws Exception {
 
-<span class="fc" id="L396">    stubJsonResponseWithStatusCode(503);</span>
+<span class="fc" id="L393">    stubJsonResponseWithStatusCode(503);</span>
 
-<span class="fc" id="L398">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L395">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L400">    assertThat(ex.getErrorResponse())</span>
-<span class="fc" id="L401">        .isNotNull();</span>
+<span class="fc" id="L397">    assertThat(ex.getErrorResponse())</span>
+<span class="fc" id="L398">        .isNotNull();</span>
 
-<span class="fc" id="L403">    HalResource body = ex.getErrorResponse().getBody();</span>
+<span class="fc" id="L400">    HalResource body = ex.getErrorResponse().getBody();</span>
 
-<span class="fc" id="L405">    assertThat(body)</span>
-<span class="fc" id="L406">        .isNotNull();</span>
-<span class="fc" id="L407">    assertThat(body.getModel())</span>
-<span class="fc" id="L408">        .isEqualTo(createJsonResource());</span>
-<span class="fc" id="L409">  }</span>
+<span class="fc" id="L402">    assertThat(body)</span>
+<span class="fc" id="L403">        .isNotNull();</span>
+<span class="fc" id="L404">    assertThat(body.getModel())</span>
+<span class="fc" id="L405">        .isEqualTo(createJsonResource());</span>
+<span class="fc" id="L406">  }</span>
 
   @Test
   public void status_code_should_be_200_in_HalApiClientException_for_failure_to_parse_json() throws Exception {
 
-<span class="fc" id="L414">    stubHtmlResponseWithStatusCode(200);</span>
+<span class="fc" id="L411">    stubHtmlResponseWithStatusCode(200);</span>
 
-<span class="fc" id="L416">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L413">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L418">    assertThat(ex.getStatusCode())</span>
-<span class="fc" id="L419">        .isEqualTo(200);</span>
-<span class="fc" id="L420">  }</span>
+<span class="fc" id="L415">    assertThat(ex.getStatusCode())</span>
+<span class="fc" id="L416">        .isEqualTo(200);</span>
+<span class="fc" id="L417">  }</span>
 
   @Test
   public void request_url_should_be_present_in_HalApiClientException_for_failure_to_parse_json() throws Exception {
 
-<span class="fc" id="L425">    stubHtmlResponseWithStatusCode(200);</span>
+<span class="fc" id="L422">    stubHtmlResponseWithStatusCode(200);</span>
 
-<span class="fc" id="L427">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L424">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L429">    assertThat(ex.getRequestUrl())</span>
-<span class="fc" id="L430">        .isEqualTo(testUrl);</span>
-<span class="fc" id="L431">  }</span>
+<span class="fc" id="L426">    assertThat(ex.getRequestUrl())</span>
+<span class="fc" id="L427">        .isEqualTo(testUrl);</span>
+<span class="fc" id="L428">  }</span>
 
   @Test
   public void cause_should_be_present_in_HalApiClientException_for_failure_to_parse_json() throws Exception {
 
-<span class="fc" id="L436">    stubHtmlResponseWithStatusCode(200);</span>
+<span class="fc" id="L433">    stubHtmlResponseWithStatusCode(200);</span>
 
-<span class="fc" id="L438">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L435">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L440">    assertThat(ex)</span>
-<span class="fc" id="L441">        .hasRootCauseInstanceOf(JsonProcessingException.class);</span>
+<span class="fc" id="L437">    assertThat(ex)</span>
+<span class="fc" id="L438">        .hasRootCauseInstanceOf(JsonProcessingException.class);</span>
 
-<span class="fc" id="L443">    assertThat(ex.getCause())</span>
-<span class="fc" id="L444">        .hasMessage(&quot;An HTTP response with status code 200 was retrieved, but the body could not be successfully read and parsed as a JSON document&quot;)</span>
-<span class="fc" id="L445">        .hasRootCauseInstanceOf(IOException.class);</span>
-<span class="fc" id="L446">  }</span>
+<span class="fc" id="L440">    assertThat(ex.getCause())</span>
+<span class="fc" id="L441">        .hasMessage(&quot;An HTTP response with status code 200 was retrieved, but the body could not be successfully read and parsed as a JSON document&quot;)</span>
+<span class="fc" id="L442">        .hasRootCauseInstanceOf(IOException.class);</span>
+<span class="fc" id="L443">  }</span>
 
   @Test
   public void cause_should_be_present_in_HalApiClientException_for_failure_to_parse_empty_string() throws Exception {
 
-<span class="fc" id="L451">    stubEmptyResponseWithStatusCode(200);</span>
+<span class="fc" id="L448">    stubEmptyResponseWithStatusCode(200);</span>
 
-<span class="fc" id="L453">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L450">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L455">    assertThat(ex)</span>
-<span class="fc" id="L456">        .hasMessageContaining(&quot;has failed because the response body is malformed&quot;);</span>
+<span class="fc" id="L452">    assertThat(ex)</span>
+<span class="fc" id="L453">        .hasMessageContaining(&quot;has failed because the response body is malformed&quot;);</span>
 
-<span class="fc" id="L458">    assertThat(ex.getCause())</span>
-<span class="fc" id="L459">        .hasMessage(&quot;An HTTP response with status code 200 was retrieved, but the body could not be successfully read and parsed as a JSON document&quot;)</span>
-<span class="fc" id="L460">        .hasRootCauseMessage(&quot;The response body was completely empty (or consisted only of whitespace)&quot;);</span>
-<span class="fc" id="L461">  }</span>
+<span class="fc" id="L455">    assertThat(ex.getCause())</span>
+<span class="fc" id="L456">        .hasMessage(&quot;An HTTP response with status code 200 was retrieved, but the body could not be successfully read and parsed as a JSON document&quot;)</span>
+<span class="fc" id="L457">        .hasRootCauseMessage(&quot;The response body was completely empty (or consisted only of whitespace)&quot;);</span>
+<span class="fc" id="L458">  }</span>
 
   @Test
   public void cause_should_be_present_in_HalApiClientException_for_malformed_200_response() throws Exception {
 
-<span class="fc" id="L466">    stubFaultyResponseWithStatusCode(200, Fault.MALFORMED_RESPONSE_CHUNK);</span>
+<span class="fc" id="L463">    stubFaultyResponseWithStatusCode(200, Fault.MALFORMED_RESPONSE_CHUNK);</span>
 
-<span class="fc" id="L468">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L465">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
     // the behaviour for this edge cases varies between implementations:
     // sometimes the response code is sucessfully extracted, sometimes not.
     // the only thing they have in common is that at some point, an IOException is caught
-<span class="fc" id="L473">    assertThat(ex)</span>
-<span class="fc" id="L474">        .hasRootCauseInstanceOf(IOException.class);</span>
-<span class="fc" id="L475">  }</span>
+<span class="fc" id="L470">    assertThat(ex)</span>
+<span class="fc" id="L471">        .hasRootCauseInstanceOf(IOException.class);</span>
+<span class="fc" id="L472">  }</span>
 
   @Test
   public void cause_should_be_present_in_HalApiClientException_for_connection_reset_on_200_response() throws Exception {
 
-<span class="fc" id="L480">    stubFaultyResponseWithStatusCode(200, Fault.CONNECTION_RESET_BY_PEER);</span>
+<span class="fc" id="L477">    stubFaultyResponseWithStatusCode(200, Fault.CONNECTION_RESET_BY_PEER);</span>
 
-<span class="fc" id="L482">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L479">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L484">    assertThat(ex.getStatusCode())</span>
-<span class="fc" id="L485">        .isEqualTo(null);</span>
+<span class="fc" id="L481">    assertThat(ex.getStatusCode())</span>
+<span class="fc" id="L482">        .isEqualTo(null);</span>
 
-<span class="fc" id="L487">    assertThat(ex)</span>
-<span class="fc" id="L488">        .hasMessageContaining(&quot;has failed before a status code was available&quot;)</span>
-<span class="fc" id="L489">        .hasRootCauseInstanceOf(IOException.class);</span>
-<span class="fc" id="L490">  }</span>
+<span class="fc" id="L484">    assertThat(ex)</span>
+<span class="fc" id="L485">        .hasMessageContaining(&quot;has failed before a status code was available&quot;)</span>
+<span class="fc" id="L486">        .hasRootCauseInstanceOf(IOException.class);</span>
+<span class="fc" id="L487">  }</span>
 
   @Test
   public void cause_should_be_present_in_HalApiClientException_for_random_data_on_200_response() throws Exception {
 
-<span class="fc" id="L495">    stubFaultyResponseWithStatusCode(200, Fault.RANDOM_DATA_THEN_CLOSE);</span>
+<span class="fc" id="L492">    stubFaultyResponseWithStatusCode(200, Fault.RANDOM_DATA_THEN_CLOSE);</span>
 
-<span class="fc" id="L497">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
+<span class="fc" id="L494">    HalApiClientException ex = loadResourceAndExpectClientException();</span>
 
-<span class="fc" id="L499">    assertThat(ex.getStatusCode())</span>
-<span class="fc" id="L500">        .isEqualTo(null);</span>
+<span class="fc" id="L496">    assertThat(ex.getStatusCode())</span>
+<span class="fc" id="L497">        .isEqualTo(null);</span>
 
-<span class="fc" id="L502">    assertThat(ex)</span>
-<span class="fc" id="L503">        .hasMessageContaining(&quot;has failed before a status code was available&quot;);</span>
-<span class="fc" id="L504">  }</span>
+<span class="fc" id="L499">    assertThat(ex)</span>
+<span class="fc" id="L500">        .hasMessageContaining(&quot;has failed before a status code was available&quot;);</span>
+<span class="fc" id="L501">  }</span>
 
   @Test
   public void status_code_should_be_null_in_HalApiClientException_for_network_errors() throws Exception {
 
-<span class="fc" id="L509">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
+<span class="fc" id="L506">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
 
-<span class="fc" id="L511">    assertThat(ex.getStatusCode())</span>
-<span class="fc" id="L512">        .isNull();</span>
-<span class="fc" id="L513">  }</span>
+<span class="fc" id="L508">    assertThat(ex.getStatusCode())</span>
+<span class="fc" id="L509">        .isNull();</span>
+<span class="fc" id="L510">  }</span>
 
   @Test
   public void request_url_should_be_present_in_HalApiClientException_for_network_errors() throws Exception {
 
-<span class="fc" id="L518">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
+<span class="fc" id="L515">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
 
-<span class="fc" id="L520">    assertThat(ex.getRequestUrl())</span>
-<span class="fc" id="L521">        .isEqualTo(UNKNOWN_HOST_URL);</span>
-<span class="fc" id="L522">  }</span>
+<span class="fc" id="L517">    assertThat(ex.getRequestUrl())</span>
+<span class="fc" id="L518">        .isEqualTo(UNKNOWN_HOST_URL);</span>
+<span class="fc" id="L519">  }</span>
 
   @Test
   public void error_body_should_be_null_in_HalApiClientException_for_network_errors() throws Exception {
 
-<span class="fc" id="L527">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
+<span class="fc" id="L524">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
 
-<span class="fc" id="L529">    assertThat(ex.getErrorResponse())</span>
-<span class="fc" id="L530">        .isNotNull();</span>
-<span class="fc" id="L531">    assertThat(ex.getErrorResponse().getBody())</span>
-<span class="fc" id="L532">        .isNull();</span>
-<span class="fc" id="L533">  }</span>
+<span class="fc" id="L526">    assertThat(ex.getErrorResponse())</span>
+<span class="fc" id="L527">        .isNotNull();</span>
+<span class="fc" id="L528">    assertThat(ex.getErrorResponse().getBody())</span>
+<span class="fc" id="L529">        .isNull();</span>
+<span class="fc" id="L530">  }</span>
 
   @Test
   public void cause_should_be_present_in_HalApiClientException_for_for_network_errors() throws Exception {
 
-<span class="fc" id="L538">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
+<span class="fc" id="L535">    HalApiClientException ex = loadResourceAndExpectClientException(UNKNOWN_HOST_URL);</span>
 
-<span class="fc" id="L540">    assertThat(ex)</span>
-<span class="fc" id="L541">        .hasCauseInstanceOf(UnknownHostException.class);</span>
-<span class="fc" id="L542">  }</span>
+<span class="fc" id="L537">    assertThat(ex)</span>
+<span class="fc" id="L538">        .hasCauseInstanceOf(UnknownHostException.class);</span>
+<span class="fc" id="L539">  }</span>
 
   @Test
   public void cause_should_be_present_in_HalApiClientException_for_for_ssl_errors() throws Exception {
 
-<span class="fc" id="L547">    HalApiClientException ex = loadResourceAndExpectClientException(sslTestUrl);</span>
+<span class="fc" id="L544">    HalApiClientException ex = loadResourceAndExpectClientException(sslTestUrl);</span>
 
-<span class="fc" id="L549">    assertThat(ex)</span>
-<span class="fc" id="L550">        .hasCauseInstanceOf(SSLHandshakeException.class);</span>
-<span class="fc" id="L551">  }</span>
+<span class="fc" id="L546">    assertThat(ex)</span>
+<span class="fc" id="L547">        .hasCauseInstanceOf(SSLHandshakeException.class);</span>
+<span class="fc" id="L548">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

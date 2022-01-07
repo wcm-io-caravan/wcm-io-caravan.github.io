@@ -104,7 +104,17 @@ var activeTableTab = "activeTableTab";
 <pre>@ProviderType
 public interface <span class="typeNameLabel">VndErrorResponseRenderer</span></pre>
 <div class="block">Creates an error response according to the "application/vnd.error+json" media type for any
- exception thrown when rendering HAL</div>
+ exception thrown and caught during request processing. It will use an <a href="../../../../../../io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>ExceptionStatusAndLoggingStrategy</code></a>
+ to determine the appropriate status code for the given exception.
+ <p>
+ This renderer is used internally to implement <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-"><code>Rhyme.renderResponse(LinkableResource)</code></a> and
+ <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderVndErrorResponse-java.lang.Throwable-"><code>Rhyme.renderVndErrorResponse(Throwable)</code></a> but may also be used directly in advanced testing or integration
+ scenarios.
+ </p></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi"><code>ExceptionStatusAndLoggingStrategy</code></a></dd>
+</dl>
 </li>
 </ul>
 </div>

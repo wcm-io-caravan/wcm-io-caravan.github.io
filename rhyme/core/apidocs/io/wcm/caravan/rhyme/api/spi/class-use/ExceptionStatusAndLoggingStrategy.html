@@ -137,7 +137,11 @@
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../../../io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server">AsyncHalResponseRenderer</a></code></td>
 <td class="colLast"><span class="typeNameLabel">AsyncHalResponseRenderer.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html#create-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-">create</a></span>(<a href="../../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a>&nbsp;metrics,
-      <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi">ExceptionStatusAndLoggingStrategy</a>&nbsp;exceptionStrategy)</code>&nbsp;</td>
+      <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi">ExceptionStatusAndLoggingStrategy</a>&nbsp;exceptionStrategy)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../../../../io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>HalResponseRendererBuilder</code></a> instead</span></div>
+</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../../../io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server">AsyncHalResponseRenderer</a></code></td>
@@ -146,20 +150,14 @@
       <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiAnnotationSupport</a>&nbsp;annotationSupport,
       <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiReturnTypeSupport</a>&nbsp;returnTypeSupport)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">Use
-             <a href="../../../../../../../io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html#create-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport-"><code>AsyncHalResponseRenderer.create(RequestMetricsCollector,ExceptionStatusAndLoggingStrategy,HalApiAnnotationSupport,HalApiReturnTypeSupport,RhymeDocsSupport)</code></a>
-             instead</span></div>
+<div class="block"><span class="deprecationComment">Use <a href="../../../../../../../io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>HalResponseRendererBuilder</code></a> instead</span></div>
 </div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static <a href="../../../../../../../io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server">AsyncHalResponseRenderer</a></code></td>
-<td class="colLast"><span class="typeNameLabel">AsyncHalResponseRenderer.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html#create-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport-io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport-io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport-">create</a></span>(<a href="../../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a>&nbsp;metrics,
-      <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi">ExceptionStatusAndLoggingStrategy</a>&nbsp;exceptionStrategy,
-      <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiAnnotationSupport</a>&nbsp;annotationSupport,
-      <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiReturnTypeSupport</a>&nbsp;returnTypeSupport,
-      <a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/RhymeDocsSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">RhymeDocsSupport</a>&nbsp;rhymeDocsSupport)</code>
-<div class="block">Alternative factory method that allows to support different HAL API annotations or method return types</div>
+<td class="colFirst"><code><a href="../../../../../../../io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html" title="interface in io.wcm.caravan.rhyme.api.server">HalResponseRendererBuilder</a></code></td>
+<td class="colLast"><span class="typeNameLabel">HalResponseRendererBuilder.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html#withExceptionStrategy-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-">withExceptionStrategy</a></span>(<a href="../../../../../../../io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi">ExceptionStatusAndLoggingStrategy</a>&nbsp;customStrategy)</code>
+<div class="block">Allow the exception handling of the core framework to support additional platform / framework specific exceptions.</div>
 </td>
 </tr>
 </tbody>

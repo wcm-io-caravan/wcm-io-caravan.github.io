@@ -35,14 +35,14 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> * An SPI interface for a cache implementation that can be given to</em>
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment"> * {@link HalResourceLoaderBuilder#withCustomCache(HalResponseCache)} if you want to store cached HAL+JSON responses</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment"> * {@link HalResourceLoaderBuilder#withCustomCache(HalResponseCache)} if you want to store HAL+JSON responses</em>
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> * in a custom cache (e.g. in an external, persistent data store).</em>
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> * Note that it's entirely up to the HalResponseCache</em>
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> * implementation to decide for how long a {@link HalResponse} is &lt;b&gt;stored&lt;/b&gt; in the cache. Whether the response will</em>
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment"> * but the framework will actually be &lt;b&gt;used&lt;/b&gt; is determined by the caching {@link HalResourceLoader}</em>
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> * implementation of the core framework, based on the {@link HalResponse#getMaxAge()} value and</em>
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> * the time the the response was retrieved (from {@link HalResponse#getTimestamp()}).</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> * the time when the response was retrieved (taken from {@link HalResponse#getTimestamp()}).</em>
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  @ConsumerType
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="HalResponseCache" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResponseCache.html#HalResponseCache">HalResponseCache</a> {

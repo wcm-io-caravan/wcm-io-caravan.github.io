@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HalApiClientBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.api.client</a> &gt; <span class="el_source">HalApiClientBuilder.java</span></div><h1>HalApiClientBuilder.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2022 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.api.client;
+
+import org.osgi.annotation.versioning.ProviderType;
+
+import io.wcm.caravan.rhyme.api.Rhyme;
+import io.wcm.caravan.rhyme.api.RhymeBuilder;
+import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
+import io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport;
+import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
+import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
+import io.wcm.caravan.rhyme.impl.RhymeBuilders;
+import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRenderer;
+
+/**
+ * A fluent builder to create and customize {@link HalApiClient} instances for advanced integration or test scenarios.
+ * &lt;p&gt;
+ * If you don't need any of the advanced customizations, you can simply use {@link HalApiClient#create()}
+ * {@link HalApiClient#create(HalResourceLoader)} instead.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * {@link HalApiClientBuilder} instances shouldn't be re-used, as calling the build method may modify its state.
+ * &lt;/p&gt;
+ * @see HalApiClient
+ * @see RhymeBuilder
+ */
+@ProviderType
+public interface HalApiClientBuilder {
+
+  /**
+   * @return a new {@link HalApiClientBuilder} to start building
+   */
+  static HalApiClientBuilder create() {
+<span class="fc" id="L52">    return RhymeBuilders.client();</span>
+  }
+
+  /**
+   * @param resourceLoader implements the actual loading (and caching) of JSON/HAL resources
+   * @return this
+   */
+  HalApiClientBuilder withResourceLoader(HalResourceLoader resourceLoader);
+
+  /**
+   * A {@link RequestMetricsCollector} instance can be used to track all upstream resources that have been retrieved,
+   * and collect metrics and response metadata from the interaction with the proxy objects.
+   * This is only relevant for clients created by the {@link Rhyme} instance while handling an incoming
+   * request.
+   * &lt;p&gt;
+   * If you only want to consume HAL APIs and not use Rhyme to render your responses, you don't need
+   * to worry about the {@link RequestMetricsCollector}.
+   * &lt;/p&gt;
+   * * @param metricsSharedWithRenderer the same instance that will be used to create the
+   * {@link AsyncHalResourceRenderer}
+   * @return this
+   */
+  HalApiClientBuilder withMetrics(RequestMetricsCollector metricsSharedWithRenderer);
+
+  /**
+   * Extend the core framework to support additional return types in your annotated HAL API interfaces.
+   * You can call this method multiple times if you want to register more than one extension.
+   * @param additionalTypeSupport extension to the default type support
+   * @return this
+   */
+  HalApiClientBuilder withReturnTypeSupport(HalApiReturnTypeSupport additionalTypeSupport);
+
+  /**
+   * Extend the core framework to support additional annotation types in your annotated HAL API interfaces.
+   * You can call this method multiple times if you want to register more than one extension.
+   * @param additionalTypeSupport extension to the default type support
+   * @return this
+   */
+  HalApiClientBuilder withAnnotationTypeSupport(HalApiAnnotationSupport additionalTypeSupport);
+
+  /**
+   * @return the new {@link HalApiClient} instance
+   */
+  HalApiClient build();
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

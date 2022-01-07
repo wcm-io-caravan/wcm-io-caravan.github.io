@@ -37,7 +37,6 @@ import org.springframework.web.context.WebApplicationContext;
 import com.google.common.collect.LinkedHashMultimap;
 
 import io.wcm.caravan.rhyme.api.client.HalApiClient;
-import io.wcm.caravan.rhyme.api.client.HalResourceLoaderBuilder;
 import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
 import io.wcm.caravan.rhyme.api.spi.HttpClientCallback;
 import io.wcm.caravan.rhyme.api.spi.HttpClientSupport;
@@ -54,50 +53,48 @@ import io.wcm.caravan.rhyme.api.spi.HttpClientSupport;
  * &lt;/ul&gt;
  */
 @TestConfiguration
-<span class="fc" id="L57">public class MockMvcHalResourceLoaderConfiguration {</span>
+<span class="fc" id="L56">public class MockMvcHalResourceLoaderConfiguration {</span>
 
   @Bean
   public HalResourceLoader halResourceLoader(WebApplicationContext applicationContext) {
 
-<span class="fc" id="L62">    MockMvcClient mockMvcClient = new MockMvcClient(applicationContext);</span>
+<span class="fc" id="L61">    MockMvcClient mockMvcClient = new MockMvcClient(applicationContext);</span>
 
-<span class="fc" id="L64">    return HalResourceLoaderBuilder.create()</span>
-<span class="fc" id="L65">        .withCustomHttpClient(mockMvcClient)</span>
-<span class="fc" id="L66">        .build();</span>
+<span class="fc" id="L63">    return HalResourceLoader.create(mockMvcClient);</span>
   }
 
   private static final class MockMvcClient implements HttpClientSupport {
 
     private final MockMvc mockMvc;
 
-<span class="fc" id="L73">    private MockMvcClient(WebApplicationContext applicationContext) {</span>
+<span class="fc" id="L70">    private MockMvcClient(WebApplicationContext applicationContext) {</span>
 
-<span class="fc" id="L75">      this.mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext).build();</span>
-<span class="fc" id="L76">    }</span>
+<span class="fc" id="L72">      this.mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext).build();</span>
+<span class="fc" id="L73">    }</span>
 
     @Override
     public void executeGetRequest(URI uri, HttpClientCallback callback) {
       try {
-<span class="fc" id="L81">        MvcResult result = mockMvc.perform(get(uri)).andReturn();</span>
+<span class="fc" id="L78">        MvcResult result = mockMvc.perform(get(uri)).andReturn();</span>
 
-<span class="fc" id="L83">        MockHttpServletResponse response = result.getResponse();</span>
+<span class="fc" id="L80">        MockHttpServletResponse response = result.getResponse();</span>
 
-<span class="fc" id="L85">        callback.onHeadersAvailable(response.getStatus(), createHeadersMap(response));</span>
+<span class="fc" id="L82">        callback.onHeadersAvailable(response.getStatus(), createHeadersMap(response));</span>
 
-<span class="fc" id="L87">        callback.onBodyAvailable(new ByteArrayInputStream(response.getContentAsByteArray()));</span>
+<span class="fc" id="L84">        callback.onBodyAvailable(new ByteArrayInputStream(response.getContentAsByteArray()));</span>
       }
-<span class="fc" id="L89">      catch (Exception e) {</span>
-<span class="fc" id="L90">        callback.onExceptionCaught(e);</span>
-<span class="fc" id="L91">      }</span>
-<span class="fc" id="L92">    }</span>
+<span class="fc" id="L86">      catch (Exception e) {</span>
+<span class="fc" id="L87">        callback.onExceptionCaught(e);</span>
+<span class="fc" id="L88">      }</span>
+<span class="fc" id="L89">    }</span>
 
     private Map&lt;String, Collection&lt;String&gt;&gt; createHeadersMap(MockHttpServletResponse response) {
 
-<span class="fc" id="L96">      LinkedHashMultimap&lt;String, String&gt; headers = LinkedHashMultimap.create();</span>
+<span class="fc" id="L93">      LinkedHashMultimap&lt;String, String&gt; headers = LinkedHashMultimap.create();</span>
 
-<span class="fc" id="L98">      response.getHeaderNames().forEach(name -&gt; headers.putAll(name, response.getHeaders(name)));</span>
+<span class="fc" id="L95">      response.getHeaderNames().forEach(name -&gt; headers.putAll(name, response.getHeaders(name)));</span>
 
-<span class="fc" id="L100">      return headers.asMap();</span>
+<span class="fc" id="L97">      return headers.asMap();</span>
     }
   }
 }

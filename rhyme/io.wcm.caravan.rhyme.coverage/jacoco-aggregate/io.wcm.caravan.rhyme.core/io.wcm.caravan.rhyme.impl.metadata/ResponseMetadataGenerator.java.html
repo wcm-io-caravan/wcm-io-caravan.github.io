@@ -62,7 +62,7 @@ import io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
 import io.wcm.caravan.rhyme.api.common.RequestMetricsStopwatch;
 import io.wcm.caravan.rhyme.api.relations.StandardRelations;
 import io.wcm.caravan.rhyme.api.resources.LinkableResource;
-import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRenderer;
+import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
 
 /**
  * Full implementation of {@link RequestMetricsCollector} that keeps track of all upstream resources that have been
@@ -70,16 +70,16 @@ import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRenderer;
  */
 <span class="fc" id="L71">public class ResponseMetadataGenerator implements RequestMetricsCollector {</span>
 
-<span class="fc" id="L73">  private static final Logger log = LoggerFactory.getLogger(ResponseMetadataGenerator.class);</span>
+<span class="fc" id="L73">  private final Stopwatch overalResponseTimeStopwatch = Stopwatch.createStarted();</span>
 
-<span class="fc" id="L75">  private static final Map&lt;TimeUnit, String&gt; TIME_UNIT_ABBRS = ImmutableMap.of(</span>
+<span class="fc" id="L75">  private static final Logger log = LoggerFactory.getLogger(ResponseMetadataGenerator.class);</span>
+
+<span class="fc" id="L77">  private static final Map&lt;TimeUnit, String&gt; TIME_UNIT_ABBRS = ImmutableMap.of(</span>
       TimeUnit.MINUTES, &quot;m&quot;,
       TimeUnit.SECONDS, &quot;s&quot;,
       TimeUnit.MILLISECONDS, &quot;ms&quot;,
       TimeUnit.MICROSECONDS, &quot;μs&quot;,
       TimeUnit.NANOSECONDS, &quot;ns&quot;);
-
-<span class="fc" id="L82">  private final Stopwatch overalResponseTimeStopwatch = Stopwatch.createStarted();</span>
 
 <span class="fc" id="L84">  private final List&lt;TimeMeasurement&gt; inputMaxAgeSeconds = Collections.synchronizedList(new ArrayList&lt;&gt;());</span>
 <span class="fc" id="L85">  private final List&lt;TimeMeasurement&gt; inputResponseTimes = Collections.synchronizedList(new ArrayList&lt;&gt;());</span>
@@ -277,7 +277,7 @@ import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRenderer;
 
     // and a summary of the important timing results
 <span class="fc" id="L279">    metadataResource.getModel().put(&quot;sumOfProxyInvocationTime&quot;, getSumOfInvocationMillis(HalApiClient.class) + &quot;ms&quot;);</span>
-<span class="fc" id="L280">    metadataResource.getModel().put(&quot;sumOfResourceAssemblyTime&quot;, getSumOfInvocationMillis(AsyncHalResourceRenderer.class) + &quot;ms&quot;);</span>
+<span class="fc" id="L280">    metadataResource.getModel().put(&quot;sumOfResourceAssemblyTime&quot;, getSumOfInvocationMillis(AsyncHalResponseRenderer.class) + &quot;ms&quot;);</span>
 <span class="fc" id="L281">    metadataResource.getModel().put(&quot;sumOfResponseAndParseTimes&quot;, getSumOfResponseTimeMillis() + &quot;ms&quot;);</span>
 <span class="fc" id="L282">    metadataResource.getModel().put(&quot;overallServerSideResponseTime&quot;, getOverallResponseTimeMillis() + &quot;ms&quot;);</span>
 <span class="fc" id="L283">    metadataResource.getModel().put(&quot;metricsCollectionTime&quot;, TimeUnit.NANOSECONDS.toMillis(metricsCollectionNanos.get()) + &quot;ms&quot;);</span>
@@ -315,8 +315,8 @@ import io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRenderer;
             &quot;A breakdown of time spent in blocking HalApiClient proxy method calls&quot;,
             null, false),
 
-<span class="fc" id="L318">        new TimingResourceCategory(AsyncHalResourceRenderer.class.getSimpleName(), RENDERING_TIMES,</span>
-            &quot;A breakdown of time spent in blocking method calls by AsyncHalResourceRenderer&quot;,
+<span class="fc" id="L318">        new TimingResourceCategory(AsyncHalResponseRenderer.class.getSimpleName(), RENDERING_TIMES,</span>
+            &quot;A breakdown of time spent in blocking method calls while rendering resources&quot;,
             null, false),
 
         new TimingResourceCategory(&quot;SlingRhymeImpl&quot;, SLING_MODELS,
