@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":17,"i1":6,"i2":6,"i3":38,"i4":6,"i5":6,"i6":6};
+var methods = {"i0":17,"i1":17,"i2":6,"i3":6,"i4":38,"i5":6,"i6":6,"i7":6};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -75,13 +75,13 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -104,12 +104,20 @@ var activeTableTab = "activeTableTab";
 <pre>@ProviderType
 public interface <span class="typeNameLabel">RequestMetricsCollector</span></pre>
 <div class="block">Keeps track of all upstream resource that have been fetched while handling the current request, and collects
- additional data for performance analyze and caching. An instance of this interface is automatically created
- for each <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> instance. The collected information will be included in the
+ additional data for performance analyze and caching. The collected information will be included in the
  responses created by <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-"><code>Rhyme.renderResponse(LinkableResource)</code></a>.
  <p>
- If you don't use that method (or <a href="../../../../../../io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>AsyncHalResponseRenderer</code></a> to render your responses, simply create a default
- implementation using <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#create--"><code>create()</code></a>
+ You shouldn't have to interact with this interface directly except for advanced integration or testing scenarios.
+ Usually an instance of this interface is automatically created for each <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> instance, and can choose
+ whether you want to include the embedded metadata in the response by calling
+ <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withEmbeddedMetadata--"><code>RhymeBuilder.withEmbeddedMetadata()</code></a>.
+ </p>
+ <p>
+ If you are not working with <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api"><code>RhymeBuilder</code></a>, but are integrating <a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalApiClient</code></a> and
+ <a href="../../../../../../io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>AsyncHalResponseRenderer</code></a> separately, then you must make sure that you create just one instance
+ of <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common"><code>RequestMetricsCollector</code></a> for each incoming request, and pass it over to both
+ <a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#withMetrics-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-"><code>HalApiClientBuilder.withMetrics(RequestMetricsCollector)</code></a>
+ and <a href="../../../../../../io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html#withMetrics-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-"><code>HalResponseRendererBuilder.withMetrics(RequestMetricsCollector)</code></a>.
  </p></div>
 </li>
 </ul>
@@ -117,6 +125,28 @@ public interface <span class="typeNameLabel">RequestMetricsCollector</span></pre
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#QUERY_PARAM_TOGGLE">QUERY_PARAM_TOGGLE</a></span></code>
+<div class="block">The name of the query parameter that toggles whether the "rhyme:metadata" resource is embedded when rendering
+ resources.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -132,22 +162,30 @@ public interface <span class="typeNameLabel">RequestMetricsCollector</span></pre
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#create--">create</a></span>()</code>
-<div class="block">Create a new instance to collect performance data for the current incoming request</div>
+<div class="block">Create a new instance to collect the full data on upstream requests and measure performance for the current
+ incoming request.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#createEssentialCollector--">createEssentialCollector</a></span>()</code>
+<div class="block">Create a minimal implementation that only captures the max-age value of upstream responses, but does
+ not perform any other measurements and will not allow to render any embedded metadata into the response</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>io.wcm.caravan.hal.resource.HalResource</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#createMetadataResource-io.wcm.caravan.rhyme.api.resources.LinkableResource-">createMetadataResource</a></span>(io.wcm.caravan.rhyme.api.resources.LinkableResource&nbsp;resourceImpl)</code>
 <div class="block">Create a resource with performance analysis data that can be embedded in the response</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#getResponseMaxAge--">getResponseMaxAge</a></span>()</code>
 <div class="block">Calculates the "max-age" Cache-Control header value to be used when rendering the response.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#onMethodInvocationFinished-java.lang.Class-java.lang.String-long-">onMethodInvocationFinished</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&nbsp;category,
                           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;methodDescription,
@@ -157,7 +195,7 @@ public interface <span class="typeNameLabel">RequestMetricsCollector</span></pre
 </div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#onResponseRetrieved-java.lang.String-java.lang.String-java.lang.Integer-long-">onResponseRetrieved</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;resourceUri,
                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;resourceTitle,
@@ -166,13 +204,13 @@ public interface <span class="typeNameLabel">RequestMetricsCollector</span></pre
 <div class="block">Internal method called by the framework whenever an upstream resource has been retrieved</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#setResponseMaxAge-java.time.Duration-">setResponseMaxAge</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html?is-external=true" title="class or interface in java.time">Duration</a>&nbsp;duration)</code>
 <div class="block">Set the upper limit for the max-age header of the response to the current incoming request.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsStopwatch.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsStopwatch</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#startStopwatch-java.lang.Class-java.util.function.Supplier-">startStopwatch</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&nbsp;measuringClass,
               <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;taskDescription)</code>
@@ -188,6 +226,31 @@ public interface <span class="typeNameLabel">RequestMetricsCollector</span></pre
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field.detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="QUERY_PARAM_TOGGLE">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>QUERY_PARAM_TOGGLE</h4>
+<pre>static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> QUERY_PARAM_TOGGLE</pre>
+<div class="block">The name of the query parameter that toggles whether the "rhyme:metadata" resource is embedded when rendering
+ resources. This applies only if you are using one of the framework integrations (e.g. Spring, AEM) in default
+ configuration. To enable the inclusion of the metadata programmatically, call
+ <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withEmbeddedMetadata--"><code>RhymeBuilder.withEmbeddedMetadata()</code></a>.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../constant-values.html#io.wcm.caravan.rhyme.api.common.RequestMetricsCollector.QUERY_PARAM_TOGGLE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -308,14 +371,36 @@ void&nbsp;onMethodInvocationFinished(<a href="https://docs.oracle.com/javase/8/d
 <a name="create--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>create</h4>
 <pre>static&nbsp;<a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a>&nbsp;create()</pre>
-<div class="block">Create a new instance to collect performance data for the current incoming request</div>
+<div class="block">Create a new instance to collect the full data on upstream requests and measure performance for the current
+ incoming request. When this instance is used with <a href="../../../../../../io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>AsyncHalResponseRenderer</code></a>, a metadata resource with
+ insight on performance and upstream requests will be automatically embedded in the response.If you don't need or
+ want this, then use <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#createEssentialCollector--"><code>createEssentialCollector()</code></a> instead</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a new instance of <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common"><code>RequestMetricsCollector</code></a></dd>
+<dd>a new full-featured instance of <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common"><code>RequestMetricsCollector</code></a></dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withEmbeddedMetadata--"><code>RhymeBuilder.withEmbeddedMetadata()</code></a>, 
+<a href="../../../../../../io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html#withMetrics-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-"><code>HalResponseRendererBuilder.withMetrics(RequestMetricsCollector)</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="createEssentialCollector--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>createEssentialCollector</h4>
+<pre>static&nbsp;<a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a>&nbsp;createEssentialCollector()</pre>
+<div class="block">Create a minimal implementation that only captures the max-age value of upstream responses, but does
+ not perform any other measurements and will not allow to render any embedded metadata into the response</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a new instance of <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common"><code>RequestMetricsCollector</code></a> that implements only the essential functionality required
+         for calculation of the max-age header to work</dd>
 </dl>
 </li>
 </ul>
@@ -373,13 +458,13 @@ void&nbsp;onMethodInvocationFinished(<a href="https://docs.oracle.com/javase/8/d
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

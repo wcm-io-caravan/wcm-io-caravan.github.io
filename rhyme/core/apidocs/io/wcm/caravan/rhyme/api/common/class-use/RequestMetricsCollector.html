@@ -160,7 +160,15 @@
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a></code></td>
 <td class="colLast"><span class="typeNameLabel">RequestMetricsCollector.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#create--">create</a></span>()</code>
-<div class="block">Create a new instance to collect performance data for the current incoming request</div>
+<div class="block">Create a new instance to collect the full data on upstream requests and measure performance for the current
+ incoming request.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a></code></td>
+<td class="colLast"><span class="typeNameLabel">RequestMetricsCollector.</span><code><span class="memberNameLink"><a href="../../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#createEssentialCollector--">createEssentialCollector</a></span>()</code>
+<div class="block">Create a minimal implementation that only captures the max-age value of upstream responses, but does
+ not perform any other measurements and will not allow to render any embedded metadata into the response</div>
 </td>
 </tr>
 </tbody>

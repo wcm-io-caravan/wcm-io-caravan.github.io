@@ -16,7 +16,7 @@ Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl.docs,RhymeDocsBu
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl.docs,RhymeDocsHtmlResource,0,16,0,0,0,4,0,2,0,2
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl.docs,RhymeDocsOsgiBundleSupport,0,64,0,4,0,18,0,10,0,8
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanHalApiClientImpl.CaravanCachingConfiguration,0,4,0,0,0,2,0,2,0,2
-Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanRhymeRequestCycleImpl.CaravanRhymeImpl,0,29,0,0,0,9,0,4,0,4
+Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanRhymeRequestCycleImpl.CaravanRhymeImpl,0,36,0,2,0,11,0,5,0,4
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanHalApiClientImpl.JsonPipelineCacheLoader,0,14,0,0,0,2,0,2,0,2
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanResilientHttpSupport,0,103,0,2,0,29,0,9,0,8
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanRhymeRequestCycleImpl,0,42,0,0,0,10,0,3,0,3

@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2014 - 2022 wcm.io Caravan</copyright>
     <item>
-      <title>File: 70,
+      <title>File: 71,
              Errors: 0,
-             Warnings: 29,
+             Warnings: 30,
              Infos: 0
       </title>
             <link>https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html</link>
@@ -75,6 +75,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.renderer.VndErrorResponseRendererImpl.java">io/wcm/caravan/rhyme/impl/renderer/VndErrorResponseRendererImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.metadata.FullMetadataGenerator.java">io/wcm/caravan/rhyme/impl/metadata/FullMetadataGenerator.java</a>
                 </td>
                 <td>
                   0
@@ -494,27 +508,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.metadata.ResponseMetadataGenerator.java">io/wcm/caravan/rhyme/impl/metadata/ResponseMetadataGenerator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.api.common.RequestMetricsCollector.java">io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   0
@@ -747,6 +747,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.documentation.RhymeDocsCurieGenerator.java">io/wcm/caravan/rhyme/impl/documentation/RhymeDocsCurieGenerator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.metadata.MaxAgeOnlyCollector.java">io/wcm/caravan/rhyme/impl/metadata/MaxAgeOnlyCollector.java</a>
                 </td>
                 <td>
                   0

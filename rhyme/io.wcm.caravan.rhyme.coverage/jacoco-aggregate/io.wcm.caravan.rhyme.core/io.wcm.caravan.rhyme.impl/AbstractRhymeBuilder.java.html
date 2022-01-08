@@ -118,87 +118,94 @@ import io.wcm.caravan.rhyme.impl.renderer.CompositeExceptionStatusAndLoggingStra
 <span class="fc" id="L118">    return (BuilderInterface)this;</span>
   }
 
+  @SuppressWarnings(&quot;unchecked&quot;)
+  public BuilderInterface withEmbeddedMetadata() {
+
+<span class="fc" id="L124">    this.metrics = RequestMetricsCollector.create();</span>
+<span class="fc" id="L125">    return (BuilderInterface)this;</span>
+  }
+
   private ExceptionStatusAndLoggingStrategy getEffectiveExceptionStrategy() {
 
-<span class="fc" id="L123">    List&lt;ExceptionStatusAndLoggingStrategy&gt; nonNullStrategies = exceptionStrategies.stream()</span>
-<span class="fc" id="L124">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L125">        .collect(Collectors.toList());</span>
+<span class="fc" id="L130">    List&lt;ExceptionStatusAndLoggingStrategy&gt; nonNullStrategies = exceptionStrategies.stream()</span>
+<span class="fc" id="L131">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L132">        .collect(Collectors.toList());</span>
 
-<span class="fc bfc" id="L127" title="All 2 branches covered.">    if (nonNullStrategies.isEmpty()) {</span>
-<span class="fc" id="L128">      return null;</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">    if (nonNullStrategies.isEmpty()) {</span>
+<span class="fc" id="L135">      return null;</span>
     }
-<span class="fc bfc" id="L130" title="All 2 branches covered.">    if (nonNullStrategies.size() == 1) {</span>
-<span class="fc" id="L131">      return nonNullStrategies.get(0);</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">    if (nonNullStrategies.size() == 1) {</span>
+<span class="fc" id="L138">      return nonNullStrategies.get(0);</span>
     }
 
-<span class="fc" id="L134">    return new CompositeExceptionStatusAndLoggingStrategy(nonNullStrategies);</span>
+<span class="fc" id="L141">    return new CompositeExceptionStatusAndLoggingStrategy(nonNullStrategies);</span>
   }
 
   private HalApiTypeSupport getEffectiveTypeSupport() {
 
-<span class="fc" id="L139">    DefaultHalApiTypeSupport defaultSupport = new DefaultHalApiTypeSupport();</span>
+<span class="fc" id="L146">    DefaultHalApiTypeSupport defaultSupport = new DefaultHalApiTypeSupport();</span>
 
-<span class="fc bfc" id="L141" title="All 2 branches covered.">    if (typeSupports.isEmpty()) {</span>
-<span class="fc" id="L142">      return defaultSupport;</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    if (typeSupports.isEmpty()) {</span>
+<span class="fc" id="L149">      return defaultSupport;</span>
     }
 
-<span class="fc" id="L145">    List&lt;HalApiTypeSupport&gt; customAndDefault = new ArrayList&lt;&gt;(typeSupports);</span>
-<span class="fc" id="L146">    customAndDefault.add(defaultSupport);</span>
+<span class="fc" id="L152">    List&lt;HalApiTypeSupport&gt; customAndDefault = new ArrayList&lt;&gt;(typeSupports);</span>
+<span class="fc" id="L153">    customAndDefault.add(defaultSupport);</span>
 
-<span class="fc" id="L148">    return new CompositeHalApiTypeSupport(customAndDefault);</span>
+<span class="fc" id="L155">    return new CompositeHalApiTypeSupport(customAndDefault);</span>
   }
 
   private void applyDefaultsBeforeBuilding() {
 
-<span class="fc bfc" id="L153" title="All 2 branches covered.">    if (wasUsedToBuild) {</span>
-<span class="fc" id="L154">      throw new HalApiDeveloperException(&quot;You shouldn't re-use this builder to create more than once instance&quot;);</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">    if (wasUsedToBuild) {</span>
+<span class="fc" id="L161">      throw new HalApiDeveloperException(&quot;You shouldn't re-use this builder to create more than once instance&quot;);</span>
     }
 
-<span class="fc bfc" id="L157" title="All 2 branches covered.">    if (resourceLoader == null) {</span>
-<span class="fc" id="L158">      resourceLoader = HalResourceLoader.create();</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">    if (resourceLoader == null) {</span>
+<span class="fc" id="L165">      resourceLoader = HalResourceLoader.create();</span>
     }
 
-<span class="fc bfc" id="L161" title="All 2 branches covered.">    if (metrics == null) {</span>
-<span class="fc" id="L162">      metrics = RequestMetricsCollector.create();</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">    if (metrics == null) {</span>
+<span class="fc" id="L169">      metrics = RequestMetricsCollector.createEssentialCollector();</span>
     }
-<span class="fc" id="L164">  }</span>
+<span class="fc" id="L171">  }</span>
 
   AsyncHalResponseRenderer buildAsyncRenderer() {
 
-<span class="fc" id="L168">    applyDefaultsBeforeBuilding();</span>
+<span class="fc" id="L175">    applyDefaultsBeforeBuilding();</span>
 
-<span class="fc" id="L170">    HalApiTypeSupport typeSupport = getEffectiveTypeSupport();</span>
+<span class="fc" id="L177">    HalApiTypeSupport typeSupport = getEffectiveTypeSupport();</span>
 
-<span class="fc" id="L172">    AsyncHalResourceRenderer resourceRenderer = new AsyncHalResourceRendererImpl(metrics, typeSupport);</span>
+<span class="fc" id="L179">    AsyncHalResourceRenderer resourceRenderer = new AsyncHalResourceRendererImpl(metrics, typeSupport);</span>
 
-<span class="fc" id="L174">    ExceptionStatusAndLoggingStrategy exceptionStrategy = getEffectiveExceptionStrategy();</span>
+<span class="fc" id="L181">    ExceptionStatusAndLoggingStrategy exceptionStrategy = getEffectiveExceptionStrategy();</span>
 
-<span class="fc" id="L176">    return new AsyncHalResponseRendererImpl(resourceRenderer, metrics, exceptionStrategy, typeSupport, rhymeDocsSupport);</span>
+<span class="fc" id="L183">    return new AsyncHalResponseRendererImpl(resourceRenderer, metrics, exceptionStrategy, typeSupport, rhymeDocsSupport);</span>
   }
 
   HalApiClient buildApiClient() {
 
-<span class="fc" id="L181">    applyDefaultsBeforeBuilding();</span>
+<span class="fc" id="L188">    applyDefaultsBeforeBuilding();</span>
 
-<span class="fc" id="L183">    HalApiTypeSupport effectiveTypeSupport = getEffectiveTypeSupport();</span>
+<span class="fc" id="L190">    HalApiTypeSupport effectiveTypeSupport = getEffectiveTypeSupport();</span>
 
-<span class="fc" id="L185">    return new HalApiClientImpl(resourceLoader, metrics, effectiveTypeSupport);</span>
+<span class="fc" id="L192">    return new HalApiClientImpl(resourceLoader, metrics, effectiveTypeSupport);</span>
   }
 
   @SuppressWarnings(&quot;deprecation&quot;)
   Rhyme buildRhyme(String incomingRequestUri) {
 
-<span class="fc" id="L191">    HalApiClient client = buildApiClient();</span>
+<span class="fc" id="L198">    HalApiClient client = buildApiClient();</span>
 
-<span class="fc" id="L193">    AsyncHalResponseRenderer renderer = buildAsyncRenderer();</span>
+<span class="fc" id="L200">    AsyncHalResponseRenderer renderer = buildAsyncRenderer();</span>
 
-<span class="fc" id="L195">    VndErrorResponseRenderer errorRenderer = VndErrorResponseRenderer.create(getEffectiveExceptionStrategy());</span>
+<span class="fc" id="L202">    VndErrorResponseRenderer errorRenderer = VndErrorResponseRenderer.create(getEffectiveExceptionStrategy());</span>
 
-<span class="fc" id="L197">    RhymeImpl impl = new RhymeImpl(incomingRequestUri, client, renderer, errorRenderer, metrics);</span>
+<span class="fc" id="L204">    RhymeImpl impl = new RhymeImpl(incomingRequestUri, client, renderer, errorRenderer, metrics);</span>
 
-<span class="fc" id="L199">    metrics.onMethodInvocationFinished(AsyncHalResponseRenderer.class, &quot;building Rhyme instance&quot;, stopwatch.elapsed(TimeUnit.MICROSECONDS));</span>
+<span class="fc" id="L206">    metrics.onMethodInvocationFinished(AsyncHalResponseRenderer.class, &quot;building Rhyme instance&quot;, stopwatch.elapsed(TimeUnit.MICROSECONDS));</span>
 
-<span class="fc" id="L201">    return impl;</span>
+<span class="fc" id="L208">    return impl;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -73,7 +73,7 @@ import io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsOsgiBundleSupport;
   public void respondWith(LinkableResource resourceImpl, UriInfo uriInfo, AsyncResponse suspended, RequestMetricsCollector metrics) {
 
     try {
-      // create a response renderer all required customizations for OSGI/JAX-RS
+      // create a response renderer with all required customizations for OSGI/JAX-RS
 <span class="fc" id="L77">      AsyncHalResponseRenderer renderer = HalResponseRendererBuilder.create()</span>
 <span class="fc" id="L78">          .withMetrics(metrics)</span>
 <span class="fc" id="L79">          .withExceptionStrategy(exceptionStrategy)</span>
