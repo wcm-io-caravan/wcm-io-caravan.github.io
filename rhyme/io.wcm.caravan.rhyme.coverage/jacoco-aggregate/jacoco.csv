@@ -143,7 +143,7 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.car
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,Manager,0,37,0,0,0,14,0,7,0,7
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,DatabaseLoader,0,98,0,0,0,13,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,SpringRhymeHypermediaApplication,0,3,0,0,0,1,0,1,0,1
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,DetailedEmployeeController.new DetailedEmployeeResource() {...},0,92,0,2,0,14,0,8,0,7
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,DetailedEmployeeController.new DetailedEmployeeResource() {...},0,98,0,2,0,15,0,9,0,8
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,CompanyApiController,0,42,0,0,0,10,0,8,0,8
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,ManagerController,0,57,0,0,0,6,0,7,0,7
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,StreamUtils,0,10,0,0,0,3,0,1,0,1

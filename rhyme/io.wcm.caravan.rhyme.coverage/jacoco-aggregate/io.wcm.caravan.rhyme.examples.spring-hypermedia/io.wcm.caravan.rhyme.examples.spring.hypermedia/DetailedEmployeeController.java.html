@@ -93,44 +93,52 @@ import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
 
       @Override
       public Employee getState() {
+        // Fetches the upstream employee resource, deserializes the state from its JSON properties, and return it as it is
+<span class="fc" id="L97">        return getEmployee().getState();</span>
+      }
 
-        // This fetches the upstream employee resource, and deserializes the state from its JSON properties.
-        // Since this resource should have exactly the same state, we can simply return the instance without modifications.
-<span class="fc" id="L99">        return getEmployee().getState();</span>
+      @Override
+      public String getManagerName() {
+
+        // to get the manager's name, we follow the 'company:manager' link from the upstream employee resource
+<span class="fc" id="L104">        return getEmployee().getManager().getState().getName();</span>
       }
 
       @Override
       public ManagerResource getManager() {
 
         // Get a resource client proxy that follows the link to the manager of the employee.
-        // Even though getEmployee() is called multiple times in this class, it's not required to store that proxy instance anywhere.
-        // This is because the client proxies for each URL are already cached within the Rhyme instance.
-<span class="fc" id="L108">        ManagerResource manager = getEmployee().getManager();</span>
+<span class="fc" id="L111">        ManagerResource manager = getEmployee().getManager();</span>
+
+        // Even though getEmployee() (and getManager()) is called multiple times in this class,
+        // it's not strictly required to store those proxy instances anywhere, as they are already cached by the Rhyme instance.
+        // You can load any resource with an &quot;embedRhymeMetadata&quot; query parameter to
+        // see the performance costs of these repeated calls, and then optimize if necessary.
 
         // We could return this resource proxy directly, but then only a link to the upstream resource would be added.
         // Since we want to embed the manager resource, we need to convert it to another proxy that also implements EmbeddableResource.
-<span class="fc" id="L112">        return ResourceConversions.asEmbeddedResourceWithoutLink(manager);</span>
+<span class="fc" id="L120">        return ResourceConversions.asEmbeddedResourceWithoutLink(manager);</span>
       }
 
       @Override
       public Stream&lt;EmployeeResource&gt; getColleagues() {
 
         // create a stream from the links to all employees managed by the same manager
-<span class="fc" id="L119">        return getEmployee().getManager().getManagedEmployees().stream()</span>
+<span class="fc" id="L127">        return getEmployee().getManager().getManagedEmployees().stream()</span>
             // ignore the employee for which we are just generating the detailed resource
-<span class="fc bfc" id="L121" title="All 2 branches covered.">            .filter(employee -&gt; !employee.getState().getId().equals(id))</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">            .filter(employee -&gt; !employee.getState().getId().equals(id))</span>
             // and again ensure that these resources are embedded rather than linked
-<span class="fc" id="L123">            .map(ResourceConversions::asEmbeddedResourceWithoutLink);</span>
+<span class="fc" id="L131">            .map(ResourceConversions::asEmbeddedResourceWithoutLink);</span>
       }
 
       @Override
       public Link createLink() {
 
         // every link to this type of resource is created here, with the help of CompanyApiLinkBuilder
-<span class="fc" id="L130">        return linkBuilder.create(linkTo(methodOn(DetailedEmployeeController.class).findById(id)))</span>
-<span class="fc" id="L131">            .withTitle(&quot;The employee with ID &quot; + id + &quot;, with embedded resources for her managers and colleagues&quot;)</span>
-<span class="fc" id="L132">            .withTemplateTitle(&quot;A link template to detailed data for a single employee by ID&quot;)</span>
-<span class="fc" id="L133">            .build();</span>
+<span class="fc" id="L138">        return linkBuilder.create(linkTo(methodOn(DetailedEmployeeController.class).findById(id)))</span>
+<span class="fc" id="L139">            .withTitle(&quot;The employee with ID &quot; + id + &quot;, with embedded resources for her managers and colleagues&quot;)</span>
+<span class="fc" id="L140">            .withTemplateTitle(&quot;A link template to detailed data for a single employee by ID&quot;)</span>
+<span class="fc" id="L141">            .build();</span>
       }
     };
   }
