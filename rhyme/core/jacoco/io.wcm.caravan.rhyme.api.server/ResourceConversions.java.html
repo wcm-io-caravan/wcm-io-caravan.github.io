@@ -19,9 +19,12 @@
  */
 package io.wcm.caravan.rhyme.api.server;
 
+import io.wcm.caravan.hal.resource.Link;
 import io.wcm.caravan.rhyme.api.annotations.HalApiInterface;
+import io.wcm.caravan.rhyme.api.annotations.Related;
 import io.wcm.caravan.rhyme.api.client.HalApiClient;
 import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 import io.wcm.caravan.rhyme.impl.reflection.HalApiReflectionUtils;
 
 /**
@@ -45,7 +48,7 @@ public final class ResourceConversions {
    */
   public static &lt;T&gt; T asEmbeddedResource(T linkableResource) {
 
-<span class="fc" id="L48">    return HalApiReflectionUtils.createEmbeddedResourceProxy(linkableResource, true);</span>
+<span class="fc" id="L51">    return HalApiReflectionUtils.createEmbeddedResourceProxy(linkableResource, true);</span>
   }
 
   /**
@@ -60,7 +63,25 @@ public final class ResourceConversions {
    */
   public static &lt;T&gt; T asEmbeddedResourceWithoutLink(T linkableResource) {
 
-<span class="fc" id="L63">    return HalApiReflectionUtils.createEmbeddedResourceProxy(linkableResource, false);</span>
+<span class="fc" id="L66">    return HalApiReflectionUtils.createEmbeddedResourceProxy(linkableResource, false);</span>
+  }
+
+  /**
+   * Create a proxy for the given interface that can only be used to create links to that resource.
+   * This can be returned from server-side implementations of {@link Related} methods if it's not feasible to
+   * create a complete resource implementation, but you do have a {@link Link} pointing to a URI where a
+   * resource of the given interface can be retrieved.
+   * &lt;p&gt;
+   * Note that calling any other method than {@link LinkableResource#createLink()} on the proxy will fail.
+   * &lt;/p&gt;
+   * @param link to be returned by {@link LinkableResource#createLink()}
+   * @param halApiInterface the interface that should be implemented
+   * @return a proxy instance implementing {@link LinkableResource} which you can only call
+   *         {@link LinkableResource#createLink()}
+   */
+  public static &lt;T&gt; T asLinkableResource(Link link, Class&lt;T&gt; halApiInterface) {
+
+<span class="fc" id="L84">    return HalApiReflectionUtils.createLinkableResourceProxy(link, halApiInterface);</span>
   }
 
 }

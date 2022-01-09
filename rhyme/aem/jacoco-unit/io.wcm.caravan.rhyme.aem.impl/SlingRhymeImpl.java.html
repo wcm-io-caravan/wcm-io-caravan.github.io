@@ -59,7 +59,7 @@ public class SlingRhymeImpl extends SlingAdaptable implements SlingRhyme {
 <span class="fc" id="L59">    RhymeBuilder rhymeBuilder = RhymeBuilder.withResourceLoader(resourceLoaders.getResourceLoader())</span>
 <span class="fc" id="L60">        .withRhymeDocsSupport(rhymeDocs);</span>
 
-<span class="fc bfc" id="L62" title="All 2 branches covered.">    if (request.getParameterMap().containsKey(RequestMetricsCollector.QUERY_PARAM_TOGGLE)) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">    if (request.getParameterMap().containsKey(RequestMetricsCollector.EMBED_RHYME_METADATA)) {</span>
 <span class="fc" id="L63">      rhymeBuilder = rhymeBuilder.withEmbeddedMetadata();</span>
     }
 

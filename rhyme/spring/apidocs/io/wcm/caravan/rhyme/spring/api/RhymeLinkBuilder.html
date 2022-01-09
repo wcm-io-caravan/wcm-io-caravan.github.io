@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -133,22 +133,35 @@ var activeTableTab = "activeTableTab";
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>&lt;T extends io.wcm.caravan.rhyme.api.resources.LinkableResource&gt;<br>T</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#buildLinked-java.lang.Class-">buildLinked</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</code>
+<div class="block">Finishes building the link and create a proxy instance that returns this link when
+ <code>LinkableResource.createLink()</code> is called.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withName-java.lang.String-">withName</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</code>&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withoutFingerprint--">withoutFingerprint</a></span>()</code>
 <div class="block">Allows to disable the addition of fingerprinting parameters only for the link that is currently being built</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withTemplateTitle-java.lang.String-">withTemplateTitle</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;title)</code>
 <div class="block">Used to set a different title attribute only if the generated link contains URI template variables</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withTemplateVariables-java.lang.String...-">withTemplateVariables</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;names)</code>
+<div class="block">Ensures that a link template is generated that contains query parameter variables with all the given names.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withTitle-java.lang.String-">withTitle</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;title)</code>&nbsp;</td>
 </tr>
@@ -213,6 +226,23 @@ var activeTableTab = "activeTableTab";
 </dl>
 </li>
 </ul>
+<a name="withTemplateVariables-java.lang.String...-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withTemplateVariables</h4>
+<pre><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a>&nbsp;withTemplateVariables(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;names)</pre>
+<div class="block">Ensures that a link template is generated that contains query parameter variables with all the given names.
+ If the link already contains resolved query parameters with the same names, they are removed.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>names</code> - of the query parameter variables to add</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this</dd>
+</dl>
+</li>
+</ul>
 <a name="withoutFingerprint--">
 <!--   -->
 </a>
@@ -230,7 +260,7 @@ var activeTableTab = "activeTableTab";
 <a name="build--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>build</h4>
 <pre>io.wcm.caravan.hal.resource.Link&nbsp;build()</pre>
@@ -239,6 +269,30 @@ var activeTableTab = "activeTableTab";
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a fully populated <code>Link</code> instance to be returned by your implementation of
          <code>LinkableResource.createLink()</code></dd>
+</dl>
+</li>
+</ul>
+<a name="buildLinked-java.lang.Class-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>buildLinked</h4>
+<pre>&lt;T extends io.wcm.caravan.rhyme.api.resources.LinkableResource&gt;&nbsp;T&nbsp;buildLinked(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</pre>
+<div class="block">Finishes building the link and create a proxy instance that returns this link when
+ <code>LinkableResource.createLink()</code> is called.
+ <p>
+ This can be used to implement a method annotated with
+ <code>Related</code> where you can't create a full implementation of a given <code>HalApiInterface</code>,
+ but you can create a <code>Link</code> with a URI pointing to such a resource.
+ </p></div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>T</code> - the return type</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>halApiInterface</code> - an interface annotated with <code>HalApiInterface</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a proxy instance on which only <code>LinkableResource.createLink()</code> can be called</dd>
 </dl>
 </li>
 </ul>

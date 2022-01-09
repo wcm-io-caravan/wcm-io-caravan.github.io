@@ -47,62 +47,71 @@ class UrlFingerprintingImpl implements UrlFingerprinting {
 <span class="nc" id="L47">  private final Map&lt;String, String&gt; timestampParameters = new LinkedHashMap&lt;&gt;();</span>
 <span class="nc" id="L48">  private boolean allTimestampsPresentInRequest = true;</span>
 
+<span class="nc" id="L50">  private final Map&lt;String, Object&gt; additionalQueryParameters = new LinkedHashMap&lt;&gt;();</span>
+
   private Duration mutableMaxAge;
   private Duration immutableMaxAge;
 
-<span class="nc" id="L53">  UrlFingerprintingImpl(HttpServletRequest request, Rhyme rhyme) {</span>
-<span class="nc" id="L54">    this.request = request;</span>
-<span class="nc" id="L55">    this.rhyme = rhyme;</span>
-<span class="nc" id="L56">  }</span>
+<span class="nc" id="L55">  UrlFingerprintingImpl(HttpServletRequest request, Rhyme rhyme) {</span>
+<span class="nc" id="L56">    this.request = request;</span>
+<span class="nc" id="L57">    this.rhyme = rhyme;</span>
+<span class="nc" id="L58">  }</span>
 
   @Override
   public UrlFingerprinting withTimestampParameter(String name, Supplier&lt;Instant&gt; valueSupplier) {
 
-<span class="nc" id="L61">    String value = request.getParameter(name);</span>
+<span class="nc" id="L63">    String value = request.getParameter(name);</span>
 
-<span class="nc bnc" id="L63" title="All 2 branches missed.">    if (StringUtils.isBlank(value)) {</span>
-<span class="nc" id="L64">      value = valueSupplier.get().toString();</span>
-<span class="nc" id="L65">      allTimestampsPresentInRequest = false;</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">    if (StringUtils.isBlank(value)) {</span>
+<span class="nc" id="L66">      value = valueSupplier.get().toString();</span>
+<span class="nc" id="L67">      allTimestampsPresentInRequest = false;</span>
     }
 
-<span class="nc" id="L68">    timestampParameters.put(name, value);</span>
+<span class="nc" id="L70">    timestampParameters.put(name, value);</span>
 
-<span class="nc" id="L70">    return this;</span>
+<span class="nc" id="L72">    return this;</span>
+  }
+
+  @Override
+  public UrlFingerprinting withQueryParameter(String name, Object value) {
+
+<span class="nc" id="L78">    additionalQueryParameters.put(name, value);</span>
+<span class="nc" id="L79">    return this;</span>
   }
 
   @Override
   public UrlFingerprinting withConditionalMaxAge(Duration mutableMaxAgeValue, Duration immutableMaxAgeValue) {
 
-<span class="nc" id="L76">    this.mutableMaxAge = mutableMaxAgeValue;</span>
-<span class="nc" id="L77">    this.immutableMaxAge = immutableMaxAgeValue;</span>
+<span class="nc" id="L85">    this.mutableMaxAge = mutableMaxAgeValue;</span>
+<span class="nc" id="L86">    this.immutableMaxAge = immutableMaxAgeValue;</span>
 
-<span class="nc" id="L79">    return this;</span>
+<span class="nc" id="L88">    return this;</span>
   }
 
   @Override
   public boolean isUsedInIncomingRequest() {
 
-<span class="nc" id="L85">    return allTimestampsPresentInRequest;</span>
+<span class="nc" id="L94">    return allTimestampsPresentInRequest;</span>
   }
 
   @Override
   public RhymeLinkBuilder createLinkWith(WebMvcLinkBuilder linkBuilder) {
 
-<span class="nc bnc" id="L91" title="All 2 branches missed.">    if (!timestampParameters.isEmpty()) {</span>
-<span class="nc" id="L92">      applyMaxAge();</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">    if (!timestampParameters.isEmpty()) {</span>
+<span class="nc" id="L101">      applyMaxAge();</span>
     }
 
-<span class="nc" id="L95">    return new SpringRhymeLinkBuilder(linkBuilder, timestampParameters);</span>
+<span class="nc" id="L104">    return new SpringRhymeLinkBuilder(linkBuilder, timestampParameters, additionalQueryParameters);</span>
   }
 
   private void applyMaxAge() {
 
-<span class="nc bnc" id="L100" title="All 4 branches missed.">    if (allTimestampsPresentInRequest &amp;&amp; immutableMaxAge != null) {</span>
-<span class="nc" id="L101">      rhyme.setResponseMaxAge(immutableMaxAge);</span>
+<span class="nc bnc" id="L109" title="All 4 branches missed.">    if (allTimestampsPresentInRequest &amp;&amp; immutableMaxAge != null) {</span>
+<span class="nc" id="L110">      rhyme.setResponseMaxAge(immutableMaxAge);</span>
     }
-<span class="nc bnc" id="L103" title="All 2 branches missed.">    else if (mutableMaxAge != null) {</span>
-<span class="nc" id="L104">      rhyme.setResponseMaxAge(mutableMaxAge);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">    else if (mutableMaxAge != null) {</span>
+<span class="nc" id="L113">      rhyme.setResponseMaxAge(mutableMaxAge);</span>
     }
-<span class="nc" id="L106">  }</span>
+<span class="nc" id="L115">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -69,32 +69,41 @@
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>    <a name="UrlFingerprinting" href="../../../../../../io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#UrlFingerprinting">UrlFingerprinting</a> withTimestampParameter(String name, Supplier&lt;Instant&gt; source);
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">   * Allows the URL fingerprinting logic to modify the max-age cache-control directive for the response that is</em>
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">   * currently rendered, depending on whether the incoming request is using a fingerprinted URL.</em>
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">   * @param mutableMaxAge to use for the entry point (or any other resources without a fingerprint in the URL).</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">   * @param immutableMaxAge to use for all resources that do contain a fingerprint in their URL.</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">   * @return this instance</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">   * Adds another additional query parameter to all links being built with this instance</em>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">   * (unless a query parameter with the same name already exists)</em>
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">   * @param name of the query parameter to be added</em>
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">   * @param value of the parameter to be added</em>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">   * @return this</em>
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>    <a name="UrlFingerprinting" href="../../../../../../io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#UrlFingerprinting">UrlFingerprinting</a> withConditionalMaxAge(Duration mutableMaxAge, Duration immutableMaxAge);
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>    <a name="UrlFingerprinting" href="../../../../../../io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#UrlFingerprinting">UrlFingerprinting</a> withQueryParameter(String name, Object value);
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">   * Determines if the current incoming request is using URL fingerprinting.</em>
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">   * @return true if the query contains values for all timestamp parameters defined with</em>
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">   *         {@link #withTimestampParameter(String, Supplier)}</em>
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>    <strong class="jxr_keyword">boolean</strong> isUsedInIncomingRequest();
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>  
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">   * Creates a {@link RhymeLinkBuilder} that generates the URL to a controller method and adds the</em>
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">   * additional URL fingerprinting parameters</em>
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">   * @param linkBuilder created with {@link WebMvcLinkBuilder#linkTo(Class)} and</em>
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_javadoccomment">   *          {@link WebMvcLinkBuilder#methodOn(Class, Object...)}</em>
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">   * @return a {@link RhymeLinkBuilder} to decorate the link with name and title attributes, and</em>
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">   *         then finally build it</em>
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>    <a name="RhymeLinkBuilder" href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#RhymeLinkBuilder">RhymeLinkBuilder</a> createLinkWith(WebMvcLinkBuilder linkBuilder);
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  }
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">   * Allows the URL fingerprinting logic to modify the max-age cache-control directive for the response that is</em>
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">   * currently rendered, depending on whether the incoming request is using a fingerprinted URL.</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">   * @param mutableMaxAge to use for the entry point (or any other resources without a fingerprint in the URL).</em>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <em class="jxr_javadoccomment">   * @param immutableMaxAge to use for all resources that do contain a fingerprint in their URL.</em>
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  <em class="jxr_javadoccomment">   * @return this instance</em>
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>    <a name="UrlFingerprinting" href="../../../../../../io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#UrlFingerprinting">UrlFingerprinting</a> withConditionalMaxAge(Duration mutableMaxAge, Duration immutableMaxAge);
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">   * Determines if the current incoming request is using URL fingerprinting.</em>
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_javadoccomment">   * @return true if the query contains values for all timestamp parameters defined with</em>
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">   *         {@link #withTimestampParameter(String, Supplier)}</em>
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>    <strong class="jxr_keyword">boolean</strong> isUsedInIncomingRequest();
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">   * Creates a {@link RhymeLinkBuilder} that generates the URL to a controller method and adds the</em>
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">   * additional URL fingerprinting parameters</em>
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">   * @param linkBuilder created with {@link WebMvcLinkBuilder#linkTo(Class)} and</em>
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  <em class="jxr_javadoccomment">   *          {@link WebMvcLinkBuilder#methodOn(Class, Object...)}</em>
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">   * @return a {@link RhymeLinkBuilder} to decorate the link with name and title attributes, and</em>
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">   *         then finally build it</em>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>    <a name="RhymeLinkBuilder" href="../../../../../../io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#RhymeLinkBuilder">RhymeLinkBuilder</a> createLinkWith(WebMvcLinkBuilder linkBuilder);
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>  
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014&#x2013;2022 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</div>

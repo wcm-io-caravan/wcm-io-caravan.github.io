@@ -69,7 +69,7 @@
 <!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-<div class="contentContainer"><a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:Q">Q</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<a name="I:A">
+<div class="contentContainer"><a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<a name="I:A">
 <!--   -->
 </a>
 <h2 class="title">A</h2>
@@ -82,6 +82,10 @@
 <dd>
 <div class="block">Create a proxy of a resource that also implements <code>EmbeddableResource</code>, with
  <code>EmbeddableResource.isLinkedWhenEmbedded()</code> returning false.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/ResourceConversions.html#asLinkableResource-io.wcm.caravan.hal.resource.Link-java.lang.Class-">asLinkableResource(Link, Class&lt;T&gt;)</a></span> - Static method in class io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/ResourceConversions.html" title="class in io.wcm.caravan.rhyme.api.server">ResourceConversions</a></dt>
+<dd>
+<div class="block">Create a proxy for the given interface that can only be used to create links to that resource.</div>
 </dd>
 <dt><a href="io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server"><span class="typeNameLink">AsyncHalResponseRenderer</span></a> - Interface in <a href="io/wcm/caravan/rhyme/api/server/package-summary.html">io.wcm.caravan.rhyme.api.server</a></dt>
 <dd>
@@ -205,6 +209,11 @@
 </a>
 <h2 class="title">E</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#EMBED_RHYME_METADATA">EMBED_RHYME_METADATA</a></span> - Static variable in interface io.wcm.caravan.rhyme.api.common.<a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a></dt>
+<dd>
+<div class="block">The name of the query parameter that toggles whether the "rhyme:metadata" resource is embedded when rendering
+ resources.</div>
+</dd>
 <dt><a href="io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi"><span class="typeNameLink">ExceptionStatusAndLoggingStrategy</span></a> - Interface in <a href="io/wcm/caravan/rhyme/api/spi/package-summary.html">io.wcm.caravan.rhyme.api.spi</a></dt>
 <dd>
 <div class="block">Allows users of this framework to specify how <a href="io/wcm/caravan/rhyme/api/server/VndErrorResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>VndErrorResponseRenderer</code></a> handles specific exceptions that the
@@ -512,17 +521,6 @@
 <div class="block">Loads the HTML documentation file from the given path in the class path</div>
 </dd>
 </dl>
-<a name="I:Q">
-<!--   -->
-</a>
-<h2 class="title">Q</h2>
-<dl>
-<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#QUERY_PARAM_TOGGLE">QUERY_PARAM_TOGGLE</a></span> - Static variable in interface io.wcm.caravan.rhyme.api.common.<a href="io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a></dt>
-<dd>
-<div class="block">The name of the query parameter that toggles whether the "rhyme:metadata" resource is embedded when rendering
- resources.</div>
-</dd>
-</dl>
 <a name="I:R">
 <!--   -->
 </a>
@@ -731,7 +729,7 @@
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/common/HalResponse.html#withUri-java.lang.String-">withUri(String)</a></span> - Method in class io.wcm.caravan.rhyme.api.common.<a href="io/wcm/caravan/rhyme/api/common/HalResponse.html" title="class in io.wcm.caravan.rhyme.api.common">HalResponse</a></dt>
 <dd>&nbsp;</dd>
 </dl>
-<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:Q">Q</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;</div>
+<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;</div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
 <div class="bottomNav"><a name="navbar.bottom">
 <!--   -->

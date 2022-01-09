@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -162,6 +162,14 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html" title="interface in io.wcm.caravan.rhyme.spring.api">UrlFingerprinting</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#withQueryParameter-java.lang.String-java.lang.Object-">withQueryParameter</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
+                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;value)</code>
+<div class="block">Adds another additional query parameter to all links being built with this instance
+ (unless a query parameter with the same name already exists)</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html" title="interface in io.wcm.caravan.rhyme.spring.api">UrlFingerprinting</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#withTimestampParameter-java.lang.String-java.util.function.Supplier-">withTimestampParameter</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                       <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html?is-external=true" title="class or interface in java.util.function">Supplier</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/time/Instant.html?is-external=true" title="class or interface in java.time">Instant</a>&gt;&nbsp;source)</code>
 <div class="block">Add an URL fingerprinting parameter based on a last modification date</div>
@@ -198,6 +206,25 @@ var activeTableTab = "activeTableTab";
           request</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>this instance</dd>
+</dl>
+</li>
+</ul>
+<a name="withQueryParameter-java.lang.String-java.lang.Object-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withQueryParameter</h4>
+<pre><a href="../../../../../../io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html" title="interface in io.wcm.caravan.rhyme.spring.api">UrlFingerprinting</a>&nbsp;withQueryParameter(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
+                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;value)</pre>
+<div class="block">Adds another additional query parameter to all links being built with this instance
+ (unless a query parameter with the same name already exists)</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>name</code> - of the query parameter to be added</dd>
+<dd><code>value</code> - of the parameter to be added</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this</dd>
 </dl>
 </li>
 </ul>

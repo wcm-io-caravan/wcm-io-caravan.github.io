@@ -77,6 +77,11 @@
 <dd>
 <div class="block">Finishes building the link</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#buildLinked-java.lang.Class-">buildLinked(Class&lt;T&gt;)</a></span> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></dt>
+<dd>
+<div class="block">Finishes building the link and create a proxy instance that returns this link when
+ <code>LinkableResource.createLink()</code> is called.</div>
+</dd>
 </dl>
 <a name="I:C">
 <!--   -->
@@ -184,9 +189,18 @@
 <dd>
 <div class="block">Allows to disable the addition of fingerprinting parameters only for the link that is currently being built</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#withQueryParameter-java.lang.String-java.lang.Object-">withQueryParameter(String, Object)</a></span> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html" title="interface in io.wcm.caravan.rhyme.spring.api">UrlFingerprinting</a></dt>
+<dd>
+<div class="block">Adds another additional query parameter to all links being built with this instance
+ (unless a query parameter with the same name already exists)</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withTemplateTitle-java.lang.String-">withTemplateTitle(String)</a></span> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></dt>
 <dd>
 <div class="block">Used to set a different title attribute only if the generated link contains URI template variables</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withTemplateVariables-java.lang.String...-">withTemplateVariables(String...)</a></span> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></dt>
+<dd>
+<div class="block">Ensures that a link template is generated that contains query parameter variables with all the given names.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#withTimestampParameter-java.lang.String-java.util.function.Supplier-">withTimestampParameter(String, Supplier&lt;Instant&gt;)</a></span> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html" title="interface in io.wcm.caravan.rhyme.spring.api">UrlFingerprinting</a></dt>
 <dd>

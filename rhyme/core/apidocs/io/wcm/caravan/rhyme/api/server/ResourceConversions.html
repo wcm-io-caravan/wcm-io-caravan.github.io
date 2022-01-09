@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9};
+var methods = {"i0":9,"i1":9,"i2":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -144,6 +144,13 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
  <code>EmbeddableResource.isLinkedWhenEmbedded()</code> returning false.</div>
 </td>
 </tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;T</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/api/server/ResourceConversions.html#asLinkableResource-io.wcm.caravan.hal.resource.Link-java.lang.Class-">asLinkableResource</a></span>(io.wcm.caravan.hal.resource.Link&nbsp;link,
+                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</code>
+<div class="block">Create a proxy for the given interface that can only be used to create links to that resource.</div>
+</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -194,7 +201,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </a><a name="asEmbeddedResourceWithoutLink-T-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>asEmbeddedResourceWithoutLink</h4>
 <pre>public static&nbsp;&lt;T&gt;&nbsp;T&nbsp;asEmbeddedResourceWithoutLink(T&nbsp;linkableResource)</pre>
@@ -210,6 +217,31 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
           that does not implement <code>EmbeddableResource</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a proxy instance that implements <code>EmbeddableResource</code> and all interfaces the given object implements</dd>
+</dl>
+</li>
+</ul>
+<a name="asLinkableResource-io.wcm.caravan.hal.resource.Link-java.lang.Class-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>asLinkableResource</h4>
+<pre>public static&nbsp;&lt;T&gt;&nbsp;T&nbsp;asLinkableResource(io.wcm.caravan.hal.resource.Link&nbsp;link,
+                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html?is-external=true" title="class or interface in java.lang">Class</a>&lt;T&gt;&nbsp;halApiInterface)</pre>
+<div class="block">Create a proxy for the given interface that can only be used to create links to that resource.
+ This can be returned from server-side implementations of <code>Related</code> methods if it's not feasible to
+ create a complete resource implementation, but you do have a <code>Link</code> pointing to a URI where a
+ resource of the given interface can be retrieved.
+ <p>
+ Note that calling any other method than <code>LinkableResource.createLink()</code> on the proxy will fail.
+ </p></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>link</code> - to be returned by <code>LinkableResource.createLink()</code></dd>
+<dd><code>halApiInterface</code> - the interface that should be implemented</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a proxy instance implementing <code>LinkableResource</code> which you can only call
+         <code>LinkableResource.createLink()</code></dd>
 </dl>
 </li>
 </ul>

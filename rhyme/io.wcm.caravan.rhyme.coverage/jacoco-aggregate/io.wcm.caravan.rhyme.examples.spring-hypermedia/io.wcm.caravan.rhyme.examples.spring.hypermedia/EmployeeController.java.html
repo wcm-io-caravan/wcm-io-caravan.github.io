@@ -82,7 +82,7 @@ import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
 
       @Override
       public CompanyApi getApi() {
-<span class="fc" id="L85">        return api;</span>
+<span class="fc" id="L85">        return api.get();</span>
       }
 
       @Override
@@ -158,7 +158,7 @@ import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
 <span class="fc" id="L158">    private EmployeeResourceImpl(Employee employee) {</span>
 <span class="fc" id="L159">      this.id = employee.getId();</span>
 <span class="fc" id="L160">      this.state = Lazy.of(employee);</span>
-<span class="fc" id="L161">      this.embedded = true;</span>
+<span class="fc" id="L161">      this.embedded = linkBuilder.isUseEmbeddedResources();</span>
 <span class="fc" id="L162">    }</span>
 
     @Override
@@ -182,14 +182,20 @@ import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
     }
 
     @Override
+    public boolean isLinkedWhenEmbedded() {
+<span class="fc" id="L186">      return false;</span>
+    }
+
+    @Override
     public Link createLink() {
 
       // every link to this type of resource is created here, with the help of CompanyApiLinkBuilder
-<span class="fc" id="L188">      return linkBuilder.create(linkTo(methodOn(EmployeeController.class).findById(id)))</span>
-<span class="fc" id="L189">          .withTitle(&quot;The employee with ID &quot; + id)</span>
-<span class="fc" id="L190">          .withTemplateTitle(&quot;A link template to load a single employee by ID&quot;)</span>
-<span class="fc" id="L191">          .build();</span>
+<span class="fc" id="L193">      return linkBuilder.create(linkTo(methodOn(EmployeeController.class).findById(id)))</span>
+<span class="fc" id="L194">          .withTitle(&quot;The employee with ID &quot; + id)</span>
+<span class="fc" id="L195">          .withTemplateTitle(&quot;A link template to load a single employee by ID&quot;)</span>
+<span class="fc" id="L196">          .build();</span>
     }
+
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
