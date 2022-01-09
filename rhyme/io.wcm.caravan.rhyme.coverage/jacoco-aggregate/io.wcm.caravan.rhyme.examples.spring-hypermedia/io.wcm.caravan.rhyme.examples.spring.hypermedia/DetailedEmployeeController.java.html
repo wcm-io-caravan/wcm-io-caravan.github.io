@@ -120,7 +120,7 @@ import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
 <span class="fc" id="L120">          return ResourceConversions.asEmbeddedResourceWithoutLink(manager);</span>
         }
 
-        // if we return this resource proxy directly, only a link to the manager resource
+        // if we return this resource proxy directly, only a link to the manager resource will be rendered
 <span class="fc" id="L124">        return manager;</span>
       }
 
@@ -132,7 +132,7 @@ import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
             // ignore the employee for which we are just generating the detailed resource
 <span class="fc bfc" id="L133" title="All 2 branches covered.">            .filter(employee -&gt; !employee.getState().getId().equals(id));</span>
 
-        // and again ensure that these resources are embedded rather than linked
+        // and again ensure that these resources are either embedded or only linked
 <span class="fc bfc" id="L136" title="All 2 branches covered.">        if (linkBuilder.isUseEmbeddedResources()) {</span>
 <span class="fc" id="L137">          colleagues = colleagues.map(ResourceConversions::asEmbeddedResourceWithoutLink);</span>
         }
