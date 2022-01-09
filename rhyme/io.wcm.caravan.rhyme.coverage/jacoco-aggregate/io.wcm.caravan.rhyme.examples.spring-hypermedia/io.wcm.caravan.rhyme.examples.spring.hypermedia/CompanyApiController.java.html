@@ -79,14 +79,12 @@ import io.wcm.caravan.rhyme.api.client.HalApiClient;
 
   @Override
   public EmployeeCollectionResource getEmployees() {
-
-<span class="fc" id="L83">    return employees.findAll();</span>
+<span class="fc" id="L82">    return employees.findAll();</span>
   }
 
   @Override
   public ManagerCollectionResource getManagers() {
-
-<span class="fc" id="L89">    return managers.findAll();</span>
+<span class="fc" id="L87">    return managers.findAll();</span>
   }
 
   // For any link *templates* defined in the CompanyApi interface, the response renderer will invoke
@@ -101,20 +99,18 @@ import io.wcm.caravan.rhyme.api.client.HalApiClient;
     // we still pass the given ID to the controller method.
     // This allows these methods to also be called directly by API consumers in the same application context
     // (which do know the ID of the entity they are looking for).
-<span class="fc" id="L104">    return employees.findById(id);</span>
+<span class="fc" id="L102">    return employees.findById(id);</span>
   }
 
   @Override
   public ManagerResource getManagerById(Long id) {
-
-<span class="fc" id="L110">    return managers.findById(id);</span>
+<span class="fc" id="L107">    return managers.findById(id);</span>
   }
 
   @Override
 
   public DetailedEmployeeResource getDetailedEmployeeById(Long id) {
-
-<span class="fc" id="L117">    return detailedEmployees.findById(id);</span>
+<span class="fc" id="L113">    return detailedEmployees.findById(id);</span>
   }
 
   @Override
@@ -122,25 +118,26 @@ import io.wcm.caravan.rhyme.api.client.HalApiClient;
 
     // create a link to this controller, but explicitly add template variables for parameters
     // that will then be picked up by CompanyApiLinkBuilder when the link is followed
-<span class="fc" id="L125">    return linkBuilder.create(linkTo(methodOn(CompanyApiController.class).get()))</span>
-<span class="fc" id="L126">        .withTemplateVariables(USE_EMBEDDED_RESOURCES, USE_FINGERPRINTING, EMBED_RHYME_METADATA)</span>
-<span class="fc" id="L127">        .withTitle(&quot;Reload the entry point with different settings&quot;)</span>
+<span class="fc" id="L121">    return linkBuilder.create(linkTo(methodOn(CompanyApiController.class).get()))</span>
+<span class="fc" id="L122">        .withTemplateVariables(USE_EMBEDDED_RESOURCES, USE_FINGERPRINTING, EMBED_RHYME_METADATA)</span>
+<span class="fc" id="L123">        .withTitle(&quot;Reload the entry point with different settings&quot;)</span>
         // since this method is never called by internal consumers, we don't have to return a full server-side
         // CompanyApi implementation. Instead we create and return a minimal proxy that only can render the link.
-<span class="fc" id="L130">        .buildLinked(CompanyApi.class);</span>
+<span class="fc" id="L126">        .buildLinked(CompanyApi.class);</span>
   }
 
   @Override
   public Link createLink() {
 
-<span class="fc" id="L136">    String title = &quot;The entry point of the hypermedia example API&quot;;</span>
-<span class="fc bfc" id="L137" title="All 2 branches covered.">    if (linkBuilder.hasClientPreferences()) {</span>
-<span class="fc" id="L138">      title += &quot; (with custom client preferences)&quot;;</span>
+    // the link title should vary depending on whether the entry point was re-loaded via CompanyApi#withClientPreferences
+<span class="fc" id="L133">    String title = &quot;The entry point of the hypermedia example API&quot;;</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">    if (linkBuilder.hasClientPreferences()) {</span>
+<span class="fc" id="L135">      title += &quot; (with custom client preferences)&quot;;</span>
     }
 
-<span class="fc" id="L141">    return linkBuilder.create(linkTo(methodOn(CompanyApiController.class).get()))</span>
-<span class="fc" id="L142">        .withTitle(title)</span>
-<span class="fc" id="L143">        .build();</span>
+<span class="fc" id="L138">    return linkBuilder.create(linkTo(methodOn(CompanyApiController.class).get()))</span>
+<span class="fc" id="L139">        .withTitle(title)</span>
+<span class="fc" id="L140">        .build();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
