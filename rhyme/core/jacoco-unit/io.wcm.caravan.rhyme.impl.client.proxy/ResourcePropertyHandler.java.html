@@ -19,9 +19,8 @@
  */
 package io.wcm.caravan.rhyme.impl.client.proxy;
 
-import static io.wcm.caravan.rhyme.impl.client.proxy.ResourceStateHandler.OBJECT_MAPPER;
-
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.wcm.caravan.hal.resource.HalResource;
@@ -34,51 +33,52 @@ class ResourcePropertyHandler {
 
   private final HalResource contextResource;
   private final HalApiTypeSupport typeSupport;
+  private final ObjectMapper objectMapper;
 
-<span class="fc" id="L38">  ResourcePropertyHandler(HalResource contextResource, HalApiTypeSupport typeSupport) {</span>
+<span class="fc" id="L38">  ResourcePropertyHandler(HalResource contextResource, HalApiTypeSupport typeSupport, ObjectMapper objectMapper) {</span>
 <span class="fc" id="L39">    this.contextResource = contextResource;</span>
 <span class="fc" id="L40">    this.typeSupport = typeSupport;</span>
-<span class="fc" id="L41">  }</span>
+<span class="fc" id="L41">    this.objectMapper = objectMapper;</span>
+<span class="fc" id="L42">  }</span>
 
   Observable&lt;Object&gt; handleMethodInvocation(HalApiMethodInvocation invocation) {
 
-<span class="fc" id="L45">    String propertyName = HalApiReflectionUtils.getPropertyName(invocation.getMethod(), typeSupport);</span>
+<span class="fc" id="L46">    String propertyName = HalApiReflectionUtils.getPropertyName(invocation.getMethod(), typeSupport);</span>
 
-<span class="fc" id="L47">    JsonNode jsonNode = contextResource.getModel().path(propertyName);</span>
+<span class="fc" id="L48">    JsonNode jsonNode = contextResource.getModel().path(propertyName);</span>
 
-<span class="fc bfc" id="L49" title="All 4 branches covered.">    if (jsonNode.isMissingNode() || jsonNode.isNull()) {</span>
+<span class="fc bfc" id="L50" title="All 4 branches covered.">    if (jsonNode.isMissingNode() || jsonNode.isNull()) {</span>
 
-<span class="fc bfc" id="L51" title="All 2 branches covered.">      if (!typeSupport.isProviderOfOptionalValue(invocation.getReturnType())) {</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">      if (!typeSupport.isProviderOfOptionalValue(invocation.getReturnType())) {</span>
 
-<span class="fc" id="L53">        String msg = &quot;The JSON property '&quot; + propertyName + &quot;' is &quot; + jsonNode.getNodeType()</span>
+<span class="fc" id="L54">        String msg = &quot;The JSON property '&quot; + propertyName + &quot;' is &quot; + jsonNode.getNodeType()</span>
             + &quot;. You must use Maybe or Optional as return type to support this. &quot;;
 
-<span class="fc" id="L56">        return errorObservable(msg);</span>
+<span class="fc" id="L57">        return errorObservable(msg);</span>
       }
-<span class="fc" id="L58">      return Observable.empty();</span>
+<span class="fc" id="L59">      return Observable.empty();</span>
     }
 
-<span class="fc bfc" id="L61" title="All 2 branches covered.">    if (typeSupport.isProviderOfMultiplerValues(invocation.getReturnType())) {</span>
-<span class="fc bfc" id="L62" title="All 2 branches covered.">      if (!jsonNode.isArray()) {</span>
-<span class="fc" id="L63">        return errorObservable(&quot;The JSON property '&quot; + propertyName + &quot;' is of type &quot; + jsonNode.getNodeType()</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">    if (typeSupport.isProviderOfMultiplerValues(invocation.getReturnType())) {</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">      if (!jsonNode.isArray()) {</span>
+<span class="fc" id="L64">        return errorObservable(&quot;The JSON property '&quot; + propertyName + &quot;' is of type &quot; + jsonNode.getNodeType()</span>
             + &quot; but an array was expected. Please adjust &quot; + invocation + &quot; accordingly&quot;);
       }
 
-<span class="fc" id="L67">      return Observable.fromIterable(jsonNode)</span>
-<span class="fc" id="L68">          .map(arrayElement -&gt; convertToJavaObject(invocation, arrayElement));</span>
+<span class="fc" id="L68">      return Observable.fromIterable(jsonNode)</span>
+<span class="fc" id="L69">          .map(arrayElement -&gt; convertToJavaObject(invocation, arrayElement));</span>
     }
 
-<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (jsonNode.isArray()) {</span>
-<span class="fc" id="L72">      return errorObservable(&quot;The JSON property '&quot; + propertyName + &quot;' is an array, but a primitive or object &quot;</span>
-<span class="fc" id="L73">          + &quot;(&quot; + invocation.getReturnType().getSimpleName() + &quot;) was expected&quot;);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">    if (jsonNode.isArray()) {</span>
+<span class="fc" id="L73">      return errorObservable(&quot;The JSON property '&quot; + propertyName + &quot;' is an array, but a primitive or object &quot;</span>
+<span class="fc" id="L74">          + &quot;(&quot; + invocation.getReturnType().getSimpleName() + &quot;) was expected&quot;);</span>
     }
 
-<span class="fc" id="L76">    return Observable.just(convertToJavaObject(invocation, jsonNode));</span>
+<span class="fc" id="L77">    return Observable.just(convertToJavaObject(invocation, jsonNode));</span>
   }
 
   Object convertToJavaObject(HalApiMethodInvocation invocation, JsonNode jsonNode) {
-<span class="fc" id="L80">    Object propertyValue = OBJECT_MAPPER.convertValue(jsonNode, invocation.getEmissionType());</span>
-<span class="fc" id="L81">    return propertyValue;</span>
+<span class="fc" id="L81">    return objectMapper.convertValue(jsonNode, invocation.getEmissionType());</span>
   }
 
   Observable&lt;Object&gt; errorObservable(String msg) {

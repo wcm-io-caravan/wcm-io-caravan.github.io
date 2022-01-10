@@ -22,9 +22,7 @@ package io.wcm.caravan.rhyme.impl.client.proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 
 import io.reactivex.rxjava3.core.Maybe;
 import io.wcm.caravan.hal.resource.HalResource;
@@ -32,42 +30,40 @@ import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
 
 class ResourceStateHandler {
 
-<span class="fc" id="L35">  static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()</span>
-<span class="fc" id="L36">      .registerModule(new GuavaModule()) // allows de-serialization of Guava collections</span>
-<span class="fc" id="L37">      .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);</span>
-
-<span class="fc" id="L39">  private static final Logger log = LoggerFactory.getLogger(HalApiInvocationHandler.class);</span>
+<span class="fc" id="L33">  private static final Logger log = LoggerFactory.getLogger(HalApiInvocationHandler.class);</span>
 
   private final HalResource contextResource;
   private final HalApiTypeSupport typeSupport;
+  private final ObjectMapper objectMapper;
 
-<span class="fc" id="L44">  ResourceStateHandler(HalResource contextResource, HalApiTypeSupport typeSupport) {</span>
-<span class="fc" id="L45">    this.contextResource = contextResource;</span>
-<span class="fc" id="L46">    this.typeSupport = typeSupport;</span>
-<span class="fc" id="L47">  }</span>
+<span class="fc" id="L39">  ResourceStateHandler(HalResource contextResource, HalApiTypeSupport typeSupport, ObjectMapper objectMapper) {</span>
+<span class="fc" id="L40">    this.contextResource = contextResource;</span>
+<span class="fc" id="L41">    this.typeSupport = typeSupport;</span>
+<span class="fc" id="L42">    this.objectMapper = objectMapper;</span>
+<span class="fc" id="L43">  }</span>
 
   Maybe&lt;Object&gt; handleMethodInvocation(HalApiMethodInvocation invocation) {
 
-<span class="fc" id="L51">    Class&lt;?&gt; returnType = invocation.getReturnType();</span>
+<span class="fc" id="L47">    Class&lt;?&gt; returnType = invocation.getReturnType();</span>
 
-<span class="fc" id="L53">    log.trace(&quot;{} was invoked, method is annotated with @ResourceState and returns type {}&quot;, invocation, returnType.getSimpleName());</span>
+<span class="fc" id="L49">    log.trace(&quot;{} was invoked, method is annotated with @ResourceState and returns type {}&quot;, invocation, returnType.getSimpleName());</span>
 
     // if the interface is using Maybe or Optional as return type, and the HAL resource does not contain any
     // state properties, then an empty maybe should be returned
-<span class="fc" id="L57">    boolean isOptional = typeSupport.isProviderOfOptionalValue(returnType);</span>
-<span class="fc bfc" id="L58" title="All 4 branches covered.">    if (isOptional &amp;&amp; contextResource.getStateFieldNames().isEmpty()) {</span>
-<span class="fc" id="L59">      return Maybe.empty();</span>
+<span class="fc" id="L53">    boolean isOptional = typeSupport.isProviderOfOptionalValue(returnType);</span>
+<span class="fc bfc" id="L54" title="All 4 branches covered.">    if (isOptional &amp;&amp; contextResource.getStateFieldNames().isEmpty()) {</span>
+<span class="fc" id="L55">      return Maybe.empty();</span>
     }
 
     // if it is an observable then we have to use the emission type as target of the conversion
-<span class="fc" id="L63">    Object properties = convertResourceProperties(invocation.getEmissionType());</span>
+<span class="fc" id="L59">    Object properties = convertResourceProperties(invocation.getEmissionType());</span>
 
-<span class="fc" id="L65">    return Maybe.just(properties);</span>
+<span class="fc" id="L61">    return Maybe.just(properties);</span>
   }
 
   private Object convertResourceProperties(Class&lt;?&gt; resourcePropertiesType) {
 
-<span class="fc" id="L70">    return OBJECT_MAPPER.convertValue(contextResource.getModel(), resourcePropertiesType);</span>
+<span class="fc" id="L66">    return objectMapper.convertValue(contextResource.getModel(), resourcePropertiesType);</span>
   }
 
 }

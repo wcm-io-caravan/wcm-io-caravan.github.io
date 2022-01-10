@@ -19,12 +19,15 @@
  */
 package io.wcm.caravan.rhyme.impl;
 
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Stopwatch;
 
 import io.wcm.caravan.rhyme.api.Rhyme;
@@ -57,169 +60,185 @@ import io.wcm.caravan.rhyme.impl.renderer.CompositeExceptionStatusAndLoggingStra
  * {@link HalApiClientBuilder} and {@link HalResponseRendererBuilder} implementations.
  * @param &lt;BuilderInterface&gt; the interface that the subclass is implementing
  */
-<span class="fc" id="L60">abstract class AbstractRhymeBuilder&lt;BuilderInterface&gt; {</span>
+<span class="fc" id="L63">abstract class AbstractRhymeBuilder&lt;BuilderInterface&gt; {</span>
 
-<span class="fc" id="L62">  private final Stopwatch stopwatch = Stopwatch.createStarted();</span>
+<span class="fc" id="L65">  private static final ObjectMapper DEFAULT_OBJECT_MAPPER = new ObjectMapper()</span>
+<span class="fc" id="L66">      .disable(FAIL_ON_UNKNOWN_PROPERTIES);</span>
+
+<span class="fc" id="L68">  private final Stopwatch stopwatch = Stopwatch.createStarted();</span>
 
   private HalResourceLoader resourceLoader;
 
   private RequestMetricsCollector metrics;
 
-<span class="fc" id="L68">  private final List&lt;ExceptionStatusAndLoggingStrategy&gt; exceptionStrategies = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L74">  private final List&lt;ExceptionStatusAndLoggingStrategy&gt; exceptionStrategies = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L70">  private final List&lt;HalApiTypeSupport&gt; typeSupports = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L76">  private final List&lt;HalApiTypeSupport&gt; typeSupports = new ArrayList&lt;&gt;();</span>
 
   private RhymeDocsSupport rhymeDocsSupport;
 
   private RhymeMetadataConfiguration metadataConfiguration;
+
+  private ObjectMapper objectMapper;
 
   protected boolean wasUsedToBuild;
 
   @SuppressWarnings(&quot;unchecked&quot;)
   public BuilderInterface withResourceLoader(HalResourceLoader resourceLoader) {
 
-<span class="fc" id="L81">    this.resourceLoader = resourceLoader;</span>
-<span class="fc" id="L82">    return (BuilderInterface)this;</span>
+<span class="fc" id="L89">    this.resourceLoader = resourceLoader;</span>
+<span class="fc" id="L90">    return (BuilderInterface)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
   public BuilderInterface withMetrics(RequestMetricsCollector sharedMetrics) {
 
-<span class="fc" id="L88">    this.metrics = sharedMetrics;</span>
-<span class="fc" id="L89">    return (BuilderInterface)this;</span>
+<span class="fc" id="L96">    this.metrics = sharedMetrics;</span>
+<span class="fc" id="L97">    return (BuilderInterface)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
   public BuilderInterface withRhymeDocsSupport(RhymeDocsSupport rhymeDocsSupport) {
 
-<span class="fc" id="L95">    this.rhymeDocsSupport = rhymeDocsSupport;</span>
-<span class="fc" id="L96">    return (BuilderInterface)this;</span>
+<span class="fc" id="L103">    this.rhymeDocsSupport = rhymeDocsSupport;</span>
+<span class="fc" id="L104">    return (BuilderInterface)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
   public BuilderInterface withReturnTypeSupport(HalApiReturnTypeSupport additionalTypeSupport) {
 
-<span class="fc bfc" id="L102" title="All 2 branches covered.">    if (additionalTypeSupport != null) {</span>
-<span class="fc" id="L103">      typeSupports.add(new HalApiTypeSupportAdapter(additionalTypeSupport));</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">    if (additionalTypeSupport != null) {</span>
+<span class="fc" id="L111">      typeSupports.add(new HalApiTypeSupportAdapter(additionalTypeSupport));</span>
     }
-<span class="fc" id="L105">    return (BuilderInterface)this;</span>
+<span class="fc" id="L113">    return (BuilderInterface)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
   public BuilderInterface withAnnotationTypeSupport(HalApiAnnotationSupport additionalTypeSupport) {
 
-<span class="fc bfc" id="L111" title="All 2 branches covered.">    if (additionalTypeSupport != null) {</span>
-<span class="fc" id="L112">      typeSupports.add(new HalApiTypeSupportAdapter(additionalTypeSupport));</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">    if (additionalTypeSupport != null) {</span>
+<span class="fc" id="L120">      typeSupports.add(new HalApiTypeSupportAdapter(additionalTypeSupport));</span>
     }
-<span class="fc" id="L114">    return (BuilderInterface)this;</span>
+<span class="fc" id="L122">    return (BuilderInterface)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
   public BuilderInterface withExceptionStrategy(ExceptionStatusAndLoggingStrategy customStrategy) {
 
-<span class="fc" id="L120">    exceptionStrategies.add(customStrategy);</span>
-<span class="fc" id="L121">    return (BuilderInterface)this;</span>
+<span class="fc" id="L128">    exceptionStrategies.add(customStrategy);</span>
+<span class="fc" id="L129">    return (BuilderInterface)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
   public BuilderInterface withMetadataConfiguration(RhymeMetadataConfiguration configuration) {
 
-<span class="fc" id="L127">    metadataConfiguration = configuration;</span>
-<span class="fc" id="L128">    return (BuilderInterface)this;</span>
+<span class="fc" id="L135">    metadataConfiguration = configuration;</span>
+<span class="fc" id="L136">    return (BuilderInterface)this;</span>
+  }
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  public BuilderInterface withObjectMapper(ObjectMapper customMapper) {
+
+<span class="fc" id="L142">    objectMapper = customMapper;</span>
+<span class="fc" id="L143">    return (BuilderInterface)this;</span>
   }
 
   private ExceptionStatusAndLoggingStrategy getEffectiveExceptionStrategy() {
 
-<span class="fc" id="L133">    List&lt;ExceptionStatusAndLoggingStrategy&gt; nonNullStrategies = exceptionStrategies.stream()</span>
-<span class="fc" id="L134">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L135">        .collect(Collectors.toList());</span>
+<span class="fc" id="L148">    List&lt;ExceptionStatusAndLoggingStrategy&gt; nonNullStrategies = exceptionStrategies.stream()</span>
+<span class="fc" id="L149">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L150">        .collect(Collectors.toList());</span>
 
-<span class="fc bfc" id="L137" title="All 2 branches covered.">    if (nonNullStrategies.isEmpty()) {</span>
-<span class="fc" id="L138">      return null;</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">    if (nonNullStrategies.isEmpty()) {</span>
+<span class="fc" id="L153">      return null;</span>
     }
-<span class="fc bfc" id="L140" title="All 2 branches covered.">    if (nonNullStrategies.size() == 1) {</span>
-<span class="fc" id="L141">      return nonNullStrategies.get(0);</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">    if (nonNullStrategies.size() == 1) {</span>
+<span class="fc" id="L156">      return nonNullStrategies.get(0);</span>
     }
 
-<span class="fc" id="L144">    return new CompositeExceptionStatusAndLoggingStrategy(nonNullStrategies);</span>
+<span class="fc" id="L159">    return new CompositeExceptionStatusAndLoggingStrategy(nonNullStrategies);</span>
   }
 
   private HalApiTypeSupport getEffectiveTypeSupport() {
 
-<span class="fc" id="L149">    DefaultHalApiTypeSupport defaultSupport = new DefaultHalApiTypeSupport();</span>
+<span class="fc" id="L164">    DefaultHalApiTypeSupport defaultSupport = new DefaultHalApiTypeSupport();</span>
 
-<span class="fc bfc" id="L151" title="All 2 branches covered.">    if (typeSupports.isEmpty()) {</span>
-<span class="fc" id="L152">      return defaultSupport;</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">    if (typeSupports.isEmpty()) {</span>
+<span class="fc" id="L167">      return defaultSupport;</span>
     }
 
-<span class="fc" id="L155">    List&lt;HalApiTypeSupport&gt; customAndDefault = new ArrayList&lt;&gt;(typeSupports);</span>
-<span class="fc" id="L156">    customAndDefault.add(defaultSupport);</span>
+<span class="fc" id="L170">    List&lt;HalApiTypeSupport&gt; customAndDefault = new ArrayList&lt;&gt;(typeSupports);</span>
+<span class="fc" id="L171">    customAndDefault.add(defaultSupport);</span>
 
-<span class="fc" id="L158">    return new CompositeHalApiTypeSupport(customAndDefault);</span>
+<span class="fc" id="L173">    return new CompositeHalApiTypeSupport(customAndDefault);</span>
   }
 
   private void applyDefaultsBeforeBuilding() {
 
-<span class="fc bfc" id="L163" title="All 2 branches covered.">    if (wasUsedToBuild) {</span>
-<span class="fc" id="L164">      throw new HalApiDeveloperException(&quot;You shouldn't re-use this builder to create more than once instance&quot;);</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">    if (wasUsedToBuild) {</span>
+<span class="fc" id="L179">      throw new HalApiDeveloperException(&quot;You shouldn't re-use this builder to create more than once instance&quot;);</span>
     }
 
-<span class="fc bfc" id="L167" title="All 2 branches covered.">    if (resourceLoader == null) {</span>
-<span class="fc" id="L168">      resourceLoader = HalResourceLoader.create();</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">    if (resourceLoader == null) {</span>
+<span class="fc" id="L183">      resourceLoader = HalResourceLoader.create();</span>
     }
 
-<span class="fc bfc" id="L171" title="All 2 branches covered.">    if (metadataConfiguration == null) {</span>
-<span class="fc" id="L172">      metadataConfiguration = new RhymeMetadataConfiguration() {</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">    if (metadataConfiguration == null) {</span>
+<span class="fc" id="L187">      metadataConfiguration = new RhymeMetadataConfiguration() {</span>
         // use default implementations from interface only
       };
     }
 
-<span class="fc bfc" id="L177" title="All 2 branches covered.">    if (metrics == null) {</span>
-<span class="fc bfc" id="L178" title="All 2 branches covered.">      if (metadataConfiguration.isMetadataGenerationEnabled()) {</span>
-<span class="fc" id="L179">        metrics = RequestMetricsCollector.create();</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">    if (metrics == null) {</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">      if (metadataConfiguration.isMetadataGenerationEnabled()) {</span>
+<span class="fc" id="L194">        metrics = RequestMetricsCollector.create();</span>
       }
       else {
-<span class="fc" id="L182">        metrics = RequestMetricsCollector.createEssentialCollector();</span>
+<span class="fc" id="L197">        metrics = RequestMetricsCollector.createEssentialCollector();</span>
       }
     }
-<span class="fc" id="L185">  }</span>
+
+<span class="fc bfc" id="L201" title="All 2 branches covered.">    if (objectMapper == null) {</span>
+<span class="fc" id="L202">      objectMapper = DEFAULT_OBJECT_MAPPER;</span>
+    }
+<span class="fc" id="L204">  }</span>
 
   AsyncHalResponseRenderer buildAsyncRenderer() {
 
-<span class="fc" id="L189">    applyDefaultsBeforeBuilding();</span>
+<span class="fc" id="L208">    applyDefaultsBeforeBuilding();</span>
 
-<span class="fc" id="L191">    HalApiTypeSupport typeSupport = getEffectiveTypeSupport();</span>
+<span class="fc" id="L210">    HalApiTypeSupport typeSupport = getEffectiveTypeSupport();</span>
 
-<span class="fc" id="L193">    AsyncHalResourceRenderer resourceRenderer = new AsyncHalResourceRendererImpl(metrics, typeSupport);</span>
+<span class="fc" id="L212">    AsyncHalResourceRenderer resourceRenderer = new AsyncHalResourceRendererImpl(metrics, typeSupport, objectMapper);</span>
 
-<span class="fc" id="L195">    ExceptionStatusAndLoggingStrategy exceptionStrategy = getEffectiveExceptionStrategy();</span>
+<span class="fc" id="L214">    ExceptionStatusAndLoggingStrategy exceptionStrategy = getEffectiveExceptionStrategy();</span>
 
-<span class="fc" id="L197">    return new AsyncHalResponseRendererImpl(resourceRenderer, metrics, exceptionStrategy, typeSupport, rhymeDocsSupport);</span>
+<span class="fc" id="L216">    return new AsyncHalResponseRendererImpl(resourceRenderer, metrics, exceptionStrategy, typeSupport, rhymeDocsSupport);</span>
   }
 
   HalApiClient buildApiClient() {
 
-<span class="fc" id="L202">    applyDefaultsBeforeBuilding();</span>
+<span class="fc" id="L221">    applyDefaultsBeforeBuilding();</span>
 
-<span class="fc" id="L204">    HalApiTypeSupport effectiveTypeSupport = getEffectiveTypeSupport();</span>
+<span class="fc" id="L223">    HalApiTypeSupport effectiveTypeSupport = getEffectiveTypeSupport();</span>
 
-<span class="fc" id="L206">    return new HalApiClientImpl(resourceLoader, metrics, effectiveTypeSupport);</span>
+<span class="fc" id="L225">    return new HalApiClientImpl(resourceLoader, metrics, effectiveTypeSupport, objectMapper);</span>
   }
 
   @SuppressWarnings(&quot;deprecation&quot;)
   Rhyme buildRhyme(String incomingRequestUri) {
 
-<span class="fc" id="L212">    HalApiClient client = buildApiClient();</span>
+<span class="fc" id="L231">    HalApiClient client = buildApiClient();</span>
 
-<span class="fc" id="L214">    AsyncHalResponseRenderer renderer = buildAsyncRenderer();</span>
+<span class="fc" id="L233">    AsyncHalResponseRenderer renderer = buildAsyncRenderer();</span>
 
-<span class="fc" id="L216">    VndErrorResponseRenderer errorRenderer = VndErrorResponseRenderer.create(getEffectiveExceptionStrategy());</span>
+<span class="fc" id="L235">    VndErrorResponseRenderer errorRenderer = VndErrorResponseRenderer.create(getEffectiveExceptionStrategy());</span>
 
-<span class="fc" id="L218">    RhymeImpl impl = new RhymeImpl(incomingRequestUri, client, renderer, errorRenderer, metrics);</span>
+<span class="fc" id="L237">    RhymeImpl impl = new RhymeImpl(incomingRequestUri, client, renderer, errorRenderer, metrics);</span>
 
-<span class="fc" id="L220">    metrics.onMethodInvocationFinished(AsyncHalResponseRenderer.class, &quot;building Rhyme instance&quot;, stopwatch.elapsed(TimeUnit.MICROSECONDS));</span>
+<span class="fc" id="L239">    metrics.onMethodInvocationFinished(AsyncHalResponseRenderer.class, &quot;building Rhyme instance&quot;, stopwatch.elapsed(TimeUnit.MICROSECONDS));</span>
 
-<span class="fc" id="L222">    return impl;</span>
+<span class="fc" id="L241">    return impl;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
