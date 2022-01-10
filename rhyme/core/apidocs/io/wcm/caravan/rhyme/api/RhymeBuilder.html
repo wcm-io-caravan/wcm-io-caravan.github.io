@@ -152,15 +152,15 @@ public interface <span class="typeNameLabel">RhymeBuilder</span></pre>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withEmbeddedMetadata--">withEmbeddedMetadata</a></span>()</code>
-<div class="block">Enables the capturing of extensive performance and upstream response metadata for this request,
- which will be included as an embedded resource in the response.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withExceptionStrategy-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-">withExceptionStrategy</a></span>(<a href="../../../../../io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi">ExceptionStatusAndLoggingStrategy</a>&nbsp;customStrategy)</code>
+<div class="block">Allow the exception handling of the core framework to support additional platform / framework specific exceptions.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withExceptionStrategy-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-">withExceptionStrategy</a></span>(<a href="../../../../../io/wcm/caravan/rhyme/api/spi/ExceptionStatusAndLoggingStrategy.html" title="interface in io.wcm.caravan.rhyme.api.spi">ExceptionStatusAndLoggingStrategy</a>&nbsp;customStrategy)</code>
-<div class="block">Allow the exception handling of the core framework to support additional platform / framework specific exceptions.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withMetadataConfiguration-io.wcm.caravan.rhyme.api.server.RhymeMetadataConfiguration-">withMetadataConfiguration</a></span>(<a href="../../../../../io/wcm/caravan/rhyme/api/server/RhymeMetadataConfiguration.html" title="interface in io.wcm.caravan.rhyme.api.server">RhymeMetadataConfiguration</a>&nbsp;configuration)</code>
+<div class="block">Configures the capturing of extensive performance and upstream response metadata for this request,
+ which can be included as an embedded resource in the response.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
@@ -326,16 +326,18 @@ static&nbsp;<a href="../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" 
 </dl>
 </li>
 </ul>
-<a name="withEmbeddedMetadata--">
+<a name="withMetadataConfiguration-io.wcm.caravan.rhyme.api.server.RhymeMetadataConfiguration-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>withEmbeddedMetadata</h4>
-<pre><a href="../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a>&nbsp;withEmbeddedMetadata()</pre>
-<div class="block">Enables the capturing of extensive performance and upstream response metadata for this request,
- which will be included as an embedded resource in the response.</div>
+<h4>withMetadataConfiguration</h4>
+<pre><a href="../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a>&nbsp;withMetadataConfiguration(<a href="../../../../../io/wcm/caravan/rhyme/api/server/RhymeMetadataConfiguration.html" title="interface in io.wcm.caravan.rhyme.api.server">RhymeMetadataConfiguration</a>&nbsp;configuration)</pre>
+<div class="block">Configures the capturing of extensive performance and upstream response metadata for this request,
+ which can be included as an embedded resource in the response.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>configuration</code> - to determine whether metadata should be rendered and included in the current request</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>this</dd>
 </dl>

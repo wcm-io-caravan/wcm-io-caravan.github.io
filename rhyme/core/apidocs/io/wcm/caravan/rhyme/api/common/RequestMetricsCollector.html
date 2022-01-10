@@ -109,8 +109,8 @@ public interface <span class="typeNameLabel">RequestMetricsCollector</span></pre
  <p>
  You shouldn't have to interact with this interface directly except for advanced integration or testing scenarios.
  Usually an instance of this interface is automatically created for each <a href="../../../../../../io/wcm/caravan/rhyme/api/Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> instance, and can choose
- whether you want to include the embedded metadata in the response by calling
- <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withEmbeddedMetadata--"><code>RhymeBuilder.withEmbeddedMetadata()</code></a>.
+ whether you want to include the embedded metadata in the response via
+ <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withMetadataConfiguration-io.wcm.caravan.rhyme.api.server.RhymeMetadataConfiguration-"><code>RhymeBuilder.withMetadataConfiguration(RhymeMetadataConfiguration)</code></a>.
  </p>
  <p>
  If you are not working with <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api"><code>RhymeBuilder</code></a>, but are integrating <a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalApiClient</code></a> and
@@ -119,6 +119,10 @@ public interface <span class="typeNameLabel">RequestMetricsCollector</span></pre
  <a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#withMetrics-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-"><code>HalApiClientBuilder.withMetrics(RequestMetricsCollector)</code></a>
  and <a href="../../../../../../io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html#withMetrics-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-"><code>HalResponseRendererBuilder.withMetrics(RequestMetricsCollector)</code></a>.
  </p></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../io/wcm/caravan/rhyme/api/server/RhymeMetadataConfiguration.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>RhymeMetadataConfiguration</code></a></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -241,8 +245,7 @@ public interface <span class="typeNameLabel">RequestMetricsCollector</span></pre
 <pre>static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> EMBED_RHYME_METADATA</pre>
 <div class="block">The name of the query parameter that toggles whether the "rhyme:metadata" resource is embedded when rendering
  resources. This applies only if you are using one of the framework integrations (e.g. Spring, AEM) in default
- configuration. To enable the inclusion of the metadata programmatically, call
- <a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withEmbeddedMetadata--"><code>RhymeBuilder.withEmbeddedMetadata()</code></a>.</div>
+ configuration, where this logic is implemented with a framework specific <a href="../../../../../../io/wcm/caravan/rhyme/api/server/RhymeMetadataConfiguration.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>RhymeMetadataConfiguration</code></a></div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../../constant-values.html#io.wcm.caravan.rhyme.api.common.RequestMetricsCollector.EMBED_RHYME_METADATA">Constant Field Values</a></dd>
@@ -377,13 +380,13 @@ void&nbsp;onMethodInvocationFinished(<a href="https://docs.oracle.com/javase/8/d
 <pre>static&nbsp;<a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a>&nbsp;create()</pre>
 <div class="block">Create a new instance to collect the full data on upstream requests and measure performance for the current
  incoming request. When this instance is used with <a href="../../../../../../io/wcm/caravan/rhyme/api/server/AsyncHalResponseRenderer.html" title="interface in io.wcm.caravan.rhyme.api.server"><code>AsyncHalResponseRenderer</code></a>, a metadata resource with
- insight on performance and upstream requests will be automatically embedded in the response.If you don't need or
+ insight on performance and upstream requests will be automatically embedded in the response. If you don't need or
  want this, then use <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#createEssentialCollector--"><code>createEssentialCollector()</code></a> instead</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a new full-featured instance of <a href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common"><code>RequestMetricsCollector</code></a></dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../io/wcm/caravan/rhyme/api/RhymeBuilder.html#withEmbeddedMetadata--"><code>RhymeBuilder.withEmbeddedMetadata()</code></a>, 
+<dd><a href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#withMetrics-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-"><code>HalApiClientBuilder.withMetrics(RequestMetricsCollector)</code></a>, 
 <a href="../../../../../../io/wcm/caravan/rhyme/api/server/HalResponseRendererBuilder.html#withMetrics-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-"><code>HalResponseRendererBuilder.withMetrics(RequestMetricsCollector)</code></a></dd>
 </dl>
 </li>

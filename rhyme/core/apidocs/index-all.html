@@ -452,6 +452,11 @@
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html#isHalApiInterface-java.lang.Class-">isHalApiInterface(Class&lt;?&gt;)</a></span> - Method in interface io.wcm.caravan.rhyme.api.spi.<a href="io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiAnnotationSupport</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/server/RhymeMetadataConfiguration.html#isMetadataGenerationEnabled--">isMetadataGenerationEnabled()</a></span> - Method in interface io.wcm.caravan.rhyme.api.server.<a href="io/wcm/caravan/rhyme/api/server/RhymeMetadataConfiguration.html" title="interface in io.wcm.caravan.rhyme.api.server">RhymeMetadataConfiguration</a></dt>
+<dd>
+<div class="block">Determines whether an "rhyme:metadata" resource is automatically embedded into the response rendered with
+ <a href="io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-"><code>Rhyme.renderResponse(LinkableResource)</code></a></div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html#isProviderOfMultiplerValues-java.lang.Class-">isProviderOfMultiplerValues(Class&lt;?&gt;)</a></span> - Method in interface io.wcm.caravan.rhyme.api.spi.<a href="io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiReturnTypeSupport</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html#isProviderOfOptionalValue-java.lang.Class-">isProviderOfOptionalValue(Class&lt;?&gt;)</a></span> - Method in interface io.wcm.caravan.rhyme.api.spi.<a href="io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html" title="interface in io.wcm.caravan.rhyme.api.spi">HalApiReturnTypeSupport</a></dt>
@@ -572,6 +577,11 @@
 <div class="block">SPI interface to customize the integration of HTML documentation generated with
  the rhyme-docs-maven-plugin.</div>
 </dd>
+<dt><a href="io/wcm/caravan/rhyme/api/server/RhymeMetadataConfiguration.html" title="interface in io.wcm.caravan.rhyme.api.server"><span class="typeNameLink">RhymeMetadataConfiguration</span></a> - Interface in <a href="io/wcm/caravan/rhyme/api/server/package-summary.html">io.wcm.caravan.rhyme.api.server</a></dt>
+<dd>
+<div class="block">Defines configuration methods to influence if and how <a href="io/wcm/caravan/rhyme/api/Rhyme.html#renderResponse-io.wcm.caravan.rhyme.api.resources.LinkableResource-"><code>Rhyme.renderResponse(LinkableResource)</code></a>
+ adds additional metadata to the response</div>
+</dd>
 </dl>
 <a name="I:S">
 <!--   -->
@@ -650,11 +660,6 @@
 <dd>
 <div class="block">Replace the default HTTP client with the given implementation.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#withEmbeddedMetadata--">withEmbeddedMetadata()</a></span> - Method in interface io.wcm.caravan.rhyme.api.<a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></dt>
-<dd>
-<div class="block">Enables the capturing of extensive performance and upstream response metadata for this request,
- which will be included as an embedded resource in the response.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#withExceptionStrategy-io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy-">withExceptionStrategy(ExceptionStatusAndLoggingStrategy)</a></span> - Method in interface io.wcm.caravan.rhyme.api.<a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></dt>
 <dd>
 <div class="block">Allow the exception handling of the core framework to support additional platform / framework specific exceptions.</div>
@@ -676,6 +681,11 @@
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalResourceLoaderBuilder.html#withMemoryCache-int-java.time.Duration-">withMemoryCache(int, Duration)</a></span> - Method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalResourceLoaderBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client">HalResourceLoaderBuilder</a></dt>
 <dd>
 <div class="block">Enable in-memory caching of responses with custom settings</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html#withMetadataConfiguration-io.wcm.caravan.rhyme.api.server.RhymeMetadataConfiguration-">withMetadataConfiguration(RhymeMetadataConfiguration)</a></span> - Method in interface io.wcm.caravan.rhyme.api.<a href="io/wcm/caravan/rhyme/api/RhymeBuilder.html" title="interface in io.wcm.caravan.rhyme.api">RhymeBuilder</a></dt>
+<dd>
+<div class="block">Configures the capturing of extensive performance and upstream response metadata for this request,
+ which can be included as an embedded resource in the response.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#withMetrics-io.wcm.caravan.rhyme.api.common.RequestMetricsCollector-">withMetrics(RequestMetricsCollector)</a></span> - Method in interface io.wcm.caravan.rhyme.api.client.<a href="io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html" title="interface in io.wcm.caravan.rhyme.api.client">HalApiClientBuilder</a></dt>
 <dd>

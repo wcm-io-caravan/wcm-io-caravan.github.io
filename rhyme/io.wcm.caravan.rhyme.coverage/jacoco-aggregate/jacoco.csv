@@ -8,11 +8,12 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.proxy,HalApiInvocationHandler,5,395,0,18,0,59,1,27,1,18
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.proxy,ResourceRepresentationHandler,0,68,0,6,0,14,0,5,0,2
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl,RhymeBuilders.RhymeBuilderImpl,0,9,0,0,0,3,0,1,0,1
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl,AbstractRhymeBuilder.new RhymeMetadataConfiguration() {...},0,6,0,0,0,1,0,1,0,1
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl,RhymeImpl,0,52,0,0,0,13,0,6,0,6
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl,RhymeBuilders.HalResponseRenderBuilderImpl,0,8,0,0,0,3,0,1,0,1
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl,RhymeBuilders.HalApiClientBuilderImpl,0,8,0,0,0,3,0,1,0,1
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl,RhymeBuilders,0,23,0,0,0,4,0,4,0,4
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl,AbstractRhymeBuilder,0,212,0,16,0,55,0,22,0,14
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl,AbstractRhymeBuilder,0,229,0,20,0,59,0,24,0,14
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.CacheOnlyCompletedTransformer,0,44,0,2,0,13,0,8,0,7
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers,0,16,0,0,0,3,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.AsyncFilterTransformer,0,31,0,0,0,11,0,4,0,4
@@ -25,6 +26,7 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.common,
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.common,HalResponse,0,174,0,2,0,30,0,16,0,15
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.server,HalResponseRendererBuilder,0,2,0,0,0,1,0,1,0,1
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.server,VndErrorResponseRenderer,0,5,0,0,0,1,0,1,0,1
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.server,RhymeMetadataConfiguration,0,2,0,0,0,1,0,1,0,1
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.server,ResourceConversions,0,12,0,0,0,3,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.server,AsyncHalResponseRenderer,0,18,0,0,0,10,0,2,0,2
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.metadata,MaxAgeOnlyCollector.new RequestMetricsStopwatch() {...},0,7,0,0,0,2,0,2,0,2
@@ -82,8 +84,9 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl.ada
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingResourceAdapterImpl,0,495,0,20,0,79,0,52,0,42
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingResourceAdapterImpl.ResourceSelector,0,91,0,4,0,18,0,5,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl,RhymeResourceRegistry,0,138,0,6,0,30,0,16,0,13
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl,SlingRhymeImpl,0,344,0,26,0,73,0,32,0,19
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl,SlingRhymeImpl,0,340,0,24,0,71,0,31,0,19
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl,HalApiServlet,0,155,0,8,0,32,0,11,0,7
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl,SlingRhymeImpl.new RhymeMetadataConfiguration() {...},0,15,0,0,0,2,0,2,0,2
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl.client,ApacheHttpClientFactorySupport,0,69,0,2,0,15,0,4,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl.client,ResourceLoaderManager,0,18,0,0,0,7,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl.resources,AemApiDiscoveryResourceImpl,0,25,0,0,0,6,0,4,0,4
@@ -125,12 +128,13 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.carav
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.jaxrs.api,JaxRsLinkBuilder,0,6,0,0,0,1,0,1,0,1
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringExceptionStatusAndLoggingStrategy,0,59,0,10,0,15,0,8,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,WebClientSupport,0,104,0,0,0,24,0,8,0,8
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeImpl.DefaultMetadataConfiguration,0,28,0,4,0,5,0,5,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,LinkableResourceStatusCodeAdvice,0,21,0,0,0,7,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeAutoConfiguration,0,16,0,0,0,7,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeDocsIntegration,0,19,0,0,0,6,0,5,0,5
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,VndErrorHandlingControllerAdvice,0,37,0,0,0,6,0,4,0,4
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeLinkBuilder,0,253,0,20,0,49,0,25,0,15
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeImpl,0,166,0,12,0,40,0,19,0,13
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeImpl,0,143,0,6,0,36,0,14,0,11
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,LinkableResourceMessageConverter,0,59,0,0,0,11,0,5,0,5
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,UrlFingerprintingImpl,0,101,0,10,0,27,0,12,0,7
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.testing,io.wcm.caravan.rhyme.testing.spring,MockMvcHalResourceLoaderConfiguration,0,12,0,0,0,3,0,2,0,2
