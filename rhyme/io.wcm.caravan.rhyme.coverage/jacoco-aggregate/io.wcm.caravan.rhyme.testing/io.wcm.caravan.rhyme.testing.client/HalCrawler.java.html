@@ -19,6 +19,8 @@
  */
 package io.wcm.caravan.rhyme.testing.client;
 
+import static com.google.common.collect.ImmutableList.of;
+
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedHashMap;
@@ -32,9 +34,12 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ListMultimap;
+
 import io.wcm.caravan.hal.resource.HalResource;
 import io.wcm.caravan.hal.resource.Link;
 import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.relations.StandardRelations;
 import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
 
 /**
@@ -42,24 +47,26 @@ import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
  */
 public class HalCrawler {
 
-<span class="fc" id="L45">  private static final Logger log = LoggerFactory.getLogger(HalCrawler.class);</span>
+<span class="fc" id="L50">  private static final Logger log = LoggerFactory.getLogger(HalCrawler.class);</span>
 
   private final HalResourceLoader resourceLoader;
 
-<span class="fc" id="L49">  private final Deque&lt;String&gt; urlsLeftToCrawl = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L54">  private final Deque&lt;String&gt; urlsLeftToCrawl = new LinkedList&lt;&gt;();</span>
 
-<span class="fc" id="L51">  private final Map&lt;String, HalResponse&gt; crawledUrlsAndResponses = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L56">  private final Map&lt;String, HalResponse&gt; crawledUrlsAndResponses = new LinkedHashMap&lt;&gt;();</span>
 
-<span class="fc" id="L53">  private int limit = 1000;</span>
+<span class="fc" id="L58">  private int limit = 1000;</span>
 
-<span class="fc" id="L55">  private Function&lt;String, String&gt; urlModifier = Function.identity();</span>
+<span class="fc" id="L60">  private final List&lt;String&gt; relationsToIgnore = new LinkedList&lt;&gt;(of(StandardRelations.CURIES));</span>
+
+<span class="fc" id="L62">  private Function&lt;String, String&gt; urlModifier = Function.identity();</span>
 
   /**
    * @param resourceLoader used to to load the resources
    */
-<span class="fc" id="L60">  public HalCrawler(HalResourceLoader resourceLoader) {</span>
-<span class="fc" id="L61">    this.resourceLoader = resourceLoader;</span>
-<span class="fc" id="L62">  }</span>
+<span class="fc" id="L67">  public HalCrawler(HalResourceLoader resourceLoader) {</span>
+<span class="fc" id="L68">    this.resourceLoader = resourceLoader;</span>
+<span class="fc" id="L69">  }</span>
 
   /**
    * Use a different entry point than &quot;/&quot; to start crawling
@@ -68,8 +75,8 @@ public class HalCrawler {
    */
   public HalCrawler withEntryPoint(String url) {
 
-<span class="fc" id="L71">    addUrlUnlessAlreadyProcessed(url);</span>
-<span class="fc" id="L72">    return this;</span>
+<span class="fc" id="L78">    addUrlUnlessAlreadyProcessed(url);</span>
+<span class="fc" id="L79">    return this;</span>
   }
 
   /**
@@ -79,8 +86,19 @@ public class HalCrawler {
    */
   public HalCrawler withLimit(int maxNumResources) {
 
-<span class="fc" id="L82">    limit = maxNumResources;</span>
-<span class="fc" id="L83">    return this;</span>
+<span class="fc" id="L89">    limit = maxNumResources;</span>
+<span class="fc" id="L90">    return this;</span>
+  }
+
+  /**
+   * Do not follow links (or look into links from embedded resources) with the given relatins
+   * @param relations the relations that should not be crawled
+   * @return this
+   */
+  public HalCrawler withIgnoredRelations(Iterable&lt;String&gt; relations) {
+
+<span class="fc" id="L100">    relations.forEach(relationsToIgnore::add);</span>
+<span class="fc" id="L101">    return this;</span>
   }
 
   /**
@@ -89,8 +107,8 @@ public class HalCrawler {
    */
   public HalCrawler withModifiedUrls(Function&lt;String, String&gt; function) {
 
-<span class="fc" id="L92">    urlModifier = function;</span>
-<span class="fc" id="L93">    return this;</span>
+<span class="fc" id="L110">    urlModifier = function;</span>
+<span class="fc" id="L111">    return this;</span>
   }
 
   /**
@@ -99,70 +117,76 @@ public class HalCrawler {
    */
   public List&lt;HalResponse&gt; getAllResponses() {
 
-<span class="fc" id="L102">    crawlAllResourcesOnce();</span>
+<span class="fc" id="L120">    crawlAllResourcesOnce();</span>
 
-<span class="fc" id="L104">    return new ArrayList&lt;&gt;(crawledUrlsAndResponses.values());</span>
+<span class="fc" id="L122">    return new ArrayList&lt;&gt;(crawledUrlsAndResponses.values());</span>
   }
 
   private void crawlAllResourcesOnce() {
 
-<span class="fc bfc" id="L109" title="All 2 branches covered.">    if (crawledUrlsAndResponses.isEmpty()) {</span>
-<span class="fc" id="L110">      crawlResourcesRecursively();</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">    if (crawledUrlsAndResponses.isEmpty()) {</span>
+<span class="fc" id="L128">      crawlResourcesRecursively();</span>
     }
-<span class="fc" id="L112">  }</span>
+<span class="fc" id="L130">  }</span>
 
   private void addUrlUnlessAlreadyProcessed(String url) {
 
-<span class="fc" id="L116">    String urlToCrawl = urlModifier.apply(url);</span>
+<span class="fc" id="L134">    String urlToCrawl = urlModifier.apply(url);</span>
 
-<span class="fc bfc" id="L118" title="All 2 branches covered.">    if (!crawledUrlsAndResponses.containsKey(urlToCrawl)) {</span>
-<span class="fc" id="L119">      urlsLeftToCrawl.add(urlToCrawl);</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">    if (!crawledUrlsAndResponses.containsKey(urlToCrawl)) {</span>
+<span class="fc" id="L137">      urlsLeftToCrawl.add(urlToCrawl);</span>
     }
-<span class="fc" id="L121">  }</span>
+<span class="fc" id="L139">  }</span>
 
   private void crawlResourcesRecursively() {
 
-<span class="fc bfc" id="L125" title="All 2 branches covered.">    if (urlsLeftToCrawl.isEmpty()) {</span>
-<span class="fc" id="L126">      addUrlUnlessAlreadyProcessed(&quot;/&quot;);</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">    if (urlsLeftToCrawl.isEmpty()) {</span>
+<span class="fc" id="L144">      addUrlUnlessAlreadyProcessed(&quot;/&quot;);</span>
     }
 
-<span class="fc bfc" id="L129" title="All 2 branches covered.">    while (!urlsLeftToCrawl.isEmpty()) {</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">    while (!urlsLeftToCrawl.isEmpty()) {</span>
 
-<span class="fc" id="L131">      String nextUrl = urlsLeftToCrawl.pop();</span>
+<span class="fc" id="L149">      String nextUrl = urlsLeftToCrawl.pop();</span>
 
-<span class="fc" id="L133">      fetchResourceAndExtractResolvedLinks(nextUrl)</span>
-<span class="fc" id="L134">          .forEach(this::addUrlUnlessAlreadyProcessed);</span>
+<span class="fc" id="L151">      fetchResourceAndExtractResolvedLinks(nextUrl)</span>
+<span class="fc" id="L152">          .forEach(this::addUrlUnlessAlreadyProcessed);</span>
 
-<span class="fc bfc" id="L136" title="All 2 branches covered.">      if (crawledUrlsAndResponses.size() &gt;= limit) {</span>
-<span class="fc" id="L137">        log.warn(&quot;The limit of {} resources to crawl has been reached&quot;, limit);</span>
-<span class="fc" id="L138">        break;</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">      if (crawledUrlsAndResponses.size() &gt;= limit) {</span>
+<span class="fc" id="L155">        log.warn(&quot;The limit of {} resources to crawl has been reached&quot;, limit);</span>
+<span class="fc" id="L156">        break;</span>
       }
-<span class="fc" id="L140">    }</span>
-<span class="fc" id="L141">  }</span>
+<span class="fc" id="L158">    }</span>
+<span class="fc" id="L159">  }</span>
 
   private Stream&lt;String&gt; fetchResourceAndExtractResolvedLinks(String url) {
 
-<span class="fc" id="L145">    HalResponse response = resourceLoader.getHalResource(url).blockingGet();</span>
+<span class="fc" id="L163">    HalResponse response = resourceLoader.getHalResource(url).blockingGet();</span>
 
-<span class="fc" id="L147">    crawledUrlsAndResponses.put(url, response);</span>
+<span class="fc" id="L165">    crawledUrlsAndResponses.put(url, response);</span>
 
-<span class="fc" id="L149">    return collectResolvedLinks(response.getBody())</span>
-<span class="fc" id="L150">        .map(Link::getHref)</span>
-<span class="fc" id="L151">        .distinct();</span>
+<span class="fc" id="L167">    return collectResolvedLinks(response.getBody())</span>
+<span class="fc" id="L168">        .map(Link::getHref)</span>
+<span class="fc" id="L169">        .distinct();</span>
   }
 
   private Stream&lt;Link&gt; collectResolvedLinks(HalResource hal) {
 
-<span class="fc" id="L156">    Stream&lt;Link&gt; directlyLinked = hal.getLinks().entries().stream()</span>
-<span class="fc bfc" id="L157" title="All 2 branches covered.">        .filter(entry -&gt; !&quot;curies&quot;.equals(entry.getKey()))</span>
-<span class="fc" id="L158">        .map(Entry::getValue)</span>
-<span class="fc bfc" id="L159" title="All 2 branches covered.">        .filter(link -&gt; !link.isTemplated());</span>
+<span class="fc" id="L174">    Stream&lt;Link&gt; directlyLinked = filterCrawlableRelationsFrom(hal.getLinks())</span>
+<span class="fc bfc" id="L175" title="All 4 branches covered.">        .filter(link -&gt; link.getType() == null || link.getType().equals(HalResource.CONTENT_TYPE))</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">        .filter(link -&gt; !link.isTemplated());</span>
 
-<span class="fc" id="L161">    Stream&lt;Link&gt; linkedFromEmbedded = hal.getEmbedded().values().stream()</span>
-<span class="fc" id="L162">        .flatMap(this::collectResolvedLinks);</span>
+<span class="fc" id="L178">    Stream&lt;Link&gt; linkedFromEmbedded = filterCrawlableRelationsFrom(hal.getEmbedded())</span>
+<span class="fc" id="L179">        .flatMap(this::collectResolvedLinks);</span>
 
-<span class="fc" id="L164">    return Stream.concat(directlyLinked, linkedFromEmbedded)</span>
-<span class="fc" id="L165">        .distinct();</span>
+<span class="fc" id="L181">    return Stream.concat(directlyLinked, linkedFromEmbedded)</span>
+<span class="fc" id="L182">        .distinct();</span>
+  }
+
+  private &lt;T&gt; Stream&lt;T&gt; filterCrawlableRelationsFrom(ListMultimap&lt;String, T&gt; mapWithRelationKeys) {
+
+<span class="fc" id="L187">    return mapWithRelationKeys.entries().stream()</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        .filter(entry -&gt; !relationsToIgnore.contains(entry.getKey()))</span>
+<span class="fc" id="L189">        .map(Entry::getValue);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

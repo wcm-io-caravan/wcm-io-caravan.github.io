@@ -35,34 +35,36 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.apache.sling.models.annotations.Model;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.aem.api.SlingRhyme;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.aem.api.resources.AbstractLinkableResource;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.aem.impl.RhymeResourceRegistry;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.resources.LinkableResource;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  @Model(adaptables = SlingRhyme.<strong class="jxr_keyword">class</strong>, adapters = AemApiDiscoveryResource.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AemApiDiscoveryResourceImpl" href="../../../../../../../io/wcm/caravan/rhyme/aem/impl/resources/AemApiDiscoveryResourceImpl.html#AemApiDiscoveryResourceImpl">AemApiDiscoveryResourceImpl</a> <strong class="jxr_keyword">extends</strong> <a name="AbstractLinkableResource" href="../../../../../../../io/wcm/caravan/rhyme/aem/api/resources/AbstractLinkableResource.html#AbstractLinkableResource">AbstractLinkableResource</a> <strong class="jxr_keyword">implements</strong> <a name="AemApiDiscoveryResource" href="../../../../../../../io/wcm/caravan/rhyme/aem/impl/resources/AemApiDiscoveryResource.html#AemApiDiscoveryResource">AemApiDiscoveryResource</a> {
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Integer MAX_AGE_SECONDS = 60;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>    @Inject
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>    <strong class="jxr_keyword">private</strong> <a name="RhymeResourceRegistry" href="../../../../../../../io/wcm/caravan/rhyme/aem/impl/RhymeResourceRegistry.html#RhymeResourceRegistry">RhymeResourceRegistry</a> registry;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>    @Override
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>    <strong class="jxr_keyword">public</strong> List&lt;LinkableResource&gt; getApiEntryPoints() {
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>      rhyme.setResponseMaxAge(Duration.ofSeconds(MAX_AGE_SECONDS));
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>      <strong class="jxr_keyword">return</strong> registry.getAllApiEntryPoints(resourceAdapter)
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>          .collect(Collectors.toList());
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>    }
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>    @Override
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <strong class="jxr_keyword">protected</strong> String getDefaultLinkTitle() {
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"A list of all HAL+JSON APIs registered on this AEM instance"</span>;
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>    }
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  }
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.hal.resource.Link;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.aem.api.SlingRhyme;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.aem.api.resources.AbstractLinkableResource;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.aem.impl.RhymeResourceRegistry;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.resources.LinkableResource;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  @Model(adaptables = SlingRhyme.<strong class="jxr_keyword">class</strong>, adapters = AemApiDiscoveryResource.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AemApiDiscoveryResourceImpl" href="../../../../../../../io/wcm/caravan/rhyme/aem/impl/resources/AemApiDiscoveryResourceImpl.html#AemApiDiscoveryResourceImpl">AemApiDiscoveryResourceImpl</a> <strong class="jxr_keyword">extends</strong> <a name="AbstractLinkableResource" href="../../../../../../../io/wcm/caravan/rhyme/aem/api/resources/AbstractLinkableResource.html#AbstractLinkableResource">AbstractLinkableResource</a> <strong class="jxr_keyword">implements</strong> <a name="AemApiDiscoveryResource" href="../../../../../../../io/wcm/caravan/rhyme/aem/impl/resources/AemApiDiscoveryResource.html#AemApiDiscoveryResource">AemApiDiscoveryResource</a> {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Integer MAX_AGE_SECONDS = 60;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>    @Inject
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">private</strong> <a name="RhymeResourceRegistry" href="../../../../../../../io/wcm/caravan/rhyme/aem/impl/RhymeResourceRegistry.html#RhymeResourceRegistry">RhymeResourceRegistry</a> registry;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>    @Override
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">public</strong> List&lt;Link&gt; getApiEntryPoints() {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      rhyme.setResponseMaxAge(Duration.ofSeconds(MAX_AGE_SECONDS));
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">return</strong> registry.getAllApiEntryPoints(resourceAdapter)
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          .map(LinkableResource::createLink)
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          .collect(Collectors.toList());
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>    }
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>    @Override
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>    <strong class="jxr_keyword">protected</strong> String getDefaultLinkTitle() {
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"A list of all HAL+JSON APIs registered on this AEM instance"</span>;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>    }
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014&#x2013;2022 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</div>

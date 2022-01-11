@@ -25,6 +25,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,7 +46,7 @@ import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
  * @see HalApiClient more details on how the client proxies work
  */
 @RestController
-<span class="fc" id="L48">class DetailedEmployeeController {</span>
+<span class="fc" id="L49">class DetailedEmployeeController {</span>
 
   /**
    * Inject the same request-scoped {@link SpringRhyme} component that is also used to render the resource.
@@ -73,10 +74,10 @@ import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
     // Create and return an implementation of the HAL API interface which defines the resource structure.
     // All methods will be automatically invoked later, when the response is being rendered
     // by the LinkableResourceMessageConverter.
-<span class="fc" id="L76">    return new DetailedEmployeeResource() {</span>
+<span class="fc" id="L77">    return new DetailedEmployeeResource() {</span>
 
       // Construct the URL to the CompanyApiController running on localhost
-<span class="fc" id="L79">      private final String entryPointUrl = linkBuilder.getLocalEntryPointUrl();</span>
+<span class="fc" id="L80">      private final String entryPointUrl = linkBuilder.getLocalEntryPointUrl();</span>
 
       /**
        * Load an employee by HTTP from localhost using a {@link HalApiClient}
@@ -85,30 +86,30 @@ import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
       private EmployeeResource getEmployee() {
 
         // Create a dynamic client proxy that can load the API's entry point (and all related resources) by HTTP.
-<span class="fc" id="L88">        CompanyApi entryPoint = rhyme.getRemoteResource(entryPointUrl, CompanyApi.class);</span>
+<span class="fc" id="L89">        CompanyApi entryPoint = rhyme.getRemoteResource(entryPointUrl, CompanyApi.class);</span>
 
         // load the entry point, expand the &quot;company:employee&quot; link template with the given ID and create a new proxy
-<span class="fc" id="L91">        return entryPoint.getEmployeeById(id);</span>
+<span class="fc" id="L92">        return entryPoint.getEmployeeById(id);</span>
       }
 
       @Override
       public Employee getState() {
         // Fetches the upstream employee resource, deserializes the state from its JSON properties, and return it as it is
-<span class="fc" id="L97">        return getEmployee().getState();</span>
+<span class="fc" id="L98">        return getEmployee().getState();</span>
       }
 
       @Override
       public String getManagerName() {
 
         // to get the manager's name, we follow the 'company:manager' link from the upstream employee resource
-<span class="fc" id="L104">        return getEmployee().getManager().getState().getName();</span>
+<span class="fc" id="L105">        return getEmployee().getManager().getState().getName();</span>
       }
 
       @Override
       public ManagerResource getManager() {
 
         // Get a resource client proxy that follows the link to the manager of the employee.
-<span class="fc" id="L111">        ManagerResource manager = getEmployee().getManager();</span>
+<span class="fc" id="L112">        ManagerResource manager = getEmployee().getManager();</span>
 
         // Even though getEmployee() (and getManager()) is called multiple times in this class,
         // it's not strictly required to store those proxy instances anywhere, as they are already cached by the Rhyme instance.
@@ -116,37 +117,47 @@ import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
         // see the performance costs of these repeated calls, and then optimize if necessary.
 
         // If we want to embed the manager resource, we need to convert it to another proxy that also implements EmbeddableResource.
-<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (linkBuilder.isUseEmbeddedResources()) {</span>
-<span class="fc" id="L120">          return ResourceConversions.asEmbeddedResourceWithoutLink(manager);</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (linkBuilder.isUseEmbeddedResources()) {</span>
+<span class="fc" id="L121">          return ResourceConversions.asEmbeddedResourceWithoutLink(manager);</span>
         }
 
         // if we return this resource proxy directly, only a link to the manager resource will be rendered
-<span class="fc" id="L124">        return manager;</span>
+<span class="fc" id="L125">        return manager;</span>
       }
 
       @Override
       public Stream&lt;EmployeeResource&gt; getColleagues() {
 
         // create a stream from the links to all employees managed by the same manager
-<span class="fc" id="L131">        Stream&lt;EmployeeResource&gt; colleagues = getEmployee().getManager().getManagedEmployees().stream()</span>
+<span class="fc" id="L132">        Stream&lt;EmployeeResource&gt; colleagues = getEmployee().getManager().getManagedEmployees().stream()</span>
             // ignore the employee for which we are just generating the detailed resource
-<span class="fc bfc" id="L133" title="All 2 branches covered.">            .filter(employee -&gt; !employee.getState().getId().equals(id));</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">            .filter(employee -&gt; !employee.getState().getId().equals(id));</span>
 
         // and again ensure that these resources are either embedded or only linked
-<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (linkBuilder.isUseEmbeddedResources()) {</span>
-<span class="fc" id="L137">          colleagues = colleagues.map(ResourceConversions::asEmbeddedResourceWithoutLink);</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        if (linkBuilder.isUseEmbeddedResources()) {</span>
+<span class="fc" id="L138">          colleagues = colleagues.map(ResourceConversions::asEmbeddedResourceWithoutLink);</span>
         }
-<span class="fc" id="L139">        return colleagues;</span>
+<span class="fc" id="L140">        return colleagues;</span>
+      }
+
+      @Override
+      public Link getHtmlProfileLink() {
+
+<span class="fc" id="L146">        String name = getEmployee().getState().getName();</span>
+
+<span class="fc" id="L148">        return new Link(&quot;https://lotr.fandom.com/wiki/&quot; + name)</span>
+<span class="fc" id="L149">            .setTitle(name + &quot;'s LOTR Wiki page&quot;)</span>
+<span class="fc" id="L150">            .setType(MediaType.TEXT_HTML_VALUE);</span>
       }
 
       @Override
       public Link createLink() {
 
         // every link to this type of resource is created here, with the help of CompanyApiLinkBuilder
-<span class="fc" id="L146">        return linkBuilder.create(linkTo(methodOn(DetailedEmployeeController.class).findById(id)))</span>
-<span class="fc" id="L147">            .withTitle(&quot;The employee with ID &quot; + id + &quot;, with embedded resources for her managers and colleagues&quot;)</span>
-<span class="fc" id="L148">            .withTemplateTitle(&quot;A link template to detailed data for a single employee by ID&quot;)</span>
-<span class="fc" id="L149">            .build();</span>
+<span class="fc" id="L157">        return linkBuilder.create(linkTo(methodOn(DetailedEmployeeController.class).findById(id)))</span>
+<span class="fc" id="L158">            .withTitle(&quot;The employee with ID &quot; + id + &quot;, with embedded resources for her managers and colleagues&quot;)</span>
+<span class="fc" id="L159">            .withTemplateTitle(&quot;A link template to detailed data for a single employee by ID&quot;)</span>
+<span class="fc" id="L160">            .build();</span>
       }
     };
   }

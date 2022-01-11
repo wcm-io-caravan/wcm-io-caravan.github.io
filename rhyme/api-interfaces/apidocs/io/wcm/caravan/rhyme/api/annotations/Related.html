@@ -104,8 +104,9 @@ public @interface <span class="memberNameLabel">Related</span></pre>
  or one of the supported reactive types (e.g. Single, Maybe, Observable).
  </p>
  <p>
- You can also represent links to other non-HAL resources (e.g. HTML, text or binary) by using <a href="../../../../../../io/wcm/caravan/rhyme/api/resources/LinkableResource.html" title="interface in io.wcm.caravan.rhyme.api.resources"><code>LinkableResource</code></a>
- as return type.
+ You can also represent links to other non-HAL resources (e.g. HTML, text or binary) by using <code>Link</code>
+ as return type. Again this can be wrapped as appropriate (e.g. a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html?is-external=true" title="class or interface in java.util.stream"><code>Stream</code></a> of <code>Link</code>s for multiple
+ external links.
  </p>
  <p>
  Methods with this annotation can have parameters with <a href="../../../../../../io/wcm/caravan/rhyme/api/annotations/TemplateVariable.html" title="annotation in io.wcm.caravan.rhyme.api.annotations"><code>TemplateVariable</code></a> or
