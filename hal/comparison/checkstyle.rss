@@ -27,7 +27,7 @@ under the License.
     <item>
       <title>File: 32,
              Errors: 0,
-             Warnings: 18,
+             Warnings: 25,
              Infos: 0
       </title>
             <link>https://caravan.wcm.io/hal/comparison//checkstyle.html</link>
@@ -458,7 +458,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  7
                 </td>
                 <td>
                   0
