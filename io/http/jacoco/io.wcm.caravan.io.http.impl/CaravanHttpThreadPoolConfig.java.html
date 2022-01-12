@@ -91,9 +91,9 @@ configurationFactory = true, policy = ConfigurationPolicy.REQUIRE)
   @Deactivate
   protected void deactivate(Map&lt;String, Object&gt; config) {
     // clear configuration by writing empty properties
-<span class="fc" id="L94">    String threadPoolName = getThreadPoolName(config);</span>
-<span class="fc" id="L95">    clearArchiausProperties(threadPoolName);</span>
-<span class="fc" id="L96">  }</span>
+<span class="nc" id="L94">    String threadPoolName = getThreadPoolName(config);</span>
+<span class="nc" id="L95">    clearArchiausProperties(threadPoolName);</span>
+<span class="nc" id="L96">  }</span>
 
   private String getThreadPoolName(Map&lt;String, Object&gt; config) {
 <span class="fc" id="L99">    return PropertiesUtil.toString(config.get(THREAD_POOL_NAME_PROPERTY), null);</span>
@@ -135,11 +135,11 @@ configurationFactory = true, policy = ConfigurationPolicy.REQUIRE)
    * @param threadPoolName Thread pool name
    */
   private void clearArchiausProperties(String threadPoolName) {
-<span class="fc" id="L138">    Configuration archaiusConfig = ArchaiusConfig.getConfiguration();</span>
-<span class="fc" id="L139">    archaiusConfig.clearProperty(HYSTRIX_THREADPOOL_PREFIX + threadPoolName + HYSTRIX_PARAM_THREADPOOL_CORESIZE);</span>
-<span class="fc" id="L140">    archaiusConfig.clearProperty(HYSTRIX_THREADPOOL_PREFIX + threadPoolName + HYSTRIX_PARAM_THREADPOOL_MAXQUEUESIZE);</span>
-<span class="fc" id="L141">    archaiusConfig.clearProperty(HYSTRIX_THREADPOOL_PREFIX + threadPoolName + HYSTRIX_PARAM_THREADPOOL_QUEUESIZEREJECTIONTHRESHOLD);</span>
-<span class="fc" id="L142">  }</span>
+<span class="nc" id="L138">    Configuration archaiusConfig = ArchaiusConfig.getConfiguration();</span>
+<span class="nc" id="L139">    archaiusConfig.clearProperty(HYSTRIX_THREADPOOL_PREFIX + threadPoolName + HYSTRIX_PARAM_THREADPOOL_CORESIZE);</span>
+<span class="nc" id="L140">    archaiusConfig.clearProperty(HYSTRIX_THREADPOOL_PREFIX + threadPoolName + HYSTRIX_PARAM_THREADPOOL_MAXQUEUESIZE);</span>
+<span class="nc" id="L141">    archaiusConfig.clearProperty(HYSTRIX_THREADPOOL_PREFIX + threadPoolName + HYSTRIX_PARAM_THREADPOOL_QUEUESIZEREJECTIONTHRESHOLD);</span>
+<span class="nc" id="L142">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
