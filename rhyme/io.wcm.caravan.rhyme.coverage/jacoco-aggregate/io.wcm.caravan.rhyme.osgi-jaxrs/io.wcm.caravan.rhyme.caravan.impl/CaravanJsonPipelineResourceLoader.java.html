@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import hu.akarnokd.rxjava3.interop.RxJavaInterop;
 import io.reactivex.rxjava3.core.Single;
@@ -44,88 +44,90 @@ import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
 
 class CaravanJsonPipelineResourceLoader implements HalResourceLoader {
 
+<span class="fc" id="L47">  private static final JsonFactory JSON_FACTORY = new JsonFactory(new ObjectMapper());</span>
+
   private final JsonPipelineFactory pipelineFactory;
   private final String serviceId;
 
-<span class="fc" id="L50">  CaravanJsonPipelineResourceLoader(JsonPipelineFactory pipelineFactory, String serviceId) {</span>
-<span class="fc" id="L51">    this.pipelineFactory = pipelineFactory;</span>
-<span class="fc" id="L52">    this.serviceId = serviceId;</span>
-<span class="fc" id="L53">  }</span>
+<span class="fc" id="L52">  CaravanJsonPipelineResourceLoader(JsonPipelineFactory pipelineFactory, String serviceId) {</span>
+<span class="fc" id="L53">    this.pipelineFactory = pipelineFactory;</span>
+<span class="fc" id="L54">    this.serviceId = serviceId;</span>
+<span class="fc" id="L55">  }</span>
 
   @Override
   public Single&lt;HalResponse&gt; getHalResource(String uri) {
 
-<span class="fc" id="L58">    CaravanHttpRequest request = createRequest(uri);</span>
+<span class="fc" id="L60">    CaravanHttpRequest request = createRequest(uri);</span>
 
-<span class="fc" id="L60">    return getPipelineOutput(request)</span>
-<span class="fc" id="L61">        .map(this::createSuccessResponse)</span>
-<span class="fc" id="L62">        .onErrorResumeNext(ex -&gt; rethrowAsHalApiClientException(ex, uri));</span>
+<span class="fc" id="L62">    return getPipelineOutput(request)</span>
+<span class="fc" id="L63">        .map(this::createSuccessResponse)</span>
+<span class="fc" id="L64">        .onErrorResumeNext(ex -&gt; rethrowAsHalApiClientException(ex, uri));</span>
   }
 
   private CaravanHttpRequest createRequest(String uri) {
 
-<span class="fc" id="L67">    CaravanHttpRequestBuilder requestBuilder = new CaravanHttpRequestBuilder(serviceId);</span>
+<span class="fc" id="L69">    CaravanHttpRequestBuilder requestBuilder = new CaravanHttpRequestBuilder(serviceId);</span>
 
-<span class="fc" id="L69">    requestBuilder.append(uri);</span>
+<span class="fc" id="L71">    requestBuilder.append(uri);</span>
 
-<span class="fc" id="L71">    return requestBuilder.build();</span>
+<span class="fc" id="L73">    return requestBuilder.build();</span>
   }
 
   private Single&lt;JsonPipelineOutput&gt; getPipelineOutput(CaravanHttpRequest request) {
 
-<span class="fc" id="L76">    JsonPipeline pipeline = pipelineFactory.create(request)</span>
-<span class="fc" id="L77">        .addCachePoint(CacheStrategies.timeToIdle(60, TimeUnit.SECONDS));</span>
+<span class="fc" id="L78">    JsonPipeline pipeline = pipelineFactory.create(request)</span>
+<span class="fc" id="L79">        .addCachePoint(CacheStrategies.timeToIdle(60, TimeUnit.SECONDS));</span>
 
-<span class="fc" id="L79">    return RxJavaInterop.toV3Single(pipeline.getOutput().toSingle());</span>
+<span class="fc" id="L81">    return RxJavaInterop.toV3Single(pipeline.getOutput().toSingle());</span>
   }
 
   private HalResponse createSuccessResponse(JsonPipelineOutput pipelineOutput) {
 
-<span class="fc" id="L84">    return new HalResponse()</span>
-<span class="fc" id="L85">        .withUri(pipelineOutput.getRequests().get(0).getUrl())</span>
-<span class="fc" id="L86">        .withStatus(pipelineOutput.getStatusCode())</span>
-<span class="fc" id="L87">        .withBody(pipelineOutput.getPayload())</span>
-<span class="fc" id="L88">        .withMaxAge(pipelineOutput.getMaxAge());</span>
+<span class="fc" id="L86">    return new HalResponse()</span>
+<span class="fc" id="L87">        .withUri(pipelineOutput.getRequests().get(0).getUrl())</span>
+<span class="fc" id="L88">        .withStatus(pipelineOutput.getStatusCode())</span>
+<span class="fc" id="L89">        .withBody(pipelineOutput.getPayload())</span>
+<span class="fc" id="L90">        .withMaxAge(pipelineOutput.getMaxAge());</span>
   }
 
   private SingleSource&lt;HalResponse&gt; rethrowAsHalApiClientException(Throwable ex, String uri) {
-<span class="fc bfc" id="L92" title="All 2 branches covered.">    if (!(ex instanceof JsonPipelineInputException)) {</span>
-<span class="fc" id="L93">      String message = &quot;HTTP request for &quot; + uri + &quot; has failed before a status code was available&quot;;</span>
-<span class="fc" id="L94">      return Single.error(new HalApiClientException(message, null, uri, ex));</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">    if (!(ex instanceof JsonPipelineInputException)) {</span>
+<span class="fc" id="L95">      String message = &quot;HTTP request for &quot; + uri + &quot; has failed before a status code was available&quot;;</span>
+<span class="fc" id="L96">      return Single.error(new HalApiClientException(message, null, uri, ex));</span>
     }
 
-<span class="fc" id="L97">    JsonPipelineInputException jpie = (JsonPipelineInputException)ex;</span>
-
-<span class="fc" id="L99">    JsonNode responseNode = tryToReadResponseBodyFromException(jpie);</span>
+<span class="fc" id="L99">    JsonPipelineInputException jpie = (JsonPipelineInputException)ex;</span>
 
 <span class="fc" id="L101">    HalResponse errorResponse = new HalResponse()</span>
 <span class="fc" id="L102">        .withUri(uri)</span>
-<span class="fc" id="L103">        .withStatus(jpie.getStatusCode())</span>
-<span class="fc" id="L104">        .withBody(responseNode);</span>
+<span class="fc" id="L103">        .withStatus(jpie.getStatusCode());</span>
 
-<span class="fc" id="L106">    return Single.error(new HalApiClientException(errorResponse, ex));</span>
+<span class="fc" id="L105">    JsonNode responseNode = tryToReadResponseBodyFromException(jpie);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">    if (responseNode != null) {</span>
+<span class="fc" id="L107">      errorResponse = errorResponse.withBody(responseNode);</span>
+    }
+
+<span class="fc" id="L110">    return Single.error(new HalApiClientException(errorResponse, ex));</span>
   }
 
   private JsonNode tryToReadResponseBodyFromException(JsonPipelineInputException jpie) {
 
-<span class="fc" id="L111">    JsonNode responseNode = JsonNodeFactory.instance.objectNode();</span>
-
-<span class="fc" id="L113">    Throwable cause = jpie.getCause();</span>
-<span class="fc bfc" id="L114" title="All 2 branches covered.">    if (cause instanceof IllegalResponseRuntimeException) {</span>
-<span class="fc" id="L115">      IllegalResponseRuntimeException irre = ((IllegalResponseRuntimeException)cause);</span>
-<span class="fc" id="L116">      String responseBody = irre.getResponseBody();</span>
-<span class="fc bfc" id="L117" title="All 2 branches covered.">      if (responseBody != null) {</span>
+<span class="fc" id="L115">    Throwable cause = jpie.getCause();</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">    if (cause instanceof IllegalResponseRuntimeException) {</span>
+<span class="fc" id="L117">      IllegalResponseRuntimeException irre = ((IllegalResponseRuntimeException)cause);</span>
+<span class="fc" id="L118">      String responseBody = irre.getResponseBody();</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">      if (responseBody != null) {</span>
         try {
-<span class="fc" id="L119">          responseNode = new JsonFactory(new ObjectMapper()).createParser(responseBody).readValueAs(JsonNode.class);</span>
+<span class="fc" id="L121">          return JSON_FACTORY.createParser(responseBody).readValueAs(ObjectNode.class);</span>
         }
         // CHECKSTYLE:OFF - we really want to just try to parse the response body as JSON if possible
-<span class="fc" id="L122">        catch (Exception ex) {</span>
+<span class="fc" id="L124">        catch (Exception ex) {</span>
           // CHECKSTYLE:ON - it's absolutely no deal if this doesn't work for whatever reason
-<span class="fc" id="L124">        }</span>
+        }
       }
     }
 
-<span class="fc" id="L128">    return responseNode;</span>
+<span class="fc" id="L130">    return null;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
