@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,42 +56,41 @@ import io.wcm.caravan.rhyme.api.spi.HttpClientSupport;
  */
 public class HttpHalResourceLoader implements HalResourceLoader {
 
-<span class="fc" id="L58">  private static final Logger log = LoggerFactory.getLogger(HttpHalResourceLoader.class);</span>
+<span class="fc" id="L59">  private static final Logger log = LoggerFactory.getLogger(HttpHalResourceLoader.class);</span>
 
-<span class="fc" id="L60">  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();</span>
-<span class="fc" id="L61">  private static final JsonFactory JSON_FACTORY = new JsonFactory(OBJECT_MAPPER);</span>
+<span class="fc" id="L61">  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();</span>
+<span class="fc" id="L62">  private static final JsonFactory JSON_FACTORY = new JsonFactory(OBJECT_MAPPER);</span>
 
   private final HttpClientSupport client;
 
-<span class="fc" id="L65">  private HttpHalResourceLoader(HttpClientSupport client) {</span>
-<span class="fc" id="L66">    this.client = client;</span>
-<span class="fc" id="L67">  }</span>
+<span class="fc" id="L66">  private HttpHalResourceLoader(HttpClientSupport client) {</span>
+<span class="fc" id="L67">    this.client = client;</span>
+<span class="fc" id="L68">  }</span>
 
   public static HttpHalResourceLoader withClientImplementation(HttpClientSupport client) {
 
-<span class="fc" id="L71">    return new HttpHalResourceLoader(client);</span>
+<span class="fc" id="L72">    return new HttpHalResourceLoader(client);</span>
   }
 
   @Override
   public Single&lt;HalResponse&gt; getHalResource(String uri) {
 
-<span class="fc" id="L77">    return Single.create(subscriber -&gt; {</span>
+<span class="fc" id="L78">    return Single.create(subscriber -&gt; {</span>
 
-<span class="fc" id="L79">      HttpClientCallbackImpl callback = new HttpClientCallbackImpl(uri, subscriber);</span>
+<span class="fc" id="L80">      HttpClientCallbackImpl callback = new HttpClientCallbackImpl(uri, subscriber);</span>
 
-<span class="fc" id="L81">      callback.executeRequestAndWaitForCallbacks();</span>
-<span class="fc" id="L82">    });</span>
+<span class="fc" id="L82">      callback.executeRequestAndWaitForCallbacks();</span>
+<span class="fc" id="L83">    });</span>
   }
 
   private class HttpClientCallbackImpl implements HttpClientCallback {
 
-<span class="fc" id="L87">    private final Stopwatch stopwatch = Stopwatch.createStarted();</span>
+<span class="fc" id="L88">    private final Stopwatch stopwatch = Stopwatch.createStarted();</span>
 
     private final SingleEmitter&lt;HalResponse&gt; subscriber;
-<span class="fc" id="L90">    private final AtomicBoolean responseOrErrorWasEmitted = new AtomicBoolean();</span>
+<span class="fc" id="L91">    private final AtomicBoolean responseOrErrorWasEmitted = new AtomicBoolean();</span>
 
     private final String originalUri;
-    private volatile URI actualUri;
 
     private volatile HttpHeadersParser parsedHeaders;
 
@@ -105,7 +105,7 @@ public class HttpHalResourceLoader implements HalResourceLoader {
       try {
 <span class="fc" id="L106">        updateUri(originalUri);</span>
 
-<span class="fc" id="L108">        actualUri = URI.create(originalUri);</span>
+<span class="fc" id="L108">        URI actualUri = URI.create(originalUri);</span>
 
 <span class="fc" id="L110">        client.executeGetRequest(actualUri, this);</span>
       }
@@ -138,7 +138,7 @@ public class HttpHalResourceLoader implements HalResourceLoader {
     private void emitHalResponse() {
 
 <span class="fc bfc" id="L140" title="All 2 branches covered.">      if (responseOrErrorWasEmitted.compareAndSet(false, true)) {</span>
-<span class="fc" id="L141">        log.debug(&quot;HTTP response from {} was retrieved in {}&quot;, actualUri, stopwatch);</span>
+<span class="fc" id="L141">        log.debug(&quot;HTTP response from {} was retrieved in {}&quot;, halResponse.getUri(), stopwatch);</span>
 
 <span class="fc" id="L143">        subscriber.onSuccess(halResponse);</span>
       }
@@ -165,97 +165,95 @@ public class HttpHalResourceLoader implements HalResourceLoader {
     @Override
     public void onUrlModified(URI uri) {
 
-<span class="fc" id="L168">      actualUri = uri;</span>
-
-<span class="fc" id="L170">      updateUri(uri.toString());</span>
-<span class="fc" id="L171">    }</span>
+<span class="fc" id="L168">      updateUri(uri.toString());</span>
+<span class="fc" id="L169">    }</span>
 
     @Override
     public void onHeadersAvailable(int statusCode, Map&lt;String, ? extends Collection&lt;String&gt;&gt; headers) {
 
       // HttpURLConnection will sometimes return statusCode -1 for failed requests, which we don't want to forward
-<span class="pc bpc" id="L177" title="1 of 2 branches missed.">      updateStatusCode(statusCode &gt; 0 ? statusCode : null);</span>
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">      updateStatusCode(statusCode &gt; 0 ? statusCode : null);</span>
 
-<span class="fc" id="L179">      parsedHeaders = new HttpHeadersParser(headers);</span>
+<span class="fc" id="L177">      parsedHeaders = new HttpHeadersParser(headers);</span>
 
-<span class="fc" id="L181">      parsedHeaders.getContentType()</span>
-<span class="fc" id="L182">          .ifPresent(this::updateContentType);</span>
+<span class="fc" id="L179">      parsedHeaders.getContentType()</span>
+<span class="fc" id="L180">          .ifPresent(this::updateContentType);</span>
 
-<span class="fc" id="L184">      parsedHeaders.getMaxAge()</span>
-<span class="fc" id="L185">          .ifPresent(this::updateMaxAge);</span>
-<span class="fc" id="L186">    }</span>
+<span class="fc" id="L182">      parsedHeaders.getMaxAge()</span>
+<span class="fc" id="L183">          .ifPresent(this::updateMaxAge);</span>
+<span class="fc" id="L184">    }</span>
 
     @Override
     public void onBodyAvailable(InputStream is) {
 
-<span class="fc bfc" id="L191" title="All 2 branches covered.">      if (parsedHeaders == null) {</span>
-<span class="fc" id="L192">        throw new HalApiDeveloperException(&quot;onHeadersAvailable() should be called before onBodyAvailable()&quot;);</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">      if (parsedHeaders == null) {</span>
+<span class="fc" id="L190">        throw new HalApiDeveloperException(&quot;onHeadersAvailable() should be called before onBodyAvailable()&quot;);</span>
       }
 
-<span class="fc" id="L195">      Integer status = halResponse.getStatus();</span>
-<span class="fc" id="L196">      String msgPrefix = &quot;An HTTP response with status code &quot; + status + &quot; was retrieved, &quot;;</span>
-<span class="pc bpc" id="L197" title="2 of 4 branches missed.">      boolean statusIsOk = status != null &amp;&amp; status == 200;</span>
+<span class="fc" id="L193">      Integer status = halResponse.getStatus();</span>
+<span class="fc" id="L194">      String msgPrefix = &quot;An HTTP response with status code &quot; + status + &quot; was retrieved, &quot;;</span>
+<span class="pc bpc" id="L195" title="2 of 4 branches missed.">      boolean statusIsOk = status != null &amp;&amp; status == 200;</span>
 
       try {
         // we try to parse the JSON and include it in the HalResponse even when the request failed
-<span class="fc" id="L201">        JsonNode parsedJson = parseJson(is);</span>
+<span class="fc" id="L199">        JsonNode parsedJson = parseJson(is);</span>
 
-<span class="fc" id="L203">        updateBody(parsedJson);</span>
+<span class="fc" id="L201">        updateBody(parsedJson);</span>
 
-<span class="pc bpc" id="L205" title="1 of 2 branches missed.">        if (statusIsOk) {</span>
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">        if (statusIsOk) {</span>
           // this is the only case where the response was successfully retrieved and parsed
-<span class="fc" id="L207">          emitHalResponse();</span>
+<span class="fc" id="L205">          emitHalResponse();</span>
         }
         else {
           // the response code indicates that the request was *not* successful even through the response could be parsed
           String msg;
-<span class="nc bnc" id="L212" title="All 2 branches missed.">          if (StringUtils.equals(halResponse.getContentType(), VndErrorResponseRenderer.CONTENT_TYPE)) {</span>
-<span class="nc" id="L213">            msg = msgPrefix + &quot;which contains a vnd.error body with server-side error details&quot;;</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">          if (StringUtils.equals(halResponse.getContentType(), VndErrorResponseRenderer.CONTENT_TYPE)) {</span>
+<span class="nc" id="L211">            msg = msgPrefix + &quot;which contains a vnd.error body with server-side error details&quot;;</span>
           }
           else {
-<span class="nc" id="L216">            msg = msgPrefix + &quot;and a JSON body that may contain further information is present&quot;;</span>
+<span class="nc" id="L214">            msg = msgPrefix + &quot;and a JSON body that may contain further information is present&quot;;</span>
           }
-<span class="nc" id="L218">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
+<span class="nc" id="L216">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
         }
       }
-<span class="fc" id="L221">      catch (RuntimeException ex) {</span>
-<span class="pc bpc" id="L222" title="1 of 2 branches missed.">        if (statusIsOk) {</span>
-<span class="fc" id="L223">          String msg = msgPrefix + &quot;but the body could not be successfully read and parsed as a JSON document&quot;;</span>
+<span class="fc" id="L219">      catch (RuntimeException ex) {</span>
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">        if (statusIsOk) {</span>
+<span class="fc" id="L221">          String msg = msgPrefix + &quot;but the body could not be successfully read and parsed as a JSON document&quot;;</span>
 
-<span class="fc" id="L225">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg, ex));</span>
-<span class="fc" id="L226">        }</span>
+<span class="fc" id="L223">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg, ex));</span>
+<span class="fc" id="L224">        }</span>
         else {
           // if JSON parsing failed for a non-ok response, we don't include that exception as a root cause,
           // as we cannot expected the body to be JSON all the time, and don't want confusing information
           // in the stack trace
-<span class="nc" id="L231">          String msg = msgPrefix + &quot;and no JSON body with further information was found&quot;;</span>
-<span class="nc" id="L232">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
+<span class="nc" id="L229">          String msg = msgPrefix + &quot;and no JSON body with further information was found&quot;;</span>
+<span class="nc" id="L230">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
         }
-<span class="fc" id="L234">      }</span>
-<span class="fc" id="L235">    }</span>
+<span class="fc" id="L232">      }</span>
+<span class="fc" id="L233">    }</span>
 
     @Override
     public void onExceptionCaught(Throwable ex) {
 
-<span class="fc" id="L240">      emitHalApiClientExceptionWithCause(ex);</span>
-<span class="fc" id="L241">    }</span>
+<span class="fc" id="L238">      emitHalApiClientExceptionWithCause(ex);</span>
+<span class="fc" id="L239">    }</span>
 
   }
 
   private static JsonNode parseJson(InputStream is) {
 
-<span class="fc" id="L247">    try (InputStream autoClosingStream = is) {</span>
-<span class="fc" id="L248">      JsonNode jsonNode = JSON_FACTORY.createParser(autoClosingStream).readValueAsTree();</span>
-<span class="fc bfc" id="L249" title="All 2 branches covered.">      if (jsonNode == null) {</span>
-<span class="fc" id="L250">        throw new HttpClientSupportException(&quot;The response body was completely empty (or consisted only of whitespace)&quot;);</span>
+<span class="fc" id="L245">    try (InputStream autoClosingStream = is; JsonParser parser = JSON_FACTORY.createParser(autoClosingStream)) {</span>
+<span class="fc" id="L246">      JsonNode jsonNode = parser.readValueAsTree();</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">      if (jsonNode == null) {</span>
+<span class="fc" id="L248">        throw new HttpClientSupportException(&quot;The response body was completely empty (or consisted only of whitespace)&quot;);</span>
       }
-<span class="fc" id="L252">      return jsonNode;</span>
+<span class="fc" id="L250">      return jsonNode;</span>
     }
-<span class="fc" id="L254">    catch (JsonProcessingException ex) {</span>
-<span class="fc" id="L255">      throw new HttpClientSupportException(&quot;The response body was read completely, but it's not valid JSON.&quot;, ex);</span>
+<span class="fc" id="L252">    catch (JsonProcessingException ex) {</span>
+<span class="fc" id="L253">      throw new HttpClientSupportException(&quot;The response body was read completely, but it's not valid JSON.&quot;, ex);</span>
     }
-<span class="fc" id="L257">    catch (IOException ex) {</span>
-<span class="fc" id="L258">      throw new HttpClientSupportException(&quot;The response body could not be read completely from the input stream&quot;, ex);</span>
+<span class="fc" id="L255">    catch (IOException ex) {</span>
+<span class="fc" id="L256">      throw new HttpClientSupportException(&quot;The response body could not be read completely from the input stream&quot;, ex);</span>
     }
   }
 
@@ -264,16 +262,16 @@ public class HttpHalResourceLoader implements HalResourceLoader {
     private static final long serialVersionUID = -1086569417284265963L;
 
     HttpClientSupportException(String msg) {
-<span class="fc" id="L267">      super(msg);</span>
-<span class="fc" id="L268">    }</span>
+<span class="fc" id="L265">      super(msg);</span>
+<span class="fc" id="L266">    }</span>
 
     HttpClientSupportException(String msg, Throwable cause) {
-<span class="fc" id="L271">      super(msg, cause);</span>
-<span class="fc" id="L272">    }</span>
+<span class="fc" id="L269">      super(msg, cause);</span>
+<span class="fc" id="L270">    }</span>
   }
 
   public HttpClientSupport getClient() {
-<span class="fc" id="L276">    return client;</span>
+<span class="fc" id="L274">    return client;</span>
   }
 
 }

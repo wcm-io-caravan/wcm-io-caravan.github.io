@@ -134,7 +134,7 @@
   <tbody> 
    <tr class="b"> 
     <td>35</td> 
-    <td>2</td> 
+    <td>3</td> 
     <td>0</td> 
     <td>6</td> 
    </tr> 
@@ -152,21 +152,25 @@
   </thead> 
   <tbody> 
    <tr class="b"> 
-    <td><a href="#io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport">io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport</a></td> 
+    <td><a href="#io.wcm.caravan.rhyme.caravan.impl.CaravanJsonPipelineResourceLoader">io.wcm.caravan.rhyme.caravan.impl.CaravanJsonPipelineResourceLoader</a></td> 
     <td>1</td> 
    </tr> 
    <tr class="a"> 
+    <td><a href="#io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport">io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport</a></td> 
+    <td>1</td> 
+   </tr> 
+   <tr class="b"> 
     <td><a href="#io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsOsgiBundleSupport">io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsOsgiBundleSupport</a></td> 
     <td>1</td> 
    </tr> 
   </tbody> 
  </table> 
-</section><a name="io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport"></a> 
+</section><a name="io.wcm.caravan.rhyme.caravan.impl.CaravanJsonPipelineResourceLoader"></a> 
 <section> 
- <h3 id="io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport">io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport</h3> 
+ <h3 id="io.wcm.caravan.rhyme.caravan.impl.CaravanJsonPipelineResourceLoader">io.wcm.caravan.rhyme.caravan.impl.CaravanJsonPipelineResourceLoader</h3> 
  <table border="0" class="bodyTable table table-striped table-hover"> 
   <thead> 
-   <tr class="b"> 
+   <tr class="a"> 
     <th>Bug</th> 
     <th>Category</th> 
     <th>Details</th> 
@@ -175,7 +179,30 @@
    </tr> 
   </thead> 
   <tbody> 
+   <tr class="b"> 
+    <td>Exception is caught when Exception is not thrown in io.wcm.caravan.rhyme.caravan.impl.CaravanJsonPipelineResourceLoader.tryToReadResponseBodyFromException(JsonPipelineInputException)</td> 
+    <td>STYLE</td> 
+    <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#REC_CATCH_EXCEPTION">REC_CATCH_EXCEPTION</a></td> 
+    <td><a href="./xref/io/wcm/caravan/rhyme/caravan/impl/CaravanJsonPipelineResourceLoader.html#L125">125</a></td> 
+    <td>Medium</td> 
+   </tr> 
+  </tbody> 
+ </table> 
+</section><a name="io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport"></a> 
+<section> 
+ <h3 id="io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport">io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport</h3> 
+ <table border="0" class="bodyTable table table-striped table-hover"> 
+  <thead> 
    <tr class="a"> 
+    <th>Bug</th> 
+    <th>Category</th> 
+    <th>Details</th> 
+    <th>Line</th> 
+    <th>Priority</th> 
+   </tr> 
+  </thead> 
+  <tbody> 
+   <tr class="b"> 
     <td>Return value of io.reactivex.rxjava3.core.Single.subscribe(Consumer, Consumer) ignored in io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport.executeGetRequest(URI, HttpClientCallback)</td> 
     <td>CORRECTNESS</td> 
     <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#RV_RETURN_VALUE_IGNORED">RV_RETURN_VALUE_IGNORED</a></td> 
@@ -189,7 +216,7 @@
  <h3 id="io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsOsgiBundleSupport">io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsOsgiBundleSupport</h3> 
  <table border="0" class="bodyTable table table-striped table-hover"> 
   <thead> 
-   <tr class="b"> 
+   <tr class="a"> 
     <th>Bug</th> 
     <th>Category</th> 
     <th>Details</th> 
@@ -198,7 +225,7 @@
    </tr> 
   </thead> 
   <tbody> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td>This web server request could be used by an attacker to expose internal services and filesystem.</td> 
     <td>SECURITY</td> 
     <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#URLCONNECTION_SSRF_FD">URLCONNECTION_SSRF_FD</a></td> 
@@ -219,6 +246,7 @@
     <li><a href="#Summary" title="Summary">Summary</a>
     <li class="dropdown"><a href="#Files" title="Files">Files <b class="caret"></b></a>
       <ul class="nav nav-list">
+    <li><a href="#io.wcm.caravan.rhyme.caravan.impl.CaravanJsonPipelineResourceLoader" title="io.wcm.caravan.rhyme.caravan.impl.CaravanJsonPipelineResourceLoader">io.wcm.caravan.rhyme.caravan.impl.CaravanJsonPipelineResourceLoader</a>
     <li><a href="#io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport" title="io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport">io.wcm.caravan.rhyme.caravan.impl.CaravanResilientHttpSupport</a>
     <li><a href="#io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsOsgiBundleSupport" title="io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsOsgiBundleSupport">io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsOsgiBundleSupport</a>
         <li class="divider"></li>

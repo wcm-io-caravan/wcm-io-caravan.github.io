@@ -68,10 +68,9 @@ import io.wcm.caravan.hal.resource.HalResource;
   public void writeTo(HalResource t, Class&lt;?&gt; type, Type genericType, Annotation[] annotations, MediaType mediaType,
       MultivaluedMap&lt;String, Object&gt; httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
 
-<span class="fc" id="L71">    JsonGenerator generator = jsonFactory.createGenerator(entityStream);</span>
-
-<span class="fc" id="L73">    generator.writeTree(t.getModel());</span>
+<span class="fc" id="L71">    try (JsonGenerator generator = jsonFactory.createGenerator(entityStream)) {</span>
+<span class="fc" id="L72">      generator.writeTree(t.getModel());</span>
+    }
 <span class="fc" id="L74">  }</span>
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

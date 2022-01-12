@@ -72,10 +72,10 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api,RhymeBu
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.exceptions,HalApiServerException,0,17,0,0,0,6,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.exceptions,HalApiDeveloperException,0,9,0,0,0,4,0,2,0,2
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.exceptions,HalApiClientException,0,100,0,4,0,22,0,10,0,8
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader,0,77,0,2,0,21,0,8,0,7
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.http,HttpHeadersParser,0,85,0,6,0,23,0,12,0,9
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader,0,81,0,2,0,21,0,8,0,7
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.http,HttpHeadersParser,11,93,0,6,0,29,2,12,2,9
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.http,HttpUrlConnectionSupport,0,36,0,2,0,12,0,3,0,2
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader.HttpClientCallbackImpl,0,304,0,18,0,70,0,22,0,13
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader.HttpClientCallbackImpl,62,238,7,11,10,59,8,14,2,11
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader.HttpClientSupportException,0,9,0,0,0,4,0,2,0,2
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl.adaptation,TemplateProxyPostAdaptationStage,0,122,0,2,0,32,0,13,0,12
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingModelPostAdaptationStage,0,202,0,6,0,42,0,24,0,21
@@ -103,7 +103,7 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.impl.lin
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.aem,io.wcm.caravan.rhyme.aem.api.linkbuilder,LinkProperties,0,24,0,0,0,10,0,7,0,7
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerProxyLinkBuilder.MethodDetails.QueryParamFinder,0,54,0,2,0,10,0,4,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsAsyncHalResponseHandlerImpl.JaxRsExceptionStrategy,0,11,0,2,0,3,0,2,0,1
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.jaxrs.impl,HalResourceMessageBodyWriter,0,31,0,0,0,8,0,4,0,4
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.jaxrs.impl,HalResourceMessageBodyWriter,0,33,0,0,0,8,0,4,0,4
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerProxyLinkBuilder.TemplateParameter,0,32,0,4,0,7,0,4,0,2
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsAsyncHalResponseHandlerImpl,0,167,0,4,0,46,0,11,0,9
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerProxyLinkBuilder.MethodDetails.AnnotatedParamFinder,0,54,0,4,0,11,0,6,0,4
@@ -122,7 +122,7 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.carav
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.caravan.impl,CaravanHalApiClientImpl.JsonPipelineCacheLoader,0,14,0,0,0,2,0,2,0,2
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.caravan.impl,CaravanResilientHttpSupport,0,103,0,2,0,29,0,9,0,8
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.caravan.impl,CaravanRhymeRequestCycleImpl,0,42,0,0,0,10,0,3,0,3
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.caravan.impl,CaravanJsonPipelineResourceLoader,0,163,0,8,0,39,0,13,0,9
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.caravan.impl,CaravanJsonPipelineResourceLoader,0,169,0,8,0,40,0,13,0,9
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.caravan.impl,CaravanHalApiClientImpl.GuavaCacheLoader,0,23,0,0,0,6,0,2,0,2
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.caravan.impl,CaravanHalApiClientImpl,0,88,0,2,0,19,0,7,0,6
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.jaxrs.api,JaxRsLinkBuilder,0,6,0,0,0,1,0,1,0,1
