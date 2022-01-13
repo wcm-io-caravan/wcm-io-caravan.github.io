@@ -486,10 +486,10 @@
 <a class="jxr_linenumber" name="L478" href="#L478">478</a>     HalApiClientException ex = loadResourceAndExpectClientException();
 <a class="jxr_linenumber" name="L479" href="#L479">479</a> 
 <a class="jxr_linenumber" name="L480" href="#L480">480</a>     <em class="jxr_comment">// the behaviour for this edge cases varies between implementations:</em>
-<a class="jxr_linenumber" name="L481" href="#L481">481</a>     <em class="jxr_comment">// sometimes the response code is sucessfully extracted, sometimes not.</em>
-<a class="jxr_linenumber" name="L482" href="#L482">482</a>     <em class="jxr_comment">// the only thing they have in common is that at some point, an IOException is caught</em>
-<a class="jxr_linenumber" name="L483" href="#L483">483</a>     assertThat(ex)
-<a class="jxr_linenumber" name="L484" href="#L484">484</a>         .hasRootCauseInstanceOf(IOException.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>     <em class="jxr_comment">// sometimes the response code is successfully extracted, sometimes not.</em>
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>     <em class="jxr_comment">// the only thing they have in common is that at some point, an Exception is caught</em>
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>     assertThat(ex.getCause())
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>         .isNotNull();
 <a class="jxr_linenumber" name="L485" href="#L485">485</a>   }
 <a class="jxr_linenumber" name="L486" href="#L486">486</a> 
 <a class="jxr_linenumber" name="L487" href="#L487">487</a>   @Test
