@@ -60,20 +60,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpHelper.java">io/wcm/caravan/io/http/impl/CaravanHttpHelper.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.servletclient.HttpServletRequestMapper.java">io/wcm/caravan/io/http/impl/servletclient/HttpServletRequestMapper.java</a>
                 </td>
                 <td>
@@ -81,6 +67,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpHelper.java">io/wcm/caravan/io/http/impl/CaravanHttpHelper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -214,7 +214,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.package-info.java">io/wcm/caravan/io/http/package-info.java</a>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.servletclient.HttpServletResponseMapper.java">io/wcm/caravan/io/http/impl/servletclient/HttpServletResponseMapper.java</a>
                 </td>
                 <td>
                   0
@@ -228,7 +228,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.servletclient.HttpServletResponseMapper.java">io/wcm/caravan/io/http/impl/servletclient/HttpServletResponseMapper.java</a>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.package-info.java">io/wcm/caravan/io/http/package-info.java</a>
                 </td>
                 <td>
                   0
@@ -284,20 +284,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.RequestUtil.java">io/wcm/caravan/io/http/impl/RequestUtil.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpServiceConfigValidator.java">io/wcm/caravan/io/http/impl/CaravanHttpServiceConfigValidator.java</a>
                 </td>
                 <td>
@@ -305,6 +291,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.RequestUtil.java">io/wcm/caravan/io/http/impl/RequestUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -340,7 +340,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.Body.java">io/wcm/caravan/io/http/response/Body.java</a>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.CaravanHttpResponse.java">io/wcm/caravan/io/http/response/CaravanHttpResponse.java</a>
                 </td>
                 <td>
                   0
@@ -354,7 +354,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.CaravanHttpResponse.java">io/wcm/caravan/io/http/response/CaravanHttpResponse.java</a>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.Body.java">io/wcm/caravan/io/http/response/Body.java</a>
                 </td>
                 <td>
                   0
@@ -410,20 +410,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.InputStreamBody.java">io/wcm/caravan/io/http/response/InputStreamBody.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.BundleActivator.java">io/wcm/caravan/io/http/impl/BundleActivator.java</a>
                 </td>
                 <td>
@@ -439,6 +425,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpClientConfig.java">io/wcm/caravan/io/http/impl/CaravanHttpClientConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.InputStreamBody.java">io/wcm/caravan/io/http/response/InputStreamBody.java</a>
                 </td>
                 <td>
                   0
