@@ -214,20 +214,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.CacheStrategy.java">io/wcm/caravan/pipeline/cache/CacheStrategy.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineOutputException.java">io/wcm/caravan/pipeline/JsonPipelineOutputException.java</a>
                 </td>
                 <td>
@@ -256,7 +242,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineAction.java">io/wcm/caravan/pipeline/JsonPipelineAction.java</a>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.CacheStrategy.java">io/wcm/caravan/pipeline/cache/CacheStrategy.java</a>
                 </td>
                 <td>
                   0
@@ -271,6 +257,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.spi.package-info.java">io/wcm/caravan/pipeline/cache/spi/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineAction.java">io/wcm/caravan/pipeline/JsonPipelineAction.java</a>
                 </td>
                 <td>
                   0
