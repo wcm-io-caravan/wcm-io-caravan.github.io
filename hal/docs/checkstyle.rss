@@ -46,20 +46,6 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.reader.ServiceModelReader.java">io/wcm/caravan/hal/docs/impl/reader/ServiceModelReader.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.TemplateRenderer.java">io/wcm/caravan/hal/docs/impl/TemplateRenderer.java</a>
                 </td>
                 <td>
@@ -67,6 +53,20 @@ under the License.
                 </td>
                 <td>
                   2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.reader.ServiceModelReader.java">io/wcm/caravan/hal/docs/impl/reader/ServiceModelReader.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -172,20 +172,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.HalDocsBundleTracker.java">io/wcm/caravan/hal/docs/impl/HalDocsBundleTracker.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.HalDocsServlet.java">io/wcm/caravan/hal/docs/impl/HalDocsServlet.java</a>
                 </td>
                 <td>
@@ -193,6 +179,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.HalDocsBundleTracker.java">io/wcm/caravan/hal/docs/impl/HalDocsBundleTracker.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -298,7 +298,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.package-info.java">io/wcm/caravan/hal/docs/package-info.java</a>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.HttpContextWrapper.java">io/wcm/caravan/hal/docs/impl/HttpContextWrapper.java</a>
                 </td>
                 <td>
                   0
@@ -312,7 +312,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.impl.HttpContextWrapper.java">io/wcm/caravan/hal/docs/impl/HttpContextWrapper.java</a>
+                  <a href="https://caravan.wcm.io/hal/docs//checkstyle.html#io.wcm.caravan.hal.docs.package-info.java">io/wcm/caravan/hal/docs/package-info.java</a>
                 </td>
                 <td>
                   0
