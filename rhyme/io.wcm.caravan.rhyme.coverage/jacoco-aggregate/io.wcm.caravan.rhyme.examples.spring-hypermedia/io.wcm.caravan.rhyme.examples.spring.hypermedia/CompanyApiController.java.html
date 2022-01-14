@@ -116,8 +116,8 @@ import io.wcm.caravan.rhyme.api.client.HalApiClient;
   @Override
   public CompanyApi withClientPreferences(Boolean useEmbeddedResources, Boolean useFingerprinting, Boolean embedRhymeMetadata) {
 
-    // create a link to this controller, but explicitly add template variables for parameters
-    // that will then be picked up by CompanyApiLinkBuilder when the link is followed
+    // create a link to this controller, but explicitly add template variables for the preference parameters,
+    // which will be read by the CompanyApiLinkBuilder when a request using these parameters is processed
 <span class="fc" id="L121">    return linkBuilder.create(linkTo(methodOn(CompanyApiController.class).get()))</span>
 <span class="fc" id="L122">        .withTemplateVariables(USE_EMBEDDED_RESOURCES, USE_FINGERPRINTING, EMBED_RHYME_METADATA)</span>
 <span class="fc" id="L123">        .withTitle(&quot;Reload the entry point with different settings&quot;)</span>
