@@ -159,5 +159,5 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.car
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,EmployeeController.EmployeeResourceImpl,0,86,0,0,0,19,0,8,0,8
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,ManagerController.new ManagerCollectionResource() {...},0,47,0,0,0,7,0,6,0,6
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,DetailedEmployeeController,0,9,0,0,0,2,0,2,0,2
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,CompanyApiLinkBuilder,0,110,0,8,0,28,0,10,0,6
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,CompanyApiLinkBuilder,0,107,0,8,0,27,0,10,0,6
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,ManagerController.ManagerResourceImpl,0,82,0,0,0,19,0,8,0,8

@@ -70,10 +70,10 @@ class CompanyApiLinkBuilder {
 
   private final UrlFingerprinting fingerprinting;
 
-<span class="fc" id="L73">  private boolean hasClientPreferences = false;</span>
+  private final Boolean useEmbeddedResources;
+  private final Boolean useFingerprinting;
 
-  private Boolean useEmbeddedResources;
-  private Boolean useFingerprinting;
+  private boolean hasClientPreferences;
 
   CompanyApiLinkBuilder(@Autowired SpringRhyme rhyme, @Autowired RepositoryModificationListener repositoryListener,
 <span class="fc" id="L79">      @Autowired HttpServletRequest request) {</span>
@@ -83,8 +83,8 @@ class CompanyApiLinkBuilder {
 <span class="fc" id="L83">        .withConditionalMaxAge(Duration.ofSeconds(10), Duration.ofDays(100))</span>
 <span class="fc" id="L84">        .withTimestampParameter(TIMESTAMP_QUERY_PARAM, repositoryListener::getLastModified);</span>
 
-<span class="fc" id="L86">    useEmbeddedResources = keepIncomingRequestParameter(request, USE_EMBEDDED_RESOURCES);</span>
-<span class="fc" id="L87">    useFingerprinting = keepIncomingRequestParameter(request, USE_FINGERPRINTING);</span>
+<span class="fc" id="L86">    this.useEmbeddedResources = keepIncomingRequestParameter(request, USE_EMBEDDED_RESOURCES);</span>
+<span class="fc" id="L87">    this.useFingerprinting = keepIncomingRequestParameter(request, USE_FINGERPRINTING);</span>
 
 <span class="fc" id="L89">    keepIncomingRequestParameter(request, EMBED_RHYME_METADATA);</span>
 <span class="fc" id="L90">  }</span>
