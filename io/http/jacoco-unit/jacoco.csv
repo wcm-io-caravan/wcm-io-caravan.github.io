@@ -35,7 +35,7 @@ Resilient HTTP,io.wcm.caravan.io.http,RequestInstantiationRuntimeException,5,0,0
 Resilient HTTP,io.wcm.caravan.io.http,RequestFailedRuntimeException,3,18,0,0,1,3,1,1,1,1
 Resilient HTTP,io.wcm.caravan.io.http.impl.servletclient,HttpServletResponseMapper.new ServletOutputStream() {...},12,0,0,0,3,0,2,0,2,0
 Resilient HTTP,io.wcm.caravan.io.http.impl.servletclient,ServletHttpClient,25,159,5,9,5,33,5,13,1,10
-Resilient HTTP,io.wcm.caravan.io.http.impl.servletclient,HttpServletRequestMapper,296,53,8,0,78,13,65,7,61,7
+Resilient HTTP,io.wcm.caravan.io.http.impl.servletclient,HttpServletRequestMapper,301,57,8,0,78,14,65,8,61,8
 Resilient HTTP,io.wcm.caravan.io.http.impl.servletclient,HttpServletResponseMapper,224,55,6,0,71,17,38,4,35,4
 Resilient HTTP,io.wcm.caravan.io.http.impl.servletclient,NotSupportedByRequestMapperException,0,3,0,0,0,1,0,1,0,1
 Resilient HTTP,io.wcm.caravan.io.http.impl.servletclient,HttpServletRequestMapper.new ServletInputStream() {...},29,0,2,0,2,0,3,0,2,0
