@@ -83,20 +83,20 @@ class CompanyApiLinkBuilder {
 <span class="fc" id="L83">        .withConditionalMaxAge(Duration.ofSeconds(10), Duration.ofDays(100))</span>
 <span class="fc" id="L84">        .withTimestampParameter(TIMESTAMP_QUERY_PARAM, repositoryListener::getLastModified);</span>
 
-<span class="fc" id="L86">    useEmbeddedResources = addStickyParameter(request, USE_EMBEDDED_RESOURCES);</span>
-<span class="fc" id="L87">    useFingerprinting = addStickyParameter(request, USE_FINGERPRINTING);</span>
+<span class="fc" id="L86">    useEmbeddedResources = keepIncomingRequestParameter(request, USE_EMBEDDED_RESOURCES);</span>
+<span class="fc" id="L87">    useFingerprinting = keepIncomingRequestParameter(request, USE_FINGERPRINTING);</span>
 
-<span class="fc" id="L89">    addStickyParameter(request, EMBED_RHYME_METADATA);</span>
+<span class="fc" id="L89">    keepIncomingRequestParameter(request, EMBED_RHYME_METADATA);</span>
 <span class="fc" id="L90">  }</span>
 
   /**
    * If a query parameter with the given name is present in the incoming request, it will also be added
-   * (with the same value) to all other links being built by this libk builder instance
+   * (with the same value) to all other links being built by this link builder instance
    * @param request the incoming request
    * @param name of the query parameter
    * @return the value of the parameter (or true if it was not present)
    */
-  private Boolean addStickyParameter(HttpServletRequest request, String name) {
+  private Boolean keepIncomingRequestParameter(HttpServletRequest request, String name) {
 
     // if the query parameter was not present in the incoming request, then don't add it to any other links
 <span class="fc" id="L102">    String fromRequest = request.getParameter(name);</span>
