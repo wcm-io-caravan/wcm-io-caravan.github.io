@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Ordering;
 
 import io.wcm.caravan.rhyme.api.spi.HttpClientCallback;
@@ -20,63 +19,63 @@ import io.wcm.caravan.rhyme.api.spi.HttpClientCallback;
  */
 class HttpHeadersParser {
 
-<span class="fc" id="L23">  private static final int ONE_YEAR_AS_SECONDS = (int)Duration.ofDays(365).getSeconds();</span>
+<span class="fc" id="L22">  private static final int ONE_YEAR_AS_SECONDS = (int)Duration.ofDays(365).getSeconds();</span>
 
   private final Map&lt;String, ? extends Collection&lt;String&gt;&gt; headers;
 
-<span class="fc" id="L27">  HttpHeadersParser(Map&lt;String, ? extends Collection&lt;String&gt;&gt; headers) {</span>
-<span class="fc" id="L28">    this.headers = ImmutableMap.copyOf(headers);</span>
-<span class="fc" id="L29">  }</span>
+<span class="fc" id="L26">  HttpHeadersParser(Map&lt;String, ? extends Collection&lt;String&gt;&gt; headers) {</span>
+<span class="fc" id="L27">    this.headers = headers;</span>
+<span class="fc" id="L28">  }</span>
 
   Optional&lt;String&gt; getContentType() {
 
-<span class="fc" id="L33">    return findHeader(&quot;content-type&quot;);</span>
+<span class="fc" id="L32">    return findHeader(&quot;content-type&quot;);</span>
   }
 
   Optional&lt;Integer&gt; getMaxAge() {
 
-<span class="fc" id="L38">    return findHeaders(&quot;cache-control&quot;)</span>
-<span class="fc" id="L39">        .map(HttpHeadersParser::parseMaxAge)</span>
-<span class="fc" id="L40">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L41">        .max(Ordering.natural());</span>
+<span class="fc" id="L37">    return findHeaders(&quot;cache-control&quot;)</span>
+<span class="fc" id="L38">        .map(HttpHeadersParser::parseMaxAge)</span>
+<span class="fc" id="L39">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L40">        .max(Ordering.natural());</span>
   }
 
   private Optional&lt;String&gt; findHeader(String name) {
 
-<span class="fc" id="L46">    return findHeaders(name)</span>
-<span class="fc" id="L47">        .findFirst();</span>
+<span class="fc" id="L45">    return findHeaders(name)</span>
+<span class="fc" id="L46">        .findFirst();</span>
   }
 
   Stream&lt;String&gt; findHeaders(String name) {
-<span class="fc" id="L51">    return headers.entrySet().stream()</span>
-<span class="pc" id="L52">        .filter(entry -&gt; StringUtils.equalsIgnoreCase(name, entry.getKey()))</span>
-<span class="pc" id="L53">        .flatMap(entry -&gt; entry.getValue().stream());</span>
+<span class="fc" id="L50">    return headers.entrySet().stream()</span>
+<span class="fc" id="L51">        .filter(entry -&gt; StringUtils.equalsIgnoreCase(name, entry.getKey()))</span>
+<span class="fc" id="L52">        .flatMap(entry -&gt; entry.getValue().stream());</span>
   }
 
   static Integer parseMaxAge(String cacheControl) {
 
-<span class="fc bfc" id="L58" title="All 2 branches covered.">    if (cacheControl == null) {</span>
-<span class="fc" id="L59">      return null;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">    if (cacheControl == null) {</span>
+<span class="fc" id="L58">      return null;</span>
     }
 
-<span class="fc" id="L62">    String lowerCase = cacheControl.toLowerCase();</span>
+<span class="fc" id="L61">    String lowerCase = cacheControl.toLowerCase();</span>
 
-<span class="fc bfc" id="L64" title="All 2 branches covered.">    if (lowerCase.contains(&quot;immutable&quot;)) {</span>
-<span class="fc" id="L65">      return ONE_YEAR_AS_SECONDS;</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">    if (lowerCase.contains(&quot;immutable&quot;)) {</span>
+<span class="fc" id="L64">      return ONE_YEAR_AS_SECONDS;</span>
     }
 
-<span class="fc bfc" id="L68" title="All 2 branches covered.">    if (lowerCase.contains(&quot;no-store&quot;)) {</span>
-<span class="fc" id="L69">      return 0;</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">    if (lowerCase.contains(&quot;no-store&quot;)) {</span>
+<span class="fc" id="L68">      return 0;</span>
     }
 
-<span class="fc" id="L72">    return Stream.of(StringUtils.split(lowerCase, &quot;,&quot;))</span>
-<span class="fc" id="L73">        .map(directive -&gt; StringUtils.substringAfter(directive, &quot;max-age=&quot;))</span>
-<span class="fc" id="L74">        .map(StringUtils::trimToNull)</span>
-<span class="fc" id="L75">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L76">        .findFirst()</span>
-<span class="fc" id="L77">        .map(Long::parseLong)</span>
-<span class="fc" id="L78">        .map(longValue -&gt; (int)Math.min(longValue, Integer.MAX_VALUE))</span>
-<span class="fc" id="L79">        .orElse(null);</span>
+<span class="fc" id="L71">    return Stream.of(StringUtils.split(lowerCase, &quot;,&quot;))</span>
+<span class="fc" id="L72">        .map(directive -&gt; StringUtils.substringAfter(directive, &quot;max-age=&quot;))</span>
+<span class="fc" id="L73">        .map(StringUtils::trimToNull)</span>
+<span class="fc" id="L74">        .filter(StringUtils::isNumeric)</span>
+<span class="fc" id="L75">        .findFirst()</span>
+<span class="fc" id="L76">        .map(Long::parseLong)</span>
+<span class="fc" id="L77">        .map(longValue -&gt; (int)Math.min(longValue, Integer.MAX_VALUE))</span>
+<span class="fc" id="L78">        .orElse(null);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

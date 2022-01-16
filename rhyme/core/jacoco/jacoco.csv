@@ -73,7 +73,7 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.api.exceptions,HalApiServerException
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.exceptions,HalApiDeveloperException,0,9,0,0,0,4,0,2,0,2
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.exceptions,HalApiClientException,0,100,0,4,0,22,0,10,0,8
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader,0,81,0,2,0,21,0,8,0,7
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpHeadersParser,11,93,0,6,0,29,2,12,2,9
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpHeadersParser,0,103,0,6,0,29,0,14,0,11
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpUrlConnectionSupport,23,13,2,0,7,5,1,2,0,2
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader.HttpClientCallbackImpl,62,238,7,11,10,59,8,14,2,11
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader.HttpClientCallbackImpl,55,245,7,11,8,61,7,15,1,12
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.http,HttpHalResourceLoader.HttpClientSupportException,0,9,0,0,0,4,0,2,0,2
