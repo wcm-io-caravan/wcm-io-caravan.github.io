@@ -57,7 +57,7 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="HalApiInvocationHandler" href="../../../../../../../io/wcm/caravan/rhyme/impl/client/proxy/HalApiInvocationHandler.html#HalApiInvocationHandler">HalApiInvocationHandler</a> <strong class="jxr_keyword">implements</strong> InvocationHandler {
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Cache&lt;String, Observable&gt; returnValueCache = CacheBuilder.newBuilder().build();
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Cache&lt;String, Observable&lt;Object&gt;&gt; returnValueCache = CacheBuilder.newBuilder().build();
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Single&lt;HalResource&gt; rxResource;
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Class resourceInterface;
@@ -91,7 +91,7 @@
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      <em class="jxr_comment">// collect the time spend calling all proxy methods during the current request in the HalResponseMetadata object</em>
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">try</strong> (<a name="RequestMetricsStopwatch" href="../../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsStopwatch.html#RequestMetricsStopwatch">RequestMetricsStopwatch</a> sw = metrics.startStopwatch(HalApiClient.<strong class="jxr_keyword">class</strong>, () -&gt; <span class="jxr_string">"calling "</span> + invocation)) {
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>        Observable rxReturnValue = getCachedObservableReturnValue(invocation);
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>        Observable&lt;Object&gt; rxReturnValue = getCachedObservableReturnValue(invocation);
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>        <strong class="jxr_keyword">return</strong> RxJavaReflectionUtils.convertObservableTo(rxReturnValue, method.getReturnType(), typeSupport);
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>      <em class="jxr_comment">// CHECKSTYLE:OFF</em>
@@ -114,7 +114,7 @@
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>     }
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>   }
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> 
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>   <strong class="jxr_keyword">private</strong> Observable getCachedObservableReturnValue(<a name="HalApiMethodInvocation" href="../../../../../../../io/wcm/caravan/rhyme/impl/client/proxy/HalApiMethodInvocation.html#HalApiMethodInvocation">HalApiMethodInvocation</a> invocation) <strong class="jxr_keyword">throws</strong> ExecutionException {
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>   <strong class="jxr_keyword">private</strong> Observable&lt;Object&gt; getCachedObservableReturnValue(<a name="HalApiMethodInvocation" href="../../../../../../../io/wcm/caravan/rhyme/impl/client/proxy/HalApiMethodInvocation.html#HalApiMethodInvocation">HalApiMethodInvocation</a> invocation) <strong class="jxr_keyword">throws</strong> ExecutionException {
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>       <strong class="jxr_keyword">return</strong> returnValueCache.get(invocation.getCacheKey(), () -&gt; callAnnotationSpecificHandler(invocation));
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>     }
@@ -132,7 +132,7 @@
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>   }
 <a class="jxr_linenumber" name="L125" href="#L125">125</a> 
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>   @SuppressWarnings(<span class="jxr_string">"PMD.AvoidRethrowingException"</span>)
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>   <strong class="jxr_keyword">private</strong> Observable callAnnotationSpecificHandler(<a name="HalApiMethodInvocation" href="../../../../../../../io/wcm/caravan/rhyme/impl/client/proxy/HalApiMethodInvocation.html#HalApiMethodInvocation">HalApiMethodInvocation</a> invocation) {
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>   <strong class="jxr_keyword">private</strong> Observable&lt;Object&gt; callAnnotationSpecificHandler(<a name="HalApiMethodInvocation" href="../../../../../../../io/wcm/caravan/rhyme/impl/client/proxy/HalApiMethodInvocation.html#HalApiMethodInvocation">HalApiMethodInvocation</a> invocation) {
 <a class="jxr_linenumber" name="L128" href="#L128">128</a> 
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>     <strong class="jxr_keyword">if</strong> (invocation.isForMethodAnnotatedWithResourceState()) {
 <a class="jxr_linenumber" name="L130" href="#L130">130</a> 

@@ -48,7 +48,7 @@ import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
   @Reference
   private RhymeDocsOsgiBundleSupport rhymeDocsSupport;
 
-  private BundleTracker bundleTracker;
+  private BundleTracker&lt;String&gt; bundleTracker;
 
   @Activate
   void activate(ComponentContext componentContext) {
