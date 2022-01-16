@@ -61,7 +61,7 @@ public final class RxJavaReflectionUtils {
    * @return an {@link Observable} that emits the items from the reactive stream returned by the method
    */
   @SuppressWarnings(&quot;PMD.PreserveStackTrace&quot;)
-  public static Observable&lt;?&gt; invokeMethodAndReturnObservable(Object resourceImplInstance, Method method, RequestMetricsCollector metrics,
+  public static Observable&lt;Object&gt; invokeMethodAndReturnObservable(Object resourceImplInstance, Method method, RequestMetricsCollector metrics,
       HalApiTypeSupport typeSupport) {
 
 <span class="fc" id="L67">    String fullMethodName = HalApiReflectionUtils.getClassAndMethodName(resourceImplInstance, method, typeSupport);</span>
@@ -103,7 +103,7 @@ public final class RxJavaReflectionUtils {
 
 <span class="fc" id="L104">    ParameterizedType observableType = (ParameterizedType)returnType;</span>
 
-<span class="fc" id="L106">    Function&lt;Object, Observable&lt;?&gt;&gt; conversion = typeSupport.convertToObservable(method.getReturnType());</span>
+<span class="fc" id="L106">    Function&lt;Object, Observable&lt;Object&gt;&gt; conversion = typeSupport.convertToObservable(method.getReturnType());</span>
 
 <span class="fc bfc" id="L108" title="All 2 branches covered.">    if (conversion == null) {</span>
 <span class="fc" id="L109">      throw new HalApiDeveloperException(&quot;The return type &quot; + method.getReturnType().getSimpleName()</span>
@@ -128,14 +128,14 @@ public final class RxJavaReflectionUtils {
    * @return an instance of the target type that will replay (and cache!) the items emitted by the given reactive
    *         instance
    */
-  public static Observable&lt;?&gt; convertAndCacheReactiveType(Object reactiveInstance, Class&lt;?&gt; targetType, RequestMetricsCollector metrics,
+  public static Observable&lt;Object&gt; convertAndCacheReactiveType(Object reactiveInstance, Class&lt;?&gt; targetType, RequestMetricsCollector metrics,
       Supplier&lt;String&gt; description, HalApiReturnTypeSupport typeSupport) {
 
-<span class="fc" id="L134">    Observable&lt;?&gt; observable = convertToObservable(reactiveInstance, typeSupport)</span>
+<span class="fc" id="L134">    Observable&lt;Object&gt; observable = convertToObservable(reactiveInstance, typeSupport)</span>
 <span class="fc" id="L135">        .compose(EmissionStopwatch.collectMetrics(description, metrics));</span>
 
     // do not use Observable#cache() here, because we want consumers to be able to use Observable#retry()
-<span class="fc" id="L138">    Observable&lt;?&gt; cached = observable.compose(RxJavaTransformers.cacheIfCompleted());</span>
+<span class="fc" id="L138">    Observable&lt;Object&gt; cached = observable.compose(RxJavaTransformers.cacheIfCompleted());</span>
 
 <span class="fc" id="L140">    return cached;</span>
   }
@@ -159,11 +159,11 @@ public final class RxJavaReflectionUtils {
 <span class="fc" id="L159">    return conversion.apply(observable);</span>
   }
 
-  private static Observable&lt;?&gt; convertToObservable(Object reactiveInstance, HalApiReturnTypeSupport typeSupport) {
+  private static Observable&lt;Object&gt; convertToObservable(Object reactiveInstance, HalApiReturnTypeSupport typeSupport) {
 
 <span class="fc" id="L164">    Preconditions.checkNotNull(reactiveInstance, &quot;Cannot convert null objects&quot;);</span>
 
-<span class="fc" id="L166">    Function&lt;Object, Observable&lt;?&gt;&gt; conversion = typeSupport.convertToObservable(reactiveInstance.getClass());</span>
+<span class="fc" id="L166">    Function&lt;Object, Observable&lt;Object&gt;&gt; conversion = typeSupport.convertToObservable(reactiveInstance.getClass());</span>
 <span class="fc bfc" id="L167" title="All 2 branches covered.">    if (conversion == null) {</span>
 <span class="fc" id="L168">      throw new HalApiDeveloperException(&quot;The given instance of &quot; + reactiveInstance.getClass().getName() + &quot; is not a supported return type&quot;);</span>
     }

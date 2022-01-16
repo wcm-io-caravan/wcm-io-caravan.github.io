@@ -150,7 +150,7 @@
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>   }
 <a class="jxr_linenumber" name="L143" href="#L143">143</a> 
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>   @Override
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>   <strong class="jxr_keyword">public</strong> Function&lt;? <strong class="jxr_keyword">super</strong> Object, Observable&lt;?&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType) {
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>   <strong class="jxr_keyword">public</strong> Function&lt;Object, Observable&lt;Object&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType) {
 <a class="jxr_linenumber" name="L146" href="#L146">146</a> 
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>     <strong class="jxr_keyword">if</strong> (Observable.<strong class="jxr_keyword">class</strong>.isAssignableFrom(sourceType)) {
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>       <strong class="jxr_keyword">return</strong> o -&gt; (Observable)o;
@@ -175,47 +175,51 @@
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>       <strong class="jxr_keyword">return</strong> o -&gt; Observable.fromIterable((List&lt;?&gt;)o);
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>     }
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>     <strong class="jxr_keyword">if</strong> (Stream.<strong class="jxr_keyword">class</strong>.isAssignableFrom(sourceType)) {
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>       <strong class="jxr_keyword">return</strong> o -&gt; Observable.fromStream((Stream&lt;?&gt;)o);
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>     }
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>     <strong class="jxr_keyword">if</strong> (sourceType.getTypeParameters().length == 0) {
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>       <strong class="jxr_keyword">return</strong> o -&gt; Observable.just(o);
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>     }
-<a class="jxr_linenumber" name="L175" href="#L175">175</a> 
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>   }
-<a class="jxr_linenumber" name="L178" href="#L178">178</a> 
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>   @Override
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isProviderOfMultiplerValues(Class&lt;?&gt; returnType) {
-<a class="jxr_linenumber" name="L181" href="#L181">181</a> 
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>     <strong class="jxr_keyword">return</strong> List.<strong class="jxr_keyword">class</strong>.isAssignableFrom(returnType)
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>         || Stream.<strong class="jxr_keyword">class</strong>.isAssignableFrom(returnType)
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>         || Observable.<strong class="jxr_keyword">class</strong>.isAssignableFrom(returnType)
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>         || Publisher.<strong class="jxr_keyword">class</strong>.isAssignableFrom(returnType);
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>   }
-<a class="jxr_linenumber" name="L187" href="#L187">187</a> 
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>   @Override
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isProviderOfOptionalValue(Class&lt;?&gt; returnType) {
-<a class="jxr_linenumber" name="L190" href="#L190">190</a> 
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">return</strong> Optional.<strong class="jxr_keyword">class</strong>.isAssignableFrom(returnType)
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>         || Maybe.<strong class="jxr_keyword">class</strong>.isAssignableFrom(returnType);
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>   }
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>       <strong class="jxr_keyword">return</strong> o -&gt; {
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>         @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>         Stream&lt;Object&gt; stream = (Stream&lt;Object&gt;)o;
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>         <strong class="jxr_keyword">return</strong> Observable.fromStream(stream);
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>       };
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>     }
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>     <strong class="jxr_keyword">if</strong> (sourceType.getTypeParameters().length == 0) {
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>       <strong class="jxr_keyword">return</strong> o -&gt; Observable.just(o);
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>     }
+<a class="jxr_linenumber" name="L179" href="#L179">179</a> 
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>   }
+<a class="jxr_linenumber" name="L182" href="#L182">182</a> 
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>   @Override
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isProviderOfMultiplerValues(Class&lt;?&gt; returnType) {
+<a class="jxr_linenumber" name="L185" href="#L185">185</a> 
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>     <strong class="jxr_keyword">return</strong> List.<strong class="jxr_keyword">class</strong>.isAssignableFrom(returnType)
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>         || Stream.<strong class="jxr_keyword">class</strong>.isAssignableFrom(returnType)
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>         || Observable.<strong class="jxr_keyword">class</strong>.isAssignableFrom(returnType)
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>         || Publisher.<strong class="jxr_keyword">class</strong>.isAssignableFrom(returnType);
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>   }
+<a class="jxr_linenumber" name="L191" href="#L191">191</a> 
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>   @Override
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isProviderOfOptionalValue(Class&lt;?&gt; returnType) {
 <a class="jxr_linenumber" name="L194" href="#L194">194</a> 
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L196" href="#L196">196</a> <em class="jxr_javadoccomment">   * @param annotationSupport additional support for different annotations</em>
-<a class="jxr_linenumber" name="L197" href="#L197">197</a> <em class="jxr_javadoccomment">   * @param returnTypeSupport additional support for different return types</em>
-<a class="jxr_linenumber" name="L198" href="#L198">198</a> <em class="jxr_javadoccomment">   * @return an {@link HalApiTypeSupport} instance that combines the logic of the {@link DefaultHalApiTypeSupport} and</em>
-<a class="jxr_linenumber" name="L199" href="#L199">199</a> <em class="jxr_javadoccomment">   *         the given additional SPI implementations</em>
-<a class="jxr_linenumber" name="L200" href="#L200">200</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="HalApiTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/HalApiTypeSupport.html#HalApiTypeSupport">HalApiTypeSupport</a> extendWith(<a name="HalApiAnnotationSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html#HalApiAnnotationSupport">HalApiAnnotationSupport</a> annotationSupport, <a name="HalApiReturnTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html#HalApiReturnTypeSupport">HalApiReturnTypeSupport</a> returnTypeSupport) {
-<a class="jxr_linenumber" name="L202" href="#L202">202</a> 
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>     <a name="DefaultHalApiTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/DefaultHalApiTypeSupport.html#DefaultHalApiTypeSupport">DefaultHalApiTypeSupport</a> defaultSupport = <strong class="jxr_keyword">new</strong> <a name="DefaultHalApiTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/DefaultHalApiTypeSupport.html#DefaultHalApiTypeSupport">DefaultHalApiTypeSupport</a>();
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>     <a name="HalApiTypeSupportAdapter" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/HalApiTypeSupportAdapter.html#HalApiTypeSupportAdapter">HalApiTypeSupportAdapter</a> adapter = <strong class="jxr_keyword">new</strong> <a name="HalApiTypeSupportAdapter" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/HalApiTypeSupportAdapter.html#HalApiTypeSupportAdapter">HalApiTypeSupportAdapter</a>(annotationSupport, returnTypeSupport);
-<a class="jxr_linenumber" name="L205" href="#L205">205</a> 
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="CompositeHalApiTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/CompositeHalApiTypeSupport.html#CompositeHalApiTypeSupport">CompositeHalApiTypeSupport</a>(ImmutableList.of(defaultSupport, adapter));
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>   }
-<a class="jxr_linenumber" name="L208" href="#L208">208</a> 
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>     <strong class="jxr_keyword">return</strong> Optional.<strong class="jxr_keyword">class</strong>.isAssignableFrom(returnType)
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>         || Maybe.<strong class="jxr_keyword">class</strong>.isAssignableFrom(returnType);
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>   }
+<a class="jxr_linenumber" name="L198" href="#L198">198</a> 
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L200" href="#L200">200</a> <em class="jxr_javadoccomment">   * @param annotationSupport additional support for different annotations</em>
+<a class="jxr_linenumber" name="L201" href="#L201">201</a> <em class="jxr_javadoccomment">   * @param returnTypeSupport additional support for different return types</em>
+<a class="jxr_linenumber" name="L202" href="#L202">202</a> <em class="jxr_javadoccomment">   * @return an {@link HalApiTypeSupport} instance that combines the logic of the {@link DefaultHalApiTypeSupport} and</em>
+<a class="jxr_linenumber" name="L203" href="#L203">203</a> <em class="jxr_javadoccomment">   *         the given additional SPI implementations</em>
+<a class="jxr_linenumber" name="L204" href="#L204">204</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="HalApiTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/HalApiTypeSupport.html#HalApiTypeSupport">HalApiTypeSupport</a> extendWith(<a name="HalApiAnnotationSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html#HalApiAnnotationSupport">HalApiAnnotationSupport</a> annotationSupport, <a name="HalApiReturnTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html#HalApiReturnTypeSupport">HalApiReturnTypeSupport</a> returnTypeSupport) {
+<a class="jxr_linenumber" name="L206" href="#L206">206</a> 
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>     <a name="DefaultHalApiTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/DefaultHalApiTypeSupport.html#DefaultHalApiTypeSupport">DefaultHalApiTypeSupport</a> defaultSupport = <strong class="jxr_keyword">new</strong> <a name="DefaultHalApiTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/DefaultHalApiTypeSupport.html#DefaultHalApiTypeSupport">DefaultHalApiTypeSupport</a>();
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>     <a name="HalApiTypeSupportAdapter" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/HalApiTypeSupportAdapter.html#HalApiTypeSupportAdapter">HalApiTypeSupportAdapter</a> adapter = <strong class="jxr_keyword">new</strong> <a name="HalApiTypeSupportAdapter" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/HalApiTypeSupportAdapter.html#HalApiTypeSupportAdapter">HalApiTypeSupportAdapter</a>(annotationSupport, returnTypeSupport);
 <a class="jxr_linenumber" name="L209" href="#L209">209</a> 
-<a class="jxr_linenumber" name="L210" href="#L210">210</a> }
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="CompositeHalApiTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/CompositeHalApiTypeSupport.html#CompositeHalApiTypeSupport">CompositeHalApiTypeSupport</a>(ImmutableList.of(defaultSupport, adapter));
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>   }
+<a class="jxr_linenumber" name="L212" href="#L212">212</a> 
+<a class="jxr_linenumber" name="L213" href="#L213">213</a> 
+<a class="jxr_linenumber" name="L214" href="#L214">214</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014&#x2013;2022 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</div>

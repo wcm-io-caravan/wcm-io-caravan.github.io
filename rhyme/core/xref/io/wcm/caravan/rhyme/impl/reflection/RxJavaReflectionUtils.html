@@ -69,7 +69,7 @@
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">   * @return an {@link Observable} that emits the items from the reactive stream returned by the method</em>
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>    @SuppressWarnings(<span class="jxr_string">"PMD.PreserveStackTrace"</span>)
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Observable&lt;?&gt; invokeMethodAndReturnObservable(Object resourceImplInstance, Method method, <a name="RequestMetricsCollector" href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#RequestMetricsCollector">RequestMetricsCollector</a> metrics,
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Observable&lt;Object&gt; invokeMethodAndReturnObservable(Object resourceImplInstance, Method method, <a name="RequestMetricsCollector" href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#RequestMetricsCollector">RequestMetricsCollector</a> metrics,
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>        <a name="HalApiTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/impl/reflection/HalApiTypeSupport.html#HalApiTypeSupport">HalApiTypeSupport</a> typeSupport) {
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      String fullMethodName = HalApiReflectionUtils.getClassAndMethodName(resourceImplInstance, method, typeSupport);
@@ -111,7 +111,7 @@
 <a class="jxr_linenumber" name="L103" href="#L103">103</a> 
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>     ParameterizedType observableType = (ParameterizedType)returnType;
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> 
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>     Function&lt;Object, Observable&lt;?&gt;&gt; conversion = typeSupport.convertToObservable(method.getReturnType());
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     Function&lt;Object, Observable&lt;Object&gt;&gt; conversion = typeSupport.convertToObservable(method.getReturnType());
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>     <strong class="jxr_keyword">if</strong> (conversion == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a name="HalApiDeveloperException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiDeveloperException.html#HalApiDeveloperException">HalApiDeveloperException</a>(<span class="jxr_string">"The return type "</span> + method.getReturnType().getSimpleName()
@@ -136,14 +136,14 @@
 <a class="jxr_linenumber" name="L128" href="#L128">128</a> <em class="jxr_javadoccomment">   * @return an instance of the target type that will replay (and cache!) the items emitted by the given reactive</em>
 <a class="jxr_linenumber" name="L129" href="#L129">129</a> <em class="jxr_javadoccomment">   *         instance</em>
 <a class="jxr_linenumber" name="L130" href="#L130">130</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Observable&lt;?&gt; convertAndCacheReactiveType(Object reactiveInstance, Class&lt;?&gt; targetType, <a name="RequestMetricsCollector" href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#RequestMetricsCollector">RequestMetricsCollector</a> metrics,
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Observable&lt;Object&gt; convertAndCacheReactiveType(Object reactiveInstance, Class&lt;?&gt; targetType, <a name="RequestMetricsCollector" href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#RequestMetricsCollector">RequestMetricsCollector</a> metrics,
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>       Supplier&lt;String&gt; description, <a name="HalApiReturnTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html#HalApiReturnTypeSupport">HalApiReturnTypeSupport</a> typeSupport) {
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> 
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>     Observable&lt;?&gt; observable = convertToObservable(reactiveInstance, typeSupport)
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>     Observable&lt;Object&gt; observable = convertToObservable(reactiveInstance, typeSupport)
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         .compose(EmissionStopwatch.collectMetrics(description, metrics));
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> 
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>     <em class="jxr_comment">// do not use Observable#cache() here, because we want consumers to be able to use Observable#retry()</em>
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>     Observable&lt;?&gt; cached = observable.compose(RxJavaTransformers.cacheIfCompleted());
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>     Observable&lt;Object&gt; cached = observable.compose(RxJavaTransformers.cacheIfCompleted());
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> 
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>     <strong class="jxr_keyword">return</strong> cached;
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>   }
@@ -167,11 +167,11 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>     <strong class="jxr_keyword">return</strong> conversion.apply(observable);
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>   }
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> 
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Observable&lt;?&gt; convertToObservable(Object reactiveInstance, <a name="HalApiReturnTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html#HalApiReturnTypeSupport">HalApiReturnTypeSupport</a> typeSupport) {
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Observable&lt;Object&gt; convertToObservable(Object reactiveInstance, <a name="HalApiReturnTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html#HalApiReturnTypeSupport">HalApiReturnTypeSupport</a> typeSupport) {
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> 
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>     Preconditions.checkNotNull(reactiveInstance, <span class="jxr_string">"Cannot convert null objects"</span>);
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> 
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>     Function&lt;Object, Observable&lt;?&gt;&gt; conversion = typeSupport.convertToObservable(reactiveInstance.getClass());
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>     Function&lt;Object, Observable&lt;Object&gt;&gt; conversion = typeSupport.convertToObservable(reactiveInstance.getClass());
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>     <strong class="jxr_keyword">if</strong> (conversion == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a name="HalApiDeveloperException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiDeveloperException.html#HalApiDeveloperException">HalApiDeveloperException</a>(<span class="jxr_string">"The given instance of "</span> + reactiveInstance.getClass().getName() + <span class="jxr_string">" is not a supported return type"</span>);
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>     }

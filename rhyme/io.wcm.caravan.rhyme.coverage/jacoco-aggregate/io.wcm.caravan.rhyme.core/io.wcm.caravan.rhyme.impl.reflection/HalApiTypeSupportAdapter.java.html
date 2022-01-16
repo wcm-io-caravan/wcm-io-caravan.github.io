@@ -114,7 +114,7 @@ public class HalApiTypeSupportAdapter implements HalApiTypeSupport {
   }
 
   @Override
-  public Function&lt;? super Object, Observable&lt;?&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType) {
+  public Function&lt;Object, Observable&lt;Object&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType) {
 <span class="fc" id="L118">    return returnTypeSupport.convertToObservable(sourceType);</span>
   }
 
@@ -136,7 +136,7 @@ public class HalApiTypeSupportAdapter implements HalApiTypeSupport {
     }
 
     @Override
-    public Function&lt;? super Object, Observable&lt;?&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType) {
+    public Function&lt;Object, Observable&lt;Object&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType) {
 <span class="fc" id="L140">      return null;</span>
     }
 

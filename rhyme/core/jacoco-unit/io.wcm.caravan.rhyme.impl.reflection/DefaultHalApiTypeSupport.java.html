@@ -142,7 +142,7 @@ import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
   }
 
   @Override
-  public Function&lt;? super Object, Observable&lt;?&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType) {
+  public Function&lt;Object, Observable&lt;Object&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType) {
 
 <span class="fc bfc" id="L147" title="All 2 branches covered.">    if (Observable.class.isAssignableFrom(sourceType)) {</span>
 <span class="fc" id="L148">      return o -&gt; (Observable)o;</span>
@@ -167,29 +167,33 @@ import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
 <span class="fc" id="L167">      return o -&gt; Observable.fromIterable((List&lt;?&gt;)o);</span>
     }
 <span class="fc bfc" id="L169" title="All 2 branches covered.">    if (Stream.class.isAssignableFrom(sourceType)) {</span>
-<span class="fc" id="L170">      return o -&gt; Observable.fromStream((Stream&lt;?&gt;)o);</span>
+<span class="fc" id="L170">      return o -&gt; {</span>
+        @SuppressWarnings(&quot;unchecked&quot;)
+<span class="fc" id="L172">        Stream&lt;Object&gt; stream = (Stream&lt;Object&gt;)o;</span>
+<span class="fc" id="L173">        return Observable.fromStream(stream);</span>
+      };
     }
-<span class="fc bfc" id="L172" title="All 2 branches covered.">    if (sourceType.getTypeParameters().length == 0) {</span>
-<span class="fc" id="L173">      return o -&gt; Observable.just(o);</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">    if (sourceType.getTypeParameters().length == 0) {</span>
+<span class="fc" id="L177">      return o -&gt; Observable.just(o);</span>
     }
 
-<span class="fc" id="L176">    return null;</span>
+<span class="fc" id="L180">    return null;</span>
   }
 
   @Override
   public boolean isProviderOfMultiplerValues(Class&lt;?&gt; returnType) {
 
-<span class="fc bfc" id="L182" title="All 2 branches covered.">    return List.class.isAssignableFrom(returnType)</span>
-<span class="fc bfc" id="L183" title="All 2 branches covered.">        || Stream.class.isAssignableFrom(returnType)</span>
-<span class="fc bfc" id="L184" title="All 2 branches covered.">        || Observable.class.isAssignableFrom(returnType)</span>
-<span class="fc bfc" id="L185" title="All 2 branches covered.">        || Publisher.class.isAssignableFrom(returnType);</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">    return List.class.isAssignableFrom(returnType)</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">        || Stream.class.isAssignableFrom(returnType)</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        || Observable.class.isAssignableFrom(returnType)</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">        || Publisher.class.isAssignableFrom(returnType);</span>
   }
 
   @Override
   public boolean isProviderOfOptionalValue(Class&lt;?&gt; returnType) {
 
-<span class="fc bfc" id="L191" title="All 2 branches covered.">    return Optional.class.isAssignableFrom(returnType)</span>
-<span class="fc bfc" id="L192" title="All 2 branches covered.">        || Maybe.class.isAssignableFrom(returnType);</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">    return Optional.class.isAssignableFrom(returnType)</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">        || Maybe.class.isAssignableFrom(returnType);</span>
   }
 
   /**
@@ -200,10 +204,10 @@ import io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
    */
   public static HalApiTypeSupport extendWith(HalApiAnnotationSupport annotationSupport, HalApiReturnTypeSupport returnTypeSupport) {
 
-<span class="fc" id="L203">    DefaultHalApiTypeSupport defaultSupport = new DefaultHalApiTypeSupport();</span>
-<span class="fc" id="L204">    HalApiTypeSupportAdapter adapter = new HalApiTypeSupportAdapter(annotationSupport, returnTypeSupport);</span>
+<span class="fc" id="L207">    DefaultHalApiTypeSupport defaultSupport = new DefaultHalApiTypeSupport();</span>
+<span class="fc" id="L208">    HalApiTypeSupportAdapter adapter = new HalApiTypeSupportAdapter(annotationSupport, returnTypeSupport);</span>
 
-<span class="fc" id="L206">    return new CompositeHalApiTypeSupport(ImmutableList.of(defaultSupport, adapter));</span>
+<span class="fc" id="L210">    return new CompositeHalApiTypeSupport(ImmutableList.of(defaultSupport, adapter));</span>
   }
 
 

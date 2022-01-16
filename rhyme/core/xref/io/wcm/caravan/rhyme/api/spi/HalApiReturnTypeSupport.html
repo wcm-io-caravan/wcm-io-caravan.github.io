@@ -54,7 +54,7 @@
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">   * @return a function that will create an {@link Observable} from an instance of the given type,</em>
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">   *         or null if this is not possible</em>
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>    Function&lt;? <strong class="jxr_keyword">super</strong> Object, Observable&lt;?&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType);
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>    Function&lt;Object, Observable&lt;Object&gt;&gt; convertToObservable(Class&lt;?&gt; sourceType);
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  <em class="jxr_javadoccomment">   * @param returnType the return type of an annotated method</em>
