@@ -53,7 +53,7 @@ import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
   @Activate
   void activate(ComponentContext componentContext) {
 
-<span class="fc" id="L56">    bundleTracker = new BundleTracker&lt;String&gt;(componentContext.getBundleContext(), Bundle.ACTIVE, this);</span>
+<span class="fc" id="L56">    bundleTracker = new BundleTracker&lt;&gt;(componentContext.getBundleContext(), Bundle.ACTIVE, this);</span>
 <span class="fc" id="L57">    bundleTracker.open();</span>
 <span class="fc" id="L58">  }</span>
 

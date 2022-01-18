@@ -22,7 +22,6 @@ package io.wcm.caravan.rhyme.jaxrs.impl.docs;
 import java.net.URL;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -42,9 +41,9 @@ import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
  * knows in which bundles to look for these documentation files
  */
 @Component(immediate = true)
-<span class="fc" id="L45">public class RhymeDocsBundleTracker implements BundleTrackerCustomizer&lt;String&gt; {</span>
+<span class="fc" id="L44">public class RhymeDocsBundleTracker implements BundleTrackerCustomizer&lt;String&gt; {</span>
 
-<span class="fc" id="L47">  private static final Logger log = LoggerFactory.getLogger(RhymeDocsBundleTracker.class);</span>
+<span class="fc" id="L46">  private static final Logger log = LoggerFactory.getLogger(RhymeDocsBundleTracker.class);</span>
 
   @Reference
   private RhymeDocsOsgiBundleSupport rhymeDocsSupport;
@@ -54,59 +53,59 @@ import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
   @Activate
   void activate(ComponentContext componentContext) {
 
-<span class="fc" id="L57">    bundleTracker = new BundleTracker&lt;String&gt;(componentContext.getBundleContext(), Bundle.ACTIVE, this);</span>
-<span class="fc" id="L58">    bundleTracker.open();</span>
-<span class="fc" id="L59">  }</span>
+<span class="fc" id="L56">    bundleTracker = new BundleTracker&lt;&gt;(componentContext.getBundleContext(), Bundle.ACTIVE, this);</span>
+<span class="fc" id="L57">    bundleTracker.open();</span>
+<span class="fc" id="L58">  }</span>
 
   @Deactivate
   void deactivate(@SuppressWarnings(&quot;unused&quot;) ComponentContext componentContext) {
 
-<span class="fc" id="L64">    bundleTracker.close();</span>
-<span class="fc" id="L65">  }</span>
+<span class="fc" id="L63">    bundleTracker.close();</span>
+<span class="fc" id="L64">  }</span>
 
   private static boolean hasRhymeDocs(Bundle bundle) {
 
-<span class="fc" id="L69">    String rhymeDocsPath = &quot;/&quot; + RhymeDocsSupport.FOLDER;</span>
+<span class="fc" id="L68">    String rhymeDocsPath = &quot;/&quot; + RhymeDocsSupport.FOLDER;</span>
 
-<span class="fc" id="L71">    URL rhymeDocsUrl = bundle.getResource(rhymeDocsPath);</span>
+<span class="fc" id="L70">    URL rhymeDocsUrl = bundle.getResource(rhymeDocsPath);</span>
 
-<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (rhymeDocsUrl == null) {</span>
-<span class="fc" id="L74">      log.debug(&quot;No rhyme docs were found in bundle at {}&quot;, bundle.getSymbolicName(), rhymeDocsPath);</span>
-<span class="fc" id="L75">      return false;</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">    if (rhymeDocsUrl == null) {</span>
+<span class="fc" id="L73">      log.debug(&quot;No rhyme docs were found in bundle at {}&quot;, bundle.getSymbolicName(), rhymeDocsPath);</span>
+<span class="fc" id="L74">      return false;</span>
     }
 
-<span class="fc" id="L78">    log.info(&quot;Rhyme docs were found in bundle {} at {}&quot;, bundle.getSymbolicName(), rhymeDocsUrl);</span>
-<span class="fc" id="L79">    return true;</span>
+<span class="fc" id="L77">    log.info(&quot;Rhyme docs were found in bundle {} at {}&quot;, bundle.getSymbolicName(), rhymeDocsUrl);</span>
+<span class="fc" id="L78">    return true;</span>
   }
-  
+
   @Override
   public String addingBundle(Bundle bundle, BundleEvent event) {
 
-<span class="fc" id="L85">    log.debug(&quot;Bundle {} was added&quot;, bundle.getSymbolicName());</span>
+<span class="fc" id="L84">    log.debug(&quot;Bundle {} was added&quot;, bundle.getSymbolicName());</span>
 
-<span class="fc bfc" id="L87" title="All 2 branches covered.">    if (!hasRhymeDocs(bundle)) {</span>
-<span class="fc" id="L88">      return null;</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (!hasRhymeDocs(bundle)) {</span>
+<span class="fc" id="L87">      return null;</span>
     }
 
-<span class="fc" id="L91">    rhymeDocsSupport.registerBundle(bundle);</span>
-  
-<span class="fc" id="L93">    return bundle.getSymbolicName();  </span>
+<span class="fc" id="L90">    rhymeDocsSupport.registerBundle(bundle);</span>
+
+<span class="fc" id="L92">    return bundle.getSymbolicName();</span>
   }
 
   @Override
   public void modifiedBundle(Bundle bundle, BundleEvent event, String symbolicName) {
     // nothing to do
-<span class="fc" id="L99">  }</span>
+<span class="fc" id="L98">  }</span>
 
   @Override
   public void removedBundle(Bundle bundle, BundleEvent event, String symbolicName) {
 
-<span class="fc bfc" id="L104" title="All 2 branches covered.">    if (!hasRhymeDocs(bundle)) {</span>
-<span class="fc" id="L105">      return;</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">    if (!hasRhymeDocs(bundle)) {</span>
+<span class="fc" id="L104">      return;</span>
     }
 
-<span class="fc" id="L108">    rhymeDocsSupport.unregisterBundle(bundle);</span>
-<span class="fc" id="L109">  }</span>
+<span class="fc" id="L107">    rhymeDocsSupport.unregisterBundle(bundle);</span>
+<span class="fc" id="L108">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
