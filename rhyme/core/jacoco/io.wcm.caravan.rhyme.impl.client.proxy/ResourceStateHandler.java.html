@@ -19,52 +19,49 @@
  */
 package io.wcm.caravan.rhyme.impl.client.proxy;
 
+import java.util.function.Function;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Observable;
 import io.wcm.caravan.hal.resource.HalResource;
 import io.wcm.caravan.rhyme.impl.reflection.HalApiTypeSupport;
 
-class ResourceStateHandler {
+class ResourceStateHandler implements Function&lt;HalResource, Observable&lt;Object&gt;&gt; {
 
-<span class="fc" id="L33">  private static final Logger log = LoggerFactory.getLogger(HalApiInvocationHandler.class);</span>
+<span class="fc" id="L35">  private static final Logger log = LoggerFactory.getLogger(ResourceStateHandler.class);</span>
 
-  private final HalResource contextResource;
+  private final HalApiMethodInvocation invocation;
   private final HalApiTypeSupport typeSupport;
   private final ObjectMapper objectMapper;
 
-<span class="fc" id="L39">  ResourceStateHandler(HalResource contextResource, HalApiTypeSupport typeSupport, ObjectMapper objectMapper) {</span>
-<span class="fc" id="L40">    this.contextResource = contextResource;</span>
-<span class="fc" id="L41">    this.typeSupport = typeSupport;</span>
-<span class="fc" id="L42">    this.objectMapper = objectMapper;</span>
-<span class="fc" id="L43">  }</span>
+<span class="fc" id="L41">  ResourceStateHandler(HalApiMethodInvocation invocation, HalApiTypeSupport typeSupport, ObjectMapper objectMapper) {</span>
+<span class="fc" id="L42">    this.invocation = invocation;</span>
+<span class="fc" id="L43">    this.typeSupport = typeSupport;</span>
+<span class="fc" id="L44">    this.objectMapper = objectMapper;</span>
+<span class="fc" id="L45">  }</span>
 
-  Maybe&lt;Object&gt; handleMethodInvocation(HalApiMethodInvocation invocation) {
+  @Override
+  public Observable&lt;Object&gt; apply(HalResource contextResource) {
 
-<span class="fc" id="L47">    Class&lt;?&gt; returnType = invocation.getReturnType();</span>
+<span class="fc" id="L50">    Class&lt;?&gt; returnType = invocation.getReturnType();</span>
 
-<span class="fc" id="L49">    log.trace(&quot;{} was invoked, method is annotated with @ResourceState and returns type {}&quot;, invocation, returnType.getSimpleName());</span>
+<span class="fc" id="L52">    log.trace(&quot;{} was invoked, method is annotated with @ResourceState and returns type {}&quot;, invocation, returnType.getSimpleName());</span>
 
     // if the interface is using Maybe or Optional as return type, and the HAL resource does not contain any
     // state properties, then an empty maybe should be returned
-<span class="fc" id="L53">    boolean isOptional = typeSupport.isProviderOfOptionalValue(returnType);</span>
-<span class="fc bfc" id="L54" title="All 4 branches covered.">    if (isOptional &amp;&amp; contextResource.getStateFieldNames().isEmpty()) {</span>
-<span class="fc" id="L55">      return Maybe.empty();</span>
+<span class="fc" id="L56">    boolean isOptional = typeSupport.isProviderOfOptionalValue(returnType);</span>
+<span class="fc bfc" id="L57" title="All 4 branches covered.">    if (isOptional &amp;&amp; contextResource.getStateFieldNames().isEmpty()) {</span>
+<span class="fc" id="L58">      return Observable.empty();</span>
     }
 
     // if it is an observable then we have to use the emission type as target of the conversion
-<span class="fc" id="L59">    Object properties = convertResourceProperties(invocation.getEmissionType());</span>
+<span class="fc" id="L62">    Object properties = objectMapper.convertValue(contextResource.getModel(), invocation.getEmissionType());</span>
 
-<span class="fc" id="L61">    return Maybe.just(properties);</span>
+<span class="fc" id="L64">    return Observable.just(properties);</span>
   }
-
-  private Object convertResourceProperties(Class&lt;?&gt; resourcePropertiesType) {
-
-<span class="fc" id="L66">    return objectMapper.convertValue(contextResource.getModel(), resourcePropertiesType);</span>
-  }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -23,8 +23,10 @@ import static io.wcm.caravan.rhyme.impl.reflection.HalApiReflectionUtils.isHalAp
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -41,167 +43,157 @@ import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
 import io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport;
 import io.wcm.caravan.rhyme.impl.reflection.HalApiReflectionUtils;
 
-class RelatedResourceHandler {
+class RelatedResourceHandler implements Function&lt;HalResource, Observable&lt;Object&gt;&gt; {
 
-<span class="fc" id="L46">  private static final Logger log = LoggerFactory.getLogger(HalApiInvocationHandler.class);</span>
+<span class="fc" id="L48">  private static final Logger log = LoggerFactory.getLogger(RelatedResourceHandler.class);</span>
 
-  private final HalResource contextResource;
+  private final HalApiMethodInvocation invocation;
   private final HalApiClientProxyFactory proxyFactory;
   private final HalApiAnnotationSupport annotationSupport;
 
-<span class="fc" id="L52">  RelatedResourceHandler(HalResource contextResource, HalApiClientProxyFactory proxyFactory, HalApiAnnotationSupport annotationSupport) {</span>
-<span class="fc" id="L53">    this.contextResource = contextResource;</span>
-<span class="fc" id="L54">    this.proxyFactory = proxyFactory;</span>
-<span class="fc" id="L55">    this.annotationSupport = annotationSupport;</span>
-<span class="fc" id="L56">  }</span>
+<span class="fc" id="L54">  RelatedResourceHandler(HalApiMethodInvocation invocation, HalApiAnnotationSupport annotationSupport, HalApiClientProxyFactory proxyFactory) {</span>
+<span class="fc" id="L55">    this.invocation = invocation;</span>
+<span class="fc" id="L56">    this.proxyFactory = proxyFactory;</span>
+<span class="fc" id="L57">    this.annotationSupport = annotationSupport;</span>
+<span class="fc" id="L58">  }</span>
 
-  Observable&lt;Object&gt; handleMethodInvocation(HalApiMethodInvocation invocation) {
+  @Override
+  public Observable&lt;Object&gt; apply(HalResource contextResource) {
 
     // check which relation should be followed and what type of objects the Observable emits
-<span class="fc" id="L61">    String relation = invocation.getRelation();</span>
-<span class="fc" id="L62">    Class&lt;?&gt; relatedResourceType = invocation.getEmissionType();</span>
+<span class="fc" id="L64">    String relation = invocation.getRelation();</span>
+<span class="fc" id="L65">    Class&lt;?&gt; relatedResourceType = invocation.getEmissionType();</span>
 
-<span class="fc bfc" id="L64" title="All 2 branches covered.">    if (!isHalApiInterface(relatedResourceType, annotationSupport)</span>
-<span class="fc bfc" id="L65" title="All 2 branches covered.">        &amp;&amp; !HalApiReflectionUtils.isPlainLink(relatedResourceType)) {</span>
-<span class="fc" id="L66">      throw new HalApiDeveloperException(&quot;The method &quot; + invocation + &quot; has an invalid emission type &quot; + relatedResourceType.getName() +</span>
-<span class="fc" id="L67">          &quot; which does not have a @&quot; + HalApiInterface.class.getSimpleName() + &quot; annotation.&quot;);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">    if (!isHalApiInterface(relatedResourceType, annotationSupport)</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        &amp;&amp; !HalApiReflectionUtils.isPlainLink(relatedResourceType)) {</span>
+<span class="fc" id="L69">      throw new HalApiDeveloperException(&quot;The method &quot; + invocation + &quot; has an invalid emission type &quot; + relatedResourceType.getName() +</span>
+<span class="fc" id="L70">          &quot; which does not have a @&quot; + HalApiInterface.class.getSimpleName() + &quot; annotation.&quot;);</span>
     }
 
-<span class="fc" id="L70">    List&lt;Link&gt; links = contextResource.getLinks(relation);</span>
-<span class="fc" id="L71">    List&lt;HalResource&gt; embeddedResources = contextResource.getEmbedded(relation);</span>
+<span class="fc" id="L73">    List&lt;Link&gt; links = contextResource.getLinks(relation);</span>
+<span class="fc" id="L74">    List&lt;HalResource&gt; embeddedResources = contextResource.getEmbedded(relation);</span>
 
-<span class="fc" id="L73">    Observable&lt;Object&gt; rxEmbedded = getEmbedded(relation, relatedResourceType, embeddedResources, links);</span>
-<span class="fc" id="L74">    Observable&lt;Object&gt; rxLinked = getLinked(invocation, relation, relatedResourceType, embeddedResources, links);</span>
+<span class="fc" id="L76">    Observable&lt;Object&gt; rxEmbedded = getEmbedded(relation, relatedResourceType, embeddedResources, links);</span>
+<span class="fc" id="L77">    Observable&lt;Object&gt; rxLinked = getLinked(invocation, relation, relatedResourceType, embeddedResources, links);</span>
 
-<span class="fc" id="L76">    return rxEmbedded.concatWith(rxLinked);</span>
+<span class="fc" id="L79">    return rxEmbedded.concatWith(rxLinked);</span>
   }
 
   private Observable&lt;Object&gt; getEmbedded(String relation, Class&lt;?&gt; relatedResourceType, List&lt;HalResource&gt; embeddedResources, List&lt;Link&gt; links) {
 
-<span class="fc" id="L81">    log.trace(&quot;{} embedded resources with relation {} were found in the context resource&quot;, embeddedResources.size(), relation);</span>
+<span class="fc" id="L84">    log.trace(&quot;{} embedded resources with relation {} were found in the context resource&quot;, embeddedResources.size(), relation);</span>
 
-<span class="fc" id="L83">    return createProxiesFromEmbeddedResources(relatedResourceType, embeddedResources, links);</span>
+<span class="fc" id="L86">    return createProxiesFromEmbeddedResources(relatedResourceType, embeddedResources, links);</span>
   }
 
   private Observable&lt;Object&gt; getLinked(HalApiMethodInvocation invocation, String relation, Class&lt;?&gt; relatedResourceType, List&lt;HalResource&gt; embeddedResources,
       List&lt;Link&gt; links) {
 
-<span class="fc" id="L89">    log.trace(&quot;{} links with relation {} were found in the context resource&quot;, links.size(), relation);</span>
+<span class="fc" id="L92">    log.trace(&quot;{} links with relation {} were found in the context resource&quot;, links.size(), relation);</span>
 
-<span class="fc" id="L91">    List&lt;Link&gt; relevantLinks = filterLinksToResourcesThatAreAlreadyEmbedded(links, embeddedResources);</span>
+<span class="fc" id="L94">    List&lt;Link&gt; relevantLinks = getOnlyLinksToResourcesThatArentAlreadyEmbedded(links, embeddedResources);</span>
 
-<span class="fc" id="L93">    long numTemplatedLinks = relevantLinks.stream().filter(Link::isTemplated).count();</span>
-<span class="fc" id="L94">    Map&lt;String, Object&gt; variables = invocation.getTemplateVariables();</span>
+<span class="fc" id="L96">    long numTemplatedLinks = relevantLinks.stream().filter(Link::isTemplated).count();</span>
+<span class="fc" id="L97">    Map&lt;String, Object&gt; variables = invocation.getTemplateVariables();</span>
 
-<span class="fc bfc" id="L96" title="All 2 branches covered.">    if (!variables.isEmpty()) {</span>
-      // if null values were specified for all method parameters, we assume that the caller is only interested in the link templates
-<span class="fc bfc" id="L98" title="All 2 branches covered.">      if (invocation.isCalledWithOnlyNullParameters()) {</span>
-<span class="fc" id="L99">        return createProxiesFromLinkTemplates(relatedResourceType, relevantLinks);</span>
-      }
+<span class="fc bfc" id="L99" title="All 2 branches covered.">    if (!variables.isEmpty()) {</span>
 
-      // otherwise we ignore any resolved links, and only consider link templates that contain all variables specified
+      // ignore any resolved links, and only consider link templates that contain all variables specified
       // in the method invocation
-<span class="fc" id="L104">      relevantLinks = relevantLinks.stream()</span>
-<span class="fc" id="L105">          .filter(Link::isTemplated)</span>
-<span class="fc" id="L106">          .filter(link -&gt; linkTemplateHasAllVariables(link, variables))</span>
-<span class="fc" id="L107">          .collect(Collectors.toList());</span>
+<span class="fc" id="L103">      relevantLinks = relevantLinks.stream()</span>
+<span class="fc" id="L104">          .filter(Link::isTemplated)</span>
+<span class="fc" id="L105">          .filter(link -&gt; linkTemplateHasAllVariables(link, variables))</span>
+<span class="fc" id="L106">          .collect(Collectors.toList());</span>
 
-<span class="fc bfc" id="L109" title="All 2 branches covered.">      if (relevantLinks.isEmpty()) {</span>
-<span class="fc" id="L110">        return Observable.error(new HalApiDeveloperException(</span>
-<span class="fc" id="L111">            &quot;No matching link template found with relation &quot; + relation + &quot; which contains the variables &quot; + variables.keySet()</span>
-<span class="fc" id="L112">                + &quot; required for the invocation of &quot; + invocation.toString()));</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">      if (relevantLinks.isEmpty()) {</span>
+<span class="fc" id="L109">        return Observable.error(new HalApiDeveloperException(</span>
+<span class="fc" id="L110">            &quot;No matching link template found with relation &quot; + relation + &quot; which contains the variables &quot; + variables.keySet()</span>
+<span class="fc" id="L111">                + &quot; required for the invocation of &quot; + invocation.toString()));</span>
       }
     }
     else {
       // if the method being called doesn't contain parameters for template variables, then link templates should be ignored
       // (unless there are only link templates present)
-<span class="fc bfc" id="L118" title="All 2 branches covered.">      if (numTemplatedLinks != relevantLinks.size()) {</span>
-<span class="fc bfc" id="L119" title="All 2 branches covered.">        relevantLinks = relevantLinks.stream().filter(link -&gt; !link.isTemplated()).collect(Collectors.toList());</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">      if (numTemplatedLinks != relevantLinks.size()) {</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        relevantLinks = relevantLinks.stream().filter(link -&gt; !link.isTemplated()).collect(Collectors.toList());</span>
       }
     }
 
     // if the resources are linked, then we have to fetch those resources first
-<span class="fc" id="L124">    return createProxiesForLinkedHalResources(relatedResourceType, relevantLinks, variables);</span>
+<span class="fc" id="L123">    return createProxiesForLinkedHalResources(relatedResourceType, relevantLinks, variables);</span>
   }
 
   private static boolean linkTemplateHasAllVariables(Link link, Map&lt;String, Object&gt; variables) {
 
-<span class="fc" id="L129">    List&lt;String&gt; variablesInInvocation = variables.entrySet().stream()</span>
-<span class="fc bfc" id="L130" title="All 2 branches covered.">        .filter(e -&gt; e.getValue() != null)</span>
-<span class="fc" id="L131">        .map(e -&gt; e.getKey())</span>
-<span class="fc" id="L132">        .collect(Collectors.toList());</span>
+<span class="fc" id="L128">    List&lt;String&gt; variablesInInvocation = variables.entrySet().stream()</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        .filter(e -&gt; e.getValue() != null)</span>
+<span class="fc" id="L130">        .map(Entry::getKey)</span>
+<span class="fc" id="L131">        .collect(Collectors.toList());</span>
 
-<span class="fc" id="L134">    UriTemplate template = UriTemplate.fromTemplate(link.getHref());</span>
-<span class="fc" id="L135">    ImmutableList&lt;String&gt; variablesInTemplate = ImmutableList.copyOf(template.getVariables());</span>
-<span class="fc" id="L136">    return variablesInTemplate.containsAll(variablesInInvocation);</span>
+<span class="fc" id="L133">    UriTemplate template = UriTemplate.fromTemplate(link.getHref());</span>
+<span class="fc" id="L134">    ImmutableList&lt;String&gt; variablesInTemplate = ImmutableList.copyOf(template.getVariables());</span>
+<span class="fc" id="L135">    return variablesInTemplate.containsAll(variablesInInvocation);</span>
   }
 
-  private static List&lt;Link&gt; filterLinksToResourcesThatAreAlreadyEmbedded(List&lt;Link&gt; links, List&lt;HalResource&gt; embeddedResources) {
+  private static List&lt;Link&gt; getOnlyLinksToResourcesThatArentAlreadyEmbedded(List&lt;Link&gt; links, List&lt;HalResource&gt; embeddedResources) {
 
-<span class="fc" id="L141">    Set&lt;String&gt; embeddedHrefs = embeddedResources.stream()</span>
-<span class="fc" id="L142">        .map(HalResource::getLink)</span>
-<span class="fc" id="L143">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L144">        .map(Link::getHref)</span>
-<span class="fc" id="L145">        .collect(Collectors.toSet());</span>
+<span class="fc" id="L140">    Set&lt;String&gt; embeddedHrefs = embeddedResources.stream()</span>
+<span class="fc" id="L141">        .map(HalResource::getLink)</span>
+<span class="fc" id="L142">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L143">        .map(Link::getHref)</span>
+<span class="fc" id="L144">        .collect(Collectors.toSet());</span>
 
-<span class="fc" id="L147">    List&lt;Link&gt; relevantLinks = links.stream()</span>
-<span class="fc bfc" id="L148" title="All 2 branches covered.">        .filter(link -&gt; !embeddedHrefs.contains(link.getHref()))</span>
-<span class="fc" id="L149">        .collect(Collectors.toList());</span>
-
-<span class="fc" id="L151">    return relevantLinks;</span>
+<span class="fc" id="L146">    return links.stream()</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        .filter(link -&gt; !embeddedHrefs.contains(link.getHref()))</span>
+<span class="fc" id="L148">        .collect(Collectors.toList());</span>
   }
 
   private Observable&lt;Object&gt; createProxiesFromEmbeddedResources(Class&lt;?&gt; relatedResourceType, List&lt;HalResource&gt; embeddedResources, List&lt;Link&gt; links) {
 
-<span class="fc" id="L156">    Map&lt;String, Link&gt; linksByHref = links.stream()</span>
-<span class="fc" id="L157">        .collect(Collectors.toMap(Link::getHref, link -&gt; link, (l1, l2) -&gt; l1));</span>
+<span class="fc" id="L153">    Map&lt;String, Link&gt; linksByHref = links.stream()</span>
+<span class="fc" id="L154">        .collect(Collectors.toMap(Link::getHref, link -&gt; link, (l1, l2) -&gt; l1));</span>
 
-<span class="fc" id="L159">    return Observable.fromIterable(embeddedResources)</span>
-<span class="fc" id="L160">        .map(embeddedResource -&gt; {</span>
+<span class="fc" id="L156">    return Observable.fromIterable(embeddedResources)</span>
+<span class="fc" id="L157">        .map(embeddedResource -&gt; {</span>
 
           // if the embedded resource is also linked, we want to make the original (possibly named) link available
           // for extraction by the ResourceLinkHandler, but otherwise we just use the self link
-<span class="fc" id="L164">          Link selfLink = embeddedResource.getLink();</span>
-<span class="fc bfc" id="L165" title="All 2 branches covered.">          String selfHref = selfLink != null ? selfLink.getHref() : null;</span>
-<span class="fc" id="L166">          Link link = linksByHref.getOrDefault(selfHref, selfLink);</span>
+<span class="fc" id="L161">          Link selfLink = embeddedResource.getLink();</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">          String selfHref = selfLink != null ? selfLink.getHref() : null;</span>
+<span class="fc" id="L163">          Link link = linksByHref.getOrDefault(selfHref, selfLink);</span>
 
-<span class="fc" id="L168">          return proxyFactory.createProxyFromHalResource(relatedResourceType, embeddedResource, link);</span>
+<span class="fc" id="L165">          return proxyFactory.createProxyFromHalResource(relatedResourceType, embeddedResource, link);</span>
         });
   }
 
   private Observable&lt;Object&gt; createProxiesForLinkedHalResources(Class&lt;?&gt; relatedResourceType, List&lt;Link&gt; links, Map&lt;String, Object&gt; parameters) {
 
-<span class="fc" id="L174">    return Observable.fromIterable(links)</span>
+<span class="fc" id="L171">    return Observable.fromIterable(links)</span>
         // if the link is templated then expand it with the method parameters
-<span class="fc bfc" id="L176" title="All 2 branches covered.">        .map(link -&gt; link.isTemplated() ? expandLinkTemplates(link, parameters) : link)</span>
-<span class="fc" id="L177">        .map(link -&gt; {</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        .map(link -&gt; link.isTemplated() ? expandLinkTemplates(link, parameters) : link)</span>
+<span class="fc" id="L174">        .map(link -&gt; {</span>
 
           // if the method returns a link, then there is no need for a proxy, but we can return it directly
-<span class="fc bfc" id="L180" title="All 2 branches covered.">          if (Link.class.equals(relatedResourceType)) {</span>
-<span class="fc" id="L181">            return link;</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">          if (Link.class.equals(relatedResourceType)) {</span>
+<span class="fc" id="L178">            return link;</span>
           }
 
           // otherwise create a new proxy implementing the HalApiInterface of the link target
-<span class="fc" id="L185">          return proxyFactory.createProxyFromLink(relatedResourceType, link);</span>
+<span class="fc" id="L182">          return proxyFactory.createProxyFromLink(relatedResourceType, link);</span>
         });
   }
 
   private static Link expandLinkTemplates(Link link, Map&lt;String, Object&gt; parameters) {
 
-<span class="fc" id="L191">    String uri = UriTemplate.expand(link.getHref(), parameters);</span>
+<span class="fc" id="L188">    Map&lt;String, Object&gt; parametersWithNonNullValues = parameters.entrySet().stream()</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">        .filter(entry -&gt; entry.getValue() != null)</span>
+<span class="fc" id="L190">        .collect(Collectors.toMap(Entry::getKey, Entry::getValue));</span>
 
-<span class="fc" id="L193">    Link clonedLink = new Link(link.getModel().deepCopy());</span>
-<span class="fc" id="L194">    clonedLink.setTemplated(false);</span>
+<span class="fc" id="L192">    String uri = UriTemplate.expandPartial(link.getHref(), parametersWithNonNullValues);</span>
+
+<span class="fc" id="L194">    Link clonedLink = new Link(link.getModel().deepCopy());</span>
 <span class="fc" id="L195">    clonedLink.setHref(uri);</span>
 <span class="fc" id="L196">    return clonedLink;</span>
   }
-
-  private Observable&lt;Object&gt; createProxiesFromLinkTemplates(Class&lt;?&gt; relatedResourceType, List&lt;Link&gt; links) {
-
-    // do not expand the link templates
-<span class="fc" id="L202">    return Observable.fromIterable(links)</span>
-<span class="fc" id="L203">        .map(link -&gt; proxyFactory.createProxyFromLink(relatedResourceType, link));</span>
-  }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

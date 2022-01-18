@@ -32,24 +32,25 @@ class ResourceLinkHandler {
 <span class="fc" id="L32">  }</span>
 
   Object handleMethodInvocation(HalApiMethodInvocation invocation) {
-<span class="fc" id="L35">    Class&lt;?&gt; returnType = invocation.getReturnType();</span>
 
-<span class="fc bfc" id="L37" title="All 2 branches covered.">    if (returnType.isAssignableFrom(Link.class)) {</span>
-<span class="fc bfc" id="L38" title="All 2 branches covered.">      if (link == null) {</span>
-<span class="fc" id="L39">        return new Link(&quot;&quot;);</span>
+<span class="fc" id="L36">    Class&lt;?&gt; returnType = invocation.getReturnType();</span>
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">    if (returnType.isAssignableFrom(Link.class)) {</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">      if (link == null) {</span>
+<span class="fc" id="L40">        return new Link(&quot;&quot;);</span>
       }
-<span class="fc" id="L41">      return link;</span>
+<span class="fc" id="L42">      return link;</span>
     }
 
-<span class="fc bfc" id="L44" title="All 2 branches covered.">    if (returnType.isAssignableFrom(String.class)) {</span>
-<span class="fc bfc" id="L45" title="All 2 branches covered.">      if (link == null) {</span>
-<span class="fc" id="L46">        return &quot;&quot;;</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">    if (returnType.isAssignableFrom(String.class)) {</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">      if (link == null) {</span>
+<span class="fc" id="L47">        return &quot;&quot;;</span>
       }
-<span class="fc" id="L48">      return link.getHref();</span>
+<span class="fc" id="L49">      return link.getHref();</span>
     }
 
-<span class="fc" id="L51">    throw new HalApiDeveloperException(</span>
-<span class="fc" id="L52">        &quot;the method &quot; + invocation + &quot; annotated with @&quot; + ResourceLink.class.getSimpleName() + &quot; must return either a String or &quot; + Link.class.getName());</span>
+<span class="fc" id="L52">    throw new HalApiDeveloperException(</span>
+<span class="fc" id="L53">        &quot;The method &quot; + invocation + &quot; annotated with @&quot; + ResourceLink.class.getSimpleName() + &quot; must return either a String or &quot; + Link.class.getName());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

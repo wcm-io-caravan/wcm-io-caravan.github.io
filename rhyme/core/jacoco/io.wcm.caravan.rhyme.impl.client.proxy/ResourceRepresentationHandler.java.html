@@ -19,42 +19,45 @@
  */
 package io.wcm.caravan.rhyme.impl.client.proxy;
 
+import java.util.function.Function;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.Observable;
 import io.wcm.caravan.hal.resource.HalResource;
 import io.wcm.caravan.rhyme.api.annotations.ResourceRepresentation;
 import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
 
-class ResourceRepresentationHandler {
+class ResourceRepresentationHandler implements Function&lt;HalResource, Observable&lt;Object&gt;&gt; {
 
-  private final HalResource resource;
+  private final HalApiMethodInvocation invocation;
 
-<span class="fc" id="L34">  ResourceRepresentationHandler(HalResource resource) {</span>
-<span class="fc" id="L35">    this.resource = resource;</span>
-<span class="fc" id="L36">  }</span>
+<span class="fc" id="L36">  ResourceRepresentationHandler(HalApiMethodInvocation invocation) {</span>
+<span class="fc" id="L37">    this.invocation = invocation;</span>
+<span class="fc" id="L38">  }</span>
 
-  Single&lt;Object&gt; handleMethodInvocation(HalApiMethodInvocation invocation) {
+  @Override
+  public Observable&lt;Object&gt; apply(HalResource resource) {
 
-<span class="fc" id="L40">    Class&lt;?&gt; emissionType = invocation.getEmissionType();</span>
+<span class="fc" id="L43">    Class&lt;?&gt; emissionType = invocation.getEmissionType();</span>
 
-<span class="fc bfc" id="L42" title="All 2 branches covered.">    if (emissionType.isAssignableFrom(HalResource.class)) {</span>
-<span class="fc" id="L43">      return Single.just(resource);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">    if (emissionType.isAssignableFrom(HalResource.class)) {</span>
+<span class="fc" id="L46">      return Observable.just(resource);</span>
     }
 
-<span class="fc bfc" id="L46" title="All 2 branches covered.">    if (emissionType.isAssignableFrom(ObjectNode.class)) {</span>
-<span class="fc" id="L47">      return Single.just(resource.getModel());</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">    if (emissionType.isAssignableFrom(ObjectNode.class)) {</span>
+<span class="fc" id="L50">      return Observable.just(resource.getModel());</span>
     }
 
-<span class="fc bfc" id="L50" title="All 2 branches covered.">    if (emissionType.isAssignableFrom(String.class)) {</span>
-<span class="fc" id="L51">      return Single.just(resource.getModel().toString());</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">    if (emissionType.isAssignableFrom(String.class)) {</span>
+<span class="fc" id="L54">      return Observable.just(resource.getModel().toString());</span>
     }
 
-<span class="fc" id="L54">    throw new HalApiDeveloperException(</span>
-<span class="fc" id="L55">        &quot;The method &quot; + invocation + &quot; annotated with @&quot; + ResourceRepresentation.class.getSimpleName() + &quot; must return &quot;</span>
-<span class="fc" id="L56">            + &quot;a reactive type emitting either &quot; + HalResource.class.getSimpleName() + &quot;, &quot; + JsonNode.class.getSimpleName()</span>
-<span class="fc" id="L57">            + &quot;, &quot; + String.class.getSimpleName());</span>
+<span class="fc" id="L57">    throw new HalApiDeveloperException(</span>
+<span class="fc" id="L58">        &quot;The method &quot; + invocation + &quot; annotated with @&quot; + ResourceRepresentation.class.getSimpleName() + &quot; must return &quot;</span>
+<span class="fc" id="L59">            + &quot;a reactive type emitting either &quot; + HalResource.class.getSimpleName() + &quot;, &quot; + JsonNode.class.getSimpleName()</span>
+<span class="fc" id="L60">            + &quot;, &quot; + String.class.getSimpleName());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
