@@ -27,7 +27,7 @@ under the License.
     <item>
       <title>File: 21,
              Errors: 0,
-             Warnings: 9,
+             Warnings: 8,
              Infos: 0
       </title>
             <link>https://caravan.wcm.io/rhyme/osgi-jaxrs/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.osgi-jaxrs//checkstyle.html</link>
@@ -178,7 +178,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
+                  2
                 </td>
                 <td>
                   0

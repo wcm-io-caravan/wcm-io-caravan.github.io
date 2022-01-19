@@ -99,7 +99,7 @@ import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 <span class="fc" id="L99">        .flatMap(this::optionalAsStream);</span>
   }
 
-  private &lt;T&gt; Stream&lt;? extends LinkableResource&gt; optionalAsStream(Optional&lt;? extends LinkableResource&gt; optional) {
+  private Stream&lt;? extends LinkableResource&gt; optionalAsStream(Optional&lt;? extends LinkableResource&gt; optional) {
 
 <span class="fc bfc" id="L104" title="All 2 branches covered.">    return optional.isPresent() ? Stream.of(optional.get()) : Stream.empty();</span>
   }

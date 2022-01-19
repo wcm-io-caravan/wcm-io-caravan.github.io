@@ -90,7 +90,7 @@ import io.wcm.caravan.rhyme.jaxrs.api.JaxRsBundleInfo;
 <span class="fc" id="L90">      throw ex;</span>
     }
 <span class="fc" id="L92">    catch (InvalidSyntaxException | RuntimeException ex) {</span>
-<span class="fc" id="L93">      throw new RuntimeException(&quot;Failed to find JAX-RS Application service for bundle &quot; + bundle.getSymbolicName(), ex);</span>
+<span class="fc" id="L93">      throw new HalApiDeveloperException(&quot;Failed to find JAX-RS Application service for bundle &quot; + bundle.getSymbolicName(), ex);</span>
     }
   }
 

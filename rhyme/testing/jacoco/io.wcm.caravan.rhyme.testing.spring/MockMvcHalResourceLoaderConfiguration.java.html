@@ -36,7 +36,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.google.common.collect.LinkedHashMultimap;
 
-import io.wcm.caravan.rhyme.api.client.HalApiClient;
 import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
 import io.wcm.caravan.rhyme.api.spi.HttpClientCallback;
 import io.wcm.caravan.rhyme.api.spi.HttpClientSupport;
@@ -47,48 +46,48 @@ import io.wcm.caravan.rhyme.api.spi.HttpClientSupport;
  * {@link MockMvc} class.
  */
 @TestConfiguration
-<span class="fc" id="L50">public class MockMvcHalResourceLoaderConfiguration {</span>
+<span class="fc" id="L49">public class MockMvcHalResourceLoaderConfiguration {</span>
 
   @Bean
   public HalResourceLoader halResourceLoader(WebApplicationContext applicationContext) {
 
-<span class="fc" id="L55">    MockMvcClient mockMvcClient = new MockMvcClient(applicationContext);</span>
+<span class="fc" id="L54">    MockMvcClient mockMvcClient = new MockMvcClient(applicationContext);</span>
 
-<span class="fc" id="L57">    return HalResourceLoader.create(mockMvcClient);</span>
+<span class="fc" id="L56">    return HalResourceLoader.create(mockMvcClient);</span>
   }
 
   private static final class MockMvcClient implements HttpClientSupport {
 
     private final MockMvc mockMvc;
 
-<span class="fc" id="L64">    private MockMvcClient(WebApplicationContext applicationContext) {</span>
+<span class="fc" id="L63">    private MockMvcClient(WebApplicationContext applicationContext) {</span>
 
-<span class="fc" id="L66">      this.mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext).build();</span>
-<span class="fc" id="L67">    }</span>
+<span class="fc" id="L65">      this.mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext).build();</span>
+<span class="fc" id="L66">    }</span>
 
     @Override
     public void executeGetRequest(URI uri, HttpClientCallback callback) {
       try {
-<span class="fc" id="L72">        MvcResult result = mockMvc.perform(get(uri)).andReturn();</span>
+<span class="fc" id="L71">        MvcResult result = mockMvc.perform(get(uri)).andReturn();</span>
 
-<span class="fc" id="L74">        MockHttpServletResponse response = result.getResponse();</span>
+<span class="fc" id="L73">        MockHttpServletResponse response = result.getResponse();</span>
 
-<span class="fc" id="L76">        callback.onHeadersAvailable(response.getStatus(), createHeadersMap(response));</span>
+<span class="fc" id="L75">        callback.onHeadersAvailable(response.getStatus(), createHeadersMap(response));</span>
 
-<span class="fc" id="L78">        callback.onBodyAvailable(new ByteArrayInputStream(response.getContentAsByteArray()));</span>
+<span class="fc" id="L77">        callback.onBodyAvailable(new ByteArrayInputStream(response.getContentAsByteArray()));</span>
       }
-<span class="fc" id="L80">      catch (Exception e) {</span>
-<span class="fc" id="L81">        callback.onExceptionCaught(e);</span>
-<span class="fc" id="L82">      }</span>
-<span class="fc" id="L83">    }</span>
+<span class="fc" id="L79">      catch (Exception e) {</span>
+<span class="fc" id="L80">        callback.onExceptionCaught(e);</span>
+<span class="fc" id="L81">      }</span>
+<span class="fc" id="L82">    }</span>
 
     private Map&lt;String, Collection&lt;String&gt;&gt; createHeadersMap(MockHttpServletResponse response) {
 
-<span class="fc" id="L87">      LinkedHashMultimap&lt;String, String&gt; headers = LinkedHashMultimap.create();</span>
+<span class="fc" id="L86">      LinkedHashMultimap&lt;String, String&gt; headers = LinkedHashMultimap.create();</span>
 
-<span class="fc" id="L89">      response.getHeaderNames().forEach(name -&gt; headers.putAll(name, response.getHeaders(name)));</span>
+<span class="fc" id="L88">      response.getHeaderNames().forEach(name -&gt; headers.putAll(name, response.getHeaders(name)));</span>
 
-<span class="fc" id="L91">      return headers.asMap();</span>
+<span class="fc" id="L90">      return headers.asMap();</span>
     }
   }
 }

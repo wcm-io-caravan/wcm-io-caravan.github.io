@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SlingResourceAdapterImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rhyme - AEM Integration</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.aem.impl.adaptation</a> &gt; <span class="el_source">SlingResourceAdapterImpl.java</span></div><h1>SlingResourceAdapterImpl.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.aem.impl.adaptation;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -12,7 +10,6 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 
 import com.google.common.base.Preconditions;
 
@@ -27,8 +24,6 @@ import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
 @Model(adaptables = SlingRhyme.class, adapters = SlingResourceAdapter.class)
 public class SlingResourceAdapterImpl implements SlingResourceAdapter {
 
-<span class="fc" id="L30">  private static final Logger log = getLogger(SlingResourceAdapterImpl.class);</span>
-
   private final SlingRhyme slingRhyme;
   private final RhymeResourceRegistry registry;
 
@@ -39,254 +34,254 @@ public class SlingResourceAdapterImpl implements SlingResourceAdapter {
   private final ResourceFilter resourceFilter;
 
   @Inject
-<span class="fc" id="L42">  public SlingResourceAdapterImpl(@Self SlingRhyme slingRhyme, RhymeResourceRegistry registry) {</span>
-<span class="fc" id="L43">    this.slingRhyme = slingRhyme;</span>
-<span class="fc" id="L44">    this.registry = registry;</span>
-<span class="fc" id="L45">    this.fromResource = null;</span>
-<span class="fc" id="L46">    this.nullResourcePathGiven = false;</span>
-<span class="fc" id="L47">    this.resourceSelector = new ResourceSelector(null, null);</span>
-<span class="fc" id="L48">    this.resourceFilter = new ResourceFilter(null, null);</span>
-<span class="fc" id="L49">  }</span>
+<span class="fc" id="L37">  public SlingResourceAdapterImpl(@Self SlingRhyme slingRhyme, RhymeResourceRegistry registry) {</span>
+<span class="fc" id="L38">    this.slingRhyme = slingRhyme;</span>
+<span class="fc" id="L39">    this.registry = registry;</span>
+<span class="fc" id="L40">    this.fromResource = null;</span>
+<span class="fc" id="L41">    this.nullResourcePathGiven = false;</span>
+<span class="fc" id="L42">    this.resourceSelector = new ResourceSelector(null, null);</span>
+<span class="fc" id="L43">    this.resourceFilter = new ResourceFilter(null, null);</span>
+<span class="fc" id="L44">  }</span>
 
-<span class="fc" id="L51">  private SlingResourceAdapterImpl(SlingResourceAdapterImpl adapter, ResourceSelector selector, ResourceFilter filter) {</span>
-<span class="fc" id="L52">    this.slingRhyme = adapter.slingRhyme;</span>
-<span class="fc" id="L53">    this.registry = adapter.registry;</span>
-<span class="fc" id="L54">    this.fromResource = adapter.fromResource;</span>
-<span class="fc" id="L55">    this.nullResourcePathGiven = adapter.nullResourcePathGiven;</span>
-<span class="fc" id="L56">    this.resourceSelector = new ResourceSelector(selector.description, selector.resources);</span>
-<span class="fc" id="L57">    this.resourceFilter = new ResourceFilter(filter.description, filter.predicate);</span>
-<span class="fc" id="L58">  }</span>
+<span class="fc" id="L46">  private SlingResourceAdapterImpl(SlingResourceAdapterImpl adapter, ResourceSelector selector, ResourceFilter filter) {</span>
+<span class="fc" id="L47">    this.slingRhyme = adapter.slingRhyme;</span>
+<span class="fc" id="L48">    this.registry = adapter.registry;</span>
+<span class="fc" id="L49">    this.fromResource = adapter.fromResource;</span>
+<span class="fc" id="L50">    this.nullResourcePathGiven = adapter.nullResourcePathGiven;</span>
+<span class="fc" id="L51">    this.resourceSelector = new ResourceSelector(selector.description, selector.resources);</span>
+<span class="fc" id="L52">    this.resourceFilter = new ResourceFilter(filter.description, filter.predicate);</span>
+<span class="fc" id="L53">  }</span>
 
-<span class="fc" id="L60">  private SlingResourceAdapterImpl(SlingResourceAdapterImpl adapter, Resource newFromResource) {</span>
-<span class="fc" id="L61">    this.slingRhyme = adapter.slingRhyme;</span>
-<span class="fc" id="L62">    this.registry = adapter.registry;</span>
-<span class="fc" id="L63">    this.fromResource = newFromResource;</span>
-<span class="fc bfc" id="L64" title="All 2 branches covered.">    this.nullResourcePathGiven = newFromResource == null;</span>
-<span class="fc" id="L65">    this.resourceSelector = new ResourceSelector(null, null);</span>
-<span class="fc" id="L66">    this.resourceFilter = new ResourceFilter(null, null);</span>
-<span class="fc" id="L67">  }</span>
+<span class="fc" id="L55">  private SlingResourceAdapterImpl(SlingResourceAdapterImpl adapter, Resource newFromResource) {</span>
+<span class="fc" id="L56">    this.slingRhyme = adapter.slingRhyme;</span>
+<span class="fc" id="L57">    this.registry = adapter.registry;</span>
+<span class="fc" id="L58">    this.fromResource = newFromResource;</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">    this.nullResourcePathGiven = newFromResource == null;</span>
+<span class="fc" id="L60">    this.resourceSelector = new ResourceSelector(null, null);</span>
+<span class="fc" id="L61">    this.resourceFilter = new ResourceFilter(null, null);</span>
+<span class="fc" id="L62">  }</span>
 
   private SlingResourceAdapter fromResource(Resource resource) {
 
-<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (fromResource != null) {</span>
-<span class="fc" id="L72">      throw new HalApiDeveloperException(</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">    if (fromResource != null) {</span>
+<span class="fc" id="L67">      throw new HalApiDeveloperException(</span>
           &quot;You cannot call the from* methods multiple times, as a single context resource is required for the following selection steps&quot;);
     }
 
-<span class="fc bfc" id="L76" title="All 2 branches covered.">    if (resourceSelector.resources != null) {</span>
-<span class="fc" id="L77">      throw new HalApiDeveloperException(&quot;The SlingResourceAdapterImpl#fromXyz methods must be called *before* any of the selectXyz methods are called&quot;);</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (resourceSelector.resources != null) {</span>
+<span class="fc" id="L72">      throw new HalApiDeveloperException(&quot;The SlingResourceAdapterImpl#fromXyz methods must be called *before* any of the selectXyz methods are called&quot;);</span>
     }
 
-<span class="fc" id="L80">    return new SlingResourceAdapterImpl(this, resource);</span>
+<span class="fc" id="L75">    return new SlingResourceAdapterImpl(this, resource);</span>
   }
 
   @Override
   public SlingResourceAdapter fromResourceAt(String path) {
 
-<span class="fc" id="L86">    Resource resource = slingRhyme.getRequestedResource().getResourceResolver().getResource(path);</span>
+<span class="fc" id="L81">    Resource resource = slingRhyme.getRequestedResource().getResourceResolver().getResource(path);</span>
 
-<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (resource == null) {</span>
-<span class="fc" id="L89">      throw new HalApiDeveloperException(&quot;There does not exist a resource at &quot; + path);</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">    if (resource == null) {</span>
+<span class="fc" id="L84">      throw new HalApiDeveloperException(&quot;There does not exist a resource at &quot; + path);</span>
     }
 
-<span class="fc" id="L92">    return fromResource(resource);</span>
+<span class="fc" id="L87">    return fromResource(resource);</span>
   }
 
   @Override
   public SlingResourceAdapter fromCurrentPage() {
 
-<span class="fc" id="L98">    return fromResource(PageUtils.getPageResource(slingRhyme.getCurrentResource()));</span>
+<span class="fc" id="L93">    return fromResource(PageUtils.getPageResource(slingRhyme.getCurrentResource()));</span>
   }
 
   @Override
   public SlingResourceAdapter fromParentPage() {
 
-<span class="fc" id="L104">    return fromResource(PageUtils.getParentPageResource(slingRhyme.getCurrentResource()));</span>
+<span class="fc" id="L99">    return fromResource(PageUtils.getParentPageResource(slingRhyme.getCurrentResource()));</span>
   }
 
   @Override
   public SlingResourceAdapter fromGrandParentPage() {
 
-<span class="fc" id="L110">    return fromResource(PageUtils.getGrandParentPageResource(slingRhyme.getCurrentResource()));</span>
+<span class="fc" id="L105">    return fromResource(PageUtils.getGrandParentPageResource(slingRhyme.getCurrentResource()));</span>
   }
 
   @Override
   public SlingResourceAdapter select(Stream&lt;Resource&gt; resources) {
 
-<span class="fc" id="L116">    return resourceSelector.add(resources, &quot;custom stream of resourcs&quot;);</span>
+<span class="fc" id="L111">    return resourceSelector.add(resources, &quot;custom stream of resourcs&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectCurrentResource() {
 
-<span class="fc" id="L122">    return resourceSelector.add(Stream::of, &quot;current resource at {}&quot;);</span>
+<span class="fc" id="L117">    return resourceSelector.add(Stream::of, &quot;current resource at {}&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectContentResource() {
 
-<span class="fc" id="L128">    return resourceSelector.add(ResourceStreams::getContentResource, &quot;content resource of {}&quot;);</span>
+<span class="fc" id="L123">    return resourceSelector.add(ResourceStreams::getContentResource, &quot;content resource of {}&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectParentResource() {
 
-<span class="fc" id="L134">    return resourceSelector.add(ResourceStreams::getParent, &quot;parent of {}&quot;);</span>
+<span class="fc" id="L129">    return resourceSelector.add(ResourceStreams::getParent, &quot;parent of {}&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectChildResources() {
 
-<span class="fc" id="L140">    return resourceSelector.add(ResourceStreams::getChildren, &quot;children of {}&quot;);</span>
+<span class="fc" id="L135">    return resourceSelector.add(ResourceStreams::getChildren, &quot;children of {}&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectSiblingResource(String name) {
 
-<span class="fc" id="L146">    return resourceSelector.add(res -&gt; ResourceStreams.getNamedSibling(res, name), &quot;sibling of {} with name &quot; + name);</span>
+<span class="fc" id="L141">    return resourceSelector.add(res -&gt; ResourceStreams.getNamedSibling(res, name), &quot;sibling of {} with name &quot; + name);</span>
   }
 
   @Override
   public SlingResourceAdapter selectGrandChildResources() {
 
-<span class="fc" id="L152">    return resourceSelector.add(ResourceStreams::getGrandChildren, &quot;grand children of {}&quot;);</span>
+<span class="fc" id="L147">    return resourceSelector.add(ResourceStreams::getGrandChildren, &quot;grand children of {}&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectContainingPage() {
 
-<span class="fc" id="L158">    return resourceSelector.add((res) -&gt; Stream.of(PageUtils.getPageResource(res)), &quot;page containing {}&quot;);</span>
+<span class="fc" id="L153">    return resourceSelector.add((res) -&gt; Stream.of(PageUtils.getPageResource(res)), &quot;page containing {}&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectChildPages() {
 
-<span class="fc" id="L164">    return resourceSelector.add(ResourceStreams::getChildPages, &quot;child pages of {}&quot;);</span>
+<span class="fc" id="L159">    return resourceSelector.add(ResourceStreams::getChildPages, &quot;child pages of {}&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectGrandChildPages() {
 
-<span class="fc" id="L170">    return resourceSelector.add(ResourceStreams::getGrandChildPages, &quot;grand child pages of {}&quot;);</span>
+<span class="fc" id="L165">    return resourceSelector.add(ResourceStreams::getGrandChildPages, &quot;grand child pages of {}&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectContentOfCurrentPage() {
 
-<span class="fc" id="L176">    return resourceSelector.add(ResourceStreams::getContentOfContainingPage, &quot;content of page containing {}&quot;);</span>
+<span class="fc" id="L171">    return resourceSelector.add(ResourceStreams::getContentOfContainingPage, &quot;content of page containing {}&quot;);</span>
   }
 
 
   @Override
   public SlingResourceAdapter selectContentOfChildPages() {
 
-<span class="fc" id="L183">    return resourceSelector.add(ResourceStreams::getContentOfChildPages, &quot;content of child pages of {}&quot;);</span>
+<span class="fc" id="L178">    return resourceSelector.add(ResourceStreams::getContentOfChildPages, &quot;content of child pages of {}&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectContentOfChildPage(String name) {
 
-<span class="fc" id="L189">    return resourceSelector.add(res -&gt; ResourceStreams.getContentOfNamedChildPage(res, name), &quot;content of child page named '&quot; + name + &quot;' of {}&quot;);</span>
+<span class="fc" id="L184">    return resourceSelector.add(res -&gt; ResourceStreams.getContentOfNamedChildPage(res, name), &quot;content of child page named '&quot; + name + &quot;' of {}&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectContentOfGrandChildPages() {
 
-<span class="fc" id="L195">    return resourceSelector.add(ResourceStreams::getContentOfGrandChildPages, &quot;content of grand child pages of {}&quot;);</span>
+<span class="fc" id="L190">    return resourceSelector.add(ResourceStreams::getContentOfGrandChildPages, &quot;content of grand child pages of {}&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectChildResource(String name) {
 
-<span class="fc" id="L201">    return resourceSelector.add(res -&gt; ResourceStreams.getNamedChild(res, name), &quot;child named '&quot; + name + &quot;' of {}&quot;);</span>
+<span class="fc" id="L196">    return resourceSelector.add(res -&gt; ResourceStreams.getNamedChild(res, name), &quot;child named '&quot; + name + &quot;' of {}&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter selectResourceAt(String path) {
 
-<span class="fc bfc" id="L207" title="All 2 branches covered.">    if (path == null) {</span>
-<span class="fc" id="L208">      return new SlingResourceAdapterImpl(this, null);</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">    if (path == null) {</span>
+<span class="fc" id="L203">      return new SlingResourceAdapterImpl(this, null);</span>
     }
 
-<span class="fc" id="L211">    Resource resource = slingRhyme.getRequestedResource().getResourceResolver().getResource(path);</span>
-<span class="fc bfc" id="L212" title="All 2 branches covered.">    if (resource == null) {</span>
-<span class="fc" id="L213">      return resourceSelector.add(Stream.empty(), &quot;non-existent resource at &quot; + path);</span>
+<span class="fc" id="L206">    Resource resource = slingRhyme.getRequestedResource().getResourceResolver().getResource(path);</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">    if (resource == null) {</span>
+<span class="fc" id="L208">      return resourceSelector.add(Stream.empty(), &quot;non-existent resource at &quot; + path);</span>
     }
 
-<span class="fc" id="L216">    return resourceSelector.add(Stream.of(resource), &quot;different resource at &quot; + resource.getPath());</span>
+<span class="fc" id="L211">    return resourceSelector.add(Stream.of(resource), &quot;different resource at &quot; + resource.getPath());</span>
   }
 
 
   @Override
   public SlingResourceAdapter filter(Predicate&lt;Resource&gt; predicate) {
 
-<span class="fc" id="L223">    return resourceFilter.add(predicate, &quot;custom predicate&quot;);</span>
+<span class="fc" id="L218">    return resourceFilter.add(predicate, &quot;custom predicate&quot;);</span>
   }
 
   @Override
   public SlingResourceAdapter filterAdaptableTo(Class&lt;?&gt; adapterClazz) {
 
-<span class="fc bfc" id="L229" title="All 2 branches covered.">    return resourceFilter.add((res) -&gt; res.adaptTo(adapterClazz) != null,</span>
-<span class="fc" id="L230">        &quot;if resource can be adapted to &quot; + adapterClazz.getSimpleName());</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">    return resourceFilter.add((res) -&gt; res.adaptTo(adapterClazz) != null,</span>
+<span class="fc" id="L225">        &quot;if resource can be adapted to &quot; + adapterClazz.getSimpleName());</span>
   }
 
   @Override
   public &lt;T&gt; SlingResourceAdapter filterAdaptableTo(Class&lt;T&gt; adapterClazz, Predicate&lt;T&gt; predicate) {
 
-<span class="fc" id="L236">    Predicate&lt;Resource&gt; isAdaptableAndAcceptedByPredicated = (res) -&gt; {</span>
-<span class="fc" id="L237">      T adapted = res.adaptTo(adapterClazz);</span>
-<span class="fc bfc" id="L238" title="All 2 branches covered.">      if (adapted == null) {</span>
-<span class="fc" id="L239">        return false;</span>
+<span class="fc" id="L231">    Predicate&lt;Resource&gt; isAdaptableAndAcceptedByPredicated = (res) -&gt; {</span>
+<span class="fc" id="L232">      T adapted = res.adaptTo(adapterClazz);</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">      if (adapted == null) {</span>
+<span class="fc" id="L234">        return false;</span>
       }
-<span class="fc" id="L241">      return predicate.test(adapted);</span>
+<span class="fc" id="L236">      return predicate.test(adapted);</span>
     };
 
-<span class="fc" id="L244">    return resourceFilter.add(isAdaptableAndAcceptedByPredicated,</span>
-<span class="fc" id="L245">        &quot;if resource can be adapted to &quot; + adapterClazz.getSimpleName() + &quot; and is accepted by predicate &quot; + predicate);</span>
+<span class="fc" id="L239">    return resourceFilter.add(isAdaptableAndAcceptedByPredicated,</span>
+<span class="fc" id="L240">        &quot;if resource can be adapted to &quot; + adapterClazz.getSimpleName() + &quot; and is accepted by predicate &quot; + predicate);</span>
   }
 
   @Override
   public SlingResourceAdapter filterWithName(String resourceName) {
 
-<span class="fc" id="L251">    return resourceFilter.add((res) -&gt; res.getName().equals(resourceName),</span>
+<span class="fc" id="L246">    return resourceFilter.add((res) -&gt; res.getName().equals(resourceName),</span>
         &quot;if resource name is &quot; + resourceName);
   }
 
   @Override
   public &lt;I&gt; PostAdaptationStage&lt;I, I&gt; adaptTo(Class&lt;I&gt; clazz) {
 
-<span class="fc bfc" id="L258" title="All 2 branches covered.">    if (nullResourcePathGiven) {</span>
-<span class="fc" id="L259">      return new TemplateProxyPostAdaptationStage&lt;I, I&gt;(this, clazz, registry);</span>
+<span class="fc bfc" id="L253" title="All 2 branches covered.">    if (nullResourcePathGiven) {</span>
+<span class="fc" id="L254">      return new TemplateProxyPostAdaptationStage&lt;I, I&gt;(this, clazz, registry);</span>
     }
 
-<span class="fc" id="L262">    return new SlingModelPostAdaptationStage&lt;I, I&gt;(this, clazz, clazz);</span>
+<span class="fc" id="L257">    return new SlingModelPostAdaptationStage&lt;I, I&gt;(this, clazz, clazz);</span>
   }
 
   @Override
   public &lt;I, M extends I&gt; PostAdaptationStage&lt;I, M&gt; adaptTo(Class&lt;I&gt; halApiInterface, Class&lt;M&gt; slingModelClass) {
 
-<span class="fc bfc" id="L268" title="All 2 branches covered.">    if (nullResourcePathGiven) {</span>
-<span class="fc" id="L269">      throw new HalApiDeveloperException(&quot;You cannot specify a model class if pure template generation was forced by calling #selectResourceAt&quot;);</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">    if (nullResourcePathGiven) {</span>
+<span class="fc" id="L264">      throw new HalApiDeveloperException(&quot;You cannot specify a model class if pure template generation was forced by calling #selectResourceAt&quot;);</span>
     }
 
-<span class="fc" id="L272">    return new SlingModelPostAdaptationStage&lt;I, M&gt;(this, halApiInterface, slingModelClass);</span>
+<span class="fc" id="L267">    return new SlingModelPostAdaptationStage&lt;I, M&gt;(this, halApiInterface, slingModelClass);</span>
   }
 
 
   Stream&lt;Resource&gt; getSelectedResources() {
-<span class="fc" id="L277">    return resourceSelector.resources;</span>
+<span class="fc" id="L272">    return resourceSelector.resources;</span>
   }
 
   String getSelectedResourcesDescription() {
-<span class="fc" id="L281">    return resourceSelector.description;</span>
+<span class="fc" id="L276">    return resourceSelector.description;</span>
   }
 
   Predicate&lt;Resource&gt; getResourceFilterPredicate() {
-<span class="fc" id="L285">    return resourceFilter.predicate;</span>
+<span class="fc" id="L280">    return resourceFilter.predicate;</span>
   }
 
   SlingRhyme getSlingRhyme() {
-<span class="fc" id="L289">    return slingRhyme;</span>
+<span class="fc" id="L284">    return slingRhyme;</span>
   }
 
   private final class ResourceFilter {
@@ -294,28 +289,28 @@ public class SlingResourceAdapterImpl implements SlingResourceAdapter {
     private final String description;
     private final Predicate&lt;Resource&gt; predicate;
 
-<span class="fc" id="L297">    private ResourceFilter(String description, Predicate&lt;Resource&gt; predicate) {</span>
-<span class="fc" id="L298">      this.description = description;</span>
-<span class="fc" id="L299">      this.predicate = predicate;</span>
-<span class="fc" id="L300">    }</span>
+<span class="fc" id="L292">    private ResourceFilter(String description, Predicate&lt;Resource&gt; predicate) {</span>
+<span class="fc" id="L293">      this.description = description;</span>
+<span class="fc" id="L294">      this.predicate = predicate;</span>
+<span class="fc" id="L295">    }</span>
 
     private SlingResourceAdapter add(Predicate&lt;Resource&gt; newPredicate, String newDescription) {
 
       ResourceFilter newFilter;
-<span class="fc bfc" id="L305" title="All 2 branches covered.">      if (predicate != null) {</span>
+<span class="fc bfc" id="L300" title="All 2 branches covered.">      if (predicate != null) {</span>
 
-<span class="fc" id="L307">        String mergedDescription = this.description + &quot; and &quot; + newDescription;</span>
-<span class="fc" id="L308">        Predicate&lt;Resource&gt; mergedPredicate = predicate.and(newPredicate);</span>
+<span class="fc" id="L302">        String mergedDescription = this.description + &quot; and &quot; + newDescription;</span>
+<span class="fc" id="L303">        Predicate&lt;Resource&gt; mergedPredicate = predicate.and(newPredicate);</span>
 
-<span class="fc" id="L310">        newFilter = new ResourceFilter(mergedDescription, mergedPredicate);</span>
-<span class="fc" id="L311">      }</span>
+<span class="fc" id="L305">        newFilter = new ResourceFilter(mergedDescription, mergedPredicate);</span>
+<span class="fc" id="L306">      }</span>
       else {
-<span class="fc" id="L313">        newFilter = new ResourceFilter(newDescription, newPredicate);</span>
+<span class="fc" id="L308">        newFilter = new ResourceFilter(newDescription, newPredicate);</span>
       }
 
-<span class="fc" id="L316">      SlingResourceAdapter newInstance = new SlingResourceAdapterImpl(SlingResourceAdapterImpl.this, resourceSelector, newFilter);</span>
+<span class="fc" id="L311">      SlingResourceAdapter newInstance = new SlingResourceAdapterImpl(SlingResourceAdapterImpl.this, resourceSelector, newFilter);</span>
 
-<span class="fc" id="L318">      return newInstance;</span>
+<span class="fc" id="L313">      return newInstance;</span>
     }
 
   }
@@ -325,43 +320,43 @@ public class SlingResourceAdapterImpl implements SlingResourceAdapter {
     private final String description;
     private final Stream&lt;Resource&gt; resources;
 
-<span class="fc" id="L328">    private ResourceSelector(String description, Stream&lt;Resource&gt; resources) {</span>
-<span class="fc" id="L329">      this.description = description;</span>
-<span class="fc" id="L330">      this.resources = resources;</span>
-<span class="fc" id="L331">    }</span>
+<span class="fc" id="L323">    private ResourceSelector(String description, Stream&lt;Resource&gt; resources) {</span>
+<span class="fc" id="L324">      this.description = description;</span>
+<span class="fc" id="L325">      this.resources = resources;</span>
+<span class="fc" id="L326">    }</span>
 
     private SlingResourceAdapter add(Function&lt;Resource, Stream&lt;Resource&gt;&gt; streamFunc, String newDescription) {
 
-<span class="fc" id="L335">      Resource contextResource = fromResource;</span>
-<span class="fc bfc" id="L336" title="All 2 branches covered.">      if (contextResource == null) {</span>
-<span class="fc" id="L337">        contextResource = slingRhyme.getCurrentResource();</span>
+<span class="fc" id="L330">      Resource contextResource = fromResource;</span>
+<span class="fc bfc" id="L331" title="All 2 branches covered.">      if (contextResource == null) {</span>
+<span class="fc" id="L332">        contextResource = slingRhyme.getCurrentResource();</span>
       }
 
-<span class="fc" id="L340">      Stream&lt;Resource&gt; stream = streamFunc.apply(contextResource);</span>
+<span class="fc" id="L335">      Stream&lt;Resource&gt; stream = streamFunc.apply(contextResource);</span>
 
-<span class="fc" id="L342">      return add(stream, newDescription.replace(&quot;{}&quot;, contextResource.getPath()));</span>
+<span class="fc" id="L337">      return add(stream, newDescription.replace(&quot;{}&quot;, contextResource.getPath()));</span>
     }
 
     private SlingResourceAdapter add(@NotNull Stream&lt;Resource&gt; newResources, String newDescription) {
 
-<span class="fc" id="L347">      Preconditions.checkNotNull(newResources, &quot;the stream of resources must not be null&quot;);</span>
+<span class="fc" id="L342">      Preconditions.checkNotNull(newResources, &quot;the stream of resources must not be null&quot;);</span>
 
       ResourceSelector newSelector;
-<span class="fc bfc" id="L350" title="All 2 branches covered.">      if (resources != null) {</span>
+<span class="fc bfc" id="L345" title="All 2 branches covered.">      if (resources != null) {</span>
 
-<span class="fc" id="L352">        String mergedDescription = this.description + &quot; and &quot; + newDescription;</span>
-<span class="fc" id="L353">        Stream&lt;Resource&gt; mergedStream = Stream.concat(this.resources, newResources);</span>
+<span class="fc" id="L347">        String mergedDescription = this.description + &quot; and &quot; + newDescription;</span>
+<span class="fc" id="L348">        Stream&lt;Resource&gt; mergedStream = Stream.concat(this.resources, newResources);</span>
 
-<span class="fc" id="L355">        newSelector = new ResourceSelector(mergedDescription, mergedStream);</span>
-<span class="fc" id="L356">      }</span>
+<span class="fc" id="L350">        newSelector = new ResourceSelector(mergedDescription, mergedStream);</span>
+<span class="fc" id="L351">      }</span>
       else {
-<span class="fc" id="L358">        newSelector = new ResourceSelector(newDescription, newResources);</span>
+<span class="fc" id="L353">        newSelector = new ResourceSelector(newDescription, newResources);</span>
       }
 
 
-<span class="fc" id="L362">      SlingResourceAdapter newInstance = new SlingResourceAdapterImpl(SlingResourceAdapterImpl.this, newSelector, resourceFilter);</span>
+<span class="fc" id="L357">      SlingResourceAdapter newInstance = new SlingResourceAdapterImpl(SlingResourceAdapterImpl.this, newSelector, resourceFilter);</span>
 
-<span class="fc" id="L364">      return newInstance;</span>
+<span class="fc" id="L359">      return newInstance;</span>
     }
   }
 

@@ -203,7 +203,7 @@
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>     <strong class="jxr_keyword">return</strong> getVariablesInfosFromFields(instance, dtoClass);
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>   }
 <a class="jxr_linenumber" name="L197" href="#L197">197</a> 
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; List&lt;TemplateVariableWithTypeInfo&gt; getVariableInfosFromPublicGetter(Object instance, Class dtoClass) {
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> List&lt;TemplateVariableWithTypeInfo&gt; getVariableInfosFromPublicGetter(Object instance, Class dtoClass) {
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L200" href="#L200">200</a> 
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>       PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(dtoClass).getPropertyDescriptors();
@@ -242,7 +242,7 @@
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>     }
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>   }
 <a class="jxr_linenumber" name="L236" href="#L236">236</a> 
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; List&lt;TemplateVariableWithTypeInfo&gt; getVariablesInfosFromFields(Object instance, Class dtoClass) {
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> List&lt;TemplateVariableWithTypeInfo&gt; getVariablesInfosFromFields(Object instance, Class dtoClass) {
 <a class="jxr_linenumber" name="L238" href="#L238">238</a> 
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>       <strong class="jxr_keyword">return</strong> Stream.of(FieldUtils.getAllFields(dtoClass))

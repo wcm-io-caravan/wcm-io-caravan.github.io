@@ -283,15 +283,13 @@ public final class HalApiReflectionUtils {
 <span class="fc" id="L283">      catch (IllegalAccessException | InvocationTargetException | RuntimeException ex) {</span>
 
         // if the original implementation method just threw a runtime exception then re-throw that cause
-<span class="fc bfc" id="L286" title="All 2 branches covered.">        if (ex instanceof InvocationTargetException) {</span>
-<span class="fc bfc" id="L287" title="All 2 branches covered.">          if (ex.getCause() instanceof RuntimeException) {</span>
-<span class="fc" id="L288">            throw (RuntimeException)ex.getCause();</span>
-          }
+<span class="fc bfc" id="L286" title="All 4 branches covered.">        if (ex instanceof InvocationTargetException &amp;&amp; ex.getCause() instanceof RuntimeException) {</span>
+<span class="fc" id="L287">          throw (RuntimeException)ex.getCause();</span>
         }
 
-<span class="fc" id="L292">        throw new HalApiServerException(500,</span>
-<span class="fc" id="L293">            &quot;Failed to invoke method &quot; + method.getName() + &quot; on proxy created with class &quot;</span>
-<span class="fc" id="L294">                + ResourceConversions.class.getSimpleName(),</span>
+<span class="fc" id="L290">        throw new HalApiServerException(500,</span>
+<span class="fc" id="L291">            &quot;Failed to invoke method &quot; + method.getName() + &quot; on proxy created with class &quot;</span>
+<span class="fc" id="L292">                + ResourceConversions.class.getSimpleName(),</span>
             ex);
       }
 
@@ -300,19 +298,19 @@ public final class HalApiReflectionUtils {
 
   public static String getPropertyName(Method method, HalApiTypeSupport typeSupport) {
 
-<span class="fc" id="L303">    String fromAnnotation = typeSupport.getPropertyName(method);</span>
-<span class="fc bfc" id="L304" title="All 2 branches covered.">    if (StringUtils.isNotBlank(fromAnnotation)) {</span>
-<span class="fc" id="L305">      return fromAnnotation;</span>
+<span class="fc" id="L301">    String fromAnnotation = typeSupport.getPropertyName(method);</span>
+<span class="fc bfc" id="L302" title="All 2 branches covered.">    if (StringUtils.isNotBlank(fromAnnotation)) {</span>
+<span class="fc" id="L303">      return fromAnnotation;</span>
     }
 
-<span class="fc" id="L308">    String name = method.getName();</span>
-<span class="fc bfc" id="L309" title="All 2 branches covered.">    if (name.startsWith(&quot;get&quot;)) {</span>
-<span class="fc" id="L310">      return Introspector.decapitalize(name.substring(3));</span>
+<span class="fc" id="L306">    String name = method.getName();</span>
+<span class="fc bfc" id="L307" title="All 2 branches covered.">    if (name.startsWith(&quot;get&quot;)) {</span>
+<span class="fc" id="L308">      return Introspector.decapitalize(name.substring(3));</span>
     }
-<span class="fc bfc" id="L312" title="All 2 branches covered.">    if (name.startsWith(&quot;is&quot;)) {</span>
-<span class="fc" id="L313">      return Introspector.decapitalize(name.substring(2));</span>
+<span class="fc bfc" id="L310" title="All 2 branches covered.">    if (name.startsWith(&quot;is&quot;)) {</span>
+<span class="fc" id="L311">      return Introspector.decapitalize(name.substring(2));</span>
     }
-<span class="fc" id="L315">    return Introspector.decapitalize(name);</span>
+<span class="fc" id="L313">    return Introspector.decapitalize(name);</span>
   }
 
   /**
@@ -325,30 +323,30 @@ public final class HalApiReflectionUtils {
    */
   public static &lt;T&gt; T createLinkableResourceProxy(Link link, Class&lt;T&gt; halApiInterface) {
 
-<span class="fc" id="L328">    Class[] interfaces = Stream.of(halApiInterface, LinkableResource.class).toArray(Class[]::new);</span>
+<span class="fc" id="L326">    Class[] interfaces = Stream.of(halApiInterface, LinkableResource.class).toArray(Class[]::new);</span>
 
-<span class="fc" id="L330">    InvocationHandler handler = new InvocationHandler() {</span>
+<span class="fc" id="L328">    InvocationHandler handler = new InvocationHandler() {</span>
 
       @Override
       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-<span class="fc bfc" id="L335" title="All 2 branches covered.">        if (&quot;toString&quot;.equals(method.getName())) {</span>
-<span class="fc" id="L336">          return &quot;Link-based proxy of &quot; + halApiInterface.getSimpleName();</span>
+<span class="fc bfc" id="L333" title="All 2 branches covered.">        if (&quot;toString&quot;.equals(method.getName())) {</span>
+<span class="fc" id="L334">          return &quot;Link-based proxy of &quot; + halApiInterface.getSimpleName();</span>
         }
 
-<span class="fc bfc" id="L339" title="All 4 branches covered.">        if (&quot;createLink&quot;.equals(method.getName()) &amp;&amp; method.getParameterCount() == 0) {</span>
-<span class="fc" id="L340">          return link;</span>
+<span class="fc bfc" id="L337" title="All 4 branches covered.">        if (&quot;createLink&quot;.equals(method.getName()) &amp;&amp; method.getParameterCount() == 0) {</span>
+<span class="fc" id="L338">          return link;</span>
         }
 
-<span class="fc" id="L343">        throw new HalApiDeveloperException(&quot;You cannot call anything but #createLink on this &quot; + halApiInterface.getSimpleName()</span>
+<span class="fc" id="L341">        throw new HalApiDeveloperException(&quot;You cannot call anything but #createLink on this &quot; + halApiInterface.getSimpleName()</span>
             + &quot; instance, because it is only a proxy that was created from a Link&quot;);
       }
     };
 
     @SuppressWarnings(&quot;unchecked&quot;)
-<span class="fc" id="L349">    T proxy = (T)Proxy.newProxyInstance(halApiInterface.getClassLoader(), interfaces, handler);</span>
+<span class="fc" id="L347">    T proxy = (T)Proxy.newProxyInstance(halApiInterface.getClassLoader(), interfaces, handler);</span>
 
-<span class="fc" id="L351">    return proxy;</span>
+<span class="fc" id="L349">    return proxy;</span>
   }
 
 }

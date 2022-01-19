@@ -38,9 +38,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -65,115 +62,113 @@ import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
  * Full implementation of {@link RequestMetricsCollector} that keeps track of all upstream resources that have been
  * retrieved, and additional invocation/emission times to analyze the performance of a request
  */
-<span class="fc" id="L68">public class FullMetadataGenerator extends MaxAgeOnlyCollector implements RequestMetricsCollector {</span>
+<span class="fc" id="L65">public class FullMetadataGenerator extends MaxAgeOnlyCollector implements RequestMetricsCollector {</span>
 
-<span class="fc" id="L70">  private final Stopwatch overalResponseTimeStopwatch = Stopwatch.createStarted();</span>
+<span class="fc" id="L67">  private final Stopwatch overalResponseTimeStopwatch = Stopwatch.createStarted();</span>
 
-<span class="fc" id="L72">  private static final Logger log = LoggerFactory.getLogger(FullMetadataGenerator.class);</span>
-
-<span class="fc" id="L74">  private static final Map&lt;TimeUnit, String&gt; TIME_UNIT_ABBRS = ImmutableMap.of(</span>
+<span class="fc" id="L69">  private static final Map&lt;TimeUnit, String&gt; TIME_UNIT_ABBRS = ImmutableMap.of(</span>
       TimeUnit.MINUTES, &quot;m&quot;,
       TimeUnit.SECONDS, &quot;s&quot;,
       TimeUnit.MILLISECONDS, &quot;ms&quot;,
       TimeUnit.MICROSECONDS, &quot;μs&quot;,
       TimeUnit.NANOSECONDS, &quot;ns&quot;);
 
-<span class="fc" id="L81">  private final List&lt;TimeMeasurement&gt; inputResponseTimes = Collections.synchronizedList(new ArrayList&lt;&gt;());</span>
-<span class="fc" id="L82">  private final ListMultimap&lt;String, TimeMeasurement&gt; methodInvocationTimes = Multimaps.synchronizedListMultimap(LinkedListMultimap.create());</span>
+<span class="fc" id="L76">  private final List&lt;TimeMeasurement&gt; inputResponseTimes = Collections.synchronizedList(new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L77">  private final ListMultimap&lt;String, TimeMeasurement&gt; methodInvocationTimes = Multimaps.synchronizedListMultimap(LinkedListMultimap.create());</span>
 
-<span class="fc" id="L84">  private final List&lt;Link&gt; sourceLinks = Collections.synchronizedList(new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L79">  private final List&lt;Link&gt; sourceLinks = Collections.synchronizedList(new ArrayList&lt;&gt;());</span>
 
-<span class="fc" id="L86">  private final AtomicLong metricsCollectionNanos = new AtomicLong();</span>
+<span class="fc" id="L81">  private final AtomicLong metricsCollectionNanos = new AtomicLong();</span>
 
   @Override
   public void onResponseRetrieved(String resourceUri, String resourceTitle, Integer maxAgeSeconds, long responseTimeMicros) {
 
-<span class="fc" id="L91">    super.onResponseRetrieved(resourceUri, resourceTitle, maxAgeSeconds, responseTimeMicros);</span>
+<span class="fc" id="L86">    super.onResponseRetrieved(resourceUri, resourceTitle, maxAgeSeconds, responseTimeMicros);</span>
 
-<span class="fc" id="L93">    inputResponseTimes.add(new TimeMeasurement(resourceUri, responseTimeMicros / 1000.f, TimeUnit.MILLISECONDS));</span>
+<span class="fc" id="L88">    inputResponseTimes.add(new TimeMeasurement(resourceUri, responseTimeMicros / 1000.f, TimeUnit.MILLISECONDS));</span>
 
-<span class="fc" id="L95">    Link link = new Link(resourceUri);</span>
-<span class="fc" id="L96">    link.setTitle(resourceTitle);</span>
-<span class="fc" id="L97">    sourceLinks.add(link);</span>
-<span class="fc" id="L98">  }</span>
+<span class="fc" id="L90">    Link link = new Link(resourceUri);</span>
+<span class="fc" id="L91">    link.setTitle(resourceTitle);</span>
+<span class="fc" id="L92">    sourceLinks.add(link);</span>
+<span class="fc" id="L93">  }</span>
 
   @Override
   public RequestMetricsStopwatch startStopwatch(Class measuringClass, Supplier&lt;String&gt; taskDescription) {
 
-<span class="fc" id="L103">    return new RequestMetricsStopwatch() {</span>
+<span class="fc" id="L98">    return new RequestMetricsStopwatch() {</span>
 
-<span class="fc" id="L105">      private final Stopwatch stopwatch = Stopwatch.createStarted();</span>
+<span class="fc" id="L100">      private final Stopwatch stopwatch = Stopwatch.createStarted();</span>
 
       @Override
       public void close() {
-<span class="fc" id="L109">        rememberInvocationTimes(measuringClass, taskDescription, stopwatch.elapsed(TimeUnit.MICROSECONDS));</span>
-<span class="fc" id="L110">      }</span>
+<span class="fc" id="L104">        rememberInvocationTimes(measuringClass, taskDescription, stopwatch.elapsed(TimeUnit.MICROSECONDS));</span>
+<span class="fc" id="L105">      }</span>
     };
   }
 
   @Override
   public void onMethodInvocationFinished(Class category, String methodDescription, long invocationDurationMicros) {
 
-<span class="fc" id="L117">    rememberInvocationTimes(category, () -&gt; methodDescription, invocationDurationMicros);</span>
-<span class="fc" id="L118">  }</span>
+<span class="fc" id="L112">    rememberInvocationTimes(category, () -&gt; methodDescription, invocationDurationMicros);</span>
+<span class="fc" id="L113">  }</span>
 
   private void rememberInvocationTimes(Class category, Supplier&lt;String&gt; methodDescription, long invocationDurationMicros) {
 
-<span class="fc" id="L122">    Stopwatch sw = Stopwatch.createStarted();</span>
+<span class="fc" id="L117">    Stopwatch sw = Stopwatch.createStarted();</span>
 
-<span class="fc" id="L124">    methodInvocationTimes.put(category.getSimpleName(),</span>
-<span class="fc" id="L125">        new TimeMeasurement(methodDescription.get(), invocationDurationMicros / 1000.f, TimeUnit.MILLISECONDS));</span>
+<span class="fc" id="L119">    methodInvocationTimes.put(category.getSimpleName(),</span>
+<span class="fc" id="L120">        new TimeMeasurement(methodDescription.get(), invocationDurationMicros / 1000.f, TimeUnit.MILLISECONDS));</span>
 
-<span class="fc" id="L127">    metricsCollectionNanos.addAndGet(sw.elapsed(TimeUnit.NANOSECONDS));</span>
-<span class="fc" id="L128">  }</span>
+<span class="fc" id="L122">    metricsCollectionNanos.addAndGet(sw.elapsed(TimeUnit.NANOSECONDS));</span>
+<span class="fc" id="L123">  }</span>
 
   List&lt;TimeMeasurement&gt; getSortedInputResponseTimes() {
-<span class="fc" id="L131">    return TimeMeasurement.LONGEST_TIME_FIRST.sortedCopy(inputResponseTimes);</span>
+<span class="fc" id="L126">    return TimeMeasurement.LONGEST_TIME_FIRST.sortedCopy(inputResponseTimes);</span>
   }
 
   List&lt;TimeMeasurement&gt; getGroupedAndSortedInvocationTimes(String simpleClassName, boolean useMax) {
 
-<span class="fc" id="L136">    List&lt;TimeMeasurement&gt; invocationTimes = methodInvocationTimes.get(simpleClassName);</span>
+<span class="fc" id="L131">    List&lt;TimeMeasurement&gt; invocationTimes = methodInvocationTimes.get(simpleClassName);</span>
 
-<span class="fc" id="L138">    List&lt;TimeMeasurement&gt; groupedInvocationTimes = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L139">    invocationTimes.stream()</span>
-<span class="fc" id="L140">        .collect(Collectors.groupingBy(TimeMeasurement::getText))</span>
-<span class="fc" id="L141">        .forEach((text, measurements) -&gt; {</span>
-<span class="fc" id="L142">          DoubleStream individualTimes = measurements.stream().mapToDouble(TimeMeasurement::getTime);</span>
+<span class="fc" id="L133">    List&lt;TimeMeasurement&gt; groupedInvocationTimes = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L134">    invocationTimes.stream()</span>
+<span class="fc" id="L135">        .collect(Collectors.groupingBy(TimeMeasurement::getText))</span>
+<span class="fc" id="L136">        .forEach((text, measurements) -&gt; {</span>
+<span class="fc" id="L137">          DoubleStream individualTimes = measurements.stream().mapToDouble(TimeMeasurement::getTime);</span>
 
-<span class="fc bfc" id="L144" title="All 2 branches covered.">          double totalTime = useMax ? individualTimes.max().orElse(0.f) : individualTimes.sum();</span>
-<span class="fc" id="L145">          long invocations = measurements.stream().count();</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">          double totalTime = useMax ? individualTimes.max().orElse(0.f) : individualTimes.sum();</span>
+<span class="fc" id="L140">          long invocations = measurements.stream().count();</span>
 
-<span class="fc" id="L147">          String prefix = &quot;&quot;;</span>
-<span class="fc bfc" id="L148" title="All 2 branches covered.">          if (measurements.size() &gt; 1) {</span>
-<span class="fc bfc" id="L149" title="All 2 branches covered.">            prefix = useMax ? &quot;max of &quot; : &quot;sum of &quot;;</span>
+<span class="fc" id="L142">          String prefix = &quot;&quot;;</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">          if (measurements.size() &gt; 1) {</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">            prefix = useMax ? &quot;max of &quot; : &quot;sum of &quot;;</span>
           }
-<span class="fc" id="L151">          groupedInvocationTimes.add(new TimeMeasurement(prefix + invocations + &quot;x &quot; + text, (float)totalTime, measurements.get(0).getUnit()));</span>
-<span class="fc" id="L152">        });</span>
+<span class="fc" id="L146">          groupedInvocationTimes.add(new TimeMeasurement(prefix + invocations + &quot;x &quot; + text, (float)totalTime, measurements.get(0).getUnit()));</span>
+<span class="fc" id="L147">        });</span>
 
-<span class="fc" id="L154">    groupedInvocationTimes.sort(TimeMeasurement.LONGEST_TIME_FIRST);</span>
+<span class="fc" id="L149">    groupedInvocationTimes.sort(TimeMeasurement.LONGEST_TIME_FIRST);</span>
 
-<span class="fc" id="L156">    return groupedInvocationTimes;</span>
+<span class="fc" id="L151">    return groupedInvocationTimes;</span>
   }
 
   float getOverallResponseTimeMillis() {
-<span class="fc" id="L160">    return overalResponseTimeStopwatch.elapsed(TimeUnit.MICROSECONDS) / 1000.f;</span>
+<span class="fc" id="L155">    return overalResponseTimeStopwatch.elapsed(TimeUnit.MICROSECONDS) / 1000.f;</span>
   }
 
   float getSumOfResponseTimeMillis() {
-<span class="fc" id="L164">    return (float)inputResponseTimes.stream()</span>
-<span class="fc" id="L165">        .mapToDouble(m -&gt; m.getTime())</span>
-<span class="fc" id="L166">        .sum();</span>
+<span class="fc" id="L159">    return (float)inputResponseTimes.stream()</span>
+<span class="fc" id="L160">        .mapToDouble(m -&gt; m.getTime())</span>
+<span class="fc" id="L161">        .sum();</span>
   }
 
   float getSumOfInvocationMillis(Class category) {
-<span class="fc" id="L170">    return (float)methodInvocationTimes.get(category.getSimpleName()).stream()</span>
-<span class="fc" id="L171">        .mapToDouble(m -&gt; m.getTime())</span>
-<span class="fc" id="L172">        .sum();</span>
+<span class="fc" id="L165">    return (float)methodInvocationTimes.get(category.getSimpleName()).stream()</span>
+<span class="fc" id="L166">        .mapToDouble(m -&gt; m.getTime())</span>
+<span class="fc" id="L167">        .sum();</span>
   }
 
   List&lt;Link&gt; getSourceLinks() {
-<span class="fc" id="L176">    return ImmutableList.copyOf(sourceLinks);</span>
+<span class="fc" id="L171">    return ImmutableList.copyOf(sourceLinks);</span>
   }
 
   /**
@@ -184,84 +179,84 @@ import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
   @Override
   public HalResource createMetadataResource(LinkableResource resourceImpl) {
 
-<span class="fc" id="L187">    super.createMetadataResource(resourceImpl);</span>
+<span class="fc" id="L182">    super.createMetadataResource(resourceImpl);</span>
 
-<span class="fc" id="L189">    Stopwatch stopwatch = Stopwatch.createStarted();</span>
+<span class="fc" id="L184">    Stopwatch stopwatch = Stopwatch.createStarted();</span>
 
-<span class="fc" id="L191">    HalResource metadataResource = new HalResource();</span>
+<span class="fc" id="L186">    HalResource metadataResource = new HalResource();</span>
 
-<span class="fc" id="L193">    metadataResource.getModel().put(&quot;title&quot;, &quot;Detailed information about the performance and input data for this request&quot;);</span>
-<span class="fc bfc" id="L194" title="All 2 branches covered.">    if (resourceImpl != null) {</span>
-<span class="fc" id="L195">      metadataResource.getModel().put(&quot;class&quot;, resourceImpl.getClass().getName());</span>
+<span class="fc" id="L188">    metadataResource.getModel().put(&quot;title&quot;, &quot;Detailed information about the performance and input data for this request&quot;);</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">    if (resourceImpl != null) {</span>
+<span class="fc" id="L190">      metadataResource.getModel().put(&quot;class&quot;, resourceImpl.getClass().getName());</span>
     }
 
-<span class="fc" id="L198">    HalResource viaLinks = new HalResource().addLinks(StandardRelations.VIA, getSourceLinks());</span>
-<span class="fc" id="L199">    addEmbedded(metadataResource, SOURCE_LINKS, viaLinks,</span>
+<span class="fc" id="L193">    HalResource viaLinks = new HalResource().addLinks(StandardRelations.VIA, getSourceLinks());</span>
+<span class="fc" id="L194">    addEmbedded(metadataResource, SOURCE_LINKS, viaLinks,</span>
         &quot;Links to all requested upstream HAL resources (in the order the responses have been retrieved)&quot;,
         &quot;If you see lots of untitled resources here then free feel to add a title to the self link in that resource in the upstream service.&quot;);
 
-<span class="fc" id="L203">    HalResource responseTimes = createTimingResource(getSortedInputResponseTimes());</span>
-<span class="fc" id="L204">    addEmbedded(metadataResource, RESPONSE_TIMES, responseTimes,</span>
+<span class="fc" id="L198">    HalResource responseTimes = createTimingResource(getSortedInputResponseTimes());</span>
+<span class="fc" id="L199">    addEmbedded(metadataResource, RESPONSE_TIMES, responseTimes,</span>
         &quot;The individual response &amp; parse times of all retrieved HAL resources&quot;,
         &quot;Response times &gt; ~20ms usually indicate that the resource was not found in cache&quot;
             + &quot; - a reload of this resource should then be much faster. &quot;
             + &quot;If you see many individual requests here then check if the upstream &quot;
             + &quot;service also provides a way to fetch this data all at once. &quot;);
 
-<span class="fc" id="L211">    HalResource maxAgeResource = createTimingResource(getSortedInputMaxAgeSeconds());</span>
-<span class="fc" id="L212">    addEmbedded(metadataResource, MAX_AGE, maxAgeResource,</span>
+<span class="fc" id="L206">    HalResource maxAgeResource = createTimingResource(getSortedInputMaxAgeSeconds());</span>
+<span class="fc" id="L207">    addEmbedded(metadataResource, MAX_AGE, maxAgeResource,</span>
         &quot;The max-age cache header values of all retrieved resources&quot;,
         &quot;If the max-age in this response's cache headers is lower then you expected, &quot;
             + &quot;then check the resources at the very bottom of the list, because they will determine the overall max-age time.&quot;);
 
-<span class="fc" id="L217">    List&lt;TimingResourceCategory&gt; allCategories = getAllCategories();</span>
+<span class="fc" id="L212">    List&lt;TimingResourceCategory&gt; allCategories = getAllCategories();</span>
 
-<span class="fc" id="L219">    allCategories.forEach(category -&gt; createAndEmbed(metadataResource, category));</span>
+<span class="fc" id="L214">    allCategories.forEach(category -&gt; createAndEmbed(metadataResource, category));</span>
 
     // and also include the overall max-age of the response
-<span class="fc" id="L222">    metadataResource.getModel().put(&quot;maxAge&quot;, getResponseMaxAge() + &quot; s&quot;);</span>
+<span class="fc" id="L217">    metadataResource.getModel().put(&quot;maxAge&quot;, getResponseMaxAge() + &quot; s&quot;);</span>
 
     // and a summary of the important timing results
-<span class="fc" id="L225">    metadataResource.getModel().put(&quot;sumOfProxyInvocationTime&quot;, getSumOfInvocationMillis(HalApiClient.class) + &quot;ms&quot;);</span>
-<span class="fc" id="L226">    metadataResource.getModel().put(&quot;sumOfResourceAssemblyTime&quot;, getSumOfInvocationMillis(AsyncHalResponseRenderer.class) + &quot;ms&quot;);</span>
-<span class="fc" id="L227">    metadataResource.getModel().put(&quot;sumOfResponseAndParseTimes&quot;, getSumOfResponseTimeMillis() + &quot;ms&quot;);</span>
-<span class="fc" id="L228">    metadataResource.getModel().put(&quot;overallServerSideResponseTime&quot;, getOverallResponseTimeMillis() + &quot;ms&quot;);</span>
-<span class="fc" id="L229">    metadataResource.getModel().put(&quot;metricsCollectionTime&quot;, TimeUnit.NANOSECONDS.toMillis(metricsCollectionNanos.get()) + &quot;ms&quot;);</span>
-<span class="fc" id="L230">    metadataResource.getModel().put(&quot;metadataGenerationTime&quot;, stopwatch.elapsed(TimeUnit.MILLISECONDS) + &quot;ms&quot;);</span>
+<span class="fc" id="L220">    metadataResource.getModel().put(&quot;sumOfProxyInvocationTime&quot;, getSumOfInvocationMillis(HalApiClient.class) + &quot;ms&quot;);</span>
+<span class="fc" id="L221">    metadataResource.getModel().put(&quot;sumOfResourceAssemblyTime&quot;, getSumOfInvocationMillis(AsyncHalResponseRenderer.class) + &quot;ms&quot;);</span>
+<span class="fc" id="L222">    metadataResource.getModel().put(&quot;sumOfResponseAndParseTimes&quot;, getSumOfResponseTimeMillis() + &quot;ms&quot;);</span>
+<span class="fc" id="L223">    metadataResource.getModel().put(&quot;overallServerSideResponseTime&quot;, getOverallResponseTimeMillis() + &quot;ms&quot;);</span>
+<span class="fc" id="L224">    metadataResource.getModel().put(&quot;metricsCollectionTime&quot;, TimeUnit.NANOSECONDS.toMillis(metricsCollectionNanos.get()) + &quot;ms&quot;);</span>
+<span class="fc" id="L225">    metadataResource.getModel().put(&quot;metadataGenerationTime&quot;, stopwatch.elapsed(TimeUnit.MILLISECONDS) + &quot;ms&quot;);</span>
 
-<span class="fc" id="L232">    return metadataResource;</span>
+<span class="fc" id="L227">    return metadataResource;</span>
   }
 
   private List&lt;TimingResourceCategory&gt; getAllCategories() {
 
-<span class="fc" id="L237">    List&lt;TimingResourceCategory&gt; knownCategories = getKnownCategoriesWithDescription();</span>
+<span class="fc" id="L232">    List&lt;TimingResourceCategory&gt; knownCategories = getKnownCategoriesWithDescription();</span>
 
-<span class="fc" id="L239">    List&lt;String&gt; knownClassNames = knownCategories.stream()</span>
-<span class="fc" id="L240">        .map(category -&gt; category.simpleClassName)</span>
-<span class="fc" id="L241">        .collect(Collectors.toList());</span>
+<span class="fc" id="L234">    List&lt;String&gt; knownClassNames = knownCategories.stream()</span>
+<span class="fc" id="L235">        .map(category -&gt; category.simpleClassName)</span>
+<span class="fc" id="L236">        .collect(Collectors.toList());</span>
 
-<span class="fc" id="L243">    List&lt;TimingResourceCategory&gt; allCategories = new ArrayList&lt;&gt;(knownCategories);</span>
+<span class="fc" id="L238">    List&lt;TimingResourceCategory&gt; allCategories = new ArrayList&lt;&gt;(knownCategories);</span>
 
-<span class="fc" id="L245">    methodInvocationTimes.keySet().stream()</span>
-<span class="fc bfc" id="L246" title="All 2 branches covered.">        .filter(className -&gt; !knownClassNames.contains(className))</span>
-<span class="fc" id="L247">        .map(className -&gt; new TimingResourceCategory(className, INVOCATION_TIMES, &quot;Invocations of methods in class &quot; + className, null, false))</span>
-<span class="fc" id="L248">        .forEach(allCategories::add);</span>
+<span class="fc" id="L240">    methodInvocationTimes.keySet().stream()</span>
+<span class="fc bfc" id="L241" title="All 2 branches covered.">        .filter(className -&gt; !knownClassNames.contains(className))</span>
+<span class="fc" id="L242">        .map(className -&gt; new TimingResourceCategory(className, INVOCATION_TIMES, &quot;Invocations of methods in class &quot; + className, null, false))</span>
+<span class="fc" id="L243">        .forEach(allCategories::add);</span>
 
-<span class="fc" id="L250">    return allCategories;</span>
+<span class="fc" id="L245">    return allCategories;</span>
   }
 
   private ImmutableList&lt;TimingResourceCategory&gt; getKnownCategoriesWithDescription() {
-<span class="fc" id="L254">    return ImmutableList.of(</span>
+<span class="fc" id="L249">    return ImmutableList.of(</span>
 
-<span class="fc" id="L256">        new TimingResourceCategory(EmissionStopwatch.class.getSimpleName(), EMISSION_TIMES,</span>
+<span class="fc" id="L251">        new TimingResourceCategory(EmissionStopwatch.class.getSimpleName(), EMISSION_TIMES,</span>
             &quot;A breakdown of emission and rendering times by resource and method&quot;,
             &quot;Use these times to identify performance hotspots in your server-side implementation classes&quot;, true),
 
-<span class="fc" id="L260">        new TimingResourceCategory(HalApiClient.class.getSimpleName(), PROXY_TIMES,</span>
+<span class="fc" id="L255">        new TimingResourceCategory(HalApiClient.class.getSimpleName(), PROXY_TIMES,</span>
             &quot;A breakdown of time spent in blocking HalApiClient proxy method calls&quot;,
             null, false),
 
-<span class="fc" id="L264">        new TimingResourceCategory(AsyncHalResponseRenderer.class.getSimpleName(), RENDERING_TIMES,</span>
+<span class="fc" id="L259">        new TimingResourceCategory(AsyncHalResponseRenderer.class.getSimpleName(), RENDERING_TIMES,</span>
             &quot;A breakdown of time spent in blocking method calls while rendering resources&quot;,
             null, false),
 
@@ -280,47 +275,47 @@ import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
     private final String developerHint;
     private final boolean useMaxForAggregration;
 
-<span class="fc" id="L283">    TimingResourceCategory(String simpleClassName, String relation, String description, String developerHint, boolean useMaxForAggregration) {</span>
-<span class="fc" id="L284">      this.simpleClassName = simpleClassName;</span>
-<span class="fc" id="L285">      this.relation = relation;</span>
-<span class="fc" id="L286">      this.description = description;</span>
-<span class="fc" id="L287">      this.developerHint = developerHint;</span>
-<span class="fc" id="L288">      this.useMaxForAggregration = useMaxForAggregration;</span>
-<span class="fc" id="L289">    }</span>
+<span class="fc" id="L278">    TimingResourceCategory(String simpleClassName, String relation, String description, String developerHint, boolean useMaxForAggregration) {</span>
+<span class="fc" id="L279">      this.simpleClassName = simpleClassName;</span>
+<span class="fc" id="L280">      this.relation = relation;</span>
+<span class="fc" id="L281">      this.description = description;</span>
+<span class="fc" id="L282">      this.developerHint = developerHint;</span>
+<span class="fc" id="L283">      this.useMaxForAggregration = useMaxForAggregration;</span>
+<span class="fc" id="L284">    }</span>
   }
 
   private void createAndEmbed(HalResource metadataResource, TimingResourceCategory category) {
 
-<span class="fc" id="L294">    HalResource timingResource = createTimingResource(getGroupedAndSortedInvocationTimes(category.simpleClassName, category.useMaxForAggregration));</span>
+<span class="fc" id="L289">    HalResource timingResource = createTimingResource(getGroupedAndSortedInvocationTimes(category.simpleClassName, category.useMaxForAggregration));</span>
 
-<span class="fc" id="L296">    addEmbedded(metadataResource, category.relation, timingResource, category.description, category.developerHint);</span>
-<span class="fc" id="L297">  }</span>
+<span class="fc" id="L291">    addEmbedded(metadataResource, category.relation, timingResource, category.description, category.developerHint);</span>
+<span class="fc" id="L292">  }</span>
 
   private static void addEmbedded(HalResource metadataResource, String relation, HalResource toEmbed, String title, String developerHint) {
 
-<span class="fc bfc" id="L301" title="All 4 branches covered.">    if (toEmbed.getModel().path(&quot;measurements&quot;).size() == 0 &amp;&amp; toEmbed.getLinks().isEmpty()) {</span>
-<span class="fc" id="L302">      return;</span>
+<span class="fc bfc" id="L296" title="All 4 branches covered.">    if (toEmbed.getModel().path(&quot;measurements&quot;).size() == 0 &amp;&amp; toEmbed.getLinks().isEmpty()) {</span>
+<span class="fc" id="L297">      return;</span>
     }
 
-<span class="fc" id="L305">    toEmbed.getModel().put(&quot;title&quot;, title);</span>
+<span class="fc" id="L300">    toEmbed.getModel().put(&quot;title&quot;, title);</span>
 
-<span class="fc bfc" id="L307" title="All 2 branches covered.">    if (developerHint != null) {</span>
-<span class="fc" id="L308">      toEmbed.getModel().put(&quot;developerHint&quot;, developerHint);</span>
+<span class="fc bfc" id="L302" title="All 2 branches covered.">    if (developerHint != null) {</span>
+<span class="fc" id="L303">      toEmbed.getModel().put(&quot;developerHint&quot;, developerHint);</span>
     }
 
-<span class="fc" id="L311">    metadataResource.addEmbedded(relation, toEmbed);</span>
-<span class="fc" id="L312">  }</span>
+<span class="fc" id="L306">    metadataResource.addEmbedded(relation, toEmbed);</span>
+<span class="fc" id="L307">  }</span>
 
   private static HalResource createTimingResource(List&lt;TimeMeasurement&gt; list) {
 
-<span class="fc" id="L316">    ObjectNode model = JsonNodeFactory.instance.objectNode();</span>
-<span class="fc" id="L317">    ArrayNode individualMetrics = model.putArray(&quot;measurements&quot;);</span>
+<span class="fc" id="L311">    ObjectNode model = JsonNodeFactory.instance.objectNode();</span>
+<span class="fc" id="L312">    ArrayNode individualMetrics = model.putArray(&quot;measurements&quot;);</span>
 
-<span class="fc" id="L319">    list.stream()</span>
-<span class="fc" id="L320">        .map(measurement -&gt; measurement.getTime() + &quot; &quot; + TIME_UNIT_ABBRS.get(measurement.getUnit()) + &quot; - &quot; + measurement.getText())</span>
-<span class="fc" id="L321">        .forEach(title -&gt; individualMetrics.add(title));</span>
+<span class="fc" id="L314">    list.stream()</span>
+<span class="fc" id="L315">        .map(measurement -&gt; measurement.getTime() + &quot; &quot; + TIME_UNIT_ABBRS.get(measurement.getUnit()) + &quot; - &quot; + measurement.getText())</span>
+<span class="fc" id="L316">        .forEach(title -&gt; individualMetrics.add(title));</span>
 
-<span class="fc" id="L323">    return new HalResource(model);</span>
+<span class="fc" id="L318">    return new HalResource(model);</span>
   }
 
   /**
@@ -328,28 +323,28 @@ import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
    */
   public static class TimeMeasurement {
 
-<span class="fc" id="L331">    static final Ordering&lt;TimeMeasurement&gt; LONGEST_TIME_FIRST = Ordering.natural().onResultOf(TimeMeasurement::getTime).reverse();</span>
+<span class="fc" id="L326">    static final Ordering&lt;TimeMeasurement&gt; LONGEST_TIME_FIRST = Ordering.natural().onResultOf(TimeMeasurement::getTime).reverse();</span>
 
     private final String text;
     private final Float time;
     private final TimeUnit unit;
 
-<span class="fc" id="L337">    TimeMeasurement(String text, Float time, TimeUnit unit) {</span>
-<span class="fc" id="L338">      this.text = text;</span>
-<span class="fc" id="L339">      this.time = time;</span>
-<span class="fc" id="L340">      this.unit = unit;</span>
-<span class="fc" id="L341">    }</span>
+<span class="fc" id="L332">    TimeMeasurement(String text, Float time, TimeUnit unit) {</span>
+<span class="fc" id="L333">      this.text = text;</span>
+<span class="fc" id="L334">      this.time = time;</span>
+<span class="fc" id="L335">      this.unit = unit;</span>
+<span class="fc" id="L336">    }</span>
 
     public String getText() {
-<span class="fc" id="L344">      return this.text;</span>
+<span class="fc" id="L339">      return this.text;</span>
     }
 
     public Float getTime() {
-<span class="fc" id="L348">      return this.time;</span>
+<span class="fc" id="L343">      return this.time;</span>
     }
 
     public TimeUnit getUnit() {
-<span class="fc" id="L352">      return this.unit;</span>
+<span class="fc" id="L347">      return this.unit;</span>
     }
   }
 

@@ -152,7 +152,7 @@ import io.wcm.caravan.rhyme.jaxrs.impl.docs.RhymeDocsOsgiBundleSupport;
 <span class="fc" id="L152">      uri = &quot;(unknown url)&quot;;</span>
 <span class="fc" id="L153">    }</span>
 
-<span class="fc" id="L155">    log.error(&quot;An exception occured when handling request for &quot; + uri, fatalError);</span>
+<span class="fc" id="L155">    log.error(&quot;An exception occured when handling request for {}&quot;, uri, fatalError);</span>
 
 <span class="fc" id="L157">    suspended.resume(fatalError);</span>
 <span class="fc" id="L158">  }</span>

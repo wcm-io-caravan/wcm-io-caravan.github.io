@@ -86,7 +86,7 @@ public class CaravanResilientHttpSupport implements HttpClientSupport {
 <span class="fc" id="L86">    }</span>
 <span class="fc" id="L87">  }</span>
 
-  void handleException(HttpClientCallback callback, Throwable ex) throws Throwable {
+  void handleException(HttpClientCallback callback, Throwable ex) {
 
 <span class="fc bfc" id="L91" title="All 2 branches covered.">    if (ex instanceof IllegalResponseRuntimeException) {</span>
 <span class="fc" id="L92">      IllegalResponseRuntimeException irre = (IllegalResponseRuntimeException)ex;</span>

@@ -70,7 +70,7 @@ import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
 <span class="fc" id="L70">    URL rhymeDocsUrl = bundle.getResource(rhymeDocsPath);</span>
 
 <span class="fc bfc" id="L72" title="All 2 branches covered.">    if (rhymeDocsUrl == null) {</span>
-<span class="fc" id="L73">      log.debug(&quot;No rhyme docs were found in bundle at {}&quot;, bundle.getSymbolicName(), rhymeDocsPath);</span>
+<span class="fc" id="L73">      log.debug(&quot;No rhyme docs were found in bundle {} at {}&quot;, bundle.getSymbolicName(), rhymeDocsPath);</span>
 <span class="fc" id="L74">      return false;</span>
     }
 

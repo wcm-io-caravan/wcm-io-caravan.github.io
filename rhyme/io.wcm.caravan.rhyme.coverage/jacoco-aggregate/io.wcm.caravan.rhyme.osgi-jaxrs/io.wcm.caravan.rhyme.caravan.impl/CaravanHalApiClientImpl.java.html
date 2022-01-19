@@ -121,7 +121,7 @@ import io.wcm.caravan.rhyme.caravan.api.CaravanHalApiClient;
 <span class="fc" id="L121">  private final class GuavaCacheLoader extends CacheLoader&lt;String, HalResourceLoader&gt; {</span>
 
     @Override
-    public HalResourceLoader load(String serviceId)  {
+    public HalResourceLoader load(String serviceId) {
 
 <span class="fc" id="L126">      return HalResourceLoaderBuilder.create()</span>
 <span class="fc" id="L127">          .withCustomHttpClient(new CaravanResilientHttpSupport(httpClient, serviceId))</span>
@@ -147,7 +147,7 @@ import io.wcm.caravan.rhyme.caravan.api.CaravanHalApiClient;
 <span class="fc" id="L147">  private final class JsonPipelineCacheLoader extends CacheLoader&lt;String, HalResourceLoader&gt; {</span>
 
     @Override
-    public HalResourceLoader load(String serviceId)  {
+    public HalResourceLoader load(String serviceId) {
 <span class="fc" id="L151">      return new CaravanJsonPipelineResourceLoader(pipelineFactory, serviceId);</span>
     }
   }
