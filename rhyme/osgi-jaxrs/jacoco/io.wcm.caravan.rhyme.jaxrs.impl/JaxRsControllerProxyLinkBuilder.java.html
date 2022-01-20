@@ -301,7 +301,7 @@ public class JaxRsControllerProxyLinkBuilder&lt;JaxRsResourceType&gt; implements
 
 <span class="fc" id="L302">      boolean allRequiredParametersResolved = parameters.stream()</span>
 <span class="fc" id="L303">          .filter(tp -&gt; tp.required)</span>
-<span class="fc" id="L304">          .allMatch(tp -&gt; valueAvailableCheck.test(tp));</span>
+<span class="fc" id="L304">          .allMatch(valueAvailableCheck::test);</span>
 
 <span class="fc" id="L306">      return parameters.stream()</span>
 <span class="fc" id="L307">          .filter(tp -&gt; isQueryParamToKeep(tp, valueAvailableCheck, allRequiredParametersResolved))</span>

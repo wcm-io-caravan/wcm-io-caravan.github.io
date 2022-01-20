@@ -309,7 +309,7 @@
 <a class="jxr_linenumber" name="L301" href="#L301">301</a> 
 <a class="jxr_linenumber" name="L302" href="#L302">302</a>       <strong class="jxr_keyword">boolean</strong> allRequiredParametersResolved = parameters.stream()
 <a class="jxr_linenumber" name="L303" href="#L303">303</a>           .filter(tp -&gt; tp.required)
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>           .allMatch(tp -&gt; valueAvailableCheck.test(tp));
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>           .allMatch(valueAvailableCheck::test);
 <a class="jxr_linenumber" name="L305" href="#L305">305</a> 
 <a class="jxr_linenumber" name="L306" href="#L306">306</a>       <strong class="jxr_keyword">return</strong> parameters.stream()
 <a class="jxr_linenumber" name="L307" href="#L307">307</a>           .filter(tp -&gt; isQueryParamToKeep(tp, valueAvailableCheck, allRequiredParametersResolved))
