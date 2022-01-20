@@ -53,7 +53,7 @@ public class EmissionStopwatch&lt;T&gt; implements SingleTransformer&lt;T, T&gt;
    *         {@link Observable#compose(ObservableTransformer)}
    */
   public static &lt;T&gt; EmissionStopwatch&lt;T&gt; collectMetrics(Supplier&lt;String&gt; message, RequestMetricsCollector metrics) {
-<span class="fc" id="L56">    return new EmissionStopwatch&lt;T&gt;(metrics, message);</span>
+<span class="fc" id="L56">    return new EmissionStopwatch&lt;&gt;(metrics, message);</span>
   }
 
   @Override

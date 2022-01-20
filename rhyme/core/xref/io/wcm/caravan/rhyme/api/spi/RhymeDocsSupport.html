@@ -29,82 +29,81 @@
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.io.InputStream;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.io.IOUtils;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.osgi.annotation.versioning.ConsumerType;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> com.google.common.base.Charsets;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.RhymeBuilder;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.annotations.HalApiInterface;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.exceptions.HalApiServerException;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> * SPI interface to customize the integration of HTML documentation generated with</em>
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> * the rhyme-docs-maven-plugin. An instance implementing this interface needs</em>
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> * to be provided to the {@link RhymeBuilder#withRhymeDocsSupport(RhymeDocsSupport)} method</em>
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> * so that "curies" links to the documentation will be added by the {@link AsyncHalResponseRenderer}.</em>
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  @ConsumerType
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="RhymeDocsSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/RhymeDocsSupport.html#RhymeDocsSupport">RhymeDocsSupport</a> {
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>    <em class="jxr_javadoccomment">/** the folder in the classpath where the generated HTML files are located */</em>
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>    String FOLDER = <span class="jxr_string">"RHYME-DOCS-INF"</span>;
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">   * This method allows the framework to construct the full URL from which the documentation will be served,</em>
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">   * which is important for the curie links to be constructed correctly</em>
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <em class="jxr_javadoccomment">   * @return the URL to be prepended to the HTML file name</em>
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>    String getRhymeDocsBaseUrl();
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">   * Loads the HTML documentation file from the given path in the class path</em>
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">   * @param resourcePath an absolute path (starting with "/RHYME-DOCS-INF/") to the HTML file to be loaded</em>
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">   * @return the input stream that provides the file's content (or null if no such file exists)</em>
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">   * @throws IOException if loading of the file fails</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>    InputStream openResourceStream(String resourcePath) <strong class="jxr_keyword">throws</strong> IOException;
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">   * Determines whether a fragment should be included in the documentation link (e.g.</em>
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">   * /api/docs/YourResource.html#prefix:relation), which immediately opens up the</em>
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">   * documentation for a given relation. While this does make sense, some tools (e.g. HAL browser)</em>
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">   * are struggling with this, so it can be disabled</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">   * @return true if you want the generated links to contain a fragment</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>    <strong class="jxr_keyword">boolean</strong> isFragmentAppendedToCuriesLink();
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">   * Extract the HTML documentation that was generated with the rhyme-docs-maven-plugin from the classpath.</em>
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">   * This default implementation contains additional logic for constructing the full resource path,</em>
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">   * and some error handling code (to ensure that a {@link HalApiServerException} with a reasonable</em>
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">   * status code will be thrown if HTML could not be loaded)</em>
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <em class="jxr_javadoccomment">   * @param docsSupport the instance that implements the {@link #openResourceStream(String)} function</em>
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>  <em class="jxr_javadoccomment">   * @param fileName the name of the generated file, usually the fully qualified class name of a</em>
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_javadoccomment">   *          {@link HalApiInterface}, followed by ".html"</em>
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_javadoccomment">   * @return the content of the HTML documentation file (with UTF-8 encoding)</em>
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">   * @throws HalApiServerException if the documentation could not be found (404 status) or failed to load (500 status)</em>
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>    <strong class="jxr_keyword">static</strong> String loadGeneratedHtml(<a name="RhymeDocsSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/RhymeDocsSupport.html#RhymeDocsSupport">RhymeDocsSupport</a> docsSupport, String fileName) {
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>  
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>      String resourcePath = <span class="jxr_string">"/"</span> + RhymeDocsSupport.FOLDER + <span class="jxr_string">"/"</span> + fileName;
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">try</strong> (InputStream is = docsSupport.openResourceStream(resourcePath)) {
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>        <strong class="jxr_keyword">if</strong> (is == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>          <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a name="HalApiServerException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiServerException.html#HalApiServerException">HalApiServerException</a>(404, <span class="jxr_string">"No HTML documentation was generated for "</span> + fileName);
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>        }
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>        <strong class="jxr_keyword">return</strong> IOUtils.toString(is, Charsets.UTF_8);
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>      }
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">catch</strong> (<a name="HalApiServerException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiServerException.html#HalApiServerException">HalApiServerException</a> ex) {
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>        <strong class="jxr_keyword">throw</strong> ex;
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>      }
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">catch</strong> (IOException | RuntimeException ex) {
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a name="HalApiServerException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiServerException.html#HalApiServerException">HalApiServerException</a>(500, <span class="jxr_string">"Failed to load documentation from "</span> + fileName, ex);
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      }
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>    }
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>  }
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.nio.charset.StandardCharsets;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.io.IOUtils;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.osgi.annotation.versioning.ConsumerType;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.RhymeBuilder;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.annotations.HalApiInterface;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.exceptions.HalApiServerException;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment"> * SPI interface to customize the integration of HTML documentation generated with</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> * the rhyme-docs-maven-plugin. An instance implementing this interface needs</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> * to be provided to the {@link RhymeBuilder#withRhymeDocsSupport(RhymeDocsSupport)} method</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> * so that "curies" links to the documentation will be added by the {@link AsyncHalResponseRenderer}.</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  @ConsumerType
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="RhymeDocsSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/RhymeDocsSupport.html#RhymeDocsSupport">RhymeDocsSupport</a> {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    <em class="jxr_javadoccomment">/** the folder in the classpath where the generated HTML files are located */</em>
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>    String FOLDER = <span class="jxr_string">"RHYME-DOCS-INF"</span>;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">   * This method allows the framework to construct the full URL from which the documentation will be served,</em>
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">   * which is important for the curie links to be constructed correctly</em>
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">   * @return the URL to be prepended to the HTML file name</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    String getRhymeDocsBaseUrl();
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">   * Loads the HTML documentation file from the given path in the class path</em>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">   * @param resourcePath an absolute path (starting with "/RHYME-DOCS-INF/") to the HTML file to be loaded</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">   * @return the input stream that provides the file's content (or null if no such file exists)</em>
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">   * @throws IOException if loading of the file fails</em>
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>    InputStream openResourceStream(String resourcePath) <strong class="jxr_keyword">throws</strong> IOException;
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">   * Determines whether a fragment should be included in the documentation link (e.g.</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">   * /api/docs/YourResource.html#prefix:relation), which immediately opens up the</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">   * documentation for a given relation. While this does make sense, some tools (e.g. HAL browser)</em>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">   * are struggling with this, so it can be disabled</em>
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">   * @return true if you want the generated links to contain a fragment</em>
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>    <strong class="jxr_keyword">boolean</strong> isFragmentAppendedToCuriesLink();
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">   * Extract the HTML documentation that was generated with the rhyme-docs-maven-plugin from the classpath.</em>
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">   * This default implementation contains additional logic for constructing the full resource path,</em>
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">   * and some error handling code (to ensure that a {@link HalApiServerException} with a reasonable</em>
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">   * status code will be thrown if HTML could not be loaded)</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">   * @param docsSupport the instance that implements the {@link #openResourceStream(String)} function</em>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <em class="jxr_javadoccomment">   * @param fileName the name of the generated file, usually the fully qualified class name of a</em>
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  <em class="jxr_javadoccomment">   *          {@link HalApiInterface}, followed by ".html"</em>
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_javadoccomment">   * @return the content of the HTML documentation file (with UTF-8 encoding)</em>
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_javadoccomment">   * @throws HalApiServerException if the documentation could not be found (404 status) or failed to load (500 status)</em>
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>    <strong class="jxr_keyword">static</strong> String loadGeneratedHtml(<a name="RhymeDocsSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/RhymeDocsSupport.html#RhymeDocsSupport">RhymeDocsSupport</a> docsSupport, String fileName) {
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      String resourcePath = <span class="jxr_string">"/"</span> + RhymeDocsSupport.FOLDER + <span class="jxr_string">"/"</span> + fileName;
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">try</strong> (InputStream is = docsSupport.openResourceStream(resourcePath)) {
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>        <strong class="jxr_keyword">if</strong> (is == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a name="HalApiServerException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiServerException.html#HalApiServerException">HalApiServerException</a>(404, <span class="jxr_string">"No HTML documentation was generated for "</span> + fileName);
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>        }
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>        <strong class="jxr_keyword">return</strong> IOUtils.toString(is, StandardCharsets.UTF_8);
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      }
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <strong class="jxr_keyword">catch</strong> (<a name="HalApiServerException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiServerException.html#HalApiServerException">HalApiServerException</a> ex) {
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>        <strong class="jxr_keyword">throw</strong> ex;
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      }
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>      <strong class="jxr_keyword">catch</strong> (IOException | RuntimeException ex) {
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a name="HalApiServerException" href="../../../../../../io/wcm/caravan/rhyme/api/exceptions/HalApiServerException.html#HalApiServerException">HalApiServerException</a>(500, <span class="jxr_string">"Failed to load documentation from "</span> + fileName, ex);
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>      }
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>    }
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014&#x2013;2022 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</div>

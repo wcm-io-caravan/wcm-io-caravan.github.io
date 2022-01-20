@@ -114,10 +114,8 @@ public class LinkRewriting {
 
 <span class="fc" id="L115">    URI uriWithPlaceholder = contextUri.resolve(PATH_PLACEHOLDER);</span>
 
-<span class="fc" id="L117">    String resolvedTemplate = uriWithPlaceholder.toString()</span>
+<span class="fc" id="L117">    return uriWithPlaceholder.toString()</span>
 <span class="fc" id="L118">        .replace(PATH_PLACEHOLDER, pathTemplate);</span>
-
-<span class="fc" id="L120">    return resolvedTemplate;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

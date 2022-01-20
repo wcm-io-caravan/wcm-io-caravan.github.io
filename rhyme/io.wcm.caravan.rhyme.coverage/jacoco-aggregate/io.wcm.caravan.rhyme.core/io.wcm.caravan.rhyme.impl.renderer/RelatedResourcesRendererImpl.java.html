@@ -162,7 +162,7 @@ final class RelatedResourcesRendererImpl {
 <span class="fc" id="L162">        .filter(r -&gt; r instanceof LinkableResource)</span>
         // decide whether to write links to resource that are also embedded
 <span class="fc" id="L164">        .filter(this::filterLinksToEmbeddedResource)</span>
-<span class="fc" id="L165">        .map(r -&gt; (LinkableResource)r);</span>
+<span class="fc" id="L165">        .map(LinkableResource.class::cast);</span>
 
     // and let each resource create a link to itself
 <span class="fc" id="L168">    Observable&lt;Link&gt; rxCreatedLinks = rxLinkedResourceImpls</span>
@@ -183,7 +183,7 @@ final class RelatedResourcesRendererImpl {
     // Related methods also can return links directly instead
 <span class="fc" id="L184">    Observable&lt;Link&gt; rxDirectLinks = rxRelatedResources</span>
 <span class="fc" id="L185">        .filter(r -&gt; r instanceof Link)</span>
-<span class="fc" id="L186">        .map(l -&gt; (Link)l);</span>
+<span class="fc" id="L186">        .map(Link.class::cast);</span>
 
 <span class="fc" id="L188">    return Observable.concat(rxCreatedLinks, rxDirectLinks)</span>
 <span class="fc" id="L189">        .toList();</span>
@@ -217,7 +217,7 @@ final class RelatedResourcesRendererImpl {
       // filter only those resources that are actually embedded
 <span class="fc" id="L218">      Observable&lt;EmbeddableResource&gt; rxEmbeddedResourceImpls = rxRelatedResources</span>
 <span class="fc" id="L219">          .filter(r -&gt; r instanceof EmbeddableResource)</span>
-<span class="fc" id="L220">          .map(r -&gt; (EmbeddableResource)r)</span>
+<span class="fc" id="L220">          .map(EmbeddableResource.class::cast)</span>
 <span class="fc" id="L221">          .filter(r -&gt; r.isEmbedded());</span>
 
       // and render them by recursively calling the render function from AsyncHalresourceRendererImpl

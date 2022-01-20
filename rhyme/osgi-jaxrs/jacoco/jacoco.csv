@@ -7,7 +7,7 @@ Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsAsyncHalRes
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerProxyLinkBuilder.MethodDetails.AnnotatedParamFinder,0,54,0,4,0,11,0,6,0,4
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsBundleInfoImpl,0,167,0,4,0,28,0,11,0,9
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerProxyLinkBuilder.MethodDetails.PathParamFinder,0,48,0,0,0,10,0,3,0,3
-Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerProxyLinkBuilder.MethodDetails,0,292,0,22,0,57,0,28,0,17
+Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerProxyLinkBuilder.MethodDetails,0,295,0,24,0,55,0,29,0,17
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerProxyLinkBuilder.MethodDetails.BeanParamFinder,0,158,0,2,0,31,0,11,0,10
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerProxyLinkBuilder,0,171,0,0,0,40,0,9,0,9
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,ReflectionUtils,0,50,0,4,0,7,0,3,0,1

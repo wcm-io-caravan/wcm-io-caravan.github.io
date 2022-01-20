@@ -192,9 +192,9 @@ import wiremock.org.apache.http.client.utils.URIBuilder;
   }
 
   protected HalApiClientException loadResourceAndExpectClientException(String url) {
-<span class="fc" id="L195">    Single&lt;HalResponse&gt; rxResponse = createLoaderUnderTest().getHalResource(url);</span>
+<span class="fc" id="L195">    Single&lt;HalResponse&gt; response = createLoaderUnderTest().getHalResource(url);</span>
 
-<span class="pc" id="L197">    Throwable ex = catchThrowable(() -&gt; rxResponse.blockingGet());</span>
+<span class="fc" id="L197">    Throwable ex = catchThrowable(response::blockingGet);</span>
 
 <span class="fc" id="L199">    assertThat(ex)</span>
 <span class="fc" id="L200">        .isInstanceOf(HalApiClientException.class)</span>

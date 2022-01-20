@@ -103,36 +103,34 @@ public class AsyncHalResponseRendererImpl implements AsyncHalResponseRenderer {
 
 <span class="fc" id="L104">    String contentType = getContentTypeFromAnnotation(halApiInterface);</span>
 
-<span class="fc" id="L106">    HalResponse response = new HalResponse()</span>
+<span class="fc" id="L106">    return new HalResponse()</span>
 <span class="fc" id="L107">        .withUri(requestUri)</span>
 <span class="fc" id="L108">        .withStatus(200)</span>
 <span class="fc" id="L109">        .withContentType(contentType)</span>
 <span class="fc" id="L110">        .withBody(halResource)</span>
 <span class="fc" id="L111">        .withMaxAge(metrics.getResponseMaxAge());</span>
-
-<span class="fc" id="L113">    return response;</span>
   }
 
   private String getContentTypeFromAnnotation(Class&lt;?&gt; halApiInterface) {
 
-<span class="fc" id="L118">    String contentType = annotationSupport.getContentType(halApiInterface);</span>
+<span class="fc" id="L116">    String contentType = annotationSupport.getContentType(halApiInterface);</span>
 
-<span class="fc bfc" id="L120" title="All 2 branches covered.">    if (StringUtils.isNotBlank(contentType)) {</span>
-<span class="fc" id="L121">      return contentType;</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">    if (StringUtils.isNotBlank(contentType)) {</span>
+<span class="fc" id="L119">      return contentType;</span>
     }
-<span class="fc" id="L123">    return HalResource.CONTENT_TYPE;</span>
+<span class="fc" id="L121">    return HalResource.CONTENT_TYPE;</span>
   }
 
   static void addMetadata(RequestMetricsCollector metrics, HalResource hal, LinkableResource resourceImpl) {
 
-<span class="fc" id="L128">    HalResource metadata = metrics.createMetadataResource(resourceImpl);</span>
-<span class="fc bfc" id="L129" title="All 2 branches covered.">    if (metadata != null) {</span>
-<span class="fc" id="L130">      hal.addEmbedded(ResponseMetadataRelations.RHYME_METADATA_RELATION, metadata);</span>
+<span class="fc" id="L126">    HalResource metadata = metrics.createMetadataResource(resourceImpl);</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">    if (metadata != null) {</span>
+<span class="fc" id="L128">      hal.addEmbedded(ResponseMetadataRelations.RHYME_METADATA_RELATION, metadata);</span>
     }
-<span class="fc" id="L132">  }</span>
+<span class="fc" id="L130">  }</span>
 
   public HalApiAnnotationSupport getAnnotationSupport() {
-<span class="fc" id="L135">    return annotationSupport;</span>
+<span class="fc" id="L133">    return annotationSupport;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

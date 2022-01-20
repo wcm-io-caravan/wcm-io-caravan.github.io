@@ -21,6 +21,7 @@ package io.wcm.caravan.rhyme.aem.impl;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
 import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 
 @Component(service = RhymeResourceRegistry.class)
-<span class="fc" id="L42">public class RhymeResourceRegistry {</span>
+<span class="fc" id="L43">public class RhymeResourceRegistry {</span>
 
   @Reference(cardinality = ReferenceCardinality.MULTIPLE,
       policy = ReferencePolicy.STATIC,
@@ -48,60 +49,60 @@ import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 
   public Optional&lt;Class&lt;? extends LinkableResource&gt;&gt; getModelClassForSelectors(Collection&lt;String&gt; selectors) {
 
-<span class="fc" id="L51">    List&lt;Class&lt;? extends LinkableResource&gt;&gt; customModelClasses = registrations.stream()</span>
-<span class="fc" id="L52">        .flatMap(provider -&gt; provider.getModelClassesWithSelectors().entrySet().stream())</span>
-<span class="fc" id="L53">        .filter(entry -&gt; selectors.contains(entry.getValue()))</span>
-<span class="fc" id="L54">        .map(entry -&gt; entry.getKey())</span>
-<span class="fc" id="L55">        .distinct()</span>
-<span class="fc" id="L56">        .collect(Collectors.toList());</span>
+<span class="fc" id="L52">    List&lt;Class&lt;? extends LinkableResource&gt;&gt; customModelClasses = registrations.stream()</span>
+<span class="fc" id="L53">        .flatMap(provider -&gt; provider.getModelClassesWithSelectors().entrySet().stream())</span>
+<span class="fc" id="L54">        .filter(entry -&gt; selectors.contains(entry.getValue()))</span>
+<span class="fc" id="L55">        .map(Entry::getKey)</span>
+<span class="fc" id="L56">        .distinct()</span>
+<span class="fc" id="L57">        .collect(Collectors.toList());</span>
 
-<span class="fc bfc" id="L58" title="All 2 branches covered.">    if (customModelClasses.isEmpty()) {</span>
-<span class="fc" id="L59">      return Optional.empty();</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">    if (customModelClasses.isEmpty()) {</span>
+<span class="fc" id="L60">      return Optional.empty();</span>
     }
 
-<span class="fc bfc" id="L62" title="All 2 branches covered.">    if (customModelClasses.size() &gt; 1) {</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">    if (customModelClasses.size() &gt; 1) {</span>
 
-<span class="fc" id="L64">      String classNames = customModelClasses.stream()</span>
-<span class="fc" id="L65">          .map(Class::getName)</span>
-<span class="fc" id="L66">          .collect(Collectors.joining(&quot;, &quot;));</span>
+<span class="fc" id="L65">      String classNames = customModelClasses.stream()</span>
+<span class="fc" id="L66">          .map(Class::getName)</span>
+<span class="fc" id="L67">          .collect(Collectors.joining(&quot;, &quot;));</span>
 
-<span class="fc" id="L68">      String msg = &quot;More than one resource was registered for selector [&quot; + StringUtils.join(selectors, &quot;,&quot;) + &quot;]: &quot; + classNames;</span>
+<span class="fc" id="L69">      String msg = &quot;More than one resource was registered for selector [&quot; + StringUtils.join(selectors, &quot;,&quot;) + &quot;]: &quot; + classNames;</span>
 
-<span class="fc" id="L70">      throw new HalApiDeveloperException(msg);</span>
+<span class="fc" id="L71">      throw new HalApiDeveloperException(msg);</span>
     }
 
-<span class="fc" id="L73">    return Optional.of(customModelClasses.iterator().next());</span>
+<span class="fc" id="L74">    return Optional.of(customModelClasses.iterator().next());</span>
   }
 
   public Optional&lt;String&gt; getSelectorForModelClass(Class&lt;?&gt; clazz) {
 
-<span class="fc" id="L78">    return registrations.stream()</span>
-<span class="fc" id="L79">        .map(provider -&gt; provider.getModelClassesWithSelectors().get(clazz))</span>
-<span class="fc" id="L80">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L81">        .findFirst();</span>
+<span class="fc" id="L79">    return registrations.stream()</span>
+<span class="fc" id="L80">        .map(provider -&gt; provider.getModelClassesWithSelectors().get(clazz))</span>
+<span class="fc" id="L81">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L82">        .findFirst();</span>
   }
 
   public Optional&lt;String&gt; getSelectorForHalApiInterface(Class&lt;?&gt; halApiInterface) {
 
-<span class="fc" id="L86">    Optional&lt;Class&lt;? extends LinkableResource&gt;&gt; modelClass = registrations.stream()</span>
-<span class="fc" id="L87">        .flatMap(provider -&gt; provider.getModelClassesWithSelectors().keySet().stream())</span>
-<span class="fc" id="L88">        .filter(clazz -&gt; halApiInterface.isAssignableFrom(clazz))</span>
-<span class="fc" id="L89">        .findFirst();</span>
+<span class="fc" id="L87">    Optional&lt;Class&lt;? extends LinkableResource&gt;&gt; modelClass = registrations.stream()</span>
+<span class="fc" id="L88">        .flatMap(provider -&gt; provider.getModelClassesWithSelectors().keySet().stream())</span>
+<span class="fc" id="L89">        .filter(clazz -&gt; halApiInterface.isAssignableFrom(clazz))</span>
+<span class="fc" id="L90">        .findFirst();</span>
 
-<span class="fc" id="L91">    return modelClass</span>
-<span class="fc" id="L92">        .flatMap(this::getSelectorForModelClass);</span>
+<span class="fc" id="L92">    return modelClass</span>
+<span class="fc" id="L93">        .flatMap(this::getSelectorForModelClass);</span>
   }
 
   public Stream&lt;LinkableResource&gt; getAllApiEntryPoints(SlingResourceAdapter adapter) {
 
-<span class="fc" id="L97">    return registrations.stream()</span>
-<span class="fc" id="L98">        .map(provider -&gt; provider.getApiEntryPoint(adapter))</span>
-<span class="fc" id="L99">        .flatMap(this::optionalAsStream);</span>
+<span class="fc" id="L98">    return registrations.stream()</span>
+<span class="fc" id="L99">        .map(provider -&gt; provider.getApiEntryPoint(adapter))</span>
+<span class="fc" id="L100">        .flatMap(this::optionalAsStream);</span>
   }
 
   private Stream&lt;? extends LinkableResource&gt; optionalAsStream(Optional&lt;? extends LinkableResource&gt; optional) {
 
-<span class="fc bfc" id="L104" title="All 2 branches covered.">    return optional.isPresent() ? Stream.of(optional.get()) : Stream.empty();</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">    return optional.isPresent() ? Stream.of(optional.get()) : Stream.empty();</span>
   }
 
 }

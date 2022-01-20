@@ -157,13 +157,13 @@ import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
 
   float getSumOfResponseTimeMillis() {
 <span class="fc" id="L159">    return (float)inputResponseTimes.stream()</span>
-<span class="fc" id="L160">        .mapToDouble(m -&gt; m.getTime())</span>
+<span class="fc" id="L160">        .mapToDouble(TimeMeasurement::getTime)</span>
 <span class="fc" id="L161">        .sum();</span>
   }
 
   float getSumOfInvocationMillis(Class category) {
 <span class="fc" id="L165">    return (float)methodInvocationTimes.get(category.getSimpleName()).stream()</span>
-<span class="fc" id="L166">        .mapToDouble(m -&gt; m.getTime())</span>
+<span class="fc" id="L166">        .mapToDouble(TimeMeasurement::getTime)</span>
 <span class="fc" id="L167">        .sum();</span>
   }
 
@@ -313,7 +313,7 @@ import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
 
 <span class="fc" id="L314">    list.stream()</span>
 <span class="fc" id="L315">        .map(measurement -&gt; measurement.getTime() + &quot; &quot; + TIME_UNIT_ABBRS.get(measurement.getUnit()) + &quot; - &quot; + measurement.getText())</span>
-<span class="fc" id="L316">        .forEach(title -&gt; individualMetrics.add(title));</span>
+<span class="fc" id="L316">        .forEach(individualMetrics::add);</span>
 
 <span class="fc" id="L318">    return new HalResource(model);</span>
   }

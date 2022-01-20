@@ -38,7 +38,7 @@ import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
 
   public Map&lt;String, Object&gt; getQueryParameters(Object slingModel) {
 
-<span class="fc" id="L41">    Map&lt;String, Object&gt; map = new LinkedHashMap&lt;String, Object&gt;();</span>
+<span class="fc" id="L41">    Map&lt;String, Object&gt; map = new LinkedHashMap&lt;&gt;();</span>
 
 <span class="fc" id="L43">    addQueryParamFieldsFromModel(slingModel, map);</span>
 

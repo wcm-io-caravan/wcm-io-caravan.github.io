@@ -170,7 +170,7 @@
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>         .filter(r -&gt; r instanceof LinkableResource)
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>         <em class="jxr_comment">// decide whether to write links to resource that are also embedded</em>
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>         .filter(<strong class="jxr_keyword">this</strong>::filterLinksToEmbeddedResource)
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>         .map(r -&gt; (LinkableResource)r);
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>         .map(LinkableResource.<strong class="jxr_keyword">class</strong>::<strong class="jxr_keyword">cast</strong>);
 <a class="jxr_linenumber" name="L166" href="#L166">166</a> 
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>     <em class="jxr_comment">// and let each resource create a link to itself</em>
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>     Observable&lt;Link&gt; rxCreatedLinks = rxLinkedResourceImpls
@@ -191,7 +191,7 @@
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>     <em class="jxr_comment">// Related methods also can return links directly instead</em>
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>     Observable&lt;Link&gt; rxDirectLinks = rxRelatedResources
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>         .filter(r -&gt; r instanceof Link)
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>         .map(l -&gt; (Link)l);
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>         .map(Link.<strong class="jxr_keyword">class</strong>::<strong class="jxr_keyword">cast</strong>);
 <a class="jxr_linenumber" name="L187" href="#L187">187</a> 
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>     <strong class="jxr_keyword">return</strong> Observable.concat(rxCreatedLinks, rxDirectLinks)
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>         .toList();
@@ -225,7 +225,7 @@
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>       <em class="jxr_comment">// filter only those resources that are actually embedded</em>
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>       Observable&lt;EmbeddableResource&gt; rxEmbeddedResourceImpls = rxRelatedResources
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>           .filter(r -&gt; r instanceof EmbeddableResource)
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>           .map(r -&gt; (EmbeddableResource)r)
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>           .map(EmbeddableResource.<strong class="jxr_keyword">class</strong>::<strong class="jxr_keyword">cast</strong>)
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>           .filter(r -&gt; r.isEmbedded());
 <a class="jxr_linenumber" name="L222" href="#L222">222</a> 
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>       <em class="jxr_comment">// and render them by recursively calling the render function from AsyncHalresourceRendererImpl</em>

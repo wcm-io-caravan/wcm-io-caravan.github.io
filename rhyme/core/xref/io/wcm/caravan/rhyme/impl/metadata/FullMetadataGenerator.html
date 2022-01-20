@@ -165,13 +165,13 @@
 <a class="jxr_linenumber" name="L157" href="#L157">157</a> 
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>   <strong class="jxr_keyword">float</strong> getSumOfResponseTimeMillis() {
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>     <strong class="jxr_keyword">return</strong> (<strong class="jxr_keyword">float</strong>)inputResponseTimes.stream()
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>         .mapToDouble(m -&gt; m.getTime())
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>         .mapToDouble(TimeMeasurement::getTime)
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>         .sum();
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>   }
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> 
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>   <strong class="jxr_keyword">float</strong> getSumOfInvocationMillis(Class category) {
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>     <strong class="jxr_keyword">return</strong> (<strong class="jxr_keyword">float</strong>)methodInvocationTimes.get(category.getSimpleName()).stream()
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>         .mapToDouble(m -&gt; m.getTime())
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>         .mapToDouble(TimeMeasurement::getTime)
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>         .sum();
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>   }
 <a class="jxr_linenumber" name="L169" href="#L169">169</a> 
@@ -321,7 +321,7 @@
 <a class="jxr_linenumber" name="L313" href="#L313">313</a> 
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>     list.stream()
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>         .map(measurement -&gt; measurement.getTime() + <span class="jxr_string">" "</span> + TIME_UNIT_ABBRS.get(measurement.getUnit()) + <span class="jxr_string">" - "</span> + measurement.getText())
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>         .forEach(title -&gt; individualMetrics.add(title));
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>         .forEach(individualMetrics::add);
 <a class="jxr_linenumber" name="L317" href="#L317">317</a> 
 <a class="jxr_linenumber" name="L318" href="#L318">318</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> HalResource(model);
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>   }
