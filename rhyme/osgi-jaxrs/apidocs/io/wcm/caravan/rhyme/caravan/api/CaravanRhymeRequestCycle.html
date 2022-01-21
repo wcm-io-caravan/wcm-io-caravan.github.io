@@ -123,11 +123,11 @@ public interface <span class="typeNameLabel">CaravanRhymeRequestCycle</span></pr
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>&lt;RequestContextType&gt;<br>void</code></td>
+<td class="colFirst"><code>&lt;T&gt;&nbsp;void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/wcm/caravan/rhyme/caravan/api/CaravanRhymeRequestCycle.html#processRequest-javax.ws.rs.core.UriInfo-javax.ws.rs.container.AsyncResponse-java.util.function.Function-java.util.function.Function-">processRequest</a></span>(javax.ws.rs.core.UriInfo&nbsp;requestUri,
               javax.ws.rs.container.AsyncResponse&nbsp;response,
-              <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/caravan/api/CaravanRhyme.html" title="interface in io.wcm.caravan.rhyme.caravan.api">CaravanRhyme</a>,RequestContextType&gt;&nbsp;requestContextConstructor,
-              <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;RequestContextType,? extends io.wcm.caravan.rhyme.api.resources.LinkableResource&gt;&nbsp;resourceImplConstructor)</code>
+              <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/caravan/api/CaravanRhyme.html" title="interface in io.wcm.caravan.rhyme.caravan.api">CaravanRhyme</a>,T&gt;&nbsp;requestContextConstructor,
+              <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;T,? extends io.wcm.caravan.rhyme.api.resources.LinkableResource&gt;&nbsp;resourceImplConstructor)</code>
 <div class="block">Handles the full request cycle:
  
  Create a <a href="../../../../../../io/wcm/caravan/rhyme/caravan/api/CaravanRhyme.html" title="interface in io.wcm.caravan.rhyme.caravan.api"><code>CaravanRhyme</code></a> instance
@@ -159,10 +159,10 @@ public interface <span class="typeNameLabel">CaravanRhymeRequestCycle</span></pr
 <ul class="blockListLast">
 <li class="blockList">
 <h4>processRequest</h4>
-<pre>&lt;RequestContextType&gt;&nbsp;void&nbsp;processRequest(javax.ws.rs.core.UriInfo&nbsp;requestUri,
-                                         javax.ws.rs.container.AsyncResponse&nbsp;response,
-                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/caravan/api/CaravanRhyme.html" title="interface in io.wcm.caravan.rhyme.caravan.api">CaravanRhyme</a>,RequestContextType&gt;&nbsp;requestContextConstructor,
-                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;RequestContextType,? extends io.wcm.caravan.rhyme.api.resources.LinkableResource&gt;&nbsp;resourceImplConstructor)</pre>
+<pre>&lt;T&gt;&nbsp;void&nbsp;processRequest(javax.ws.rs.core.UriInfo&nbsp;requestUri,
+                        javax.ws.rs.container.AsyncResponse&nbsp;response,
+                        <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;<a href="../../../../../../io/wcm/caravan/rhyme/caravan/api/CaravanRhyme.html" title="interface in io.wcm.caravan.rhyme.caravan.api">CaravanRhyme</a>,T&gt;&nbsp;requestContextConstructor,
+                        <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function">Function</a>&lt;T,? extends io.wcm.caravan.rhyme.api.resources.LinkableResource&gt;&nbsp;resourceImplConstructor)</pre>
 <div class="block">Handles the full request cycle:
  <ol>
  <li>Create a <a href="../../../../../../io/wcm/caravan/rhyme/caravan/api/CaravanRhyme.html" title="interface in io.wcm.caravan.rhyme.caravan.api"><code>CaravanRhyme</code></a> instance</li>
@@ -173,7 +173,7 @@ public interface <span class="typeNameLabel">CaravanRhymeRequestCycle</span></pr
  </ol></div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
-<dd><code>RequestContextType</code> - a project-specific type that allows to pass on OSGI references and request-specific
+<dd><code>T</code> - a project-specific type that allows to pass on OSGI references and request-specific
           information to all resource implementations being created within the request cycle</dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>requestUri</code> - information on the URI of the incoming request</dd>

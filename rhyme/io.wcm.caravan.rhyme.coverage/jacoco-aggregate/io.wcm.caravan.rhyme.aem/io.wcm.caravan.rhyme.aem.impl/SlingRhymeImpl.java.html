@@ -116,7 +116,7 @@ public class SlingRhymeImpl extends SlingAdaptable implements SlingRhyme {
 <span class="fc" id="L116">  }</span>
 
   @Override
-  public &lt;AdapterType&gt; AdapterType adaptTo(Class&lt;AdapterType&gt; type) {
+  public &lt;T&gt; T adaptTo(Class&lt;T&gt; type) {
 
     // there was some confusing branch coverage issue when using this try-with-resource-statement
     // with multiple return statements, that's why the content was moved into a doAdaptTo method
@@ -125,14 +125,14 @@ public class SlingRhymeImpl extends SlingAdaptable implements SlingRhyme {
     }
   }
 
-  private &lt;AdapterType&gt; AdapterType doAdaptTo(Class&lt;AdapterType&gt; type) {
+  private &lt;T&gt; T doAdaptTo(Class&lt;T&gt; type) {
 
     // immediately return the current resource or request if they are the target of the adaption
 <span class="fc bfc" id="L131" title="All 2 branches covered.">    if (Resource.class.isAssignableFrom(type)) {</span>
-<span class="fc" id="L132">      return (AdapterType)currentResource;</span>
+<span class="fc" id="L132">      return (T)currentResource;</span>
     }
 <span class="fc bfc" id="L134" title="All 2 branches covered.">    if (HttpServletRequest.class.isAssignableFrom(type)) {</span>
-<span class="fc" id="L135">      return (AdapterType)request;</span>
+<span class="fc" id="L135">      return (T)request;</span>
     }
 
     // use the model factory if the target type is a sling model, so that if anything goes wrong,
@@ -163,7 +163,7 @@ public class SlingRhymeImpl extends SlingAdaptable implements SlingRhyme {
 <span class="fc" id="L163">    return builder.build();</span>
   }
 
-  private &lt;AdapterType&gt; Optional&lt;AdapterType&gt; tryAdapting(Class&lt;AdapterType&gt; type, Collection&lt;Adaptable&gt; adaptables) {
+  private &lt;T&gt; Optional&lt;T&gt; tryAdapting(Class&lt;T&gt; type, Collection&lt;Adaptable&gt; adaptables) {
 
 <span class="fc" id="L168">    return adaptables.stream()</span>
 <span class="fc" id="L169">        .filter(Objects::nonNull)</span>

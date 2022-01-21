@@ -48,13 +48,13 @@ import io.wcm.caravan.rhyme.jaxrs.api.JaxRsAsyncHalResponseRenderer;
   private CaravanHalApiClient halApiClient;
 
   @Override
-  public &lt;RequestContextType&gt; void processRequest(UriInfo requestUri, AsyncResponse response,
-      Function&lt;CaravanRhyme, RequestContextType&gt; requestContextConstructor, Function&lt;RequestContextType, ? extends LinkableResource&gt; resourceImplConstructor) {
+  public &lt;T&gt; void processRequest(UriInfo requestUri, AsyncResponse response,
+      Function&lt;CaravanRhyme, T&gt; requestContextConstructor, Function&lt;T, ? extends LinkableResource&gt; resourceImplConstructor) {
 
 <span class="fc" id="L54">    CaravanRhymeImpl rhyme = createRhymeInstance(requestUri);</span>
 
     try {
-<span class="fc" id="L57">      RequestContextType requestContext = requestContextConstructor.apply(rhyme);</span>
+<span class="fc" id="L57">      T requestContext = requestContextConstructor.apply(rhyme);</span>
 
 <span class="fc" id="L59">      LinkableResource resource = resourceImplConstructor.apply(requestContext);</span>
 

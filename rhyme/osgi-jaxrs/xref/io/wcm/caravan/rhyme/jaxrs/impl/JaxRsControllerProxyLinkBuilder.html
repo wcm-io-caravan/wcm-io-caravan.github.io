@@ -74,16 +74,16 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment"> * Implementation of {@link JaxRsLinkBuilder}</em>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment"> * @param &lt;JaxRsResourceType&gt; the class of the {@link Component} annotated with {@link JaxrsResource}</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment"> * @param &lt;T&gt; the class of the {@link Component} annotated with {@link JaxrsResource}</em>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> JaxRsControllerProxyLinkBuilder&lt;JaxRsResourceType&gt; <strong class="jxr_keyword">implements</strong> InvocationHandler, JaxRsLinkBuilder&lt;JaxRsResourceType&gt; {
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> JaxRsControllerProxyLinkBuilder&lt;T&gt; <strong class="jxr_keyword">implements</strong> InvocationHandler, JaxRsLinkBuilder&lt;T&gt; {
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String CAPTURED_URI_FIELD_NAME = <span class="jxr_string">"__capturedUri"</span>;
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>  
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String baseUrl;
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>  
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Class&lt;JaxRsResourceType&gt; resourceClass;
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Class&lt;? <strong class="jxr_keyword">extends</strong> JaxRsResourceType&gt; proxyClass;
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Class&lt;T&gt; resourceClass;
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Class&lt;? <strong class="jxr_keyword">extends</strong> T&gt; proxyClass;
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> List&lt;TemplateParameter&gt; additionalQueryParameters = <strong class="jxr_keyword">new</strong> LinkedList&lt;&gt;();
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  
@@ -93,7 +93,7 @@
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">   * @param baseUrl the base path of the JAX-RS {@link Application}</em>
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  <em class="jxr_javadoccomment">   * @param resourceClass the class of the {@link Component} annotated with {@link JaxrsResource}</em>
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>    <strong class="jxr_keyword">public</strong> <a name="JaxRsControllerProxyLinkBuilder" href="../../../../../../io/wcm/caravan/rhyme/jaxrs/impl/JaxRsControllerProxyLinkBuilder.html#JaxRsControllerProxyLinkBuilder">JaxRsControllerProxyLinkBuilder</a>(String baseUrl, Class&lt;JaxRsResourceType&gt; resourceClass) {
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>    <strong class="jxr_keyword">public</strong> <a name="JaxRsControllerProxyLinkBuilder" href="../../../../../../io/wcm/caravan/rhyme/jaxrs/impl/JaxRsControllerProxyLinkBuilder.html#JaxRsControllerProxyLinkBuilder">JaxRsControllerProxyLinkBuilder</a>(String baseUrl, Class&lt;T&gt; resourceClass) {
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">this</strong>.baseUrl = baseUrl;
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>      <strong class="jxr_keyword">this</strong>.resourceClass = resourceClass;
@@ -101,7 +101,7 @@
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">this</strong>.proxyClass = createProxyClass(resourceClass);
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>    }
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>  
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>    <strong class="jxr_keyword">private</strong> Class&lt;? <strong class="jxr_keyword">extends</strong> JaxRsResourceType&gt; createProxyClass(Class&lt;JaxRsResourceType&gt; superClass) {
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>    <strong class="jxr_keyword">private</strong> Class&lt;? <strong class="jxr_keyword">extends</strong> T&gt; createProxyClass(Class&lt;T&gt; superClass) {
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>  
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>      <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>        <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ByteBuddy()
@@ -122,7 +122,7 @@
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>   }
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> 
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>   @Override
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>   <strong class="jxr_keyword">public</strong> JaxRsLinkBuilder&lt;JaxRsResourceType&gt; withAdditionalQueryParameters(Map&lt;String, Object&gt; parameters) {
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>   <strong class="jxr_keyword">public</strong> JaxRsLinkBuilder&lt;T&gt; withAdditionalQueryParameters(Map&lt;String, Object&gt; parameters) {
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> 
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>     parameters.forEach((name, value) -&gt; {
 <a class="jxr_linenumber" name="L120" href="#L120">120</a> 
@@ -140,10 +140,10 @@
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>   }
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> 
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>   @Override
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>   <strong class="jxr_keyword">public</strong> Link buildLinkTo(Consumer&lt;JaxRsResourceType&gt; consumer) {
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>   <strong class="jxr_keyword">public</strong> Link buildLinkTo(Consumer&lt;T&gt; consumer) {
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> 
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>       JaxRsResourceType instance = proxyClass.newInstance();
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>       T instance = proxyClass.newInstance();
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> 
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>       consumer.accept(instance);
 <a class="jxr_linenumber" name="L141" href="#L141">141</a> 
@@ -168,7 +168,7 @@
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>   }
 <a class="jxr_linenumber" name="L162" href="#L162">162</a> 
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>   <strong class="jxr_keyword">private</strong> JaxRsControllerProxyLinkBuilder&lt;JaxRsResourceType&gt;.MethodDetails getCachedMethodDetails(Method method) <strong class="jxr_keyword">throws</strong> ExecutionException {
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>   <strong class="jxr_keyword">private</strong> JaxRsControllerProxyLinkBuilder&lt;T&gt;.MethodDetails getCachedMethodDetails(Method method) <strong class="jxr_keyword">throws</strong> ExecutionException {
 <a class="jxr_linenumber" name="L164" href="#L164">164</a> 
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>       <strong class="jxr_keyword">return</strong> cache.get(method, () -&gt; <strong class="jxr_keyword">new</strong> MethodDetails(resourceClass, method));
@@ -328,11 +328,11 @@
 <a class="jxr_linenumber" name="L320" href="#L320">320</a>               || valueAvailableCheck.test(parameter)); <em class="jxr_comment">// its (optional) template variable does have a value</em>
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>     }
 <a class="jxr_linenumber" name="L322" href="#L322">322</a> 
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>     <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> AnnotatedParamFinder&lt;AnnotationType <strong class="jxr_keyword">extends</strong> Annotation&gt; {
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>     <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> AnnotatedParamFinder&lt;A <strong class="jxr_keyword">extends</strong> Annotation&gt; {
 <a class="jxr_linenumber" name="L324" href="#L324">324</a> 
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>       <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> Class&lt;AnnotationType&gt; annotationClass;
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>       <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> Class&lt;A&gt; annotationClass;
 <a class="jxr_linenumber" name="L326" href="#L326">326</a> 
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>       AnnotatedParamFinder(Class&lt;AnnotationType&gt; annotationClass) {
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>       AnnotatedParamFinder(Class&lt;A&gt; annotationClass) {
 <a class="jxr_linenumber" name="L328" href="#L328">328</a>         <strong class="jxr_keyword">this</strong>.annotationClass = annotationClass;
 <a class="jxr_linenumber" name="L329" href="#L329">329</a>       }
 <a class="jxr_linenumber" name="L330" href="#L330">330</a> 

@@ -56,13 +56,13 @@
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">private</strong> <a name="CaravanHalApiClient" href="../../../../../../io/wcm/caravan/rhyme/caravan/api/CaravanHalApiClient.html#CaravanHalApiClient">CaravanHalApiClient</a> halApiClient;
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>    @Override
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">public</strong> &lt;RequestContextType&gt; <strong class="jxr_keyword">void</strong> processRequest(UriInfo requestUri, AsyncResponse response,
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>        Function&lt;CaravanRhyme, RequestContextType&gt; requestContextConstructor, Function&lt;RequestContextType, ? <strong class="jxr_keyword">extends</strong> LinkableResource&gt; resourceImplConstructor) {
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">public</strong> &lt;T&gt; <strong class="jxr_keyword">void</strong> processRequest(UriInfo requestUri, AsyncResponse response,
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>        Function&lt;CaravanRhyme, T&gt; requestContextConstructor, Function&lt;T, ? <strong class="jxr_keyword">extends</strong> LinkableResource&gt; resourceImplConstructor) {
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      CaravanRhymeImpl rhyme = createRhymeInstance(requestUri);
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>        RequestContextType requestContext = requestContextConstructor.apply(rhyme);
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>        T requestContext = requestContextConstructor.apply(rhyme);
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>        LinkableResource resource = resourceImplConstructor.apply(requestContext);
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  

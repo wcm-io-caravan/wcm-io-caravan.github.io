@@ -58,9 +58,9 @@ import io.wcm.caravan.rhyme.impl.renderer.CompositeExceptionStatusAndLoggingStra
 /**
  * An abstract base class for the common customization and dependency injection required by the {@link RhymeBuilder},
  * {@link HalApiClientBuilder} and {@link HalResponseRendererBuilder} implementations.
- * @param &lt;BuilderInterface&gt; the interface that the subclass is implementing
+ * @param &lt;I&gt; the interface that the subclass is implementing
  */
-<span class="fc" id="L63">abstract class AbstractRhymeBuilder&lt;BuilderInterface&gt; {</span>
+<span class="fc" id="L63">abstract class AbstractRhymeBuilder&lt;I&gt; {</span>
 
 <span class="fc" id="L65">  private static final ObjectMapper DEFAULT_OBJECT_MAPPER = new ObjectMapper()</span>
 <span class="fc" id="L66">      .disable(FAIL_ON_UNKNOWN_PROPERTIES);</span>
@@ -84,63 +84,63 @@ import io.wcm.caravan.rhyme.impl.renderer.CompositeExceptionStatusAndLoggingStra
   protected boolean wasUsedToBuild;
 
   @SuppressWarnings(&quot;unchecked&quot;)
-  public BuilderInterface withResourceLoader(HalResourceLoader resourceLoader) {
+  public I withResourceLoader(HalResourceLoader resourceLoader) {
 
 <span class="fc" id="L89">    this.resourceLoader = resourceLoader;</span>
-<span class="fc" id="L90">    return (BuilderInterface)this;</span>
+<span class="fc" id="L90">    return (I)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
-  public BuilderInterface withMetrics(RequestMetricsCollector sharedMetrics) {
+  public I withMetrics(RequestMetricsCollector sharedMetrics) {
 
 <span class="fc" id="L96">    this.metrics = sharedMetrics;</span>
-<span class="fc" id="L97">    return (BuilderInterface)this;</span>
+<span class="fc" id="L97">    return (I)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
-  public BuilderInterface withRhymeDocsSupport(RhymeDocsSupport rhymeDocsSupport) {
+  public I withRhymeDocsSupport(RhymeDocsSupport rhymeDocsSupport) {
 
 <span class="fc" id="L103">    this.rhymeDocsSupport = rhymeDocsSupport;</span>
-<span class="fc" id="L104">    return (BuilderInterface)this;</span>
+<span class="fc" id="L104">    return (I)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
-  public BuilderInterface withReturnTypeSupport(HalApiReturnTypeSupport additionalTypeSupport) {
+  public I withReturnTypeSupport(HalApiReturnTypeSupport additionalTypeSupport) {
 
 <span class="fc bfc" id="L110" title="All 2 branches covered.">    if (additionalTypeSupport != null) {</span>
 <span class="fc" id="L111">      typeSupports.add(new HalApiTypeSupportAdapter(additionalTypeSupport));</span>
     }
-<span class="fc" id="L113">    return (BuilderInterface)this;</span>
+<span class="fc" id="L113">    return (I)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
-  public BuilderInterface withAnnotationTypeSupport(HalApiAnnotationSupport additionalTypeSupport) {
+  public I withAnnotationTypeSupport(HalApiAnnotationSupport additionalTypeSupport) {
 
 <span class="fc bfc" id="L119" title="All 2 branches covered.">    if (additionalTypeSupport != null) {</span>
 <span class="fc" id="L120">      typeSupports.add(new HalApiTypeSupportAdapter(additionalTypeSupport));</span>
     }
-<span class="fc" id="L122">    return (BuilderInterface)this;</span>
+<span class="fc" id="L122">    return (I)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
-  public BuilderInterface withExceptionStrategy(ExceptionStatusAndLoggingStrategy customStrategy) {
+  public I withExceptionStrategy(ExceptionStatusAndLoggingStrategy customStrategy) {
 
 <span class="fc" id="L128">    exceptionStrategies.add(customStrategy);</span>
-<span class="fc" id="L129">    return (BuilderInterface)this;</span>
+<span class="fc" id="L129">    return (I)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
-  public BuilderInterface withMetadataConfiguration(RhymeMetadataConfiguration configuration) {
+  public I withMetadataConfiguration(RhymeMetadataConfiguration configuration) {
 
 <span class="fc" id="L135">    metadataConfiguration = configuration;</span>
-<span class="fc" id="L136">    return (BuilderInterface)this;</span>
+<span class="fc" id="L136">    return (I)this;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
-  public BuilderInterface withObjectMapper(ObjectMapper customMapper) {
+  public I withObjectMapper(ObjectMapper customMapper) {
 
 <span class="fc" id="L142">    objectMapper = customMapper;</span>
-<span class="fc" id="L143">    return (BuilderInterface)this;</span>
+<span class="fc" id="L143">    return (I)this;</span>
   }
 
   private ExceptionStatusAndLoggingStrategy getEffectiveExceptionStrategy() {
