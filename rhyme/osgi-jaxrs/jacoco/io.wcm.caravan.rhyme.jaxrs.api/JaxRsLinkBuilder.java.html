@@ -54,9 +54,9 @@ public interface JaxRsLinkBuilder&lt;T&gt; {
    * @param baseUrl the base path of the JAX-RS {@link Application}
    * @param resourceClass the class of the {@link Component} annotated with {@link JaxrsResource}
    * @return the created instance
-   * @param &lt;JaxRsResourceType&gt; the type of the resource class
+   * @param &lt;T&gt; the type of the resource class
    */
-  static &lt;JaxRsResourceType&gt; JaxRsLinkBuilder&lt;JaxRsResourceType&gt; create(String baseUrl, Class&lt;JaxRsResourceType&gt; resourceClass) {
+  static &lt;T&gt; JaxRsLinkBuilder&lt;T&gt; create(String baseUrl, Class&lt;T&gt; resourceClass) {
 
 <span class="fc" id="L61">    return new JaxRsControllerProxyLinkBuilder&lt;&gt;(baseUrl, resourceClass);</span>
   }
