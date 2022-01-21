@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,20 +43,16 @@ import io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy;
   @Override
   public boolean logAsCompactWarning(Throwable error) {
 
-<span class="fc bfc" id="L46" title="All 2 branches covered.">    if (error instanceof HalApiClientException) {</span>
-<span class="fc" id="L47">      return true;</span>
-    }
-
-<span class="fc" id="L50">    return false;</span>
+<span class="fc" id="L46">    return (error instanceof HalApiClientException);</span>
   }
 
   public ExceptionStatusAndLoggingStrategy decorateWith(ExceptionStatusAndLoggingStrategy customStrategy) {
 
-<span class="fc bfc" id="L55" title="All 2 branches covered.">    if (customStrategy == null) {</span>
-<span class="fc" id="L56">      return this;</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">    if (customStrategy == null) {</span>
+<span class="fc" id="L52">      return this;</span>
     }
 
-<span class="fc" id="L59">    return new CompositeExceptionStatusAndLoggingStrategy(ImmutableList.of(customStrategy, this));</span>
+<span class="fc" id="L55">    return new CompositeExceptionStatusAndLoggingStrategy(ImmutableList.of(customStrategy, this));</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

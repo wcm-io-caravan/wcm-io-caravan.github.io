@@ -6,7 +6,7 @@ Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,LinkableResourceStat
 Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,SpringRhymeAutoConfiguration,16,0,0,0,7,0,3,0,3,0
 Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,SpringRhymeDocsIntegration,19,0,0,0,6,0,5,0,5,0
 Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,VndErrorHandlingControllerAdvice,37,0,0,0,6,0,4,0,4,0
-Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,SpringRhymeLinkBuilder,8,245,0,20,2,47,1,24,1,14
+Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,SpringRhymeLinkBuilder,8,230,0,18,2,46,1,23,1,14
 Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,SpringRhymeImpl,11,132,2,4,2,34,3,11,1,10
 Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,LinkableResourceMessageConverter,0,59,0,0,0,11,0,5,0,5
 Rhyme - Spring Integration,io.wcm.caravan.rhyme.spring.impl,UrlFingerprintingImpl,0,101,0,10,0,27,0,12,0,7

@@ -109,30 +109,28 @@ public final class RxJavaTransformers {
 
     @Override
     public SingleSource&lt;T&gt; apply(Single&lt;T&gt; upstream) {
-<span class="fc" id="L112">      return Single.defer(() -&gt; {</span>
-<span class="fc" id="L113">        return handleSubscription(upstream.toObservable()).firstOrError();</span>
-      });
+<span class="fc" id="L112">      return Single.defer(() -&gt; handleSubscription(upstream.toObservable()).firstOrError());</span>
     }
 
     private synchronized Observable&lt;T&gt; handleSubscription(Observable&lt;T&gt; upstream) {
 
-<span class="fc" id="L119">      Observable&lt;T&gt; source = cachedOrInProgress;</span>
+<span class="fc" id="L117">      Observable&lt;T&gt; source = cachedOrInProgress;</span>
 
-<span class="fc bfc" id="L121" title="All 2 branches covered.">      if (source == null) {</span>
-<span class="fc" id="L122">        source = upstream</span>
-<span class="fc" id="L123">            .doOnError(t -&gt; onError())</span>
-<span class="fc" id="L124">            .replay()</span>
-<span class="fc" id="L125">            .autoConnect();</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">      if (source == null) {</span>
+<span class="fc" id="L120">        source = upstream</span>
+<span class="fc" id="L121">            .doOnError(t -&gt; onError())</span>
+<span class="fc" id="L122">            .replay()</span>
+<span class="fc" id="L123">            .autoConnect();</span>
 
-<span class="fc" id="L127">        cachedOrInProgress = source;</span>
+<span class="fc" id="L125">        cachedOrInProgress = source;</span>
       }
 
-<span class="fc" id="L130">      return source;</span>
+<span class="fc" id="L128">      return source;</span>
     }
 
     private synchronized void onError() {
-<span class="fc" id="L134">      cachedOrInProgress = null;</span>
-<span class="fc" id="L135">    }</span>
+<span class="fc" id="L132">      cachedOrInProgress = null;</span>
+<span class="fc" id="L133">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

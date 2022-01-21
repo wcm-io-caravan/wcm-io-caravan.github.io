@@ -150,7 +150,7 @@ public class SlingResourceAdapterImpl implements SlingResourceAdapter {
   @Override
   public SlingResourceAdapter selectContainingPage() {
 
-<span class="fc" id="L153">    return resourceSelector.add((res) -&gt; Stream.of(PageUtils.getPageResource(res)), &quot;page containing {}&quot;);</span>
+<span class="fc" id="L153">    return resourceSelector.add(res -&gt; Stream.of(PageUtils.getPageResource(res)), &quot;page containing {}&quot;);</span>
   }
 
   @Override
@@ -221,14 +221,14 @@ public class SlingResourceAdapterImpl implements SlingResourceAdapter {
   @Override
   public SlingResourceAdapter filterAdaptableTo(Class&lt;?&gt; adapterClazz) {
 
-<span class="fc bfc" id="L224" title="All 2 branches covered.">    return resourceFilter.add((res) -&gt; res.adaptTo(adapterClazz) != null,</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">    return resourceFilter.add(res -&gt; res.adaptTo(adapterClazz) != null,</span>
 <span class="fc" id="L225">        &quot;if resource can be adapted to &quot; + adapterClazz.getSimpleName());</span>
   }
 
   @Override
   public &lt;T&gt; SlingResourceAdapter filterAdaptableTo(Class&lt;T&gt; adapterClazz, Predicate&lt;T&gt; predicate) {
 
-<span class="fc" id="L231">    Predicate&lt;Resource&gt; isAdaptableAndAcceptedByPredicated = (res) -&gt; {</span>
+<span class="fc" id="L231">    Predicate&lt;Resource&gt; isAdaptableAndAcceptedByPredicated = res -&gt; {</span>
 <span class="fc" id="L232">      T adapted = res.adaptTo(adapterClazz);</span>
 <span class="fc bfc" id="L233" title="All 2 branches covered.">      if (adapted == null) {</span>
 <span class="fc" id="L234">        return false;</span>
@@ -243,7 +243,7 @@ public class SlingResourceAdapterImpl implements SlingResourceAdapter {
   @Override
   public SlingResourceAdapter filterWithName(String resourceName) {
 
-<span class="fc" id="L246">    return resourceFilter.add((res) -&gt; res.getName().equals(resourceName),</span>
+<span class="fc" id="L246">    return resourceFilter.add(res -&gt; res.getName().equals(resourceName),</span>
         &quot;if resource name is &quot; + resourceName);
   }
 

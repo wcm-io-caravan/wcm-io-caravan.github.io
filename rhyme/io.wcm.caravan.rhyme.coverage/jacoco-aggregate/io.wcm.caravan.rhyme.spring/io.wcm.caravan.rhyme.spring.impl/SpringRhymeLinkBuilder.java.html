@@ -20,6 +20,7 @@
 package io.wcm.caravan.rhyme.spring.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,123 +46,121 @@ class SpringRhymeLinkBuilder implements RhymeLinkBuilder {
   private final Map&lt;String, String&gt; fingerprintingParameters;
   private final Map&lt;String, Object&gt; additionalQueryParameters;
 
-<span class="fc" id="L48">  private final List&lt;String&gt; additionalQueryVariableNames = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L49">  private final List&lt;String&gt; additionalQueryVariableNames = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L50">  private boolean withFingerprinting = true;</span>
+<span class="fc" id="L51">  private boolean withFingerprinting = true;</span>
 
-<span class="fc" id="L52">  SpringRhymeLinkBuilder(WebMvcLinkBuilder webMvcLinkBuilder, Map&lt;String, String&gt; fingerprintingParameters, Map&lt;String, Object&gt; stickyParameters) {</span>
+<span class="fc" id="L53">  SpringRhymeLinkBuilder(WebMvcLinkBuilder webMvcLinkBuilder, Map&lt;String, String&gt; fingerprintingParameters, Map&lt;String, Object&gt; stickyParameters) {</span>
 
-<span class="fc" id="L54">    this.link = new Link(webMvcLinkBuilder.toString());</span>
+<span class="fc" id="L55">    this.link = new Link(webMvcLinkBuilder.toString());</span>
 
-<span class="fc" id="L56">    this.fingerprintingParameters = fingerprintingParameters;</span>
-<span class="fc" id="L57">    this.additionalQueryParameters = stickyParameters;</span>
-<span class="fc" id="L58">  }</span>
+<span class="fc" id="L57">    this.fingerprintingParameters = fingerprintingParameters;</span>
+<span class="fc" id="L58">    this.additionalQueryParameters = stickyParameters;</span>
+<span class="fc" id="L59">  }</span>
 
   @Override
   public SpringRhymeLinkBuilder withTitle(String title) {
 
-<span class="fc bfc" id="L63" title="All 4 branches covered.">    if (!link.isTemplated() || link.getTitle() == null) {</span>
-<span class="fc" id="L64">      link.setTitle(title);</span>
+<span class="fc bfc" id="L64" title="All 4 branches covered.">    if (!link.isTemplated() || link.getTitle() == null) {</span>
+<span class="fc" id="L65">      link.setTitle(title);</span>
     }
-<span class="fc" id="L66">    return this;</span>
+<span class="fc" id="L67">    return this;</span>
   }
 
   @Override
   public SpringRhymeLinkBuilder withTemplateTitle(String title) {
 
-<span class="fc bfc" id="L72" title="All 2 branches covered.">    if (link.isTemplated()) {</span>
-<span class="fc" id="L73">      link.setTitle(title);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (link.isTemplated()) {</span>
+<span class="fc" id="L74">      link.setTitle(title);</span>
     }
-<span class="fc" id="L75">    return this;</span>
+<span class="fc" id="L76">    return this;</span>
   }
 
   @Override
   public SpringRhymeLinkBuilder withName(String name) {
 
-<span class="fc" id="L81">    link.setName(name);</span>
-<span class="fc" id="L82">    return this;</span>
+<span class="fc" id="L82">    link.setName(name);</span>
+<span class="fc" id="L83">    return this;</span>
   }
 
   @Override
   public RhymeLinkBuilder withTemplateVariables(String... queryParameterNames) {
 
-<span class="fc bfc" id="L88" title="All 2 branches covered.">    for (String name : queryParameterNames) {</span>
-<span class="fc" id="L89">      additionalQueryVariableNames.add(name);</span>
-    }
-<span class="fc" id="L91">    return this;</span>
+<span class="fc" id="L89">    additionalQueryVariableNames.addAll(Arrays.asList(queryParameterNames));</span>
+<span class="fc" id="L90">    return this;</span>
   }
 
   @Override
   public SpringRhymeLinkBuilder withoutFingerprint() {
 
-<span class="fc" id="L97">    withFingerprinting = false;</span>
-<span class="fc" id="L98">    return this;</span>
+<span class="fc" id="L96">    withFingerprinting = false;</span>
+<span class="fc" id="L97">    return this;</span>
   }
 
   @Override
   public Link build() {
 
-<span class="fc" id="L104">    UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(link.getHref());</span>
+<span class="fc" id="L103">    UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(link.getHref());</span>
 
-<span class="fc" id="L106">    appendQueryParams(uriBuilder);</span>
+<span class="fc" id="L105">    appendQueryParams(uriBuilder);</span>
 
-<span class="fc bfc" id="L108" title="All 2 branches covered.">    if (withFingerprinting) {</span>
-<span class="fc" id="L109">      fingerprintingParameters.forEach(uriBuilder::queryParam);</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">    if (withFingerprinting) {</span>
+<span class="fc" id="L108">      fingerprintingParameters.forEach(uriBuilder::queryParam);</span>
     }
 
-<span class="fc bfc" id="L112" title="All 2 branches covered.">    if (additionalQueryVariableNames.isEmpty()) {</span>
-<span class="fc" id="L113">      return link.setHref(uriBuilder.build().toString());</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">    if (additionalQueryVariableNames.isEmpty()) {</span>
+<span class="fc" id="L112">      return link.setHref(uriBuilder.build().toString());</span>
     }
 
-<span class="fc" id="L116">    return link.setHref(buildTemplateWithAdditionalVariables(uriBuilder));</span>
+<span class="fc" id="L115">    return link.setHref(buildTemplateWithAdditionalVariables(uriBuilder));</span>
 
   }
 
   private String buildTemplateWithAdditionalVariables(UriComponentsBuilder uriBuilder) {
 
-<span class="fc" id="L122">    stripQueryParams(uriBuilder, additionalQueryVariableNames);</span>
+<span class="fc" id="L121">    stripQueryParams(uriBuilder, additionalQueryVariableNames);</span>
 
-<span class="fc" id="L124">    UriComponents components = uriBuilder.build();</span>
+<span class="fc" id="L123">    UriComponents components = uriBuilder.build();</span>
 
-<span class="fc" id="L126">    String names = additionalQueryVariableNames.stream()</span>
-<span class="fc" id="L127">        .collect(Collectors.joining(&quot;,&quot;));</span>
+<span class="fc" id="L125">    String names = additionalQueryVariableNames.stream()</span>
+<span class="fc" id="L126">        .collect(Collectors.joining(&quot;,&quot;));</span>
 
-<span class="fc bfc" id="L129" title="All 2 branches covered.">    String operator = components.getQuery() != null ? &quot;&amp;&quot; : &quot;?&quot;;</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">    String operator = components.getQuery() != null ? &quot;&amp;&quot; : &quot;?&quot;;</span>
 
-<span class="fc" id="L131">    return components.toUriString() + &quot;{&quot; + operator + names + &quot;}&quot;;</span>
+<span class="fc" id="L130">    return components.toUriString() + &quot;{&quot; + operator + names + &quot;}&quot;;</span>
   }
 
   private static void stripQueryParams(UriComponentsBuilder uriBuilder, List&lt;String&gt; namesToStrip) {
 
-<span class="fc" id="L136">    UriComponents components = uriBuilder.build();</span>
+<span class="fc" id="L135">    UriComponents components = uriBuilder.build();</span>
 
-<span class="fc" id="L138">    MultiValueMap&lt;String, String&gt; existingParams = components.getQueryParams();</span>
-<span class="fc" id="L139">    MultiValueMap&lt;String, String&gt; strippedParams = new LinkedMultiValueMap&lt;&gt;();</span>
+<span class="fc" id="L137">    MultiValueMap&lt;String, String&gt; existingParams = components.getQueryParams();</span>
+<span class="fc" id="L138">    MultiValueMap&lt;String, String&gt; strippedParams = new LinkedMultiValueMap&lt;&gt;();</span>
 
-<span class="fc" id="L141">    existingParams.keySet().stream()</span>
-<span class="fc bfc" id="L142" title="All 2 branches covered.">        .filter(name -&gt; !namesToStrip.contains(name))</span>
-<span class="fc" id="L143">        .forEach(name -&gt; strippedParams.put(name, existingParams.get(name)));</span>
+<span class="fc" id="L140">    existingParams.keySet().stream()</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">        .filter(name -&gt; !namesToStrip.contains(name))</span>
+<span class="fc" id="L142">        .forEach(name -&gt; strippedParams.put(name, existingParams.get(name)));</span>
 
-<span class="fc" id="L145">    uriBuilder.replaceQueryParams(strippedParams);</span>
-<span class="fc" id="L146">  }</span>
+<span class="fc" id="L144">    uriBuilder.replaceQueryParams(strippedParams);</span>
+<span class="fc" id="L145">  }</span>
 
   private void appendQueryParams(UriComponentsBuilder uriBuilder) {
 
-<span class="fc" id="L150">    MultiValueMap&lt;String, String&gt; existingParams = uriBuilder.build().getQueryParams();</span>
+<span class="fc" id="L149">    MultiValueMap&lt;String, String&gt; existingParams = uriBuilder.build().getQueryParams();</span>
 
-<span class="fc" id="L152">    additionalQueryParameters.forEach((name, value) -&gt; {</span>
-<span class="fc bfc" id="L153" title="All 4 branches covered.">      if (!existingParams.containsKey(name) &amp;&amp; !additionalQueryVariableNames.contains(name)) {</span>
-<span class="fc" id="L154">        uriBuilder.queryParam(name, value);</span>
+<span class="fc" id="L151">    additionalQueryParameters.forEach((name, value) -&gt; {</span>
+<span class="fc bfc" id="L152" title="All 4 branches covered.">      if (!existingParams.containsKey(name) &amp;&amp; !additionalQueryVariableNames.contains(name)) {</span>
+<span class="fc" id="L153">        uriBuilder.queryParam(name, value);</span>
       }
-<span class="fc" id="L156">    });</span>
-<span class="fc" id="L157">  }</span>
+<span class="fc" id="L155">    });</span>
+<span class="fc" id="L156">  }</span>
 
   @Override
   public &lt;T extends LinkableResource&gt; T buildLinked(Class&lt;T&gt; halApiInterface) {
 
-<span class="fc" id="L162">    Link linkToResource = build();</span>
+<span class="fc" id="L161">    Link linkToResource = build();</span>
 
-<span class="fc" id="L164">    return ResourceConversions.asLinkableResource(linkToResource, halApiInterface);</span>
+<span class="fc" id="L163">    return ResourceConversions.asLinkableResource(linkToResource, halApiInterface);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

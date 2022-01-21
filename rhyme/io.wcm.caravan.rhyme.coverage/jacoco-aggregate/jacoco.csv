@@ -14,7 +14,7 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl,RhymeB
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl,RhymeBuilders.HalApiClientBuilderImpl,0,8,0,0,0,3,0,1,0,1
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl,RhymeBuilders,0,23,0,0,0,4,0,4,0,4
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl,AbstractRhymeBuilder,0,251,0,22,0,65,0,27,0,16
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.CacheOnlyCompletedTransformer,0,44,0,2,0,13,0,8,0,7
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.CacheOnlyCompletedTransformer,0,44,0,2,0,12,0,8,0,7
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers,0,16,0,0,0,3,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.AsyncFilterTransformer,0,31,0,0,0,11,0,4,0,4
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client,HalApiClientImpl,0,44,0,0,0,8,0,3,0,3
@@ -46,7 +46,7 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.render
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.renderer,AsyncHalResourceRendererImpl,0,346,0,14,0,58,0,26,0,19
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.renderer,AsyncHalResponseRendererImpl,0,140,0,8,0,34,0,12,0,8
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.renderer,RelatedResourcesRendererImpl.RelationRenderResult,0,27,0,0,0,10,0,5,0,5
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.renderer,DefaultExceptionStatusAndLoggingStrategy,0,38,0,8,0,12,0,8,0,4
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.renderer,DefaultExceptionStatusAndLoggingStrategy,0,34,0,6,0,10,0,7,0,4
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.spi,HalResourceLoader,0,8,0,0,0,5,0,2,0,2
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.spi,HalApiReturnTypeSupport,0,2,0,0,0,1,0,1,0,1
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.spi,ExceptionStatusAndLoggingStrategy,0,7,0,0,0,3,0,3,0,3
@@ -133,7 +133,7 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.im
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeAutoConfiguration,0,16,0,0,0,7,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeDocsIntegration,0,19,0,0,0,6,0,5,0,5
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,VndErrorHandlingControllerAdvice,0,37,0,0,0,6,0,4,0,4
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeLinkBuilder,0,253,0,20,0,49,0,25,0,15
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeLinkBuilder,0,238,0,18,0,48,0,24,0,15
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeImpl,0,143,0,6,0,36,0,14,0,11
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,LinkableResourceMessageConverter,0,59,0,0,0,11,0,5,0,5
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,UrlFingerprintingImpl,0,101,0,10,0,27,0,12,0,7
@@ -159,5 +159,5 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.car
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,EmployeeController.EmployeeResourceImpl,0,86,0,0,0,19,0,8,0,8
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,ManagerController.new ManagerCollectionResource() {...},0,47,0,0,0,7,0,6,0,6
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,DetailedEmployeeController,0,9,0,0,0,2,0,2,0,2
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,CompanyApiLinkBuilder,0,107,0,8,0,27,0,10,0,6
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,CompanyApiLinkBuilder,0,103,0,8,0,27,0,10,0,6
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,ManagerController.ManagerResourceImpl,0,82,0,0,0,19,0,8,0,8

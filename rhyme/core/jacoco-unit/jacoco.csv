@@ -14,7 +14,7 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.impl,RhymeBuilders.HalResponseRender
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl,RhymeBuilders.HalApiClientBuilderImpl,0,8,0,0,0,3,0,1,0,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl,RhymeBuilders,0,23,0,0,0,4,0,4,0,4
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl,AbstractRhymeBuilder,0,251,0,22,0,65,0,27,0,16
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.CacheOnlyCompletedTransformer,0,44,0,2,0,13,0,8,0,7
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.CacheOnlyCompletedTransformer,0,44,0,2,0,12,0,8,0,7
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers,0,16,0,0,0,3,0,3,0,3
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.AsyncFilterTransformer,0,31,0,0,0,11,0,4,0,4
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client,HalApiClientImpl,0,44,0,0,0,8,0,3,0,3
@@ -46,7 +46,7 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,RelatedResourcesRender
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,AsyncHalResourceRendererImpl,0,346,0,14,0,58,0,26,0,19
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,AsyncHalResponseRendererImpl,0,140,0,8,0,34,0,12,0,8
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,RelatedResourcesRendererImpl.RelationRenderResult,0,27,0,0,0,10,0,5,0,5
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,DefaultExceptionStatusAndLoggingStrategy,0,38,0,8,0,12,0,8,0,4
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,DefaultExceptionStatusAndLoggingStrategy,0,34,0,6,0,10,0,7,0,4
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.spi,HalResourceLoader,5,3,0,0,3,2,1,1,1,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.spi,HalApiReturnTypeSupport,0,2,0,0,0,1,0,1,0,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.spi,ExceptionStatusAndLoggingStrategy,0,7,0,0,0,3,0,3,0,3
