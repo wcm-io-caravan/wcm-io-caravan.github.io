@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GenerateRhymeDocsMojo.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">rhyme-docs-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.maven.plugins.rhymedocs</a> &gt; <span class="el_source">GenerateRhymeDocsMojo.java</span></div><h1>GenerateRhymeDocsMojo.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.maven.plugins.rhymedocs;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.NoSuchElementException;
+
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.model.Build;
+import org.apache.maven.model.Resource;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
+
+import io.wcm.caravan.maven.plugins.rhymedocs.model.RhymeApiDocs;
+import io.wcm.caravan.maven.plugins.rhymedocs.templating.RhymeDocsHtmlRenderer;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.api.spi.RhymeDocsSupport;
+
+
+@Mojo(name = &quot;generate-rhyme-docs&quot;, defaultPhase = LifecyclePhase.PROCESS_CLASSES,
+    requiresDependencyResolution = ResolutionScope.COMPILE, requiresProject = true, threadSafe = true)
+<span class="fc" id="L52">public class GenerateRhymeDocsMojo extends AbstractMojo {</span>
+
+  static final String NO_INTERFACES_FOUND_MSG = &quot;No interfaces annotated with @HalApiInterface were found in the sources for this project&quot;;
+
+  @Parameter(property = &quot;project&quot;, required = true, readonly = true)
+  protected MavenProject project;
+
+  /**
+   * Path containing the java source files.
+   */
+  @Parameter(defaultValue = &quot;${basedir}/src/main/java&quot;)
+  protected String source;
+
+  @Parameter(defaultValue = &quot;generated-rhyme-docs&quot;)
+  protected String generatedResourcesDirectory;
+
+  @Override
+  public void execute() throws MojoExecutionException, MojoFailureException {
+
+    try {
+
+<span class="fc" id="L73">      ClassLoader compileClassLoader = getCompileClassLoader();</span>
+
+<span class="fc" id="L75">      RhymeApiDocs apiDocs = new RhymeApiDocs(Paths.get(source), compileClassLoader);</span>
+
+<span class="fc bfc" id="L77" title="All 2 branches covered.">      if (apiDocs.getResourceDocs().isEmpty()) {</span>
+<span class="fc" id="L78">        throw new MojoExecutionException(NO_INTERFACES_FOUND_MSG);</span>
+      }
+
+<span class="fc" id="L81">      Path outputDirectory = createOutputDirectory();</span>
+
+<span class="fc" id="L83">      RhymeDocsHtmlRenderer renderer = new RhymeDocsHtmlRenderer(outputDirectory, getLog());</span>
+<span class="fc" id="L84">      renderer.writeHtml(apiDocs);</span>
+
+<span class="fc" id="L86">      addResourcesToClassPath(outputDirectory);</span>
+    }
+<span class="fc" id="L88">    catch (Exception ex) {</span>
+<span class="fc" id="L89">      throw new MojoExecutionException(&quot;Generating Rhyme documentation failed: &quot; + ex.getMessage(), ex);</span>
+<span class="fc" id="L90">    }</span>
+<span class="fc" id="L91">  }</span>
+
+  private URLClassLoader getCompileClassLoader() throws DependencyResolutionRequiredException {
+
+<span class="fc" id="L95">    URL[] classPathElementUrls = project.getCompileClasspathElements().stream()</span>
+<span class="fc" id="L96">        .map(this::createFileUrl)</span>
+<span class="fc" id="L97">        .peek(url -&gt; getLog().debug(&quot;adding &quot; + url + &quot; to class loader&quot;))</span>
+<span class="fc" id="L98">        .toArray(URL[]::new);</span>
+
+<span class="fc" id="L100">    return URLClassLoader.newInstance(classPathElementUrls, getClass().getClassLoader());</span>
+  }
+
+  private URL createFileUrl(String path) {
+    try {
+<span class="fc" id="L105">      File file = new File(path);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">      if (!file.exists()) {</span>
+<span class="fc" id="L107">        throw new NoSuchElementException(&quot;The classpath element &quot; + file.getAbsolutePath() + &quot; does not exist&quot;);</span>
+      }
+<span class="fc" id="L109">      return file.toURI().toURL();</span>
+    }
+<span class="fc" id="L111">    catch (MalformedURLException | RuntimeException ex) {</span>
+<span class="fc" id="L112">      throw new HalApiDeveloperException(&quot;Failed to create URL from path &quot; + path, ex);</span>
+    }
+  }
+
+  private Path createOutputDirectory() throws IOException {
+
+<span class="fc" id="L118">    Path outputDirectory = Paths.get(project.getBuild().getDirectory(), generatedResourcesDirectory);</span>
+
+<span class="fc" id="L120">    Files.createDirectories(outputDirectory);</span>
+
+<span class="fc" id="L122">    return outputDirectory;</span>
+  }
+
+  private void addResourcesToClassPath(Path outputDirectory) {
+
+    // construct resource
+<span class="fc" id="L128">    Resource resource = new Resource();</span>
+<span class="fc" id="L129">    resource.setDirectory(outputDirectory.toString());</span>
+<span class="fc" id="L130">    resource.setTargetPath(RhymeDocsSupport.FOLDER);</span>
+
+    // add to build
+<span class="fc" id="L133">    Build build = project.getBuild();</span>
+<span class="fc" id="L134">    build.addResource(resource);</span>
+<span class="fc" id="L135">    getLog().info(&quot;Added resource: &quot; + resource.getDirectory() + &quot; -&gt; &quot; + resource.getTargetPath());</span>
+<span class="fc" id="L136">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

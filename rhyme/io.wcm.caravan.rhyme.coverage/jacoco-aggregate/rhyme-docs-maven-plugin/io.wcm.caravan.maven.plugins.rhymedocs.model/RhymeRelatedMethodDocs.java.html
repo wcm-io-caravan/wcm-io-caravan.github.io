@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RhymeRelatedMethodDocs.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">rhyme-docs-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.maven.plugins.rhymedocs.model</a> &gt; <span class="el_source">RhymeRelatedMethodDocs.java</span></div><h1>RhymeRelatedMethodDocs.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.maven.plugins.rhymedocs.model;
+
+import static io.wcm.caravan.maven.plugins.rhymedocs.model.DocumentationUtils.getJavaDocCommentOrReturnTag;
+import static io.wcm.caravan.maven.plugins.rhymedocs.model.DocumentationUtils.getMethodsWithAnnotation;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.Ordering;
+import com.thoughtworks.qdox.JavaProjectBuilder;
+import com.thoughtworks.qdox.model.JavaClass;
+import com.thoughtworks.qdox.model.JavaMethod;
+
+import io.wcm.caravan.rhyme.api.annotations.HalApiInterface;
+import io.wcm.caravan.rhyme.api.annotations.Related;
+import io.wcm.caravan.rhyme.impl.reflection.RxJavaReflectionUtils;
+import io.wcm.caravan.rhyme.impl.reflection.TemplateVariableDetection;
+
+/**
+ * provides documentation a method annotated with {@link Related} that corresponds to a ling relation
+ */
+public final class RhymeRelatedMethodDocs {
+
+  private final JavaProjectBuilder builder;
+
+  private final String relation;
+  private final String description;
+
+  private final Class&lt;?&gt; relatedResourceType;
+  private final Cardinality cardinality;
+
+  private final List&lt;RhymeVariableDocs&gt; variables;
+
+<span class="fc" id="L55">  enum Cardinality {</span>
+<span class="fc" id="L56">    SINGLE, OPTIONAL, MULTIPLE</span>
+  }
+
+
+<span class="fc" id="L60">  private RhymeRelatedMethodDocs(JavaClass apiInterface, JavaMethod javaMethod, JavaProjectBuilder builder, ClassLoader projectClassLoader) {</span>
+
+<span class="fc" id="L62">    this.builder = builder;</span>
+
+<span class="fc" id="L64">    Method method = DocumentationUtils.getMethod(apiInterface, javaMethod, projectClassLoader);</span>
+
+<span class="fc" id="L66">    this.relation = method.getAnnotation(Related.class).value();</span>
+<span class="fc" id="L67">    this.description = getJavaDocCommentOrReturnTag(javaMethod);</span>
+
+<span class="fc" id="L69">    this.relatedResourceType = getRelatedResourceType(method);</span>
+<span class="fc" id="L70">    this.cardinality = getCardinality(method);</span>
+
+<span class="fc" id="L72">    this.variables = findVariables(javaMethod, method);</span>
+<span class="fc" id="L73">  }</span>
+
+  static List&lt;RhymeRelatedMethodDocs&gt; create(JavaClass apiInterface, JavaProjectBuilder builder, ClassLoader projectClassLoader) {
+
+<span class="fc" id="L77">    return getMethodsWithAnnotation(apiInterface, Related.class)</span>
+<span class="fc" id="L78">        .map(method -&gt; new RhymeRelatedMethodDocs(apiInterface, method, builder, projectClassLoader))</span>
+<span class="fc" id="L79">        .sorted(Ordering.natural().onResultOf(RhymeRelatedMethodDocs::getRelation))</span>
+<span class="fc" id="L80">        .collect(Collectors.toList());</span>
+  }
+
+  private Class&lt;?&gt; getRelatedResourceType(Method method) {
+<span class="fc" id="L84">    Class&lt;?&gt; type = RxJavaReflectionUtils.getObservableEmissionType(method, RhymeResourceDocs.TYPE_SUPPORT);</span>
+
+<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (type.getAnnotation(HalApiInterface.class) == null) {</span>
+<span class="fc" id="L87">      return null;</span>
+    }
+
+<span class="fc" id="L90">    return type;</span>
+  }
+
+  private Cardinality getCardinality(Method method) {
+
+<span class="fc" id="L95">    Class&lt;?&gt; returnType = method.getReturnType();</span>
+
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (RhymeResourceDocs.TYPE_SUPPORT.isProviderOfOptionalValue(returnType)) {</span>
+<span class="fc" id="L98">      return Cardinality.OPTIONAL;</span>
+    }
+
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (RhymeResourceDocs.TYPE_SUPPORT.isProviderOfMultiplerValues(returnType)) {</span>
+<span class="fc" id="L102">      return Cardinality.MULTIPLE;</span>
+    }
+
+<span class="fc" id="L105">    return Cardinality.SINGLE;</span>
+  }
+
+  private List&lt;RhymeVariableDocs&gt; findVariables(JavaMethod javaMethod, Method method) {
+
+<span class="fc" id="L110">    return TemplateVariableDetection.findVariables(method, Optional.empty()).stream()</span>
+<span class="fc" id="L111">        .map(variable -&gt; new RhymeVariableDocs(builder, variable, javaMethod))</span>
+<span class="fc" id="L112">        .collect(Collectors.toList());</span>
+  }
+
+  public String getRelation() {
+
+<span class="fc" id="L117">    return relation;</span>
+  }
+
+  public String getCardinality() {
+
+<span class="fc bfc" id="L122" title="All 3 branches covered.">    switch (cardinality) {</span>
+
+      case OPTIONAL:
+<span class="fc" id="L125">        return &quot;0..1&quot;;</span>
+
+      case MULTIPLE:
+<span class="fc" id="L128">        return &quot;0..n&quot;;</span>
+
+      default:
+<span class="fc" id="L131">        return &quot;1&quot;;</span>
+    }
+  }
+
+  public String getLinkPrefix() {
+
+<span class="fc bfc" id="L137" title="All 2 branches covered.">    if (cardinality == Cardinality.SINGLE) {</span>
+<span class="fc" id="L138">      return &quot;link to&quot;;</span>
+    }
+<span class="fc" id="L140">    return &quot;links to&quot;;</span>
+  }
+
+  public String getRelatedResourceTitle() {
+
+<span class="fc bfc" id="L145" title="All 2 branches covered.">    if (relatedResourceType == null) {</span>
+<span class="fc" id="L146">      return &quot;a resource of unspecified type&quot;;</span>
+    }
+
+<span class="fc" id="L149">    return relatedResourceType.getSimpleName();</span>
+  }
+
+  public String getRelatedResourceHref() {
+
+<span class="fc bfc" id="L154" title="All 2 branches covered.">    if (relatedResourceType == null) {</span>
+<span class="fc" id="L155">      return null;</span>
+    }
+
+<span class="fc" id="L158">    return relatedResourceType.getName() + &quot;.html&quot;;</span>
+  }
+
+  public String getDescription() {
+
+<span class="fc" id="L163">    return description;</span>
+  }
+
+  public List&lt;RhymeVariableDocs&gt; getVariables() {
+
+<span class="fc" id="L168">    return variables;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

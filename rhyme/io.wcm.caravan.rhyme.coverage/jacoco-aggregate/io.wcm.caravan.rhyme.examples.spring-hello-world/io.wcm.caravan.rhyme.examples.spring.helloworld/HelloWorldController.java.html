@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HelloWorldController.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.spring-hello-world</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.examples.spring.helloworld</a> &gt; <span class="el_source">HelloWorldController.java</span></div><h1>HelloWorldController.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.examples.spring.helloworld;
+
+import static io.wcm.caravan.rhyme.examples.spring.helloworld.HelloWorldResource.TEXT_PARAM;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.google.common.collect.ImmutableMap;
+
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+
+@RestController
+<span class="fc" id="L25">class HelloWorldController {</span>
+
+  private static final String HELLO_WORLD = &quot;Hello World!&quot;;
+
+<span class="fc" id="L29">  private static final Map&lt;String, String&gt; TRANSLATIONS = ImmutableMap.of(</span>
+      &quot;de&quot;, &quot;Hallo Welt&quot;,
+      &quot;fr&quot;, &quot;Bonjour le monde&quot;,
+      &quot;it&quot;, &quot;Ciao mondo&quot;);
+
+  @GetMapping(&quot;/&quot;)
+  HelloWorldResource getDefaultResource() {
+
+<span class="fc" id="L37">    return new AbstractHelloWorldResource() {</span>
+
+      @Override
+      public String getText() {
+<span class="fc" id="L41">        return HELLO_WORLD;</span>
+      }
+
+      @Override
+      public Optional&lt;HelloWorldResource&gt; withDefaultMessage() {
+        // no need to render a link to the default resource because this is the default resource
+<span class="fc" id="L47">        return Optional.empty();</span>
+      }
+
+      @Override
+      public Link createLink() {
+        // to build links to controller methods without parameters we can use a static method reference
+<span class="fc" id="L53">        return buildLinkTo(HelloWorldController::getDefaultResource)</span>
+<span class="fc" id="L54">            .setTitle(&quot;The default 'Hello World' message&quot;);</span>
+      }
+    };
+  }
+
+  @GetMapping(&quot;/custom&quot;)
+  HelloWorldResource getCustomResource(@RequestParam(name = TEXT_PARAM) String text) {
+
+<span class="fc" id="L62">    return new AbstractHelloWorldResource() {</span>
+
+      @Override
+      public String getText() {
+<span class="fc" id="L66">        return text;</span>
+      }
+
+      @Override
+      public Stream&lt;HelloWorldResource&gt; getTranslations() {
+        // don't render links to translations from the resource with custom text
+<span class="fc" id="L72">        return Stream.empty();</span>
+      }
+
+      @Override
+      public Link createLink() {
+        // to build links to controller methods with parameters we explicitly call the method on the
+        // proxy provided my WebMvcLinkBuilder, and pass the parameters required to expand the link template
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        return buildLinkTo(controller -&gt; controller.getCustomResource(text))</span>
+<span class="fc" id="L80">            .setTitle(text == null ? &quot;Load a resource with a customized message&quot; : &quot;A customized '&quot; + text + &quot;' message&quot;);</span>
+      }
+    };
+  }
+
+  @GetMapping(&quot;/translations/{languageCode}&quot;)
+  HelloWorldResource getTranslatedResource(@PathVariable String languageCode) {
+
+<span class="fc" id="L88">    return new AbstractHelloWorldResource() {</span>
+
+      @Override
+      public String getText() {
+
+<span class="fc" id="L93">        return TRANSLATIONS.getOrDefault(languageCode, HELLO_WORLD);</span>
+      }
+
+      @Override
+      public Stream&lt;HelloWorldResource&gt; getTranslations() {
+        // overriden so that we can filter out the link to the language that is currently rendered
+<span class="fc" id="L99">        return super.getTranslations()</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">            .filter(translation -&gt; !translation.createLink().getName().equals(languageCode));</span>
+      }
+
+      @Override
+      public Link createLink() {
+
+<span class="fc" id="L106">        String languageName = Locale.forLanguageTag(languageCode).getDisplayLanguage(Locale.ENGLISH);</span>
+
+<span class="fc" id="L108">        return buildLinkTo(controller -&gt; controller.getTranslatedResource(languageCode))</span>
+<span class="fc" id="L109">            .setTitle(&quot;A message in &quot; + languageName)</span>
+<span class="fc" id="L110">            .setName(languageCode);</span>
+      }
+    };
+  }
+
+  /**
+   * Builds a link pointing to a controller method with the help of the {@link WebMvcLinkBuilder} class
+   * @param controllerCall a lambda that calls the target function on a subclass of the
+   *          {@link HelloWorldController}
+   * @return a wcm.io Caravan {@link Link} object where the href property is already set
+   */
+  private Link buildLinkTo(Function&lt;HelloWorldController, LinkableResource&gt; controllerCall) {
+
+<span class="fc" id="L123">    WebMvcLinkBuilder linkBuilder = linkTo(controllerCall.apply(methodOn(HelloWorldController.class)));</span>
+
+<span class="fc" id="L125">    return new Link(linkBuilder.toString());</span>
+  }
+
+  /**
+   * Defines the methods that generate links to related resources, which are shared between the three available
+   * variations of {@link HelloWorldResource} in this controller
+   */
+<span class="fc" id="L132">  private abstract class AbstractHelloWorldResource implements HelloWorldResource {</span>
+
+    @Override
+    public Optional&lt;HelloWorldResource&gt; withDefaultMessage() {
+
+<span class="fc" id="L137">      return Optional.of(getDefaultResource());</span>
+    }
+
+    @Override
+    public Stream&lt;HelloWorldResource&gt; getTranslations() {
+
+<span class="fc" id="L143">      return TRANSLATIONS.keySet().stream()</span>
+<span class="fc" id="L144">          .map(HelloWorldController.this::getTranslatedResource);</span>
+    }
+
+    @Override
+    public HelloWorldResource withCustomMessage(String text) {
+
+<span class="fc" id="L150">      return getCustomResource(text);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

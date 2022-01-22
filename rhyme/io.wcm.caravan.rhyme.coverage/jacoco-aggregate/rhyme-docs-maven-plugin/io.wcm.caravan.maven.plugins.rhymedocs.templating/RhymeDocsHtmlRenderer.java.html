@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RhymeDocsHtmlRenderer.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">rhyme-docs-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.maven.plugins.rhymedocs.templating</a> &gt; <span class="el_source">RhymeDocsHtmlRenderer.java</span></div><h1>RhymeDocsHtmlRenderer.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.maven.plugins.rhymedocs.templating;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.apache.maven.plugin.logging.Log;
+
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+
+import io.wcm.caravan.maven.plugins.rhymedocs.model.RhymeApiDocs;
+import io.wcm.caravan.maven.plugins.rhymedocs.model.RhymeResourceDocs;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+
+public class RhymeDocsHtmlRenderer {
+
+  private static final String TEMPLATES_DIRECTORY_NAME = &quot;templates&quot;;
+
+  private final Path outputDirectory;
+  private final Log log;
+
+  private final Template resourceTemplate;
+
+<span class="fc" id="L45">  public RhymeDocsHtmlRenderer(Path outputDirectory, Log log) throws IOException {</span>
+
+<span class="fc" id="L47">    this.outputDirectory = outputDirectory;</span>
+<span class="fc" id="L48">    this.log = log;</span>
+
+<span class="fc" id="L50">    Handlebars handlebars = new Handlebars();</span>
+
+<span class="fc" id="L52">    this.resourceTemplate = handlebars.compile(TEMPLATES_DIRECTORY_NAME + &quot;/resource-docs&quot;);</span>
+<span class="fc" id="L53">  }</span>
+
+
+  public void writeHtml(RhymeApiDocs apiDocs) {
+
+<span class="fc" id="L58">    apiDocs.getResourceDocs().forEach(this::generateHtmlFile);</span>
+<span class="fc" id="L59">  }</span>
+
+  private void generateHtmlFile(RhymeResourceDocs resourceDocs) {
+
+<span class="fc" id="L63">    String className = resourceDocs.getCanonicalClassName();</span>
+
+    try {
+<span class="fc" id="L66">      log.info(&quot;Generating HTML API docs for &quot; + className);</span>
+
+<span class="fc" id="L68">      String htmlDocs = resourceTemplate.apply(resourceDocs);</span>
+
+<span class="fc" id="L70">      String fileName = className + &quot;.html&quot;;</span>
+<span class="fc" id="L71">      Path htmlFile = outputDirectory.resolve(fileName);</span>
+
+<span class="fc" id="L73">      log.debug(&quot;Writing &quot; + htmlFile);</span>
+<span class="fc" id="L74">      Files.write(htmlFile, htmlDocs.getBytes(StandardCharsets.UTF_8));</span>
+    }
+<span class="fc" id="L76">    catch (IOException | RuntimeException ex) {</span>
+<span class="fc" id="L77">      throw new HalApiDeveloperException(&quot;Failed to generate documentation for interface &quot; + className, ex);</span>
+<span class="fc" id="L78">    }</span>
+<span class="fc" id="L79">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

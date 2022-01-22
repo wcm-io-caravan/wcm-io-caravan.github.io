@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DocumentationUtils.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">rhyme-docs-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.maven.plugins.rhymedocs.model</a> &gt; <span class="el_source">DocumentationUtils.java</span></div><h1>DocumentationUtils.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.maven.plugins.rhymedocs.model;
+
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.google.common.collect.ImmutableList;
+import com.thoughtworks.qdox.JavaProjectBuilder;
+import com.thoughtworks.qdox.model.DocletTag;
+import com.thoughtworks.qdox.model.JavaAnnotatedElement;
+import com.thoughtworks.qdox.model.JavaClass;
+import com.thoughtworks.qdox.model.JavaField;
+import com.thoughtworks.qdox.model.JavaMethod;
+import com.thoughtworks.qdox.model.JavaType;
+
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+
+final class DocumentationUtils {
+
+  private DocumentationUtils() {
+    // only static methods
+  }
+
+  static Stream&lt;JavaMethod&gt; getMethodsWithAnnotation(JavaClass apiInterface, Class&lt;? extends Annotation&gt; annotationClazz) {
+
+<span class="fc" id="L56">    return apiInterface.getMethods(true).stream()</span>
+<span class="fc" id="L57">        .filter(method -&gt; hasAnnotation(method, annotationClazz));</span>
+  }
+
+  static boolean hasAnnotation(JavaAnnotatedElement element, Class&lt;? extends Annotation&gt; annotationClazz) {
+
+<span class="fc" id="L62">    return element.getAnnotations().stream()</span>
+<span class="fc" id="L63">        .anyMatch(item -&gt; item.getType().isA(annotationClazz.getName()));</span>
+  }
+
+  static Method getMethod(JavaClass javaClazz, JavaMethod javaMethod, ClassLoader classLoader) {
+    try {
+<span class="fc" id="L68">      Class&lt;?&gt; clazz = loadClass(javaClazz, classLoader);</span>
+
+<span class="fc" id="L70">      Class[] paramTypes = javaMethod.getParameterTypes().stream()</span>
+<span class="fc" id="L71">          .map(paramClazz -&gt; loadClass(paramClazz, classLoader))</span>
+<span class="fc" id="L72">          .toArray(Class[]::new);</span>
+
+<span class="fc" id="L74">      return clazz.getMethod(javaMethod.getName(), paramTypes);</span>
+    }
+<span class="fc" id="L76">    catch (RuntimeException | NoSuchMethodException ex) {</span>
+<span class="fc" id="L77">      throw new HalApiDeveloperException(&quot;Unable to get method '&quot; + javaClazz.getName() + &quot;#&quot; + javaMethod.getName(), ex);</span>
+    }
+  }
+
+  private static Class&lt;?&gt; loadClass(JavaType javaType, ClassLoader classLoader) {
+    try {
+<span class="fc" id="L83">      return classLoader.loadClass(javaType.getBinaryName());</span>
+    }
+<span class="fc" id="L85">    catch (ClassNotFoundException ex) {</span>
+<span class="fc" id="L86">      throw new HalApiDeveloperException(&quot;Failed to load class &quot; + javaType.getFullyQualifiedName(), ex);</span>
+    }
+  }
+
+  static String findJavaDocForMethod(JavaProjectBuilder builder, Class dtoClass, Method dtoMethod) {
+
+<span class="fc" id="L92">    JavaClass javaClass = builder.getClassByName(dtoClass.getName());</span>
+
+<span class="fc" id="L94">    JavaMethod javaMethod = javaClass.getMethods().stream()</span>
+<span class="fc" id="L95">        .filter(m -&gt; m.getName().equals(dtoMethod.getName()))</span>
+<span class="fc" id="L96">        .findFirst()</span>
+<span class="fc" id="L97">        .orElse(null);</span>
+
+<span class="fc bfc" id="L99" title="All 2 branches covered.">    if (javaMethod == null) {</span>
+<span class="fc" id="L100">      JsonPropertyDescription propertyDesc = dtoMethod.getAnnotation(JsonPropertyDescription.class);</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">      if (propertyDesc != null) {</span>
+<span class="fc" id="L102">        return propertyDesc.value();</span>
+      }
+<span class="fc" id="L104">    }</span>
+    else {
+
+<span class="fc" id="L107">      String javaDoc = getJavaDocCommentOrReturnTag(javaMethod);</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">      if (StringUtils.isNotBlank(javaDoc)) {</span>
+<span class="fc" id="L109">        return javaDoc;</span>
+      }
+
+<span class="fc" id="L112">      JsonPropertyDescription propertyDesc = dtoMethod.getAnnotation(JsonPropertyDescription.class);</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">      if (propertyDesc != null) {</span>
+<span class="fc" id="L114">        return propertyDesc.value();</span>
+      }
+    }
+
+<span class="fc" id="L118">    return &quot;&quot;;</span>
+  }
+
+  static String getJavaDocCommentOrReturnTag(JavaMethod javaMethod) {
+
+<span class="fc" id="L123">    String comment = javaMethod.getComment();</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">    if (StringUtils.isNotBlank(comment)) {</span>
+<span class="fc" id="L125">      return removeLinks(comment);</span>
+    }
+
+<span class="fc" id="L128">    DocletTag returnTag = javaMethod.getTagByName(&quot;return&quot;, true);</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">    if (returnTag != null) {</span>
+<span class="fc" id="L130">      return removeLinks(returnTag.getValue());</span>
+    }
+
+<span class="fc" id="L133">    return &quot;&quot;;</span>
+  }
+
+  public static String findJavaDocForField(JavaProjectBuilder builder, Class stateType, String name) {
+
+<span class="fc" id="L138">    return FieldUtils.getAllFieldsList(stateType).stream()</span>
+<span class="fc" id="L139">        .filter(field -&gt; field.getName().equals(name))</span>
+<span class="fc" id="L140">        .map(field -&gt; findJavaDocForField(builder, stateType, field))</span>
+<span class="fc" id="L141">        .findFirst()</span>
+<span class="fc" id="L142">        .orElse(&quot;&quot;);</span>
+  }
+
+  static String findJavaDocForField(JavaProjectBuilder builder, Class dtoClass, Field dtoField) {
+
+<span class="fc" id="L147">    JavaClass javaClass = builder.getClassByName(dtoClass.getName());</span>
+
+<span class="fc" id="L149">    JavaField javaField = javaClass.getFieldByName(dtoField.getName());</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">    if (javaField == null) {</span>
+<span class="fc" id="L151">      return &quot;&quot;;</span>
+    }
+
+<span class="fc" id="L154">    String desc = StringUtils.trimToEmpty(javaField.getComment());</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">    if (desc.isEmpty()) {</span>
+<span class="fc" id="L156">      JsonPropertyDescription jsonDesc = dtoField.getAnnotation(JsonPropertyDescription.class);</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">      if (jsonDesc != null) {</span>
+<span class="fc" id="L158">        return jsonDesc.value();</span>
+      }
+    }
+
+<span class="fc" id="L162">    return removeLinks(desc);</span>
+  }
+
+  static Stream&lt;PropertyDescriptor&gt; getBeanProperties(Class&lt;?&gt; type) {
+
+<span class="fc" id="L167">    List&lt;String&gt; propertyDenyList = ImmutableList.of(&quot;class&quot;, &quot;declaringClass&quot;);</span>
+
+    try {
+<span class="fc" id="L170">      return Stream.of(Introspector.getBeanInfo(type).getPropertyDescriptors())</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">          .filter(property -&gt; property.getReadMethod() != null)</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">          .filter(property -&gt; !propertyDenyList.contains(property.getName()))</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">          .filter(property -&gt; !hasJsonIgnoreAnnotation(type, property));</span>
+    }
+<span class="fc" id="L175">    catch (IntrospectionException | RuntimeException ex) {</span>
+<span class="fc" id="L176">      throw new HalApiDeveloperException(&quot;Failed to lookup bean properties for &quot; + type, ex);</span>
+    }
+  }
+
+  private static boolean hasJsonIgnoreAnnotation(Class&lt;?&gt; type, PropertyDescriptor property) {
+
+<span class="fc bfc" id="L182" title="All 2 branches covered.">    if (property.getReadMethod().getAnnotation(JsonIgnore.class) != null) {</span>
+<span class="fc" id="L183">      return true;</span>
+    }
+
+    // the JsonIgnore annotation can also be attached to a field with the same name as the property
+<span class="fc" id="L187">    return Stream.of(FieldUtils.getAllFields(type))</span>
+<span class="fc" id="L188">        .filter(field -&gt; field.getName().equals(property.getName()))</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">        .anyMatch(field -&gt; field.getAnnotation(JsonIgnore.class) != null);</span>
+  }
+
+  static Stream&lt;Field&gt; getPublicFields(Class&lt;?&gt; type) {
+    try {
+<span class="fc" id="L194">      return Stream.of(FieldUtils.getAllFields(type))</span>
+<span class="fc" id="L195">          .filter(field -&gt; Modifier.isPublic(field.getModifiers()))</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">          .filter(field -&gt; !Modifier.isStatic(field.getModifiers()))</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">          .filter(field -&gt; field.getAnnotation(JsonIgnore.class) == null);</span>
+    }
+<span class="fc" id="L199">    catch (RuntimeException ex) {</span>
+<span class="fc" id="L200">      throw new HalApiDeveloperException(&quot;Failed to lookup fields for &quot; + type, ex);</span>
+    }
+  }
+
+  public static String removeLinks(String javadoc) {
+
+<span class="fc bfc" id="L206" title="All 2 branches covered.">    if (javadoc == null) {</span>
+<span class="fc" id="L207">      return null;</span>
+    }
+
+<span class="fc" id="L210">    return javadoc.replaceAll(&quot;\\{\\@link (.*?)\\}&quot;, &quot;$1&quot;);</span>
+  }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

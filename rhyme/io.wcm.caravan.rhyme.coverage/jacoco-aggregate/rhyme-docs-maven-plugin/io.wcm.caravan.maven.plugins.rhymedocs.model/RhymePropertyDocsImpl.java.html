@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RhymePropertyDocsImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">rhyme-docs-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.maven.plugins.rhymedocs.model</a> &gt; <span class="el_source">RhymePropertyDocsImpl.java</span></div><h1>RhymePropertyDocsImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.maven.plugins.rhymedocs.model;
+
+import static org.apache.commons.lang3.ClassUtils.isPrimitiveOrWrapper;
+
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.core.TreeNode;
+import com.google.common.collect.Ordering;
+import com.thoughtworks.qdox.JavaProjectBuilder;
+import com.thoughtworks.qdox.model.JavaClass;
+import com.thoughtworks.qdox.model.JavaMethod;
+
+import io.wcm.caravan.rhyme.api.annotations.ResourceProperty;
+import io.wcm.caravan.rhyme.api.annotations.ResourceState;
+import io.wcm.caravan.rhyme.impl.reflection.RxJavaReflectionUtils;
+
+public abstract class RhymePropertyDocsImpl implements RhymePropertyDocs {
+
+  protected final JavaProjectBuilder builder;
+  protected final Class stateType;
+  protected final String basePointer;
+
+<span class="fc" id="L56">  protected RhymePropertyDocsImpl(JavaProjectBuilder builder, Class stateType, String basePointer) {</span>
+<span class="fc" id="L57">    this.builder = builder;</span>
+<span class="fc" id="L58">    this.stateType = stateType;</span>
+<span class="fc" id="L59">    this.basePointer = basePointer;</span>
+<span class="fc" id="L60">  }</span>
+
+  /* (non-Javadoc)
+   * @see io.wcm.caravan.maven.plugins.rhymedocs.model.RhymePropertyDocs#getJsonPointer()
+   */
+  @Override
+  public String getJsonPointer() {
+<span class="fc" id="L67">    return this.basePointer + &quot;/&quot; + getPropertyName();</span>
+  }
+
+  /* (non-Javadoc)
+   * @see io.wcm.caravan.maven.plugins.rhymedocs.model.RhymePropertyDocs#getType()
+   */
+  @Override
+  public String getType() {
+
+<span class="fc" id="L76">    String typeName = this.getPropertyClass().getSimpleName();</span>
+
+<span class="fc" id="L78">    String typeParameters = getTypeArguments(getPropertyGenericType())</span>
+<span class="fc" id="L79">        .map(Class::getSimpleName)</span>
+<span class="fc" id="L80">        .collect(Collectors.joining(&quot;, &quot;));</span>
+
+<span class="fc bfc" id="L82" title="All 2 branches covered.">    if (StringUtils.isNotBlank(typeParameters)) {</span>
+<span class="fc" id="L83">      typeName += &quot;&lt;&quot; + typeParameters + &quot;&gt;&quot;;</span>
+    }
+
+<span class="fc" id="L86">    return typeName;</span>
+  }
+
+  public Class&lt;?&gt; getFirstTypeParameter() {
+
+<span class="fc" id="L91">    return getTypeArguments(getPropertyGenericType())</span>
+<span class="fc" id="L92">        .findFirst()</span>
+<span class="fc" id="L93">        .orElse(null);</span>
+  }
+
+  protected abstract Type getPropertyGenericType();
+
+  protected abstract Class&lt;?&gt; getPropertyClass();
+
+  protected abstract String getPropertyName();
+
+
+  public static List&lt;RhymePropertyDocs&gt; create(JavaClass apiInterface, JavaProjectBuilder builder, ClassLoader projectClassLoader) {
+
+<span class="fc" id="L105">    Stream&lt;RhymePropertyDocs&gt; resourceStateDocs = crreateDocsFromResourceState(apiInterface, builder, projectClassLoader);</span>
+
+<span class="fc" id="L107">    Stream&lt;RhymePropertyDocs&gt; resourcePropertyDocs = crreateDocsFromResourceProperty(apiInterface, builder, projectClassLoader);</span>
+
+<span class="fc" id="L109">    return Stream.concat(resourceStateDocs, resourcePropertyDocs)</span>
+<span class="fc" id="L110">        .collect(Collectors.toList());</span>
+  }
+
+  private static Stream&lt;RhymePropertyDocs&gt; crreateDocsFromResourceProperty(JavaClass apiInterface, JavaProjectBuilder builder, ClassLoader projectClassLoader) {
+
+<span class="fc" id="L115">    Stream&lt;JavaMethod&gt; javaMethods = DocumentationUtils.getMethodsWithAnnotation(apiInterface, ResourceProperty.class);</span>
+
+<span class="fc" id="L117">    return javaMethods.map(javaMethod -&gt; {</span>
+
+<span class="fc" id="L119">      Method method = DocumentationUtils.getMethod(apiInterface, javaMethod, projectClassLoader);</span>
+<span class="fc" id="L120">      Class&lt;?&gt; stateType = RxJavaReflectionUtils.getObservableEmissionType(method, RhymeResourceDocs.TYPE_SUPPORT);</span>
+
+<span class="fc" id="L122">      String description = DocumentationUtils.findJavaDocForMethod(builder, method.getDeclaringClass(), method);</span>
+
+<span class="fc" id="L124">      String propertyName = getResourcePropertyName(method);</span>
+
+<span class="fc" id="L126">      return new FixedPropertyModel(stateType.getSimpleName(), description, &quot;/&quot; + propertyName);</span>
+    });
+  }
+
+  private static String getResourcePropertyName(Method method) {
+
+<span class="fc" id="L132">    ResourceProperty annotation = method.getAnnotation(ResourceProperty.class);</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">    if (StringUtils.isNotBlank(annotation.value())) {</span>
+<span class="fc" id="L134">      return annotation.value();</span>
+    }
+
+<span class="fc" id="L137">    String name = method.getName();</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">    if (name.startsWith(&quot;get&quot;)) {</span>
+<span class="fc" id="L139">      return Introspector.decapitalize(name.substring(3));</span>
+    }
+<span class="fc bfc" id="L141" title="All 2 branches covered.">    if (name.startsWith(&quot;is&quot;)) {</span>
+<span class="fc" id="L142">      return Introspector.decapitalize(name.substring(2));</span>
+    }
+<span class="fc" id="L144">    return Introspector.decapitalize(name);</span>
+  }
+
+  private static Stream&lt;RhymePropertyDocs&gt; crreateDocsFromResourceState(JavaClass apiInterface, JavaProjectBuilder builder, ClassLoader projectClassLoader) {
+
+<span class="fc" id="L149">    Optional&lt;JavaMethod&gt; javaMethod = DocumentationUtils.getMethodsWithAnnotation(apiInterface, ResourceState.class).findFirst();</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">    if (!javaMethod.isPresent()) {</span>
+<span class="fc" id="L151">      return Stream.empty();</span>
+    }
+
+<span class="fc" id="L154">    Method method = DocumentationUtils.getMethod(apiInterface, javaMethod.get(), projectClassLoader);</span>
+<span class="fc" id="L155">    Class&lt;?&gt; stateType = RxJavaReflectionUtils.getObservableEmissionType(method, RhymeResourceDocs.TYPE_SUPPORT);</span>
+
+<span class="fc bfc" id="L157" title="All 2 branches covered.">    if (TreeNode.class.isAssignableFrom(stateType)) {</span>
+<span class="fc" id="L158">      return Stream.of(new FixedPropertyModel(&quot;JSON Object&quot;,</span>
+          &quot;The HAL API Interface for this method uses a generic JSON node, so that the property structure is not specified&quot;, &quot;/&quot;));
+    }
+
+<span class="fc" id="L162">    Map&lt;String, String&gt; processedClassNames = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L164">    return createPropertyDocsRecursively(builder, stateType, &quot;&quot;, processedClassNames);</span>
+  }
+
+  private static Stream&lt;RhymePropertyDocs&gt; createPropertyDocsRecursively(JavaProjectBuilder builder, Class&lt;?&gt; stateType, String basePointer,
+      Map&lt;String, String&gt; processedClassNames) {
+
+<span class="fc" id="L170">    processedClassNames.putIfAbsent(stateType.getName(), basePointer);</span>
+
+<span class="fc" id="L172">    Stream&lt;RhymePropertyDocsImpl&gt; beanProperties = DocumentationUtils.getBeanProperties(stateType)</span>
+<span class="fc" id="L173">        .map(property -&gt; new BeanPropertyModel(builder, stateType, property, basePointer));</span>
+
+<span class="fc" id="L175">    Stream&lt;RhymePropertyDocsImpl&gt; fieldProperties = DocumentationUtils.getPublicFields(stateType)</span>
+<span class="fc" id="L176">        .map(field -&gt; new FieldPropertyModel(builder, stateType, field, basePointer));</span>
+
+<span class="fc" id="L178">    return Stream.concat(beanProperties, fieldProperties)</span>
+<span class="fc" id="L179">        .sorted(Ordering.natural().onResultOf(RhymePropertyDocs::getJsonPointer))</span>
+<span class="fc" id="L180">        .flatMap(docs -&gt; handleObjectsAndArrays(docs, processedClassNames));</span>
+  }
+
+  private static Stream&lt;RhymePropertyDocs&gt; handleObjectsAndArrays(RhymePropertyDocsImpl docs, Map&lt;String, String&gt; processedClassNames) {
+
+<span class="fc" id="L185">    Class&lt;?&gt; propertyType = docs.getPropertyClass();</span>
+
+<span class="fc" id="L187">    Stream&lt;RhymePropertyDocs&gt; stream = Stream.of(docs);</span>
+
+<span class="fc bfc" id="L189" title="All 2 branches covered.">    if (isSerialisedAsJsonArray(propertyType)) {</span>
+
+<span class="fc" id="L191">      Class&lt;?&gt; elementType = docs.getFirstTypeParameter();</span>
+
+<span class="fc bfc" id="L193" title="All 4 branches covered.">      if (elementType != null &amp;&amp; hasNestedProperties(elementType)) {</span>
+
+<span class="fc bfc" id="L195" title="All 2 branches covered.">        if (processedClassNames.containsKey(elementType.getName())) {</span>
+<span class="fc" id="L196">          String previous = processedClassNames.get(elementType.getName());</span>
+<span class="fc" id="L197">          return Stream.of(docs,</span>
+<span class="fc" id="L198">              new FixedPropertyModel(elementType.getSimpleName(), &quot;(an object with same properties as &quot; + previous + &quot;)&quot;, docs.getJsonPointer() + &quot;/0&quot;));</span>
+        }
+
+<span class="fc" id="L201">        return Stream.concat(stream,</span>
+<span class="fc" id="L202">            createPropertyDocsRecursively(docs.builder, elementType, docs.getJsonPointer() + &quot;/0&quot;, processedClassNames));</span>
+      }
+<span class="fc" id="L204">    }</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">    else if (hasNestedProperties(propertyType)) {</span>
+
+<span class="fc bfc" id="L207" title="All 2 branches covered.">      if (processedClassNames.containsKey(propertyType.getName())) {</span>
+<span class="fc" id="L208">        String previous = processedClassNames.get(propertyType.getName());</span>
+<span class="fc" id="L209">        return Stream</span>
+<span class="fc" id="L210">            .of(new FixedPropertyModel(docs.getType(), docs.getDescription() + &quot; (an object with same properties as &quot; + previous + &quot;)&quot;, docs.getJsonPointer()));</span>
+      }
+
+<span class="fc" id="L213">      stream = Stream.concat(stream,</span>
+<span class="fc" id="L214">          createPropertyDocsRecursively(docs.builder, propertyType, docs.getJsonPointer(), processedClassNames));</span>
+    }
+
+
+<span class="fc" id="L218">    return stream;</span>
+  }
+
+  static class FixedPropertyModel implements RhymePropertyDocs {
+
+    private final String type;
+    private final String description;
+    private final String jsonPointer;
+
+<span class="fc" id="L227">    public FixedPropertyModel(String type, String description, String jsonPointer) {</span>
+<span class="fc" id="L228">      this.type = type;</span>
+<span class="fc" id="L229">      this.description = description;</span>
+<span class="fc" id="L230">      this.jsonPointer = jsonPointer;</span>
+<span class="fc" id="L231">    }</span>
+
+    @Override
+    public String getDescription() {
+<span class="fc" id="L235">      return description;</span>
+    }
+
+    @Override
+    public String getType() {
+<span class="fc" id="L240">      return type;</span>
+    }
+
+    @Override
+    public String getJsonPointer() {
+<span class="fc" id="L245">      return jsonPointer;</span>
+    }
+
+  }
+
+  static class BeanPropertyModel extends RhymePropertyDocsImpl {
+
+    private final PropertyDescriptor property;
+    private final Method readMethod;
+
+    BeanPropertyModel(JavaProjectBuilder builder, Class stateType, PropertyDescriptor descriptor, String basePointer) {
+<span class="fc" id="L256">      super(builder, stateType, basePointer);</span>
+<span class="fc" id="L257">      this.property = descriptor;</span>
+<span class="fc" id="L258">      this.readMethod = descriptor.getReadMethod();</span>
+<span class="fc" id="L259">    }</span>
+
+    @Override
+    protected Class&lt;?&gt; getPropertyClass() {
+<span class="fc" id="L263">      return readMethod.getReturnType();</span>
+    }
+
+    @Override
+    protected Type getPropertyGenericType() {
+<span class="fc" id="L268">      return readMethod.getGenericReturnType();</span>
+    }
+
+    @Override
+    public String getPropertyName() {
+<span class="fc" id="L273">      return property.getName();</span>
+    }
+
+    @Override
+    public String getDescription() {
+<span class="fc" id="L278">      String description = DocumentationUtils.findJavaDocForMethod(builder, stateType, readMethod);</span>
+<span class="fc bfc" id="L279" title="All 2 branches covered.">      if (StringUtils.isBlank(description)) {</span>
+<span class="fc" id="L280">        description = DocumentationUtils.findJavaDocForField(builder, stateType, property.getName());</span>
+      }
+<span class="fc" id="L282">      return description;</span>
+    }
+  }
+
+  static class FieldPropertyModel extends RhymePropertyDocsImpl {
+
+    private final Field field;
+
+    FieldPropertyModel(JavaProjectBuilder builder, Class stateType, Field field, String basePointer) {
+<span class="fc" id="L291">      super(builder, stateType, basePointer);</span>
+<span class="fc" id="L292">      this.field = field;</span>
+<span class="fc" id="L293">    }</span>
+
+    @Override
+    protected Class&lt;?&gt; getPropertyClass() {
+<span class="fc" id="L297">      return field.getType();</span>
+    }
+
+    @Override
+    protected Type getPropertyGenericType() {
+<span class="fc" id="L302">      return field.getGenericType();</span>
+    }
+
+    @Override
+    public String getPropertyName() {
+<span class="fc" id="L307">      return field.getName();</span>
+    }
+
+    @Override
+    public String getDescription() {
+<span class="fc" id="L312">      return DocumentationUtils.findJavaDocForField(builder, stateType, field);</span>
+    }
+  }
+
+  static Stream&lt;Class&lt;?&gt;&gt; getTypeArguments(Type type) {
+
+<span class="fc bfc" id="L318" title="All 2 branches covered.">    if (!(type instanceof ParameterizedType)) {</span>
+<span class="fc" id="L319">      return Stream.empty();</span>
+    }
+
+<span class="fc" id="L322">    ParameterizedType observableType = (ParameterizedType)type;</span>
+
+<span class="fc" id="L324">    return Stream.of(observableType.getActualTypeArguments())</span>
+<span class="fc bfc" id="L325" title="All 2 branches covered.">        .filter(typeArgument -&gt; !&quot;?&quot;.equals(typeArgument.getTypeName()))</span>
+<span class="fc" id="L326">        .map(typeArgument -&gt; (Class&lt;?&gt;)typeArgument);</span>
+  }
+
+  private static boolean isSerialisedAsJsonArray(Class&lt;?&gt; propertyType) {
+
+<span class="fc bfc" id="L331" title="All 4 branches covered.">    return Collection.class.isAssignableFrom(propertyType) || propertyType.isArray();</span>
+  }
+
+  private static boolean hasNestedProperties(Class&lt;?&gt; propertyType) {
+
+<span class="fc bfc" id="L336" title="All 2 branches covered.">    boolean isObjectWithoutProperties = isPrimitiveOrWrapper(propertyType)</span>
+<span class="fc bfc" id="L337" title="All 2 branches covered.">        || String.class.isAssignableFrom(propertyType)</span>
+        // map entries will be serialized as JSON properties, but there is no way we can document them
+<span class="fc bfc" id="L339" title="All 2 branches covered.">        || Map.class.isAssignableFrom(propertyType)</span>
+        // arrays are handled separately in handleObjectsAndArrays
+<span class="fc bfc" id="L341" title="All 2 branches covered.">        || isSerialisedAsJsonArray(propertyType);</span>
+
+<span class="fc bfc" id="L343" title="All 2 branches covered.">    return !isObjectWithoutProperties;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
