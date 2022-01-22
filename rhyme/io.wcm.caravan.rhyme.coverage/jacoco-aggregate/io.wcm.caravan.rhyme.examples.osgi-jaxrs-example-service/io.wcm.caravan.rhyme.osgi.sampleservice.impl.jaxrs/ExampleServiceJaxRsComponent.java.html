@@ -143,9 +143,9 @@ import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.errors.ServerSideEr
       @PathParam(&quot;index&quot;) Integer index,
       @QueryParam(&quot;delayMs&quot;) Integer delayMs) {
 
-<span class="nc" id="L146">    renderResource(uriInfo, response,</span>
-<span class="nc" id="L147">        request -&gt; new ClientItemResourceImpl(request, index, delayMs));</span>
-<span class="nc" id="L148">  }</span>
+<span class="fc" id="L146">    renderResource(uriInfo, response,</span>
+<span class="fc" id="L147">        request -&gt; new ClientItemResourceImpl(request, index, delayMs));</span>
+<span class="fc" id="L148">  }</span>
 
   @GET
   @Path(&quot;/errors&quot;)

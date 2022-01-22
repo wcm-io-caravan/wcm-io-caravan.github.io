@@ -72,41 +72,38 @@ public class ClientCollectionResourceImpl implements ItemCollectionResource, Lin
 <span class="fc bfc" id="L72" title="All 2 branches covered.">    if (params == null) {</span>
 <span class="fc" id="L73">      title = &quot;Load a collection through the HalApiClient, and simulate a delay for each item on the server-side&quot;;</span>
     }
-<span class="pc bpc" id="L75" title="1 of 2 branches missed.">    else if (params.getEmbedItems() == null) {</span>
-<span class="nc" id="L76">      title = &quot;Choose whether the items should already be embedded on the server-side&quot;;</span>
-    }
     else {
-<span class="fc" id="L79">      title = &quot;A collection of &quot; + params.getNumItems() + &quot; &quot; + &quot; item resources that were fetched from &quot;</span>
-<span class="fc bfc" id="L80" title="All 2 branches covered.">          + (params.getEmbedItems() ? &quot;embedded&quot; : &quot;linked&quot;) + &quot; resources&quot;;</span>
+<span class="fc" id="L76">      title = &quot;A collection of &quot; + params.getNumItems() + &quot; &quot; + &quot; item resources that were fetched from &quot;</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">          + (params.getEmbedItems() ? &quot;embedded&quot; : &quot;linked&quot;) + &quot; resources&quot;;</span>
 
-<span class="fc bfc" id="L82" title="All 2 branches covered.">      if (params.getDelayMs() &gt; 0) {</span>
-<span class="fc" id="L83">        title += &quot; with a server-side delay of &quot; + params.getDelayMs() + &quot;ms&quot;;</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">      if (params.getDelayMs() &gt; 0) {</span>
+<span class="fc" id="L80">        title += &quot; with a server-side delay of &quot; + params.getDelayMs() + &quot;ms&quot;;</span>
       }
     }
 
-<span class="fc" id="L87">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getClientCollection(uriInfo, response, params))</span>
-<span class="fc" id="L88">        .setTitle(title);</span>
+<span class="fc" id="L84">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getClientCollection(uriInfo, response, params))</span>
+<span class="fc" id="L85">        .setTitle(title);</span>
   }
 
   public static class EmbeddedItemResourceImpl implements ItemResource, EmbeddableResource {
 
     private final ItemResource resource;
 
-<span class="fc" id="L95">    public EmbeddedItemResourceImpl(ItemResource resource) {</span>
-<span class="fc" id="L96">      this.resource = resource;</span>
-<span class="fc" id="L97">    }</span>
+<span class="fc" id="L92">    public EmbeddedItemResourceImpl(ItemResource resource) {</span>
+<span class="fc" id="L93">      this.resource = resource;</span>
+<span class="fc" id="L94">    }</span>
 
     @Override
     public Single&lt;ItemState&gt; getProperties() {
 
-<span class="fc" id="L102">      return resource.getProperties()</span>
-<span class="fc" id="L103">          .map(ClientItemResourceImpl::cloneStateWithCurrentThread);</span>
+<span class="fc" id="L99">      return resource.getProperties()</span>
+<span class="fc" id="L100">          .map(ClientItemResourceImpl::cloneStateWithCurrentThread);</span>
     }
 
 
     @Override
     public boolean isEmbedded() {
-<span class="fc" id="L109">      return true;</span>
+<span class="fc" id="L106">      return true;</span>
     }
   }
 
