@@ -1,7 +1,7 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.api-interfaces,io.wcm.caravan.rhyme.api.resources,EmbeddableResource,0,4,0,0,0,2,0,2,0,2
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.proxy,HalApiClientProxyFactory,0,227,0,6,0,38,0,15,0,12
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.proxy,HalApiMethodInvocation,0,251,0,8,0,41,0,25,0,21
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.proxy,HalApiMethodInvocation,0,236,0,4,0,39,0,22,0,20
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.proxy,ResourceLinkHandler,0,59,0,8,0,14,0,6,0,2
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.proxy,RelatedResourceHandler,0,360,0,24,0,71,0,32,0,20
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.client.proxy,ResourcePropertyHandler,0,171,0,14,0,27,0,12,0,5
