@@ -172,7 +172,7 @@ public class HttpHalResourceLoader implements HalResourceLoader {
     public void onHeadersAvailable(int statusCode, Map&lt;String, ? extends Collection&lt;String&gt;&gt; headers) {
 
       // HttpURLConnection will sometimes return statusCode -1 for failed requests, which we don't want to forward
-<span class="pc bpc" id="L175" title="1 of 2 branches missed.">      updateStatusCode(statusCode &gt; 0 ? statusCode : null);</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">      updateStatusCode(statusCode &gt; 0 ? statusCode : null);</span>
 
 <span class="fc" id="L177">      parsedHeaders = new HttpHeadersParser(headers);</span>
 
@@ -192,7 +192,7 @@ public class HttpHalResourceLoader implements HalResourceLoader {
 
 <span class="fc" id="L193">      Integer status = halResponse.getStatus();</span>
 <span class="fc" id="L194">      String msgPrefix = &quot;An HTTP response with status code &quot; + status + &quot; was retrieved, &quot;;</span>
-<span class="pc bpc" id="L195" title="1 of 4 branches missed.">      boolean statusIsOk = status != null &amp;&amp; status == 200;</span>
+<span class="fc bfc" id="L195" title="All 4 branches covered.">      boolean statusIsOk = status != null &amp;&amp; status == 200;</span>
 
       try {
         // we try to parse the JSON and include it in the HalResponse even when the request failed
@@ -205,7 +205,7 @@ public class HttpHalResourceLoader implements HalResourceLoader {
 <span class="fc" id="L205">          emitHalResponse();</span>
         }
         else {
-          // the response code indicates that the request was *not* successful even through the response could be parsed
+          // the response code indicates that the request was *not* successful even though the response could be parsed
           String msg;
 <span class="fc bfc" id="L210" title="All 2 branches covered.">          if (StringUtils.equals(halResponse.getContentType(), VndErrorResponseRenderer.CONTENT_TYPE)) {</span>
 <span class="fc" id="L211">            msg = msgPrefix + &quot;which contains a vnd.error body with server-side error details&quot;;</span>
