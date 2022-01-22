@@ -32,39 +32,39 @@ public class CollectionExamplesResourceImpl implements CollectionExamplesResourc
 
   private final ExampleServiceRequestContext context;
 
-<span class="nc" id="L35">  public CollectionExamplesResourceImpl(ExampleServiceRequestContext context) {</span>
-<span class="nc" id="L36">    this.context = context;</span>
-<span class="nc" id="L37">  }</span>
+<span class="fc" id="L35">  public CollectionExamplesResourceImpl(ExampleServiceRequestContext context) {</span>
+<span class="fc" id="L36">    this.context = context;</span>
+<span class="fc" id="L37">  }</span>
 
   @Override
   public Single&lt;ItemCollectionResource&gt; getDelayedCollection(CollectionParameters params) {
 
-<span class="nc" id="L42">    return Single.just(new DelayableCollectionResourceImpl(context, null));</span>
+<span class="fc" id="L42">    return Single.just(new DelayableCollectionResourceImpl(context, null));</span>
   }
 
   @Override
   public Single&lt;ItemResource&gt; getDelayedItem(Integer index, Integer delayMs) {
 
-<span class="nc" id="L48">    return Single.just(new DelayableItemResourceImpl(context, index, delayMs));</span>
+<span class="fc" id="L48">    return Single.just(new DelayableItemResourceImpl(context, index, delayMs));</span>
   }
 
   @Override
   public Single&lt;ItemCollectionResource&gt; getCollectionThroughClient(CollectionParameters params) {
 
-<span class="nc" id="L54">    return Single.just(new ClientCollectionResourceImpl(context, null));</span>
+<span class="fc" id="L54">    return Single.just(new ClientCollectionResourceImpl(context, null));</span>
   }
 
   @Override
   public Single&lt;ItemResource&gt; getItemThroughClient(Integer index, Integer delayMs) {
 
-<span class="nc" id="L60">    return Single.just(new ClientItemResourceImpl(context, index, delayMs));</span>
+<span class="fc" id="L60">    return Single.just(new ClientItemResourceImpl(context, index, delayMs));</span>
   }
 
   @Override
   public Link createLink() {
 
-<span class="nc" id="L66">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getCollectionExamples(uriInfo, response))</span>
-<span class="nc" id="L67">        .setTitle(&quot;Examples for handling collections of linked or embedded resources&quot;);</span>
+<span class="fc" id="L66">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getCollectionExamples(uriInfo, response))</span>
+<span class="fc" id="L67">        .setTitle(&quot;Examples for handling collections of linked or embedded resources&quot;);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

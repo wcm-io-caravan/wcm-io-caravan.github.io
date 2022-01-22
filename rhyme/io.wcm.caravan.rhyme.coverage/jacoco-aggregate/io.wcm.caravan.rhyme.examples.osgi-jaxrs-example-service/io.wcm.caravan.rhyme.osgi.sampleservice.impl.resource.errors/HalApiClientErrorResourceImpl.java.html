@@ -32,26 +32,26 @@ public class HalApiClientErrorResourceImpl implements ErrorResource, LinkableRes
 
   private final ErrorParametersBean parameters;
 
-<span class="nc" id="L35">  public HalApiClientErrorResourceImpl(ExampleServiceRequestContext context, ErrorParameters parameters) {</span>
+<span class="fc" id="L35">  public HalApiClientErrorResourceImpl(ExampleServiceRequestContext context, ErrorParameters parameters) {</span>
 
-<span class="nc" id="L37">    this.context = context;</span>
-<span class="nc" id="L38">    this.parameters = ErrorParametersBean.clone(parameters);</span>
-<span class="nc" id="L39">  }</span>
+<span class="fc" id="L37">    this.context = context;</span>
+<span class="fc" id="L38">    this.parameters = ErrorParametersBean.clone(parameters);</span>
+<span class="fc" id="L39">  }</span>
 
   @Override
   public Maybe&lt;String&gt; getTitle() {
 
-<span class="nc" id="L44">    return context.getUpstreamEntryPoint()</span>
-<span class="nc" id="L45">        .getErrorExamples()</span>
-<span class="nc" id="L46">        .flatMap(examples -&gt; examples.simulateErrorOnServer(parameters))</span>
-<span class="nc" id="L47">        .flatMapMaybe(ErrorResource::getTitle);</span>
+<span class="fc" id="L44">    return context.getUpstreamEntryPoint()</span>
+<span class="fc" id="L45">        .getErrorExamples()</span>
+<span class="fc" id="L46">        .flatMap(examples -&gt; examples.simulateErrorOnServer(parameters))</span>
+<span class="fc" id="L47">        .flatMapMaybe(ErrorResource::getTitle);</span>
   }
 
   @Override
   public Link createLink() {
 
-<span class="nc" id="L53">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getHalApiClientError(uriInfo, response, parameters))</span>
-<span class="nc" id="L54">        .setTitle(&quot;Simulate an error when executing an HTTP request to an upstream server&quot;);</span>
+<span class="fc" id="L53">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getHalApiClientError(uriInfo, response, parameters))</span>
+<span class="fc" id="L54">        .setTitle(&quot;Simulate an error when executing an HTTP request to an upstream server&quot;);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

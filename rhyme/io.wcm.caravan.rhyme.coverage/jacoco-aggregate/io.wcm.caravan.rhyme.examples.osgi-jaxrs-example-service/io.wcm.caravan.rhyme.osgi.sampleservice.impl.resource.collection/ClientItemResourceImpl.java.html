@@ -38,11 +38,11 @@ public class ClientItemResourceImpl implements ItemResource, LinkableResource {
   private final Integer index;
   private final Integer delayMs;
 
-<span class="nc" id="L41">  public ClientItemResourceImpl(ExampleServiceRequestContext context, Integer index, Integer delayMs) {</span>
-<span class="nc" id="L42">    this.context = context;</span>
-<span class="nc" id="L43">    this.index = index;</span>
-<span class="nc" id="L44">    this.delayMs = delayMs;</span>
-<span class="nc" id="L45">  }</span>
+<span class="fc" id="L41">  public ClientItemResourceImpl(ExampleServiceRequestContext context, Integer index, Integer delayMs) {</span>
+<span class="fc" id="L42">    this.context = context;</span>
+<span class="fc" id="L43">    this.index = index;</span>
+<span class="fc" id="L44">    this.delayMs = delayMs;</span>
+<span class="fc" id="L45">  }</span>
 
   @Override
   public Single&lt;ItemState&gt; getProperties() {
@@ -58,29 +58,29 @@ public class ClientItemResourceImpl implements ItemResource, LinkableResource {
   public Link createLink() {
 
     String title;
-<span class="nc bnc" id="L61" title="All 2 branches missed.">    if (index != null) {</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">    if (index != null) {</span>
 <span class="nc" id="L62">      title = &quot;The item with index &quot; + index + &quot; loaded through the HalApiClient&quot;;</span>
 <span class="nc bnc" id="L63" title="All 2 branches missed.">      if (delayMs != null) {</span>
 <span class="nc" id="L64">        title += &quot; with a simulated server-side delay of &quot; + delayMs + &quot;ms&quot;;</span>
       }
     }
     else {
-<span class="nc" id="L68">      title = &quot;Load an item through the HalApiClient and specify the simulated delay to apply on the server-side&quot;;</span>
+<span class="fc" id="L68">      title = &quot;Load an item through the HalApiClient and specify the simulated delay to apply on the server-side&quot;;</span>
     }
 
-<span class="nc" id="L71">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getClientItem(uriInfo, response, index, delayMs))</span>
-<span class="nc" id="L72">        .setTitle(title);</span>
+<span class="fc" id="L71">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getClientItem(uriInfo, response, index, delayMs))</span>
+<span class="fc" id="L72">        .setTitle(title);</span>
   }
 
   static ItemState cloneStateWithCurrentThread(ItemState clientState) {
 
-<span class="nc" id="L77">    ItemState itemState = new ItemState();</span>
+<span class="fc" id="L77">    ItemState itemState = new ItemState();</span>
 
-<span class="nc" id="L79">    itemState.title = clientState.title;</span>
-<span class="nc" id="L80">    itemState.index = clientState.index;</span>
-<span class="nc" id="L81">    itemState.thread = Thread.currentThread().getName();</span>
+<span class="fc" id="L79">    itemState.title = clientState.title;</span>
+<span class="fc" id="L80">    itemState.index = clientState.index;</span>
+<span class="fc" id="L81">    itemState.thread = Thread.currentThread().getName();</span>
 
-<span class="nc" id="L83">    return itemState;</span>
+<span class="fc" id="L83">    return itemState;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

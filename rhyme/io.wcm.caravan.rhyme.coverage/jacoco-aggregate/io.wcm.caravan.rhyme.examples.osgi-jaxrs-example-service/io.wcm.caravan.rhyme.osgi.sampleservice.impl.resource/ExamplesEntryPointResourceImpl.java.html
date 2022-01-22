@@ -42,29 +42,29 @@ public class ExamplesEntryPointResourceImpl implements ExamplesEntryPointResourc
 
   private final boolean useFingerprintInSelfLink;
 
-<span class="nc" id="L45">  public ExamplesEntryPointResourceImpl(ExampleServiceRequestContext context, boolean useFingerprintInSelfLink) {</span>
+<span class="fc" id="L45">  public ExamplesEntryPointResourceImpl(ExampleServiceRequestContext context, boolean useFingerprintInSelfLink) {</span>
 
-<span class="nc" id="L47">    this.context = context;</span>
+<span class="fc" id="L47">    this.context = context;</span>
 
-<span class="nc" id="L49">    this.useFingerprintInSelfLink = useFingerprintInSelfLink;</span>
-<span class="nc" id="L50">  }</span>
+<span class="fc" id="L49">    this.useFingerprintInSelfLink = useFingerprintInSelfLink;</span>
+<span class="fc" id="L50">  }</span>
 
   @Override
   public Single&lt;CollectionExamplesResource&gt; getCollectionExamples() {
 
-<span class="nc" id="L55">    return Single.just(new CollectionExamplesResourceImpl(context));</span>
+<span class="fc" id="L55">    return Single.just(new CollectionExamplesResourceImpl(context));</span>
   }
 
   @Override
   public Single&lt;CachingExamplesResource&gt; getCachingExamples() {
 
-<span class="nc" id="L61">    return Single.just(new CachingExamplesResourceImpl(context));</span>
+<span class="fc" id="L61">    return Single.just(new CachingExamplesResourceImpl(context));</span>
   }
 
   @Override
   public Single&lt;ErrorExamplesResource&gt; getErrorExamples() {
 
-<span class="nc" id="L67">    return Single.just(new ErrorsExamplesResourceImpl(context));</span>
+<span class="fc" id="L67">    return Single.just(new ErrorsExamplesResourceImpl(context));</span>
   }
 
   @Override
@@ -76,39 +76,39 @@ public class ExamplesEntryPointResourceImpl implements ExamplesEntryPointResourc
   @Override
   public Link createLink() {
 
-<span class="nc" id="L79">    Link link = context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getEntryPoint(uriInfo, response));</span>
+<span class="fc" id="L79">    Link link = context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getEntryPoint(uriInfo, response));</span>
 
-<span class="nc" id="L81">    String title = &quot;The HAL API entry point of the OSGi/JAX-RS example service&quot;;</span>
+<span class="fc" id="L81">    String title = &quot;The HAL API entry point of the OSGi/JAX-RS example service&quot;;</span>
 
-<span class="nc bnc" id="L83" title="All 2 branches missed.">    if (!useFingerprintInSelfLink) {</span>
-<span class="nc" id="L84">      link.setHref(StringUtils.substringBefore(link.getHref(), &quot;?&quot;));</span>
-<span class="nc" id="L85">      title += &quot; (current version)&quot;;</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">    if (!useFingerprintInSelfLink) {</span>
+<span class="fc" id="L84">      link.setHref(StringUtils.substringBefore(link.getHref(), &quot;?&quot;));</span>
+<span class="fc" id="L85">      title += &quot; (current version)&quot;;</span>
     }
     else {
-<span class="nc" id="L88">      title += &quot; (immutable for bundle version &quot; + context.getBundleVersion() + &quot;)&quot;;</span>
+<span class="fc" id="L88">      title += &quot; (immutable for bundle version &quot; + context.getBundleVersion() + &quot;)&quot;;</span>
     }
 
-<span class="nc" id="L91">    return link.setTitle(title);</span>
+<span class="fc" id="L91">    return link.setTitle(title);</span>
   }
 
   @Override
   public Maybe&lt;ExamplesEntryPointResource&gt; getLatestVersion() {
 
-<span class="nc bnc" id="L97" title="All 2 branches missed.">    if (context.hasFingerPrintedUrl()) {</span>
-<span class="nc" id="L98">      return Maybe.just(new ExamplesEntryPointResourceImpl(context, false));</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (context.hasFingerPrintedUrl()) {</span>
+<span class="fc" id="L98">      return Maybe.just(new ExamplesEntryPointResourceImpl(context, false));</span>
     }
 
-<span class="nc" id="L101">    return Maybe.empty();</span>
+<span class="fc" id="L101">    return Maybe.empty();</span>
   }
 
   @Override
   public Maybe&lt;ExamplesEntryPointResource&gt; getPermalink() {
 
-<span class="nc bnc" id="L107" title="All 2 branches missed.">    if (!context.hasFingerPrintedUrl()) {</span>
-<span class="nc" id="L108">      return Maybe.just(new ExamplesEntryPointResourceImpl(context, true));</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">    if (!context.hasFingerPrintedUrl()) {</span>
+<span class="fc" id="L108">      return Maybe.just(new ExamplesEntryPointResourceImpl(context, true));</span>
     }
 
-<span class="nc" id="L111">    return Maybe.empty();</span>
+<span class="fc" id="L111">    return Maybe.empty();</span>
   }
 
 }

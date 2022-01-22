@@ -42,92 +42,92 @@ public class EvenAndOddItemsResourceImpl implements EvenOddItemsResource, Linkab
 
   private final CollectionParametersBean params;
 
-<span class="nc" id="L45">  public EvenAndOddItemsResourceImpl(ExampleServiceRequestContext context, CollectionParametersBean parameters) {</span>
-<span class="nc" id="L46">    this.context = context;</span>
-<span class="nc" id="L47">    this.params = parameters;</span>
-<span class="nc" id="L48">  }</span>
+<span class="fc" id="L45">  public EvenAndOddItemsResourceImpl(ExampleServiceRequestContext context, CollectionParametersBean parameters) {</span>
+<span class="fc" id="L46">    this.context = context;</span>
+<span class="fc" id="L47">    this.params = parameters;</span>
+<span class="fc" id="L48">  }</span>
 
   @Override
   public Single&lt;ItemCollectionResource&gt; getEvenItems() {
 
-<span class="nc" id="L53">    Observable&lt;ItemResource&gt; evenItems = fetchAndFilter(this::isEvenItem);</span>
+<span class="fc" id="L53">    Observable&lt;ItemResource&gt; evenItems = fetchAndFilter(this::isEvenItem);</span>
 
-<span class="nc" id="L55">    return Single.just(new EmbeddedCollectionResourceImpl(evenItems));</span>
+<span class="fc" id="L55">    return Single.just(new EmbeddedCollectionResourceImpl(evenItems));</span>
   }
 
   private Single&lt;Boolean&gt; isEvenItem(ItemResource resource) {
 
-<span class="nc bnc" id="L60" title="All 2 branches missed.">    return resource.getProperties().map(state -&gt; state.index % 2 == 0);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">    return resource.getProperties().map(state -&gt; state.index % 2 == 0);</span>
   }
 
   @Override
   public Single&lt;ItemCollectionResource&gt; getOddItems() {
 
-<span class="nc" id="L66">    Observable&lt;ItemResource&gt; oddItems = fetchAndFilter(this::isOddItem);</span>
+<span class="fc" id="L66">    Observable&lt;ItemResource&gt; oddItems = fetchAndFilter(this::isOddItem);</span>
 
-<span class="nc" id="L68">    return Single.just(new EmbeddedCollectionResourceImpl(oddItems));</span>
+<span class="fc" id="L68">    return Single.just(new EmbeddedCollectionResourceImpl(oddItems));</span>
   }
 
   private Single&lt;Boolean&gt; isOddItem(ItemResource resource) {
 
-<span class="nc bnc" id="L73" title="All 2 branches missed.">    return resource.getProperties().map(state -&gt; state.index % 2 == 1);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    return resource.getProperties().map(state -&gt; state.index % 2 == 1);</span>
   }
 
   private Observable&lt;ItemResource&gt; fetchAllItems() {
 
-<span class="nc" id="L78">    return context.getUpstreamEntryPoint()</span>
-<span class="nc" id="L79">        .getCollectionExamples()</span>
-<span class="nc" id="L80">        .flatMap(r -&gt; r.getDelayedCollection(params))</span>
-<span class="nc" id="L81">        .flatMapObservable(ItemCollectionResource::getItems);</span>
+<span class="fc" id="L78">    return context.getUpstreamEntryPoint()</span>
+<span class="fc" id="L79">        .getCollectionExamples()</span>
+<span class="fc" id="L80">        .flatMap(r -&gt; r.getDelayedCollection(params))</span>
+<span class="fc" id="L81">        .flatMapObservable(ItemCollectionResource::getItems);</span>
   }
 
   private Observable&lt;ItemResource&gt; fetchAndFilter(Function&lt;ItemResource, Single&lt;Boolean&gt;&gt; filterFunc) {
 
-<span class="nc" id="L86">    return fetchAllItems()</span>
-<span class="nc" id="L87">        .compose(RxJavaTransformers.filterWith(filterFunc));</span>
+<span class="fc" id="L86">    return fetchAllItems()</span>
+<span class="fc" id="L87">        .compose(RxJavaTransformers.filterWith(filterFunc));</span>
   }
 
   @Override
   public Link createLink() {
 
-<span class="nc" id="L93">    String title = &quot;An example that loads a collection from upstream service, and separates it into even and odd items&quot;;</span>
+<span class="fc" id="L93">    String title = &quot;An example that loads a collection from upstream service, and separates it into even and odd items&quot;;</span>
 
-<span class="nc" id="L95">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getEvenAndOdd(uriInfo, response, params))</span>
-<span class="nc" id="L96">        .setTitle(title);</span>
+<span class="fc" id="L95">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getEvenAndOdd(uriInfo, response, params))</span>
+<span class="fc" id="L96">        .setTitle(title);</span>
   }
 
   static class EmbeddedCollectionResourceImpl implements ItemCollectionResource, EmbeddableResource {
 
     private final Observable&lt;ItemResource&gt; items;
 
-<span class="nc" id="L103">    EmbeddedCollectionResourceImpl(Observable&lt;ItemResource&gt; items) {</span>
-<span class="nc" id="L104">      this.items = items;</span>
-<span class="nc" id="L105">    }</span>
+<span class="fc" id="L103">    EmbeddedCollectionResourceImpl(Observable&lt;ItemResource&gt; items) {</span>
+<span class="fc" id="L104">      this.items = items;</span>
+<span class="fc" id="L105">    }</span>
 
     @Override
     public Maybe&lt;String&gt; getTitle() {
 
-<span class="nc" id="L110">      return items.count()</span>
-<span class="nc" id="L111">          .map(numItems -&gt; &quot;A collection of &quot; + numItems + &quot; items&quot;)</span>
-<span class="nc" id="L112">          .toMaybe();</span>
+<span class="fc" id="L110">      return items.count()</span>
+<span class="fc" id="L111">          .map(numItems -&gt; &quot;A collection of &quot; + numItems + &quot; items&quot;)</span>
+<span class="fc" id="L112">          .toMaybe();</span>
     }
 
     @Override
     public Observable&lt;ItemResource&gt; getItems() {
 
-<span class="nc" id="L118">      return items.map(ClientCollectionResourceImpl.EmbeddedItemResourceImpl::new);</span>
+<span class="fc" id="L118">      return items.map(ClientCollectionResourceImpl.EmbeddedItemResourceImpl::new);</span>
     }
 
     @Override
     public Maybe&lt;ItemCollectionResource&gt; getAlternate() {
 
-<span class="nc" id="L124">      return Maybe.empty();</span>
+<span class="fc" id="L124">      return Maybe.empty();</span>
     }
 
     @Override
     public boolean isEmbedded() {
 
-<span class="nc" id="L130">      return true;</span>
+<span class="fc" id="L130">      return true;</span>
     }
 
   }

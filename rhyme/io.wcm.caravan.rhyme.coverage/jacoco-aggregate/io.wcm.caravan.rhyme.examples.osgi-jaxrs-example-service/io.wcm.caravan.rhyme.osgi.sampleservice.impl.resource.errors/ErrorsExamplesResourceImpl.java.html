@@ -31,27 +31,27 @@ public class ErrorsExamplesResourceImpl implements ErrorExamplesResource, Linkab
 
   private final ExampleServiceRequestContext context;
 
-<span class="nc" id="L34">  public ErrorsExamplesResourceImpl(ExampleServiceRequestContext context) {</span>
-<span class="nc" id="L35">    this.context = context;</span>
-<span class="nc" id="L36">  }</span>
+<span class="fc" id="L34">  public ErrorsExamplesResourceImpl(ExampleServiceRequestContext context) {</span>
+<span class="fc" id="L35">    this.context = context;</span>
+<span class="fc" id="L36">  }</span>
 
   @Override
   public Single&lt;ErrorResource&gt; simulateErrorOnServer(ErrorParameters parameters) {
 
-<span class="nc" id="L41">    return Single.just(new ServerSideErrorResourceImpl(context, parameters));</span>
+<span class="fc" id="L41">    return Single.just(new ServerSideErrorResourceImpl(context, parameters));</span>
   }
 
   @Override
   public Single&lt;ErrorResource&gt; testClientErrorHandling(ErrorParameters parameters) {
 
-<span class="nc" id="L47">    return Single.just(new HalApiClientErrorResourceImpl(context, parameters));</span>
+<span class="fc" id="L47">    return Single.just(new HalApiClientErrorResourceImpl(context, parameters));</span>
   }
 
   @Override
   public Link createLink() {
 
-<span class="nc" id="L53">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getErrorsExamples(uriInfo, response))</span>
-<span class="nc" id="L54">        .setTitle(&quot;Examples for error handling&quot;);</span>
+<span class="fc" id="L53">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getErrorsExamples(uriInfo, response))</span>
+<span class="fc" id="L54">        .setTitle(&quot;Examples for error handling&quot;);</span>
   }
 
 }

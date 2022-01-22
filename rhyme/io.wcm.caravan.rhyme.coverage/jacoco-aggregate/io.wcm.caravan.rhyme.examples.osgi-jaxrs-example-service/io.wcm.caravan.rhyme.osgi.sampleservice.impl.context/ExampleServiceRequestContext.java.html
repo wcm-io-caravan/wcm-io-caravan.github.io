@@ -49,39 +49,39 @@ public class ExampleServiceRequestContext {
 
   private final JaxRsLinkBuilder&lt;ExampleServiceJaxRsComponent&gt; linkBuilder;
 
-<span class="nc" id="L52">  public ExampleServiceRequestContext(CaravanRhyme rhyme, JaxRsBundleInfo bundleInfo) {</span>
+<span class="fc" id="L52">  public ExampleServiceRequestContext(CaravanRhyme rhyme, JaxRsBundleInfo bundleInfo) {</span>
 
-<span class="nc" id="L54">    this.rhyme = rhyme;</span>
-<span class="nc" id="L55">    this.bundleInfo = bundleInfo;</span>
+<span class="fc" id="L54">    this.rhyme = rhyme;</span>
+<span class="fc" id="L55">    this.bundleInfo = bundleInfo;</span>
 
-<span class="nc" id="L57">    this.linkBuilder = createLinkBuilder(bundleInfo);</span>
+<span class="fc" id="L57">    this.linkBuilder = createLinkBuilder(bundleInfo);</span>
 
-<span class="nc" id="L59">    this.upstreamEntryPoint = rhyme.getRemoteResource(LOCALHOST_CARAVAN_SERVICE_ID, constructEntryPointUrl(), ExamplesEntryPointResource.class);</span>
+<span class="fc" id="L59">    this.upstreamEntryPoint = rhyme.getRemoteResource(LOCALHOST_CARAVAN_SERVICE_ID, constructEntryPointUrl(), ExamplesEntryPointResource.class);</span>
 
-<span class="nc" id="L61">    setResponseMaxAge(rhyme);</span>
-<span class="nc" id="L62">  }</span>
+<span class="fc" id="L61">    setResponseMaxAge(rhyme);</span>
+<span class="fc" id="L62">  }</span>
 
   private String constructEntryPointUrl() {
 
-<span class="nc" id="L66">    return new ExamplesEntryPointResourceImpl(this, true).createLink().getHref();</span>
+<span class="fc" id="L66">    return new ExamplesEntryPointResourceImpl(this, true).createLink().getHref();</span>
   }
 
   private static JaxRsLinkBuilder&lt;ExampleServiceJaxRsComponent&gt; createLinkBuilder(JaxRsBundleInfo bundleInfo) {
 
-<span class="nc" id="L71">    Map&lt;String, Object&gt; fingerPrintingParams = ImmutableMap.of(BUNDLE_VERSION_QUERY_PARAM, bundleInfo.getBundleVersion());</span>
+<span class="fc" id="L71">    Map&lt;String, Object&gt; fingerPrintingParams = ImmutableMap.of(BUNDLE_VERSION_QUERY_PARAM, bundleInfo.getBundleVersion());</span>
 
-<span class="nc" id="L73">    return JaxRsLinkBuilder.create(bundleInfo.getApplicationPath(), ExampleServiceJaxRsComponent.class)</span>
-<span class="nc" id="L74">        .withAdditionalQueryParameters(fingerPrintingParams);</span>
+<span class="fc" id="L73">    return JaxRsLinkBuilder.create(bundleInfo.getApplicationPath(), ExampleServiceJaxRsComponent.class)</span>
+<span class="fc" id="L74">        .withAdditionalQueryParameters(fingerPrintingParams);</span>
   }
 
   private static void setResponseMaxAge(CaravanRhyme rhyme) {
 
-<span class="nc" id="L79">    MultivaluedMap&lt;String, String&gt; queryParameters = rhyme.getRequestUri().getQueryParameters();</span>
-<span class="nc" id="L80">    boolean fingerPrintingParamPresent = queryParameters.containsKey(BUNDLE_VERSION_QUERY_PARAM);</span>
+<span class="fc" id="L79">    MultivaluedMap&lt;String, String&gt; queryParameters = rhyme.getRequestUri().getQueryParameters();</span>
+<span class="fc" id="L80">    boolean fingerPrintingParamPresent = queryParameters.containsKey(BUNDLE_VERSION_QUERY_PARAM);</span>
 
-<span class="nc bnc" id="L82" title="All 2 branches missed.">    Duration maxAge = fingerPrintingParamPresent ? Duration.ofDays(365) : Duration.ofMinutes(1);</span>
-<span class="nc" id="L83">    rhyme.setResponseMaxAge(maxAge);</span>
-<span class="nc" id="L84">  }</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">    Duration maxAge = fingerPrintingParamPresent ? Duration.ofDays(365) : Duration.ofMinutes(1);</span>
+<span class="fc" id="L83">    rhyme.setResponseMaxAge(maxAge);</span>
+<span class="fc" id="L84">  }</span>
 
   public interface ControllerCall {
 
@@ -90,22 +90,22 @@ public class ExampleServiceRequestContext {
 
   public Link buildLinkTo(ControllerCall callToResource) {
 
-<span class="nc" id="L93">    return linkBuilder.buildLinkTo(resource -&gt; callToResource.call(resource, null, null));</span>
+<span class="fc" id="L93">    return linkBuilder.buildLinkTo(resource -&gt; callToResource.call(resource, null, null));</span>
   }
 
   public ExamplesEntryPointResource getUpstreamEntryPoint() {
 
-<span class="nc" id="L98">    return upstreamEntryPoint;</span>
+<span class="fc" id="L98">    return upstreamEntryPoint;</span>
   }
 
   public boolean hasFingerPrintedUrl() {
 
-<span class="nc" id="L103">    return rhyme.getRequestUri().getQueryParameters().containsKey(BUNDLE_VERSION_QUERY_PARAM);</span>
+<span class="fc" id="L103">    return rhyme.getRequestUri().getQueryParameters().containsKey(BUNDLE_VERSION_QUERY_PARAM);</span>
   }
 
   public String getBundleVersion() {
 
-<span class="nc" id="L108">    return bundleInfo.getBundleVersion();</span>
+<span class="fc" id="L108">    return bundleInfo.getBundleVersion();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

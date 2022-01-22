@@ -38,51 +38,51 @@ public class DelayableCollectionResourceImpl implements ItemCollectionResource, 
 
   private final CollectionParametersBean params;
 
-<span class="nc" id="L41">  public DelayableCollectionResourceImpl(ExampleServiceRequestContext context, CollectionParametersBean parameters) {</span>
-<span class="nc" id="L42">    this.context = context;</span>
-<span class="nc" id="L43">    this.params = parameters;</span>
-<span class="nc" id="L44">  }</span>
+<span class="fc" id="L41">  public DelayableCollectionResourceImpl(ExampleServiceRequestContext context, CollectionParametersBean parameters) {</span>
+<span class="fc" id="L42">    this.context = context;</span>
+<span class="fc" id="L43">    this.params = parameters;</span>
+<span class="fc" id="L44">  }</span>
 
   @Override
   public Maybe&lt;String&gt; getTitle() {
 
-<span class="nc" id="L49">    return Maybe.empty();</span>
+<span class="fc" id="L49">    return Maybe.empty();</span>
   }
 
   @Override
   public Maybe&lt;ItemCollectionResource&gt; getAlternate() {
 
-<span class="nc bnc" id="L55" title="All 2 branches missed.">    CollectionParametersBean newParams = params.withEmbedItems(!params.getEmbedItems());</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">    CollectionParametersBean newParams = params.withEmbedItems(!params.getEmbedItems());</span>
 
-<span class="nc" id="L57">    return Maybe.just(new DelayableCollectionResourceImpl(context, newParams));</span>
+<span class="fc" id="L57">    return Maybe.just(new DelayableCollectionResourceImpl(context, newParams));</span>
   }
 
   @Override
   public Observable&lt;ItemResource&gt; getItems() {
 
-<span class="nc" id="L63">    return Observable.range(0, params.getNumItems())</span>
-<span class="nc" id="L64">        .map(index -&gt; new DelayableItemResourceImpl(context, index, params.getDelayMs()).setEmbedded(params.getEmbedItems()));</span>
+<span class="fc" id="L63">    return Observable.range(0, params.getNumItems())</span>
+<span class="fc" id="L64">        .map(index -&gt; new DelayableItemResourceImpl(context, index, params.getDelayMs()).setEmbedded(params.getEmbedItems()));</span>
   }
 
   @Override
   public Link createLink() {
 
     String title;
-<span class="nc bnc" id="L71" title="All 2 branches missed.">    if (params == null) {</span>
-<span class="nc" id="L72">      title = &quot;A link template that allows to specify the number of items in the collection, and whether you want the items to be embedded&quot;;</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (params == null) {</span>
+<span class="fc" id="L72">      title = &quot;A link template that allows to specify the number of items in the collection, and whether you want the items to be embedded&quot;;</span>
     }
-<span class="nc bnc" id="L74" title="All 2 branches missed.">    else if (params.getEmbedItems() == null) {</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">    else if (params.getEmbedItems() == null) {</span>
 <span class="nc" id="L75">      title = &quot;Choose whether the items should be embedded in the collection (or only linked)&quot;;</span>
     }
     else {
-<span class="nc bnc" id="L78" title="All 2 branches missed.">      title = &quot;A collection of &quot; + params.getNumItems() + &quot; &quot; + (params.getEmbedItems() ? &quot;embedded&quot; : &quot;linked&quot;) + &quot; item resources&quot;;</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">      if (params.getDelayMs() &gt; 0) {</span>
-<span class="nc" id="L80">        title += &quot; where each item is generated with a simulated delay of &quot; + params.getDelayMs() + &quot;ms&quot;;</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">      title = &quot;A collection of &quot; + params.getNumItems() + &quot; &quot; + (params.getEmbedItems() ? &quot;embedded&quot; : &quot;linked&quot;) + &quot; item resources&quot;;</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">      if (params.getDelayMs() &gt; 0) {</span>
+<span class="fc" id="L80">        title += &quot; where each item is generated with a simulated delay of &quot; + params.getDelayMs() + &quot;ms&quot;;</span>
       }
     }
 
-<span class="nc" id="L84">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getDelayableCollection(uriInfo, response, params))</span>
-<span class="nc" id="L85">        .setTitle(title);</span>
+<span class="fc" id="L84">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getDelayableCollection(uriInfo, response, params))</span>
+<span class="fc" id="L85">        .setTitle(title);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
