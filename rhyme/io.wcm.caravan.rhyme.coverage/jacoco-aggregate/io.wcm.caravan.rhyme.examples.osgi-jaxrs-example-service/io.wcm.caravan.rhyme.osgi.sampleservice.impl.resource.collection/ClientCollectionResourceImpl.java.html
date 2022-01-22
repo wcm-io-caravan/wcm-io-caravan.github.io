@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ClientCollectionResourceImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection</a> &gt; <span class="el_source">ClientCollectionResourceImpl.java</span></div><h1>ClientCollectionResourceImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection;
+
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.api.collection.ItemCollectionResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.api.collection.ItemResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.api.collection.ItemState;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.context.ExampleServiceRequestContext;
+
+public class ClientCollectionResourceImpl implements ItemCollectionResource, LinkableResource {
+
+  private final ExampleServiceRequestContext context;
+
+  private final CollectionParametersBean params;
+
+<span class="nc" id="L39">  public ClientCollectionResourceImpl(ExampleServiceRequestContext context, CollectionParametersBean parameters) {</span>
+<span class="nc" id="L40">    this.context = context;</span>
+<span class="nc" id="L41">    this.params = parameters;</span>
+<span class="nc" id="L42">  }</span>
+
+  @Override
+  public Maybe&lt;String&gt; getTitle() {
+
+<span class="nc" id="L47">    return Maybe.empty();</span>
+  }
+
+  @Override
+  public Maybe&lt;ItemCollectionResource&gt; getAlternate() {
+
+<span class="nc bnc" id="L53" title="All 2 branches missed.">    CollectionParametersBean newParams = params.withEmbedItems(!params.getEmbedItems());</span>
+
+<span class="nc" id="L55">    return Maybe.just(new ClientCollectionResourceImpl(context, newParams));</span>
+  }
+
+  @Override
+  public Observable&lt;ItemResource&gt; getItems() {
+
+<span class="nc" id="L61">    return context.getUpstreamEntryPoint()</span>
+<span class="nc" id="L62">        .getCollectionExamples()</span>
+<span class="nc" id="L63">        .flatMap(res -&gt; res.getDelayedCollection(params))</span>
+<span class="nc" id="L64">        .flatMapObservable(ItemCollectionResource::getItems)</span>
+<span class="nc" id="L65">        .map(EmbeddedItemResourceImpl::new);</span>
+  }
+
+  @Override
+  public Link createLink() {
+
+    String title;
+<span class="nc bnc" id="L72" title="All 2 branches missed.">    if (params == null) {</span>
+<span class="nc" id="L73">      title = &quot;Load a collection through the HalApiClient, and simulate a delay for each item on the server-side&quot;;</span>
+    }
+<span class="nc bnc" id="L75" title="All 2 branches missed.">    else if (params.getEmbedItems() == null) {</span>
+<span class="nc" id="L76">      title = &quot;Choose whether the items should already be embedded on the server-side&quot;;</span>
+    }
+    else {
+<span class="nc" id="L79">      title = &quot;A collection of &quot; + params.getNumItems() + &quot; &quot; + &quot; item resources that were fetched from &quot;</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">          + (params.getEmbedItems() ? &quot;embedded&quot; : &quot;linked&quot;) + &quot; resources&quot;;</span>
+
+<span class="nc bnc" id="L82" title="All 2 branches missed.">      if (params.getDelayMs() &gt; 0) {</span>
+<span class="nc" id="L83">        title += &quot; with a server-side delay of &quot; + params.getDelayMs() + &quot;ms&quot;;</span>
+      }
+    }
+
+<span class="nc" id="L87">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getClientCollection(uriInfo, response, params))</span>
+<span class="nc" id="L88">        .setTitle(title);</span>
+  }
+
+  public static class EmbeddedItemResourceImpl implements ItemResource, EmbeddableResource {
+
+    private final ItemResource resource;
+
+<span class="nc" id="L95">    public EmbeddedItemResourceImpl(ItemResource resource) {</span>
+<span class="nc" id="L96">      this.resource = resource;</span>
+<span class="nc" id="L97">    }</span>
+
+    @Override
+    public Single&lt;ItemState&gt; getProperties() {
+
+<span class="nc" id="L102">      return resource.getProperties()</span>
+<span class="nc" id="L103">          .map(ClientItemResourceImpl::cloneStateWithCurrentThread);</span>
+    }
+
+
+    @Override
+    public boolean isEmbedded() {
+<span class="nc" id="L109">      return true;</span>
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

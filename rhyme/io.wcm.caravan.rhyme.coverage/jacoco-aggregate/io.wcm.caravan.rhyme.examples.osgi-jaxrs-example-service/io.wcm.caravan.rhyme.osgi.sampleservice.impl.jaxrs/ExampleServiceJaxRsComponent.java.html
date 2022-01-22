@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ExampleServiceJaxRsComponent.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.osgi.sampleservice.impl.jaxrs</a> &gt; <span class="el_source">ExampleServiceJaxRsComponent.java</span></div><h1>ExampleServiceJaxRsComponent.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.osgi.sampleservice.impl.jaxrs;
+
+import java.util.function.Function;
+
+import javax.ws.rs.BeanParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ServiceScope;
+import org.osgi.service.jaxrs.whiteboard.propertytypes.JaxrsApplicationSelect;
+import org.osgi.service.jaxrs.whiteboard.propertytypes.JaxrsResource;
+
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.caravan.api.CaravanRhyme;
+import io.wcm.caravan.rhyme.caravan.api.CaravanRhymeRequestCycle;
+import io.wcm.caravan.rhyme.jaxrs.api.JaxRsBundleInfo;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.context.ExampleServiceRequestContext;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.ExamplesEntryPointResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.caching.CachingExamplesResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.caching.EvenAndOddItemsResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection.ClientCollectionResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection.ClientItemResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection.CollectionExamplesResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection.CollectionParametersBean;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection.DelayableCollectionResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection.DelayableItemResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.errors.ErrorParametersBean;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.errors.ErrorsExamplesResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.errors.HalApiClientErrorResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.errors.ServerSideErrorResourceImpl;
+
+@Component(service = ExampleServiceJaxRsComponent.class, scope = ServiceScope.PROTOTYPE)
+@JaxrsResource
+@JaxrsApplicationSelect(ExampleServiceJaxRsApplication.SELECTOR)
+<span class="nc" id="L62">public class ExampleServiceJaxRsComponent {</span>
+
+  @Reference
+  private CaravanRhymeRequestCycle requestCycle;
+
+  @Reference
+  private JaxRsBundleInfo bundleInfo;
+
+  private ExampleServiceRequestContext createRequestContext(CaravanRhyme rhyme) {
+<span class="nc" id="L71">    return new ExampleServiceRequestContext(rhyme, bundleInfo);</span>
+  }
+
+  private void renderResource(UriInfo uriInfo, AsyncResponse response, Function&lt;ExampleServiceRequestContext, LinkableResource&gt; resourceImplConstructor) {
+
+<span class="nc" id="L76">    requestCycle.processRequest(uriInfo, response, this::createRequestContext, resourceImplConstructor);</span>
+<span class="nc" id="L77">  }</span>
+
+  @GET
+  @Path(&quot;/&quot;)
+  public void getEntryPoint(@Context UriInfo uriInfo, @Suspended AsyncResponse response) {
+
+<span class="nc" id="L83">    renderResource(uriInfo, response,</span>
+<span class="nc" id="L84">        request -&gt; new ExamplesEntryPointResourceImpl(request, request.hasFingerPrintedUrl()));</span>
+<span class="nc" id="L85">  }</span>
+
+  @GET
+  @Path(&quot;/caching&quot;)
+  public void getCachingExamples(@Context UriInfo uriInfo, @Suspended AsyncResponse response) {
+
+<span class="nc" id="L91">    renderResource(uriInfo, response,</span>
+<span class="nc" id="L92">        request -&gt; new CachingExamplesResourceImpl(request));</span>
+<span class="nc" id="L93">  }</span>
+
+  @GET
+  @Path(&quot;/caching/evenAndOdd&quot;)
+  public void getEvenAndOdd(@Context UriInfo uriInfo, @Suspended AsyncResponse response,
+      @BeanParam CollectionParametersBean parameters) {
+
+<span class="nc" id="L100">    renderResource(uriInfo, response,</span>
+<span class="nc" id="L101">        request -&gt; new EvenAndOddItemsResourceImpl(request, parameters));</span>
+<span class="nc" id="L102">  }</span>
+
+  @GET
+  @Path(&quot;/collections&quot;)
+  public void getCollectionExamples(@Context UriInfo uriInfo, @Suspended AsyncResponse response) {
+
+<span class="nc" id="L108">    renderResource(uriInfo, response,</span>
+<span class="nc" id="L109">        request -&gt; new CollectionExamplesResourceImpl(request));</span>
+<span class="nc" id="L110">  }</span>
+
+  @GET
+  @Path(&quot;/collections/items&quot;)
+  public void getDelayableCollection(@Context UriInfo uriInfo, @Suspended AsyncResponse response,
+      @BeanParam CollectionParametersBean parameters) {
+
+<span class="nc" id="L117">    renderResource(uriInfo, response,</span>
+<span class="nc" id="L118">        request -&gt; new DelayableCollectionResourceImpl(request, parameters));</span>
+<span class="nc" id="L119">  }</span>
+
+  @GET
+  @Path(&quot;/collections/items/{index}&quot;)
+  public void getDelayableItem(@Context UriInfo uriInfo, @Suspended AsyncResponse response,
+      @PathParam(&quot;index&quot;) Integer index,
+      @QueryParam(&quot;delayMs&quot;) Integer delayMs) {
+
+<span class="nc" id="L127">    renderResource(uriInfo, response,</span>
+<span class="nc" id="L128">        request -&gt; new DelayableItemResourceImpl(request, index, delayMs));</span>
+<span class="nc" id="L129">  }</span>
+
+  @GET
+  @Path(&quot;/collection/proxy/items&quot;)
+  public void getClientCollection(@Context UriInfo uriInfo, @Suspended AsyncResponse response,
+      @BeanParam CollectionParametersBean parameters) {
+
+<span class="nc" id="L136">    renderResource(uriInfo, response,</span>
+<span class="nc" id="L137">        request -&gt; new ClientCollectionResourceImpl(request, parameters));</span>
+<span class="nc" id="L138">  }</span>
+
+  @GET
+  @Path(&quot;/collections/proxy/items/{index}&quot;)
+  public void getClientItem(@Context UriInfo uriInfo, @Suspended AsyncResponse response,
+      @PathParam(&quot;index&quot;) Integer index,
+      @QueryParam(&quot;delayMs&quot;) Integer delayMs) {
+
+<span class="nc" id="L146">    renderResource(uriInfo, response,</span>
+<span class="nc" id="L147">        request -&gt; new ClientItemResourceImpl(request, index, delayMs));</span>
+<span class="nc" id="L148">  }</span>
+
+  @GET
+  @Path(&quot;/errors&quot;)
+  public void getErrorsExamples(@Context UriInfo uriInfo, @Suspended AsyncResponse response) {
+
+<span class="nc" id="L154">    renderResource(uriInfo, response,</span>
+<span class="nc" id="L155">        request -&gt; new ErrorsExamplesResourceImpl(request));</span>
+<span class="nc" id="L156">  }</span>
+
+  @GET
+  @Path(&quot;/errors/client&quot;)
+  public void getHalApiClientError(@Context UriInfo uriInfo, @Suspended AsyncResponse response,
+      @BeanParam ErrorParametersBean parameters) {
+
+<span class="nc" id="L163">    renderResource(uriInfo, response,</span>
+<span class="nc" id="L164">        request -&gt; new HalApiClientErrorResourceImpl(request, parameters));</span>
+<span class="nc" id="L165">  }</span>
+
+  @GET
+  @Path(&quot;/errors/server&quot;)
+  public void getServerSideError(@Context UriInfo uriInfo, @Suspended AsyncResponse response,
+      @BeanParam ErrorParametersBean parameters) {
+
+<span class="nc" id="L172">    renderResource(uriInfo, response,</span>
+<span class="nc" id="L173">        request -&gt; new ServerSideErrorResourceImpl(request, parameters));</span>
+<span class="nc" id="L174">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

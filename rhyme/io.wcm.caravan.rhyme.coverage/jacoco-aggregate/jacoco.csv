@@ -144,6 +144,27 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.testing,io.wcm.caravan.rhyme.testing.
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.testing,io.wcm.caravan.rhyme.testing.client,ApacheAsyncHttpSupport.new FutureCallback() {...},0,41,0,0,0,12,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.testing,io.wcm.caravan.rhyme.testing.client,AbstractHalResourceLoaderTest,0,733,0,6,0,244,0,53,0,50
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.testing,io.wcm.caravan.rhyme.testing.client,ApacheAsyncHttpSupport,0,61,0,4,0,19,0,6,0,4
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.util,RxJavaTransformers,6,0,0,0,1,0,1,0,1,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.util,RxJavaTransformers.AsyncFilterTransformer,31,0,0,0,11,0,4,0,4,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.context,ExampleServiceRequestContext,90,0,2,0,20,0,10,0,9,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.errors,ServerSideErrorResourceImpl,60,0,2,0,10,0,5,0,4,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.errors,HalApiClientErrorResourceImpl,40,0,0,0,10,0,5,0,5,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.errors,ErrorParametersBean,2,56,1,1,1,19,1,8,0,8
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.errors,ErrorsExamplesResourceImpl,34,0,0,0,7,0,5,0,5,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.caching,EvenAndOddItemsResourceImpl,100,0,4,0,19,0,14,0,12,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.caching,CachingExamplesResourceImpl,26,0,0,0,6,0,4,0,4,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.caching,EvenAndOddItemsResourceImpl.EmbeddedCollectionResourceImpl,33,0,0,0,9,0,6,0,6,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.api.collection,ItemState,0,3,0,0,0,1,0,1,0,1
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource,ExamplesEntryPointResourceImpl,114,0,6,0,21,0,12,0,9,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.jaxrs,ExampleServiceJaxRsComponent,160,0,0,0,37,0,25,0,25,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.jaxrs,ExampleServiceJaxRsApplication,3,0,0,0,1,0,1,0,1,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection,DelayableCollectionResourceImpl,129,0,10,0,18,0,12,0,7,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection,CollectionParametersBean,2,56,1,1,1,19,1,8,0,8
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection,ClientCollectionResourceImpl,121,0,10,0,22,0,12,0,7,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection,DelayableItemResourceImpl,122,0,10,0,28,0,13,0,8,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection,ClientItemResourceImpl,101,0,4,0,22,0,8,0,6,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection,ClientCollectionResourceImpl.EmbeddedItemResourceImpl,14,0,0,0,6,0,3,0,3,0
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection,CollectionExamplesResourceImpl,52,0,0,0,9,0,7,0,7,0
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,ManagerController.new ManagerController.ManagerResourceImpl() {...},0,54,0,0,0,5,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,EmployeeController.new EmployeeCollectionResource() {...},0,47,0,0,0,7,0,6,0,6
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hypermedia,io.wcm.caravan.rhyme.examples.spring.hypermedia,Employee,0,36,0,0,0,16,0,8,0,8

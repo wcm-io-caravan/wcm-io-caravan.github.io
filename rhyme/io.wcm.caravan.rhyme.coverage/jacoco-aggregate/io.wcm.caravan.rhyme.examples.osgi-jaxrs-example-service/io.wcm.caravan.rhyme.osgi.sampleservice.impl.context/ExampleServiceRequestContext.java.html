@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ExampleServiceRequestContext.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.osgi.sampleservice.impl.context</a> &gt; <span class="el_source">ExampleServiceRequestContext.java</span></div><h1>ExampleServiceRequestContext.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.osgi.sampleservice.impl.context;
+
+import java.time.Duration;
+import java.util.Map;
+
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
+
+import com.google.common.collect.ImmutableMap;
+
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.caravan.api.CaravanRhyme;
+import io.wcm.caravan.rhyme.jaxrs.api.JaxRsBundleInfo;
+import io.wcm.caravan.rhyme.jaxrs.api.JaxRsLinkBuilder;
+import io.wcm.caravan.rhyme.osgi.sampleservice.api.ExamplesEntryPointResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.jaxrs.ExampleServiceJaxRsComponent;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.ExamplesEntryPointResourceImpl;
+
+public class ExampleServiceRequestContext {
+
+  private static final String BUNDLE_VERSION_QUERY_PARAM = &quot;bundleVersion&quot;;
+
+  public static final String LOCALHOST_CARAVAN_SERVICE_ID = &quot;localhost&quot;;
+
+  private final CaravanRhyme rhyme;
+  private final JaxRsBundleInfo bundleInfo;
+
+  private final ExamplesEntryPointResource upstreamEntryPoint;
+
+  private final JaxRsLinkBuilder&lt;ExampleServiceJaxRsComponent&gt; linkBuilder;
+
+<span class="nc" id="L52">  public ExampleServiceRequestContext(CaravanRhyme rhyme, JaxRsBundleInfo bundleInfo) {</span>
+
+<span class="nc" id="L54">    this.rhyme = rhyme;</span>
+<span class="nc" id="L55">    this.bundleInfo = bundleInfo;</span>
+
+<span class="nc" id="L57">    this.linkBuilder = createLinkBuilder(bundleInfo);</span>
+
+<span class="nc" id="L59">    this.upstreamEntryPoint = rhyme.getRemoteResource(LOCALHOST_CARAVAN_SERVICE_ID, constructEntryPointUrl(), ExamplesEntryPointResource.class);</span>
+
+<span class="nc" id="L61">    setResponseMaxAge(rhyme);</span>
+<span class="nc" id="L62">  }</span>
+
+  private String constructEntryPointUrl() {
+
+<span class="nc" id="L66">    return new ExamplesEntryPointResourceImpl(this, true).createLink().getHref();</span>
+  }
+
+  private static JaxRsLinkBuilder&lt;ExampleServiceJaxRsComponent&gt; createLinkBuilder(JaxRsBundleInfo bundleInfo) {
+
+<span class="nc" id="L71">    Map&lt;String, Object&gt; fingerPrintingParams = ImmutableMap.of(BUNDLE_VERSION_QUERY_PARAM, bundleInfo.getBundleVersion());</span>
+
+<span class="nc" id="L73">    return JaxRsLinkBuilder.create(bundleInfo.getApplicationPath(), ExampleServiceJaxRsComponent.class)</span>
+<span class="nc" id="L74">        .withAdditionalQueryParameters(fingerPrintingParams);</span>
+  }
+
+  private static void setResponseMaxAge(CaravanRhyme rhyme) {
+
+<span class="nc" id="L79">    MultivaluedMap&lt;String, String&gt; queryParameters = rhyme.getRequestUri().getQueryParameters();</span>
+<span class="nc" id="L80">    boolean fingerPrintingParamPresent = queryParameters.containsKey(BUNDLE_VERSION_QUERY_PARAM);</span>
+
+<span class="nc bnc" id="L82" title="All 2 branches missed.">    Duration maxAge = fingerPrintingParamPresent ? Duration.ofDays(365) : Duration.ofMinutes(1);</span>
+<span class="nc" id="L83">    rhyme.setResponseMaxAge(maxAge);</span>
+<span class="nc" id="L84">  }</span>
+
+  public interface ControllerCall {
+
+    void call(ExampleServiceJaxRsComponent resource, UriInfo uriInfo, AsyncResponse response);
+  }
+
+  public Link buildLinkTo(ControllerCall callToResource) {
+
+<span class="nc" id="L93">    return linkBuilder.buildLinkTo(resource -&gt; callToResource.call(resource, null, null));</span>
+  }
+
+  public ExamplesEntryPointResource getUpstreamEntryPoint() {
+
+<span class="nc" id="L98">    return upstreamEntryPoint;</span>
+  }
+
+  public boolean hasFingerPrintedUrl() {
+
+<span class="nc" id="L103">    return rhyme.getRequestUri().getQueryParameters().containsKey(BUNDLE_VERSION_QUERY_PARAM);</span>
+  }
+
+  public String getBundleVersion() {
+
+<span class="nc" id="L108">    return bundleInfo.getBundleVersion();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

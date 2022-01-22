@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>EvenAndOddItemsResourceImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.caching</a> &gt; <span class="el_source">EvenAndOddItemsResourceImpl.java</span></div><h1>EvenAndOddItemsResourceImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.caching;
+
+
+import java.util.function.Function;
+
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.api.caching.EvenOddItemsResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.api.collection.ItemCollectionResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.api.collection.ItemResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.context.ExampleServiceRequestContext;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection.ClientCollectionResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection.CollectionParametersBean;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.util.RxJavaTransformers;
+
+public class EvenAndOddItemsResourceImpl implements EvenOddItemsResource, LinkableResource {
+
+  private final ExampleServiceRequestContext context;
+
+  private final CollectionParametersBean params;
+
+<span class="nc" id="L45">  public EvenAndOddItemsResourceImpl(ExampleServiceRequestContext context, CollectionParametersBean parameters) {</span>
+<span class="nc" id="L46">    this.context = context;</span>
+<span class="nc" id="L47">    this.params = parameters;</span>
+<span class="nc" id="L48">  }</span>
+
+  @Override
+  public Single&lt;ItemCollectionResource&gt; getEvenItems() {
+
+<span class="nc" id="L53">    Observable&lt;ItemResource&gt; evenItems = fetchAndFilter(this::isEvenItem);</span>
+
+<span class="nc" id="L55">    return Single.just(new EmbeddedCollectionResourceImpl(evenItems));</span>
+  }
+
+  private Single&lt;Boolean&gt; isEvenItem(ItemResource resource) {
+
+<span class="nc bnc" id="L60" title="All 2 branches missed.">    return resource.getProperties().map(state -&gt; state.index % 2 == 0);</span>
+  }
+
+  @Override
+  public Single&lt;ItemCollectionResource&gt; getOddItems() {
+
+<span class="nc" id="L66">    Observable&lt;ItemResource&gt; oddItems = fetchAndFilter(this::isOddItem);</span>
+
+<span class="nc" id="L68">    return Single.just(new EmbeddedCollectionResourceImpl(oddItems));</span>
+  }
+
+  private Single&lt;Boolean&gt; isOddItem(ItemResource resource) {
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">    return resource.getProperties().map(state -&gt; state.index % 2 == 1);</span>
+  }
+
+  private Observable&lt;ItemResource&gt; fetchAllItems() {
+
+<span class="nc" id="L78">    return context.getUpstreamEntryPoint()</span>
+<span class="nc" id="L79">        .getCollectionExamples()</span>
+<span class="nc" id="L80">        .flatMap(r -&gt; r.getDelayedCollection(params))</span>
+<span class="nc" id="L81">        .flatMapObservable(ItemCollectionResource::getItems);</span>
+  }
+
+  private Observable&lt;ItemResource&gt; fetchAndFilter(Function&lt;ItemResource, Single&lt;Boolean&gt;&gt; filterFunc) {
+
+<span class="nc" id="L86">    return fetchAllItems()</span>
+<span class="nc" id="L87">        .compose(RxJavaTransformers.filterWith(filterFunc));</span>
+  }
+
+  @Override
+  public Link createLink() {
+
+<span class="nc" id="L93">    String title = &quot;An example that loads a collection from upstream service, and separates it into even and odd items&quot;;</span>
+
+<span class="nc" id="L95">    return context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getEvenAndOdd(uriInfo, response, params))</span>
+<span class="nc" id="L96">        .setTitle(title);</span>
+  }
+
+  static class EmbeddedCollectionResourceImpl implements ItemCollectionResource, EmbeddableResource {
+
+    private final Observable&lt;ItemResource&gt; items;
+
+<span class="nc" id="L103">    EmbeddedCollectionResourceImpl(Observable&lt;ItemResource&gt; items) {</span>
+<span class="nc" id="L104">      this.items = items;</span>
+<span class="nc" id="L105">    }</span>
+
+    @Override
+    public Maybe&lt;String&gt; getTitle() {
+
+<span class="nc" id="L110">      return items.count()</span>
+<span class="nc" id="L111">          .map(numItems -&gt; &quot;A collection of &quot; + numItems + &quot; items&quot;)</span>
+<span class="nc" id="L112">          .toMaybe();</span>
+    }
+
+    @Override
+    public Observable&lt;ItemResource&gt; getItems() {
+
+<span class="nc" id="L118">      return items.map(ClientCollectionResourceImpl.EmbeddedItemResourceImpl::new);</span>
+    }
+
+    @Override
+    public Maybe&lt;ItemCollectionResource&gt; getAlternate() {
+
+<span class="nc" id="L124">      return Maybe.empty();</span>
+    }
+
+    @Override
+    public boolean isEmbedded() {
+
+<span class="nc" id="L130">      return true;</span>
+    }
+
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

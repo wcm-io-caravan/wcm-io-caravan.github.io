@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ExamplesEntryPointResourceImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource</a> &gt; <span class="el_source">ExamplesEntryPointResourceImpl.java</span></div><h1>ExamplesEntryPointResourceImpl.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2021 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource;
+
+import org.apache.commons.lang3.StringUtils;
+
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Single;
+import io.wcm.caravan.hal.resource.HalResource;
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.api.ExamplesEntryPointResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.api.caching.CachingExamplesResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.api.collection.CollectionExamplesResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.api.errors.ErrorExamplesResource;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.context.ExampleServiceRequestContext;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.caching.CachingExamplesResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection.CollectionExamplesResourceImpl;
+import io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.errors.ErrorsExamplesResourceImpl;
+
+public class ExamplesEntryPointResourceImpl implements ExamplesEntryPointResource, LinkableResource {
+
+  private final ExampleServiceRequestContext context;
+
+  private final boolean useFingerprintInSelfLink;
+
+<span class="nc" id="L45">  public ExamplesEntryPointResourceImpl(ExampleServiceRequestContext context, boolean useFingerprintInSelfLink) {</span>
+
+<span class="nc" id="L47">    this.context = context;</span>
+
+<span class="nc" id="L49">    this.useFingerprintInSelfLink = useFingerprintInSelfLink;</span>
+<span class="nc" id="L50">  }</span>
+
+  @Override
+  public Single&lt;CollectionExamplesResource&gt; getCollectionExamples() {
+
+<span class="nc" id="L55">    return Single.just(new CollectionExamplesResourceImpl(context));</span>
+  }
+
+  @Override
+  public Single&lt;CachingExamplesResource&gt; getCachingExamples() {
+
+<span class="nc" id="L61">    return Single.just(new CachingExamplesResourceImpl(context));</span>
+  }
+
+  @Override
+  public Single&lt;ErrorExamplesResource&gt; getErrorExamples() {
+
+<span class="nc" id="L67">    return Single.just(new ErrorsExamplesResourceImpl(context));</span>
+  }
+
+  @Override
+  public HalResource asHalResource() {
+
+<span class="nc" id="L73">    throw new HalApiDeveloperException(&quot;This method isn't implemented server-side, and only available through the Rhyme HTTP clients&quot;);</span>
+  }
+
+  @Override
+  public Link createLink() {
+
+<span class="nc" id="L79">    Link link = context.buildLinkTo((resource, uriInfo, response) -&gt; resource.getEntryPoint(uriInfo, response));</span>
+
+<span class="nc" id="L81">    String title = &quot;The HAL API entry point of the OSGi/JAX-RS example service&quot;;</span>
+
+<span class="nc bnc" id="L83" title="All 2 branches missed.">    if (!useFingerprintInSelfLink) {</span>
+<span class="nc" id="L84">      link.setHref(StringUtils.substringBefore(link.getHref(), &quot;?&quot;));</span>
+<span class="nc" id="L85">      title += &quot; (current version)&quot;;</span>
+    }
+    else {
+<span class="nc" id="L88">      title += &quot; (immutable for bundle version &quot; + context.getBundleVersion() + &quot;)&quot;;</span>
+    }
+
+<span class="nc" id="L91">    return link.setTitle(title);</span>
+  }
+
+  @Override
+  public Maybe&lt;ExamplesEntryPointResource&gt; getLatestVersion() {
+
+<span class="nc bnc" id="L97" title="All 2 branches missed.">    if (context.hasFingerPrintedUrl()) {</span>
+<span class="nc" id="L98">      return Maybe.just(new ExamplesEntryPointResourceImpl(context, false));</span>
+    }
+
+<span class="nc" id="L101">    return Maybe.empty();</span>
+  }
+
+  @Override
+  public Maybe&lt;ExamplesEntryPointResource&gt; getPermalink() {
+
+<span class="nc bnc" id="L107" title="All 2 branches missed.">    if (!context.hasFingerPrintedUrl()) {</span>
+<span class="nc" id="L108">      return Maybe.just(new ExamplesEntryPointResourceImpl(context, true));</span>
+    }
+
+<span class="nc" id="L111">    return Maybe.empty();</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
