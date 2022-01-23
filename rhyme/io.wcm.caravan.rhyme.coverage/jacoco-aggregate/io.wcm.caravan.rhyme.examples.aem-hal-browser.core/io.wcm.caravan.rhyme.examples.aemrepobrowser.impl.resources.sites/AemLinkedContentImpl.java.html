@@ -24,8 +24,8 @@ import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.sites.AemPage;
 @Model(adaptables = SlingRhyme.class, adapters = AemLinkedContent.class)
 <span class="fc" id="L25">public class AemLinkedContentImpl implements AemLinkedContent {</span>
 
-<span class="pc bnc" id="L27" title="All 2 branches missed.">  private static final Predicate&lt;Resource&gt; IS_ASSET = res -&gt; res.adaptTo(Asset.class) != null;</span>
-<span class="pc bnc" id="L28" title="All 2 branches missed.">  private static final Predicate&lt;Resource&gt; IS_PAGE = res -&gt; res.adaptTo(Page.class) != null;</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">  private static final Predicate&lt;Resource&gt; IS_ASSET = res -&gt; res.adaptTo(Asset.class) != null;</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">  private static final Predicate&lt;Resource&gt; IS_PAGE = res -&gt; res.adaptTo(Page.class) != null;</span>
 
 <span class="fc" id="L30">  private static final Predicate&lt;Resource&gt; IS_OTHER = IS_ASSET.or(IS_PAGE).negate();</span>
 
