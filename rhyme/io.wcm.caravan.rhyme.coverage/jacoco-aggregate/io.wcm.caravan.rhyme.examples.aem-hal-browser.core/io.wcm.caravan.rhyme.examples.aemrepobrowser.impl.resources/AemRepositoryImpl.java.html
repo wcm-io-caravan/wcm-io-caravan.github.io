@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AemRepositoryImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.aem-hal-browser.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources</a> &gt; <span class="el_source">AemRepositoryImpl.java</span></div><h1>AemRepositoryImpl.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources;
+
+import java.util.Optional;
+
+import org.apache.sling.models.annotations.Model;
+
+import com.day.cq.dam.api.Asset;
+import com.day.cq.wcm.api.Page;
+
+import io.wcm.caravan.rhyme.aem.api.SlingRhyme;
+import io.wcm.caravan.rhyme.aem.api.resources.AbstractLinkableResource;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.AemRepository;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.assets.AemAsset;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.assets.AemRendition;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.generic.SlingResource;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.sites.AemPage;
+
+@Model(adaptables = SlingRhyme.class, adapters = AemRepository.class)
+<span class="fc" id="L19">public class AemRepositoryImpl extends AbstractLinkableResource implements AemRepository {</span>
+
+  @Override
+  public SlingResource getRoot() {
+
+<span class="fc" id="L24">    return resourceAdapter.selectResourceAt(&quot;/&quot;)</span>
+<span class="fc" id="L25">        .adaptTo(SlingResource.class)</span>
+<span class="fc" id="L26">        .withLinkTitle(&quot;The root resource of the repository&quot;)</span>
+<span class="fc" id="L27">        .getInstance();</span>
+  }
+
+  @Override
+  public Optional&lt;SlingResource&gt; getResource(String path) {
+
+<span class="fc" id="L33">    return resourceAdapter.selectResourceAt(path)</span>
+<span class="fc" id="L34">        .adaptTo(SlingResource.class)</span>
+<span class="fc" id="L35">        .withLinkTitle(&quot;Get a generic view of the resource at the given path&quot;)</span>
+<span class="fc" id="L36">        .getOptional();</span>
+  }
+
+  @Override
+  public Optional&lt;AemPage&gt; getPage(String path) {
+
+<span class="fc" id="L42">    return resourceAdapter.selectResourceAt(path)</span>
+<span class="fc" id="L43">        .filterAdaptableTo(Page.class)</span>
+<span class="fc" id="L44">        .adaptTo(AemPage.class)</span>
+<span class="fc" id="L45">        .withLinkTitle(&quot;Get information on an AEM page at the given path&quot;)</span>
+<span class="fc" id="L46">        .getOptional();</span>
+  }
+
+  @Override
+  public Optional&lt;AemAsset&gt; getAsset(String path) {
+
+<span class="fc" id="L52">    return resourceAdapter.selectResourceAt(path)</span>
+<span class="fc" id="L53">        .filterAdaptableTo(Asset.class)</span>
+<span class="fc" id="L54">        .adaptTo(AemAsset.class)</span>
+<span class="fc" id="L55">        .withLinkTitle(&quot;Get information on an asset at the given path&quot;)</span>
+<span class="fc" id="L56">        .getOptional();</span>
+  }
+
+  @Override
+  public Optional&lt;AemRendition&gt; getRendition(String path, Integer width, Integer height) {
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">    if (path == null) {</span>
+<span class="fc" id="L63">      return resourceAdapter.selectResourceAt(null)</span>
+<span class="fc" id="L64">          .adaptTo(AemRendition.class)</span>
+<span class="fc" id="L65">          .withLinkTitle(&quot;Get a dynamic (cropped) rendition of an asset with the specified width and height&quot;)</span>
+<span class="fc" id="L66">          .withQueryParameterTemplate(&quot;width&quot;, &quot;height&quot;)</span>
+<span class="fc" id="L67">          .getOptional();</span>
+    }
+
+<span class="fc" id="L70">    return getAsset(path)</span>
+<span class="fc" id="L71">        .flatMap(asset -&gt; asset.getRendition(width, height));</span>
+  }
+
+  @Override
+  protected String getDefaultLinkTitle() {
+<span class="fc" id="L76">    return &quot;The entry point to the AEM Repository HAL API&quot;;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

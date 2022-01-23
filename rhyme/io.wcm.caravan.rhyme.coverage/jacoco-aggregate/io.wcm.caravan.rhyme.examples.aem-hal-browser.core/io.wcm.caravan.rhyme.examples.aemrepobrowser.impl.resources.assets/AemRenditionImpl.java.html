@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AemRenditionImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.aem-hal-browser.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources.assets</a> &gt; <span class="el_source">AemRenditionImpl.java</span></div><h1>AemRenditionImpl.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources.assets;
+
+import java.util.Optional;
+
+import javax.annotation.PostConstruct;
+
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.Self;
+
+import com.day.cq.dam.api.Asset;
+
+import io.wcm.caravan.rhyme.aem.api.SlingRhyme;
+import io.wcm.caravan.rhyme.aem.api.parameters.QueryParam;
+import io.wcm.caravan.rhyme.aem.api.resources.AbstractLinkableResource;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.assets.AemAsset;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.assets.AemRendition;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.assets.AemRenditionProperties;
+import io.wcm.handler.media.Media;
+import io.wcm.handler.media.MediaArgs;
+import io.wcm.handler.media.MediaBuilder;
+import io.wcm.handler.media.MediaHandler;
+import io.wcm.handler.media.Rendition;
+import io.wcm.handler.media.format.MediaFormat;
+import io.wcm.handler.media.format.MediaFormatBuilder;
+
+@Model(adaptables = SlingRhyme.class, adapters = AemRendition.class)
+<span class="fc" id="L29">public class AemRenditionImpl extends AbstractLinkableResource implements AemRendition {</span>
+
+  @Self
+  private Asset asset;
+
+  @Self
+  private MediaHandler mediaHandler;
+
+  @Self
+  private Resource resource;
+
+  @QueryParam
+  private Integer width;
+
+  @QueryParam
+  private Integer height;
+
+  private MediaBuilder mediaBuilder;
+  private Media media;
+
+  @PostConstruct
+  void activate() {
+<span class="fc" id="L51">    this.mediaBuilder = createMediaBuilder();</span>
+<span class="fc" id="L52">    this.media = mediaBuilder.build();</span>
+<span class="fc" id="L53">  }</span>
+
+  public void setWidthAndHeight(Integer width, Integer height) {
+<span class="fc" id="L56">    this.width = width;</span>
+<span class="fc" id="L57">    this.height = height;</span>
+<span class="fc" id="L58">  }</span>
+
+  private MediaBuilder createMediaBuilder() {
+<span class="fc" id="L61">    MediaFormatBuilder formatBuilder = MediaFormatBuilder.create(&quot;foo&quot;)</span>
+<span class="fc" id="L62">        .extensions(&quot;gif&quot;, &quot;jpg&quot;, &quot;png&quot;);</span>
+
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">    if (width != null) {</span>
+<span class="nc" id="L65">      formatBuilder = formatBuilder.width(width);</span>
+    }
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">    if (height != null) {</span>
+<span class="nc" id="L68">      formatBuilder = formatBuilder.height(height);</span>
+    }
+<span class="fc" id="L70">    MediaFormat format = formatBuilder.build();</span>
+
+<span class="fc" id="L72">    return mediaHandler.get(resource.getPath())</span>
+<span class="fc" id="L73">        .args(new MediaArgs(format).autoCrop(true));</span>
+  }
+
+
+  @Override
+  public AemRenditionProperties getProperties() {
+
+<span class="nc" id="L80">    Rendition rendition = media.getRendition();</span>
+
+<span class="nc" id="L82">    return new AemRenditionProperties() {</span>
+
+      @Override
+      public Integer getWidth() {
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (rendition == null) {</span>
+<span class="nc" id="L87">          return null;</span>
+        }
+<span class="nc" id="L89">        return (int)rendition.getWidth();</span>
+      }
+
+      @Override
+      public Integer getHeight() {
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (rendition == null) {</span>
+<span class="nc" id="L95">          return null;</span>
+        }
+<span class="nc" id="L97">        return (int)rendition.getHeight();</span>
+      }
+
+      @Override
+      public String getMimeType() {
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (rendition == null) {</span>
+<span class="nc" id="L103">          return null;</span>
+        }
+<span class="nc" id="L105">        return rendition.getMimeType();</span>
+      }
+
+      @Override
+      public boolean isValid() {
+<span class="nc" id="L110">        return media.isValid();</span>
+      }
+
+      @Override
+      public String getInvalidReason() {
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (media.isValid()) {</span>
+<span class="nc" id="L116">          return null;</span>
+        }
+<span class="nc" id="L118">        return media.getMediaInvalidReason().toString();</span>
+      }
+
+    };
+  }
+
+  @Override
+  public Optional&lt;LinkableResource&gt; getBinaryResource() {
+
+<span class="nc bnc" id="L127" title="All 4 branches missed.">    if (!media.isValid() || media.getRendition() == null) {</span>
+<span class="nc" id="L128">      return Optional.empty();</span>
+    }
+
+<span class="nc" id="L131">    return Optional.of(new BinaryAssetResource(mediaBuilder)</span>
+<span class="nc" id="L132">        .withTitle(&quot;Download the dynamic rendition &quot; + media.getRendition()));</span>
+  }
+
+  @Override
+  public AemAsset getAsset() {
+
+<span class="nc" id="L138">    return resourceAdapter</span>
+<span class="nc" id="L139">        .selectCurrentResource()</span>
+<span class="nc" id="L140">        .adaptTo(AemAsset.class)</span>
+<span class="nc" id="L141">        .withLinkTitle(&quot;The asset resource for this rendition&quot;)</span>
+<span class="nc" id="L142">        .getInstance();</span>
+  }
+
+  @Override
+  protected String getDefaultLinkTitle() {
+<span class="nc" id="L147">    return &quot;dynamic rendition of asset at &quot; + asset.getPath() + &quot; with width=&quot; + width + &quot; and height=&quot; + height;</span>
+  }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

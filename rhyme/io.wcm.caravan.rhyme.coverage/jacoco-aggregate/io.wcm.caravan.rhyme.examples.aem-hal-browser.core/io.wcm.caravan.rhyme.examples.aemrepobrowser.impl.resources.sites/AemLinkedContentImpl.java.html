@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AemLinkedContentImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.aem-hal-browser.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources.sites</a> &gt; <span class="el_source">AemLinkedContentImpl.java</span></div><h1>AemLinkedContentImpl.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources.sites;
+
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.Self;
+
+import com.day.cq.dam.api.Asset;
+import com.day.cq.wcm.api.Page;
+
+import io.wcm.caravan.rhyme.aem.api.SlingRhyme;
+import io.wcm.caravan.rhyme.aem.api.adaptation.SlingResourceAdapter;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.assets.AemAsset;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.generic.SlingResource;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.sites.AemLinkedContent;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.sites.AemPage;
+
+@Model(adaptables = SlingRhyme.class, adapters = AemLinkedContent.class)
+<span class="fc" id="L25">public class AemLinkedContentImpl implements AemLinkedContent {</span>
+
+<span class="pc bnc" id="L27" title="All 2 branches missed.">  private static final Predicate&lt;Resource&gt; IS_ASSET = res -&gt; res.adaptTo(Asset.class) != null;</span>
+<span class="pc bnc" id="L28" title="All 2 branches missed.">  private static final Predicate&lt;Resource&gt; IS_PAGE = res -&gt; res.adaptTo(Page.class) != null;</span>
+
+<span class="fc" id="L30">  private static final Predicate&lt;Resource&gt; IS_OTHER = IS_ASSET.or(IS_PAGE).negate();</span>
+
+  @Self
+  private Resource currentResource;
+
+  @Self
+  private SlingResourceAdapter resourceAdapter;
+
+  @Override
+  public Stream&lt;AemPage&gt; getLinkedPages() {
+
+<span class="fc" id="L41">    return resourceAdapter</span>
+<span class="fc" id="L42">        .select(findLinkedResourcesIn(currentResource))</span>
+<span class="fc" id="L43">        .filter(IS_PAGE)</span>
+<span class="fc" id="L44">        .adaptTo(AemPage.class)</span>
+<span class="fc" id="L45">        .getStream();</span>
+  }
+
+  @Override
+  public Stream&lt;AemAsset&gt; getLinkedAssets() {
+
+<span class="fc" id="L51">    return resourceAdapter</span>
+<span class="fc" id="L52">        .select(findLinkedResourcesIn(currentResource))</span>
+<span class="fc" id="L53">        .filter(IS_ASSET)</span>
+<span class="fc" id="L54">        .adaptTo(AemAsset.class)</span>
+<span class="fc" id="L55">        .getStream();</span>
+  }
+
+  @Override
+  public Stream&lt;SlingResource&gt; getOtherLinkedResources() {
+
+<span class="fc" id="L61">    return resourceAdapter</span>
+<span class="fc" id="L62">        .select(findLinkedResourcesIn(currentResource))</span>
+<span class="fc" id="L63">        .filter(IS_OTHER)</span>
+<span class="fc" id="L64">        .adaptTo(SlingResource.class)</span>
+<span class="fc" id="L65">        .getStream();</span>
+  }
+
+
+  private Stream&lt;Resource&gt; findLinkedResourcesIn(Resource contentResource) {
+
+<span class="fc" id="L71">    ValueMap properties = contentResource.getValueMap();</span>
+
+<span class="fc" id="L73">    ResourceResolver resolver = currentResource.getResourceResolver();</span>
+
+<span class="fc" id="L75">    Stream&lt;Resource&gt; linkedInThisResource = properties.entrySet().stream()</span>
+<span class="fc" id="L76">        .filter(entry -&gt; entry.getValue() instanceof String)</span>
+<span class="fc" id="L77">        .map(entry -&gt; (String)entry.getValue())</span>
+<span class="fc" id="L78">        .filter(value -&gt; value.startsWith(&quot;/&quot;))</span>
+<span class="fc" id="L79">        .map(resolver::getResource)</span>
+<span class="fc" id="L80">        .filter(Objects::nonNull);</span>
+
+<span class="fc" id="L82">    Stream&lt;Resource&gt; linkedInChildResources = StreamSupport.stream(contentResource.getChildren().spliterator(), false)</span>
+<span class="fc" id="L83">        .flatMap(this::findLinkedResourcesIn);</span>
+
+<span class="fc" id="L85">    return Stream.concat(linkedInThisResource, linkedInChildResources);</span>
+  }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

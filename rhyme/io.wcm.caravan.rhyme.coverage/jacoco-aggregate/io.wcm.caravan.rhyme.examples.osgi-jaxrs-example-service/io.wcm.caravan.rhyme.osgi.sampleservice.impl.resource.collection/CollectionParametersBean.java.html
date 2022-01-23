@@ -55,37 +55,33 @@ import io.wcm.caravan.rhyme.osgi.sampleservice.api.collection.CollectionParamete
 <span class="fc" id="L55">    return this.delayMs;</span>
   }
 
-  static CollectionParametersBean clone(CollectionParameters other) {
+  private static CollectionParametersBean clone(CollectionParameters other) {
 
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">    if (other == null) {</span>
-<span class="nc" id="L61">      return null;</span>
-    }
+<span class="fc" id="L60">    CollectionParametersBean cloned = new CollectionParametersBean();</span>
 
-<span class="fc" id="L64">    CollectionParametersBean cloned = new CollectionParametersBean();</span>
+<span class="fc" id="L62">    cloned.numItems = other.getNumItems();</span>
+<span class="fc" id="L63">    cloned.embedItems = other.getEmbedItems();</span>
+<span class="fc" id="L64">    cloned.delayMs = other.getDelayMs();</span>
 
-<span class="fc" id="L66">    cloned.numItems = other.getNumItems();</span>
-<span class="fc" id="L67">    cloned.embedItems = other.getEmbedItems();</span>
-<span class="fc" id="L68">    cloned.delayMs = other.getDelayMs();</span>
-
-<span class="fc" id="L70">    return cloned;</span>
+<span class="fc" id="L66">    return cloned;</span>
   }
 
   public CollectionParametersBean withNumItems(int value) {
-<span class="fc" id="L74">    CollectionParametersBean cloned = clone(this);</span>
-<span class="fc" id="L75">    cloned.numItems = value;</span>
-<span class="fc" id="L76">    return cloned;</span>
+<span class="fc" id="L70">    CollectionParametersBean cloned = clone(this);</span>
+<span class="fc" id="L71">    cloned.numItems = value;</span>
+<span class="fc" id="L72">    return cloned;</span>
   }
 
   public CollectionParametersBean withEmbedItems(boolean value) {
-<span class="fc" id="L80">    CollectionParametersBean cloned = clone(this);</span>
-<span class="fc" id="L81">    cloned.embedItems = value;</span>
-<span class="fc" id="L82">    return cloned;</span>
+<span class="fc" id="L76">    CollectionParametersBean cloned = clone(this);</span>
+<span class="fc" id="L77">    cloned.embedItems = value;</span>
+<span class="fc" id="L78">    return cloned;</span>
   }
 
   public CollectionParametersBean withDelayMs(int value) {
-<span class="fc" id="L86">    CollectionParametersBean cloned = clone(this);</span>
-<span class="fc" id="L87">    cloned.delayMs = value;</span>
-<span class="fc" id="L88">    return cloned;</span>
+<span class="fc" id="L82">    CollectionParametersBean cloned = clone(this);</span>
+<span class="fc" id="L83">    cloned.delayMs = value;</span>
+<span class="fc" id="L84">    return cloned;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

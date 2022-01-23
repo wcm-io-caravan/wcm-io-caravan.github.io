@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AemHalBrowserResourceRegistration.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.aem-hal-browser.core</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources</a> &gt; <span class="el_source">AemHalBrowserResourceRegistration.java</span></div><h1>AemHalBrowserResourceRegistration.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources;
+
+import java.util.Map;
+import java.util.Optional;
+
+import org.osgi.service.component.annotations.Component;
+
+import com.google.common.collect.ImmutableMap;
+
+import io.wcm.caravan.rhyme.aem.api.RhymeResourceRegistration;
+import io.wcm.caravan.rhyme.aem.api.adaptation.SlingResourceAdapter;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources.assets.AemAssetImpl;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources.assets.AemRenditionImpl;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources.generic.SlingResourceImpl;
+import io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources.sites.AemPageImpl;
+
+@Component
+<span class="fc" id="L19">public class AemHalBrowserResourceRegistration implements RhymeResourceRegistration {</span>
+
+  @Override
+  public Map&lt;Class&lt;? extends LinkableResource&gt;, String&gt; getModelClassesWithSelectors() {
+
+<span class="fc" id="L24">    return ImmutableMap.of(</span>
+        AemRepositoryImpl.class, &quot;aemrepository&quot;,
+        AemPageImpl.class, &quot;aempage&quot;,
+        SlingResourceImpl.class, &quot;slingresource&quot;,
+        AemAssetImpl.class, &quot;aemasset&quot;,
+        AemRenditionImpl.class, &quot;aemrendition&quot;);
+  }
+
+  @Override
+  public Optional&lt;? extends LinkableResource&gt; getApiEntryPoint(SlingResourceAdapter adapter) {
+
+<span class="nc" id="L35">    return adapter</span>
+<span class="nc" id="L36">        .selectResourceAt(&quot;/&quot;)</span>
+<span class="nc" id="L37">        .adaptTo(AemRepositoryImpl.class)</span>
+<span class="nc" id="L38">        .withLinkName(&quot;rhyme.examples.aem-hal-browser&quot;)</span>
+<span class="nc" id="L39">        .getOptional();</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
