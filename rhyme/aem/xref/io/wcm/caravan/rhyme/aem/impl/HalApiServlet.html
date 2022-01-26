@@ -42,7 +42,7 @@
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.resources.LinkableResource;
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  @Component(service = Servlet.<strong class="jxr_keyword">class</strong>, property = {
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  @Component(service = { Servlet.<strong class="jxr_keyword">class</strong>, HalApiServlet.<strong class="jxr_keyword">class</strong> }, property = {
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      SERVICE_DESCRIPTION + <span class="jxr_string">"=Servlet to render HAL responses using the Rhyme framework"</span>,
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>      SLING_SERVLET_METHODS + <span class="jxr_string">"="</span> + HttpConstants.METHOD_GET,
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      SLING_SERVLET_RESOURCE_TYPES + <span class="jxr_string">"="</span> + DEFAULT_RESOURCE_TYPE,

@@ -256,20 +256,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.AbstractRhymeBuilder.java">io/wcm/caravan/rhyme/impl/AbstractRhymeBuilder.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.renderer.DefaultExceptionStatusAndLoggingStrategy.java">io/wcm/caravan/rhyme/impl/renderer/DefaultExceptionStatusAndLoggingStrategy.java</a>
                 </td>
                 <td>
@@ -277,6 +263,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.AbstractRhymeBuilder.java">io/wcm/caravan/rhyme/impl/AbstractRhymeBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
                 </td>
                 <td>
                   0
@@ -592,7 +592,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.client.HalApiClientImpl.java">io/wcm/caravan/rhyme/impl/client/HalApiClientImpl.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.client.proxy.ResourceRepresentationHandler.java">io/wcm/caravan/rhyme/impl/client/proxy/ResourceRepresentationHandler.java</a>
                 </td>
                 <td>
                   0
@@ -606,7 +606,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.client.proxy.ResourceRepresentationHandler.java">io/wcm/caravan/rhyme/impl/client/proxy/ResourceRepresentationHandler.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.impl.client.HalApiClientImpl.java">io/wcm/caravan/rhyme/impl/client/HalApiClientImpl.java</a>
                 </td>
                 <td>
                   0
@@ -788,7 +788,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.api.exceptions.HalApiClientException.java">io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.api.client.HalApiClient.java">io/wcm/caravan/rhyme/api/client/HalApiClient.java</a>
                 </td>
                 <td>
                   0
@@ -802,7 +802,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.api.client.HalApiClient.java">io/wcm/caravan/rhyme/api/client/HalApiClient.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.api.exceptions.HalApiClientException.java">io/wcm/caravan/rhyme/api/exceptions/HalApiClientException.java</a>
                 </td>
                 <td>
                   0
@@ -872,7 +872,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.api.exceptions.package-info.java">io/wcm/caravan/rhyme/api/exceptions/package-info.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.api.server.VndErrorResponseRenderer.java">io/wcm/caravan/rhyme/api/server/VndErrorResponseRenderer.java</a>
                 </td>
                 <td>
                   0
@@ -886,7 +886,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.api.server.VndErrorResponseRenderer.java">io/wcm/caravan/rhyme/api/server/VndErrorResponseRenderer.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/core/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.core//checkstyle.html#io.wcm.caravan.rhyme.api.exceptions.package-info.java">io/wcm/caravan/rhyme/api/exceptions/package-info.java</a>
                 </td>
                 <td>
                   0
