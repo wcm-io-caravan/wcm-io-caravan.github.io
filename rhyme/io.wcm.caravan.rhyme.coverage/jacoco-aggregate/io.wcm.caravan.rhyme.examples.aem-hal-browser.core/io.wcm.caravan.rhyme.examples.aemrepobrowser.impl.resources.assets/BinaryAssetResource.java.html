@@ -16,28 +16,28 @@ class BinaryAssetResource implements LinkableResource {
 
   private String title;
 
-<span class="nc" id="L19">  public BinaryAssetResource(MediaHandler mediaHandler, Asset asset) {</span>
+<span class="fc" id="L19">  public BinaryAssetResource(MediaHandler mediaHandler, Asset asset) {</span>
 
-<span class="nc" id="L21">    Resource assetResource = asset.adaptTo(Resource.class);</span>
-<span class="nc" id="L22">    this.mediaBuilder = mediaHandler.get(assetResource.getPath());</span>
-<span class="nc" id="L23">  }</span>
+<span class="fc" id="L21">    Resource assetResource = asset.adaptTo(Resource.class);</span>
+<span class="fc" id="L22">    this.mediaBuilder = mediaHandler.get(assetResource.getPath());</span>
+<span class="fc" id="L23">  }</span>
 
-<span class="nc" id="L25">  public BinaryAssetResource(MediaBuilder builder) {</span>
-<span class="nc" id="L26">    this.mediaBuilder = builder;</span>
-<span class="nc" id="L27">  }</span>
+<span class="fc" id="L25">  public BinaryAssetResource(MediaBuilder builder) {</span>
+<span class="fc" id="L26">    this.mediaBuilder = builder;</span>
+<span class="fc" id="L27">  }</span>
 
   @Override
   public Link createLink() {
 
-<span class="nc" id="L32">    String mediaUrl = mediaBuilder.buildUrl();</span>
+<span class="fc" id="L32">    String mediaUrl = mediaBuilder.buildUrl();</span>
 
-<span class="nc" id="L34">    return new Link(mediaUrl)</span>
-<span class="nc" id="L35">        .setTitle(title);</span>
+<span class="fc" id="L34">    return new Link(mediaUrl)</span>
+<span class="fc" id="L35">        .setTitle(title);</span>
   }
 
   public BinaryAssetResource withTitle(String value) {
-<span class="nc" id="L39">    title = value;</span>
-<span class="nc" id="L40">    return this;</span>
+<span class="fc" id="L39">    title = value;</span>
+<span class="fc" id="L40">    return this;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

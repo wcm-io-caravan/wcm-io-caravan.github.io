@@ -10,13 +10,12 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
 
 import com.day.cq.dam.api.Asset;
 
+import io.wcm.caravan.hal.resource.Link;
 import io.wcm.caravan.rhyme.aem.api.SlingRhyme;
 import io.wcm.caravan.rhyme.aem.api.parameters.QueryParam;
 import io.wcm.caravan.rhyme.aem.api.resources.AbstractLinkableResource;
-import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.assets.AemAsset;
 import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.assets.AemRendition;
-import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.assets.AemRenditionProperties;
 import io.wcm.handler.media.Media;
 import io.wcm.handler.media.MediaArgs;
 import io.wcm.handler.media.MediaBuilder;
@@ -26,7 +25,7 @@ import io.wcm.handler.media.format.MediaFormat;
 import io.wcm.handler.media.format.MediaFormatBuilder;
 
 @Model(adaptables = SlingRhyme.class, adapters = AemRendition.class)
-<span class="fc" id="L29">public class AemRenditionImpl extends AbstractLinkableResource implements AemRendition {</span>
+<span class="fc" id="L28">public class AemRenditionImpl extends AbstractLinkableResource implements AemRendition {</span>
 
   @Self
   private Asset asset;
@@ -45,106 +44,92 @@ import io.wcm.handler.media.format.MediaFormatBuilder;
 
   private MediaBuilder mediaBuilder;
   private Media media;
+  private Rendition rendition;
 
   @PostConstruct
   void activate() {
 <span class="fc" id="L51">    this.mediaBuilder = createMediaBuilder();</span>
 <span class="fc" id="L52">    this.media = mediaBuilder.build();</span>
-<span class="fc" id="L53">  }</span>
+<span class="fc" id="L53">    this.rendition = media.getRendition();</span>
+<span class="fc" id="L54">  }</span>
 
   public void setWidthAndHeight(Integer width, Integer height) {
-<span class="fc" id="L56">    this.width = width;</span>
-<span class="fc" id="L57">    this.height = height;</span>
-<span class="fc" id="L58">  }</span>
+<span class="fc" id="L57">    this.width = width;</span>
+<span class="fc" id="L58">    this.height = height;</span>
+<span class="fc" id="L59">  }</span>
 
   private MediaBuilder createMediaBuilder() {
-<span class="fc" id="L61">    MediaFormatBuilder formatBuilder = MediaFormatBuilder.create(&quot;foo&quot;)</span>
-<span class="fc" id="L62">        .extensions(&quot;gif&quot;, &quot;jpg&quot;, &quot;png&quot;);</span>
+<span class="fc" id="L62">    MediaFormatBuilder formatBuilder = MediaFormatBuilder.create(&quot;foo&quot;)</span>
+<span class="fc" id="L63">        .extensions(&quot;gif&quot;, &quot;jpg&quot;, &quot;png&quot;);</span>
 
-<span class="pc bpc" id="L64" title="1 of 2 branches missed.">    if (width != null) {</span>
-<span class="nc" id="L65">      formatBuilder = formatBuilder.width(width);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (width != null) {</span>
+<span class="fc" id="L66">      formatBuilder = formatBuilder.width(width);</span>
     }
-<span class="pc bpc" id="L67" title="1 of 2 branches missed.">    if (height != null) {</span>
-<span class="nc" id="L68">      formatBuilder = formatBuilder.height(height);</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">    if (height != null) {</span>
+<span class="fc" id="L69">      formatBuilder = formatBuilder.height(height);</span>
     }
-<span class="fc" id="L70">    MediaFormat format = formatBuilder.build();</span>
+<span class="fc" id="L71">    MediaFormat format = formatBuilder.build();</span>
 
-<span class="fc" id="L72">    return mediaHandler.get(resource.getPath())</span>
-<span class="fc" id="L73">        .args(new MediaArgs(format).autoCrop(true));</span>
-  }
-
-
-  @Override
-  public AemRenditionProperties getProperties() {
-
-<span class="nc" id="L80">    Rendition rendition = media.getRendition();</span>
-
-<span class="nc" id="L82">    return new AemRenditionProperties() {</span>
-
-      @Override
-      public Integer getWidth() {
-<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (rendition == null) {</span>
-<span class="nc" id="L87">          return null;</span>
-        }
-<span class="nc" id="L89">        return (int)rendition.getWidth();</span>
-      }
-
-      @Override
-      public Integer getHeight() {
-<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (rendition == null) {</span>
-<span class="nc" id="L95">          return null;</span>
-        }
-<span class="nc" id="L97">        return (int)rendition.getHeight();</span>
-      }
-
-      @Override
-      public String getMimeType() {
-<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (rendition == null) {</span>
-<span class="nc" id="L103">          return null;</span>
-        }
-<span class="nc" id="L105">        return rendition.getMimeType();</span>
-      }
-
-      @Override
-      public boolean isValid() {
-<span class="nc" id="L110">        return media.isValid();</span>
-      }
-
-      @Override
-      public String getInvalidReason() {
-<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (media.isValid()) {</span>
-<span class="nc" id="L116">          return null;</span>
-        }
-<span class="nc" id="L118">        return media.getMediaInvalidReason().toString();</span>
-      }
-
-    };
+<span class="fc" id="L73">    return mediaHandler.get(resource.getPath())</span>
+<span class="fc" id="L74">        .args(new MediaArgs(format).autoCrop(true));</span>
   }
 
   @Override
-  public Optional&lt;LinkableResource&gt; getBinaryResource() {
+  public Integer getWidth() {
+<span class="fc" id="L79">    return width;</span>
+  }
 
-<span class="nc bnc" id="L127" title="All 4 branches missed.">    if (!media.isValid() || media.getRendition() == null) {</span>
-<span class="nc" id="L128">      return Optional.empty();</span>
+  @Override
+  public Integer getHeight() {
+<span class="fc" id="L84">    return height;</span>
+  }
+
+  @Override
+  public Optional&lt;String&gt; getMimeType() {
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">    if (rendition == null) {</span>
+<span class="nc" id="L90">      return Optional.empty();</span>
+    }
+<span class="fc" id="L92">    return Optional.of(rendition.getMimeType());</span>
+  }
+
+  @Override
+  public boolean isValid() {
+<span class="fc" id="L97">    return media.isValid();</span>
+  }
+
+  @Override
+  public Optional&lt;String&gt; getInvalidReason() {
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">    if (media.isValid()) {</span>
+<span class="fc" id="L103">      return Optional.empty();</span>
+    }
+<span class="nc" id="L105">    return Optional.of(media.getMediaInvalidReason().toString());</span>
+  }
+
+  @Override
+  public Optional&lt;Link&gt; getBinaryResource() {
+
+<span class="pc bpc" id="L111" title="2 of 4 branches missed.">    if (!media.isValid() || media.getRendition() == null) {</span>
+<span class="nc" id="L112">      return Optional.empty();</span>
     }
 
-<span class="nc" id="L131">    return Optional.of(new BinaryAssetResource(mediaBuilder)</span>
-<span class="nc" id="L132">        .withTitle(&quot;Download the dynamic rendition &quot; + media.getRendition()));</span>
+<span class="fc" id="L115">    return Optional.of(new BinaryAssetResource(mediaBuilder)</span>
+<span class="fc" id="L116">        .withTitle(&quot;Download the dynamic rendition &quot; + media.getRendition())</span>
+<span class="fc" id="L117">        .createLink());</span>
   }
 
   @Override
   public AemAsset getAsset() {
 
-<span class="nc" id="L138">    return resourceAdapter</span>
-<span class="nc" id="L139">        .selectCurrentResource()</span>
-<span class="nc" id="L140">        .adaptTo(AemAsset.class)</span>
-<span class="nc" id="L141">        .withLinkTitle(&quot;The asset resource for this rendition&quot;)</span>
-<span class="nc" id="L142">        .getInstance();</span>
+<span class="fc" id="L123">    return resourceAdapter</span>
+<span class="fc" id="L124">        .selectCurrentResource()</span>
+<span class="fc" id="L125">        .adaptTo(AemAsset.class)</span>
+<span class="fc" id="L126">        .withLinkTitle(&quot;The asset resource for this rendition&quot;)</span>
+<span class="fc" id="L127">        .getInstance();</span>
   }
 
   @Override
   protected String getDefaultLinkTitle() {
-<span class="nc" id="L147">    return &quot;dynamic rendition of asset at &quot; + asset.getPath() + &quot; with width=&quot; + width + &quot; and height=&quot; + height;</span>
+<span class="fc" id="L132">    return &quot;dynamic rendition of asset at &quot; + asset.getPath() + &quot; with width=&quot; + width + &quot; and height=&quot; + height;</span>
   }
 
 

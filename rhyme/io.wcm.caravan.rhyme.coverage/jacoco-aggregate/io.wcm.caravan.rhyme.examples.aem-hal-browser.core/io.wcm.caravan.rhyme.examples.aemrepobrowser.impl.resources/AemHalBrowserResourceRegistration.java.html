@@ -32,11 +32,11 @@ import io.wcm.caravan.rhyme.examples.aemrepobrowser.impl.resources.sites.AemPage
   @Override
   public Optional&lt;? extends LinkableResource&gt; getApiEntryPoint(SlingResourceAdapter adapter) {
 
-<span class="nc" id="L35">    return adapter</span>
-<span class="nc" id="L36">        .selectResourceAt(&quot;/&quot;)</span>
-<span class="nc" id="L37">        .adaptTo(AemRepositoryImpl.class)</span>
-<span class="nc" id="L38">        .withLinkName(&quot;rhyme.examples.aem-hal-browser&quot;)</span>
-<span class="nc" id="L39">        .getOptional();</span>
+<span class="fc" id="L35">    return adapter</span>
+<span class="fc" id="L36">        .selectResourceAt(&quot;/&quot;)</span>
+<span class="fc" id="L37">        .adaptTo(AemRepositoryImpl.class)</span>
+<span class="fc" id="L38">        .withLinkName(&quot;rhyme.examples.aem-hal-browser&quot;)</span>
+<span class="fc" id="L39">        .getOptional();</span>
   }
 
 }

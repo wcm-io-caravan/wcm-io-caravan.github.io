@@ -7,17 +7,16 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
 
 import com.day.cq.dam.api.Asset;
 
+import io.wcm.caravan.hal.resource.Link;
 import io.wcm.caravan.rhyme.aem.api.SlingRhyme;
 import io.wcm.caravan.rhyme.aem.api.resources.AbstractLinkableResource;
-import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.assets.AemAsset;
-import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.assets.AemAssetProperties;
 import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.assets.AemRendition;
 import io.wcm.caravan.rhyme.examples.aemrepobrowser.api.generic.SlingResource;
 import io.wcm.handler.media.MediaHandler;
 
 @Model(adaptables = SlingRhyme.class, adapters = AemAsset.class)
-<span class="fc" id="L20">public class AemAssetImpl extends AbstractLinkableResource implements AemAsset {</span>
+<span class="fc" id="L19">public class AemAssetImpl extends AbstractLinkableResource implements AemAsset {</span>
 
   @Self
   private Asset asset;
@@ -26,54 +25,47 @@ import io.wcm.handler.media.MediaHandler;
   private MediaHandler mediaHandler;
 
   @Override
-  public AemAssetProperties getProperties() {
+  public String getName() {
+<span class="fc" id="L29">    return asset.getName();</span>
+  }
 
-<span class="nc" id="L31">    return new AemAssetProperties() {</span>
-
-      @Override
-      public String getName() {
-<span class="nc" id="L35">        return asset.getName();</span>
-      }
-
-      @Override
-      public String getMimeType() {
-<span class="nc" id="L40">        return asset.getMimeType();</span>
-      }
-
-    };
+  @Override
+  public String getMimeType() {
+<span class="fc" id="L34">    return asset.getMimeType();</span>
   }
 
   @Override
   public SlingResource asSlingResource() {
 
-<span class="nc" id="L49">    return resourceAdapter</span>
-<span class="nc" id="L50">        .selectCurrentResource()</span>
-<span class="nc" id="L51">        .adaptTo(SlingResource.class)</span>
-<span class="nc" id="L52">        .getInstance();</span>
+<span class="fc" id="L40">    return resourceAdapter</span>
+<span class="fc" id="L41">        .selectCurrentResource()</span>
+<span class="fc" id="L42">        .adaptTo(SlingResource.class)</span>
+<span class="fc" id="L43">        .getInstance();</span>
   }
 
   @Override
-  public Optional&lt;LinkableResource&gt; getOriginalRendition() {
+  public Optional&lt;Link&gt; getOriginalRendition() {
 
-<span class="nc" id="L58">    return Optional.of(new BinaryAssetResource(mediaHandler, asset)</span>
-<span class="nc" id="L59">        .withTitle(&quot;The binary data of this asset's original rendition&quot;));</span>
+<span class="fc" id="L49">    return Optional.of(new BinaryAssetResource(mediaHandler, asset)</span>
+<span class="fc" id="L50">        .withTitle(&quot;The binary data of this asset's original rendition&quot;)</span>
+<span class="fc" id="L51">        .createLink());</span>
   }
 
   @Override
   public Optional&lt;AemRendition&gt; getRendition(Integer width, Integer height) {
 
-<span class="fc" id="L65">    return resourceAdapter</span>
-<span class="fc" id="L66">        .selectCurrentResource()</span>
-<span class="fc" id="L67">        .adaptTo(AemRendition.class, AemRenditionImpl.class)</span>
-<span class="fc" id="L68">        .withLinkTitle(&quot;Get a dynamic rendition for this asset with the specified width and/or height&quot;)</span>
-<span class="fc" id="L69">        .withModifications(impl -&gt; impl.setWidthAndHeight(width, height))</span>
-<span class="fc" id="L70">        .withPartialLinkTemplate()</span>
-<span class="fc" id="L71">        .getOptional();</span>
+<span class="fc" id="L57">    return resourceAdapter</span>
+<span class="fc" id="L58">        .selectCurrentResource()</span>
+<span class="fc" id="L59">        .adaptTo(AemRendition.class, AemRenditionImpl.class)</span>
+<span class="fc" id="L60">        .withLinkTitle(&quot;Get a dynamic rendition for this asset with the specified width and/or height&quot;)</span>
+<span class="fc" id="L61">        .withModifications(impl -&gt; impl.setWidthAndHeight(width, height))</span>
+<span class="fc" id="L62">        .withPartialLinkTemplate()</span>
+<span class="fc" id="L63">        .getOptional();</span>
   }
 
   @Override
   protected String getDefaultLinkTitle() {
-<span class="fc" id="L76">    return &quot;AEM asset with MIME-type &quot; + asset.getMimeType() + &quot; and &quot; + asset.getRenditions().size() + &quot; renditions&quot;;</span>
+<span class="fc" id="L68">    return &quot;AEM asset with MIME-type &quot; + asset.getMimeType() + &quot; and &quot; + asset.getRenditions().size() + &quot; renditions&quot;;</span>
   }
 
 
