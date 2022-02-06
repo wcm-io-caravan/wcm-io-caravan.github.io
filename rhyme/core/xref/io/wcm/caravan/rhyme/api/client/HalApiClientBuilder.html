@@ -27,92 +27,109 @@
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">package</strong> io.wcm.caravan.rhyme.api.client;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.osgi.annotation.versioning.ProviderType;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.util.function.Function;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.ObjectMapper;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.osgi.annotation.versioning.ProviderType;
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.Rhyme;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.RhymeBuilder;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.impl.RhymeBuilders;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRenderer;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> * A fluent builder to create and customize {@link HalApiClient} instances for advanced integration or test scenarios.</em>
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> * If you don't need any of the advanced customizations, you can simply use {@link HalApiClient#create()}</em>
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> * or {@link HalApiClient#create(HalResourceLoader)} instead.</em>
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment"> * {@link HalApiClientBuilder} instances shouldn't be re-used, as calling the build method may modify its state.</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.ObjectMapper;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.Rhyme;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.RhymeBuilder;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.annotations.HalApiInterface;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.common.RequestMetricsCollector;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HalApiAnnotationSupport;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HalApiReturnTypeSupport;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.impl.RhymeBuilders;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.rhyme.impl.renderer.AsyncHalResourceRenderer;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> * A fluent builder to create and customize {@link HalApiClient} instances for advanced integration or test scenarios.</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment"> * If you don't need any of the advanced customizations, you can simply use {@link HalApiClient#create()}</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment"> * or {@link HalApiClient#create(HalResourceLoader)} instead.</em>
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment"> * @see HalApiClient</em>
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment"> * @see RhymeBuilder</em>
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  @ProviderType
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> {
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <em class="jxr_javadoccomment">   * @return a new {@link HalApiClientBuilder} to start building</em>
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <strong class="jxr_keyword">static</strong> <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> create() {
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      <strong class="jxr_keyword">return</strong> RhymeBuilders.client();
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>    }
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">   * @param resourceLoader implements the actual loading (and caching) of JSON/HAL resources</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">   * @return this</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>    <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> withResourceLoader(<a name="HalResourceLoader" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html#HalResourceLoader">HalResourceLoader</a> resourceLoader);
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>  
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">   * A {@link RequestMetricsCollector} instance can be used to track all upstream resources that have been retrieved,</em>
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">   * and collect metrics and response metadata from the interaction with the proxy objects.</em>
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">   * This is only relevant for clients created by the {@link Rhyme} instance while handling an incoming</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">   * request.</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">   * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">   * If you only want to consume HAL APIs and not use Rhyme to render your responses, you don't need</em>
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment">   * to worry about the {@link RequestMetricsCollector}.</em>
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">   * &lt;/p&gt;</em>
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">   * @param metricsSharedWithRenderer the same instance that will be used to create the</em>
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">   *          {@link AsyncHalResourceRenderer}</em>
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">   * @return this</em>
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>    <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> withMetrics(<a name="RequestMetricsCollector" href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#RequestMetricsCollector">RequestMetricsCollector</a> metricsSharedWithRenderer);
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>  
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_javadoccomment">   * Extend the core framework to support additional return types in your annotated HAL API interfaces.</em>
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">   * You can call this method multiple times if you want to register more than one extension.</em>
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">   * @param additionalTypeSupport extension to the default type support</em>
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">   * @return this</em>
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>    <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> withReturnTypeSupport(<a name="HalApiReturnTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html#HalApiReturnTypeSupport">HalApiReturnTypeSupport</a> additionalTypeSupport);
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>  <em class="jxr_javadoccomment">   * Extend the core framework to support additional annotation types in your annotated HAL API interfaces.</em>
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>  <em class="jxr_javadoccomment">   * You can call this method multiple times if you want to register more than one extension.</em>
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">   * @param additionalTypeSupport extension to the default type support</em>
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">   * @return this</em>
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>    <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> withAnnotationTypeSupport(<a name="HalApiAnnotationSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html#HalApiAnnotationSupport">HalApiAnnotationSupport</a> additionalTypeSupport);
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>  <em class="jxr_javadoccomment">   * Replace the default Jackson {@link ObjectMapper} used for JSON deserialization with a customized instance.</em>
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>  <em class="jxr_javadoccomment">   * Note that this object mapper is only used when converting JSON to Java Objects. It's not</em>
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>  <em class="jxr_javadoccomment">   * used when the raw JSON response from an upstream service is parsed.</em>
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>  <em class="jxr_javadoccomment">   * @param objectMapper a configured {@link ObjectMapper} instance (which can be a single shared instance)</em>
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>  <em class="jxr_javadoccomment">   * @return this</em>
-<a class="jxr_linenumber" name="L100" href="#L100">100</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>   <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> withObjectMapper(ObjectMapper objectMapper);
-<a class="jxr_linenumber" name="L102" href="#L102">102</a> 
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L104" href="#L104">104</a> <em class="jxr_javadoccomment">   * @return the new {@link HalApiClient} instance</em>
-<a class="jxr_linenumber" name="L105" href="#L105">105</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>   <a name="HalApiClient" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html#HalApiClient">HalApiClient</a> build();
-<a class="jxr_linenumber" name="L107" href="#L107">107</a> }
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment"> * {@link HalApiClientBuilder} instances shouldn't be re-used, as calling the build method may modify its state.</em>
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment"> * @see HalApiClient</em>
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment"> * @see RhymeBuilder</em>
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  @ProviderType
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">   * @return a new {@link HalApiClientBuilder} to start building</em>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>    <strong class="jxr_keyword">static</strong> <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> create() {
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">return</strong> RhymeBuilders.client();
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>    }
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">   * @param resourceLoader implements the actual loading (and caching) of JSON/HAL resources</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">   * @return this</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>    <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> withResourceLoader(<a name="HalResourceLoader" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalResourceLoader.html#HalResourceLoader">HalResourceLoader</a> resourceLoader);
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">   * A {@link RequestMetricsCollector} instance can be used to track all upstream resources that have been retrieved,</em>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">   * and collect metrics and response metadata from the interaction with the proxy objects.</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">   * This is only relevant for clients created by the {@link Rhyme} instance while handling an incoming</em>
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment">   * request.</em>
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">   * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">   * If you only want to consume HAL APIs and not use Rhyme to render your responses, you don't need</em>
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">   * to worry about the {@link RequestMetricsCollector}.</em>
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">   * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">   * @param metricsSharedWithRenderer the same instance that will be used to create the</em>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <em class="jxr_javadoccomment">   *          {@link AsyncHalResourceRenderer}</em>
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  <em class="jxr_javadoccomment">   * @return this</em>
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>    <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> withMetrics(<a name="RequestMetricsCollector" href="../../../../../../io/wcm/caravan/rhyme/api/common/RequestMetricsCollector.html#RequestMetricsCollector">RequestMetricsCollector</a> metricsSharedWithRenderer);
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">   * Extend the core framework to support additional return types in your annotated HAL API interfaces.</em>
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_javadoccomment">   * You can call this method multiple times if you want to register more than one extension.</em>
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">   * @param additionalTypeSupport extension to the default type support</em>
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">   * @return this</em>
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>    <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> withReturnTypeSupport(<a name="HalApiReturnTypeSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiReturnTypeSupport.html#HalApiReturnTypeSupport">HalApiReturnTypeSupport</a> additionalTypeSupport);
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">   * Extend the core framework to support additional annotation types in your annotated HAL API interfaces.</em>
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">   * You can call this method multiple times if you want to register more than one extension.</em>
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  <em class="jxr_javadoccomment">   * @param additionalTypeSupport extension to the default type support</em>
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">   * @return this</em>
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>    <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> withAnnotationTypeSupport(<a name="HalApiAnnotationSupport" href="../../../../../../io/wcm/caravan/rhyme/api/spi/HalApiAnnotationSupport.html#HalApiAnnotationSupport">HalApiAnnotationSupport</a> additionalTypeSupport);
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  <em class="jxr_javadoccomment">   * Replace the default Jackson {@link ObjectMapper} used for JSON deserialization with a customized instance.</em>
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  <em class="jxr_javadoccomment">   * Note that this object mapper is only used when converting JSON to Java Objects. It's not</em>
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> <em class="jxr_javadoccomment">   * used when the raw JSON response from an upstream service is parsed.</em>
+<a class="jxr_linenumber" name="L101" href="#L101">101</a> <em class="jxr_javadoccomment">   * @param objectMapper a configured {@link ObjectMapper} instance (which can be a single shared instance)</em>
+<a class="jxr_linenumber" name="L102" href="#L102">102</a> <em class="jxr_javadoccomment">   * @return this</em>
+<a class="jxr_linenumber" name="L103" href="#L103">103</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>   <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> withObjectMapper(ObjectMapper objectMapper);
+<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L107" href="#L107">107</a> <em class="jxr_javadoccomment">   * Defines an override that will make {@link HalApiClient#getRemoteResource(String, Class)} return a custom</em>
+<a class="jxr_linenumber" name="L108" href="#L108">108</a> <em class="jxr_javadoccomment">   * implementation for a specific combination of entry point URI and interface class (rather then the default</em>
+<a class="jxr_linenumber" name="L109" href="#L109">109</a> <em class="jxr_javadoccomment">   * dynamic proxy). This can be used to mock/stub remote resources in unit and integration tests, or to delegate</em>
+<a class="jxr_linenumber" name="L110" href="#L110">110</a> <em class="jxr_javadoccomment">   * remote resource proxy creation for a specific service to a completely different {@link Rhyme} or</em>
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> <em class="jxr_javadoccomment">   * {@link HalApiClient} instance.</em>
+<a class="jxr_linenumber" name="L112" href="#L112">112</a> <em class="jxr_javadoccomment">   * @param &lt;T&gt; the {@link HalApiInterface} type</em>
+<a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">   * @param entryPointUri the URI for which the override will be used</em>
+<a class="jxr_linenumber" name="L114" href="#L114">114</a> <em class="jxr_javadoccomment">   * @param halApiInterface an interface defining the HAL API for that URI</em>
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">   * @param factoryFunc a function that will create a proxy, stub or server-side implementation of the given interface</em>
+<a class="jxr_linenumber" name="L116" href="#L116">116</a> <em class="jxr_javadoccomment">   * @return this</em>
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>   &lt;T&gt; <a name="HalApiClientBuilder" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClientBuilder.html#HalApiClientBuilder">HalApiClientBuilder</a> withRemoteResourceOverride(String entryPointUri, Class&lt;T&gt; halApiInterface, Function&lt;RequestMetricsCollector, T&gt; factoryFunc);
+<a class="jxr_linenumber" name="L119" href="#L119">119</a> 
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L121" href="#L121">121</a> <em class="jxr_javadoccomment">   * @return the new {@link HalApiClient} instance</em>
+<a class="jxr_linenumber" name="L122" href="#L122">122</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>   <a name="HalApiClient" href="../../../../../../io/wcm/caravan/rhyme/api/client/HalApiClient.html#HalApiClient">HalApiClient</a> build();
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014&#x2013;2022 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</div>

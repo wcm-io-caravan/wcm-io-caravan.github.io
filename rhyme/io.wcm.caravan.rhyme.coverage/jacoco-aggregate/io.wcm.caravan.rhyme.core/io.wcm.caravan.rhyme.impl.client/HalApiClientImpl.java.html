@@ -37,7 +37,9 @@ public class HalApiClientImpl implements HalApiClient {
 
   private final HalApiClientProxyFactory factory;
 
+  private final RequestMetricsCollector metrics;
   private final HalApiTypeSupport typeSupport;
+  private final RemoteResourceOverrides remoteResourceOverrides;
 
   /**
    * @param resourceLoader implements the actual loading (and caching) of JSON/HAL resources via any HTTP client library
@@ -45,26 +47,32 @@ public class HalApiClientImpl implements HalApiClient {
    *          incoming request
    * @param typeSupport the strategy to detect HAL API annotations and perform type conversions
    * @param objectMapper the Jackson {@link ObjectMapper} to use for all JSON deserialisation
+   * @param overrides provides alternative implementations to be returned by {@link #getRemoteResource(String, Class)}
    */
-<span class="fc" id="L49">  public HalApiClientImpl(HalResourceLoader resourceLoader, RequestMetricsCollector metrics, HalApiTypeSupport typeSupport, ObjectMapper objectMapper) {</span>
+  public HalApiClientImpl(HalResourceLoader resourceLoader, RequestMetricsCollector metrics, HalApiTypeSupport typeSupport, ObjectMapper objectMapper,
+<span class="fc" id="L53">      RemoteResourceOverrides overrides) {</span>
 
-<span class="fc" id="L51">    Preconditions.checkNotNull(resourceLoader, &quot;A &quot; + HalResourceLoader.class.getName() + &quot; instance must be provided&quot;);</span>
-<span class="fc" id="L52">    HalResourceLoaderWrapper wrapper = new HalResourceLoaderWrapper(resourceLoader, metrics);</span>
+<span class="fc" id="L55">    Preconditions.checkNotNull(resourceLoader, &quot;A &quot; + HalResourceLoader.class.getName() + &quot; instance must be provided&quot;);</span>
+<span class="fc" id="L56">    HalResourceLoaderWrapper wrapper = new HalResourceLoaderWrapper(resourceLoader, metrics);</span>
 
-<span class="fc" id="L54">    factory = new HalApiClientProxyFactory(wrapper, metrics, typeSupport, objectMapper);</span>
+<span class="fc" id="L58">    factory = new HalApiClientProxyFactory(wrapper, metrics, typeSupport, objectMapper);</span>
 
-<span class="fc" id="L56">    this.typeSupport = typeSupport;</span>
-<span class="fc" id="L57">  }</span>
+<span class="fc" id="L60">    this.metrics = metrics;</span>
+<span class="fc" id="L61">    this.typeSupport = typeSupport;</span>
+<span class="fc" id="L62">    this.remoteResourceOverrides = overrides;</span>
+<span class="fc" id="L63">  }</span>
 
   @Override
   public &lt;T&gt; T getRemoteResource(String uri, Class&lt;T&gt; halApiInterface) {
 
-    // create a proxy instance that loads the entry point lazily when required by any method call on the proxy
-<span class="fc" id="L63">    return factory.createProxyFromUrl(halApiInterface, uri);</span>
+    // first consider any overrides for this interface and URI that may be defined
+<span class="fc" id="L69">    return remoteResourceOverrides.get(halApiInterface, uri, metrics)</span>
+        // otherwise create a proxy instance that loads the entry point lazily (when required by any method call on the proxy)
+<span class="fc" id="L71">        .orElseGet(() -&gt; factory.createProxyFromUrl(halApiInterface, uri));</span>
   }
 
   public HalApiTypeSupport getTypeSupport() {
-<span class="fc" id="L67">    return typeSupport;</span>
+<span class="fc" id="L75">    return typeSupport;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
