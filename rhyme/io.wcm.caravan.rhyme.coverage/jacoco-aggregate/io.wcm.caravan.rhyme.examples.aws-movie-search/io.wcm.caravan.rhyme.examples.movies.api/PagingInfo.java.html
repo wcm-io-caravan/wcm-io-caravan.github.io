@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PagingInfo.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.aws-movie-search</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.examples.movies.api</a> &gt; <span class="el_source">PagingInfo.java</span></div><h1>PagingInfo.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.examples.movies.api;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Information on paging status and overall number of elements in the {@link MoviesPage} and {@link DirectorsPage}
+ */
+public class PagingInfo {
+
+  private final int number;
+  private final int size;
+  private final int totalElements;
+  private final int totalPages;
+
+  @JsonCreator
+  public PagingInfo(
+      @JsonProperty(&quot;number&quot;) int number, @JsonProperty(&quot;size&quot;) int size,
+<span class="fc" id="L19">      @JsonProperty(&quot;totalElements&quot;) int totalElements, @JsonProperty(&quot;totalPages&quot;) int totalPages) {</span>
+
+<span class="fc" id="L21">    this.number = number;</span>
+<span class="fc" id="L22">    this.size = size;</span>
+<span class="fc" id="L23">    this.totalElements = totalElements;</span>
+<span class="fc" id="L24">    this.totalPages = totalPages;</span>
+<span class="fc" id="L25">  }</span>
+
+  /**
+   * @return the 0-based number of the current page
+   */
+  public int getNumber() {
+<span class="fc" id="L31">    return number;</span>
+  }
+
+  /**
+   * @return the number of embedded resources on the current page
+   */
+  public int getSize() {
+<span class="fc" id="L38">    return size;</span>
+  }
+
+  /**
+   * @return the total number of elements in the database
+   */
+  public int getTotalElements() {
+<span class="fc" id="L45">    return totalElements;</span>
+  }
+
+  /**
+   * @return the total number of pages (with the given page size)
+   */
+  public int getTotalPages() {
+<span class="fc" id="L52">    return totalPages;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

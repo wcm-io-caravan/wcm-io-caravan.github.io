@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RhymeRequestHandler.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.aws-movie-search</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.awslambda.api</a> &gt; <span class="el_source">RhymeRequestHandler.java</span></div><h1>RhymeRequestHandler.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.awslambda.api;
+
+import static io.wcm.caravan.rhyme.api.common.RequestMetricsCollector.EMBED_RHYME_METADATA;
+
+import java.util.function.BiFunction;
+
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+
+import io.wcm.caravan.rhyme.api.Rhyme;
+import io.wcm.caravan.rhyme.api.RhymeBuilder;
+import io.wcm.caravan.rhyme.api.server.RhymeMetadataConfiguration;
+import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
+import io.wcm.caravan.rhyme.awslambda.impl.LambdaRhymeDocsSupport;
+import io.wcm.caravan.rhyme.awslambda.impl.LambdaRhymeImpl;
+
+/**
+ * A base implementation of AWS Lambda's {@link RequestHandler} interface to be used with the API Gateway's proxy
+ * integration.
+ * &lt;p&gt;
+ * It takes care of creating a single {@link LambdaRhyme} instance for each incoming request,
+ * and then use the given {@link LambdaResourceRouting} strategy object to create the requested server-side resource
+ * implementation.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * That resource will then be rendered as a {@link APIGatewayProxyResponseEvent},
+ * and any exceptions that were thrown and caught during the overall process will be rendered as a vnd.error response.
+ * &lt;/p&gt;
+ * @see LambdaResourceRouting
+ * @see LambdaRhyme
+ */
+public class RhymeRequestHandler implements RequestHandler&lt;APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent&gt; {
+
+  private final LambdaResourceRouting routing;
+
+<span class="fc" id="L38">  private HalResourceLoader resourceLoader = HalResourceLoader.create();</span>
+
+<span class="fc" id="L40">  private BiFunction&lt;RhymeBuilder, APIGatewayProxyRequestEvent, RhymeBuilder&gt; customization = (builder, request) -&gt; builder;</span>
+
+  /**
+   * @param routing the strategy to create the server-side resource implementation to be rendered
+   */
+<span class="fc" id="L45">  public RhymeRequestHandler(LambdaResourceRouting routing) {</span>
+<span class="fc" id="L46">    this.routing = routing;</span>
+<span class="fc" id="L47">  }</span>
+
+  /**
+   * @param customLoader a custom {@link HalResourceLoader} implementation to use for all upstream requests initiated
+   *          via {@link LambdaRhyme#getRemoteResource(String, Class)}
+   * @return this
+   */
+  public RhymeRequestHandler withResourceLoader(HalResourceLoader customLoader) {
+
+<span class="fc" id="L56">    this.resourceLoader = customLoader;</span>
+<span class="fc" id="L57">    return this;</span>
+  }
+
+  /**
+   * An extension point that allows you to modify the {@link RhymeBuilder} instance that builds the
+   * single {@link Rhyme} instance which is then used throughout each incoming request
+   * @param function that can return a customized {@link RhymeBuilder} instance
+   * @return this
+   */
+  public RhymeRequestHandler withCustomizedRhymeBuilder(BiFunction&lt;RhymeBuilder, APIGatewayProxyRequestEvent, RhymeBuilder&gt; function) {
+
+<span class="fc" id="L68">    this.customization = function;</span>
+<span class="fc" id="L69">    return this;</span>
+  }
+
+  private RhymeBuilder createRhymeBuilder(APIGatewayProxyRequestEvent request, LambdaRhymeDocsSupport rhymeDocs) {
+
+<span class="fc" id="L74">    RhymeBuilder rhymeBuilder = RhymeBuilder.withResourceLoader(resourceLoader)</span>
+<span class="fc" id="L75">        .withRhymeDocsSupport(rhymeDocs)</span>
+<span class="fc" id="L76">        .withMetadataConfiguration(new RhymeMetadataConfiguration() {</span>
+
+          @Override
+          public boolean isMetadataGenerationEnabled() {
+<span class="fc" id="L80">            return request.getQueryStringParameters().containsKey(EMBED_RHYME_METADATA);</span>
+          }
+
+        });
+
+<span class="fc" id="L85">    return customization.apply(rhymeBuilder, request);</span>
+  }
+
+  @Override
+  public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
+
+<span class="fc" id="L91">    LambdaRhymeDocsSupport rhymeDocs = new LambdaRhymeDocsSupport(request);</span>
+
+<span class="fc" id="L93">    RhymeBuilder rhymeBuilder = createRhymeBuilder(request, rhymeDocs);</span>
+
+<span class="fc" id="L95">    LambdaRhymeImpl lambdaRhyme = new LambdaRhymeImpl(request, context, rhymeBuilder, rhymeDocs);</span>
+
+<span class="fc" id="L97">    return lambdaRhyme.createResourceAndRenderResponse(routing);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

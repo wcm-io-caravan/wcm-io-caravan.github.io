@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>LambdaLinkBuilderImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.aws-movie-search</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.awslambda.impl</a> &gt; <span class="el_source">LambdaLinkBuilderImpl.java</span></div><h1>LambdaLinkBuilderImpl.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.awslambda.impl;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.damnhandy.uri.template.UriTemplate;
+import com.damnhandy.uri.template.UriTemplateBuilder;
+
+import io.wcm.caravan.hal.resource.Link;
+import io.wcm.caravan.rhyme.awslambda.api.LambdaLinkBuilder;
+
+/**
+ * Implements the link (template) building using a {@link UriTemplateBuilder}
+ */
+class LambdaLinkBuilderImpl implements LambdaLinkBuilder {
+
+<span class="fc" id="L19">  private final List&lt;String&gt; variableNames = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L20">  private final Map&lt;String, Object&gt; nonNullVariableValues = new LinkedHashMap&lt;&gt;();</span>
+
+  private final String absolutePath;
+
+<span class="fc" id="L24">  LambdaLinkBuilderImpl(String absolutePath) {</span>
+
+<span class="fc" id="L26">    this.absolutePath = absolutePath;</span>
+<span class="fc" id="L27">  }</span>
+
+  @Override
+  public LambdaLinkBuilder addQueryVariable(String name, Object value) {
+
+<span class="fc" id="L32">    variableNames.add(name);</span>
+
+<span class="fc bfc" id="L34" title="All 2 branches covered.">    if (value != null) {</span>
+<span class="fc" id="L35">      nonNullVariableValues.put(name, value);</span>
+    }
+<span class="fc" id="L37">    return this;</span>
+  }
+
+  @Override
+  public Link build() {
+
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    if (variableNames.isEmpty()) {</span>
+<span class="fc" id="L44">      return new Link(absolutePath);</span>
+    }
+
+<span class="fc" id="L47">    UriTemplate template = UriTemplate.buildFromTemplate(absolutePath)</span>
+<span class="fc" id="L48">        .query(variableNames.toArray(new String[0]))</span>
+<span class="fc" id="L49">        .build();</span>
+
+<span class="fc" id="L51">    String expandedTemplate = template</span>
+<span class="fc" id="L52">        .set(nonNullVariableValues)</span>
+<span class="fc" id="L53">        .expandPartial();</span>
+
+<span class="fc" id="L55">    return new Link(expandedTemplate);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

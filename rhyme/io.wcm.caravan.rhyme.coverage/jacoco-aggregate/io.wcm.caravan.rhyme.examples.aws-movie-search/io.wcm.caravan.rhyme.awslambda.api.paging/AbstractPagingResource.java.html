@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AbstractPagingResource.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.aws-movie-search</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.awslambda.api.paging</a> &gt; <span class="el_source">AbstractPagingResource.java</span></div><h1>AbstractPagingResource.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.awslambda.api.paging;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import io.wcm.caravan.rhyme.api.annotations.HalApiInterface;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiDeveloperException;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+
+/**
+ * An abstract base class for a {@link LinkableResource} that allows browsing through multiple pages of embedded HAL
+ * resources.
+ * &lt;p&gt;
+ * You have to implement {@link #getStreamOfAllItems()} to provide all the resources that should be embedded, and this
+ * class will then use {@link Stream#skip(long)} and {@link Stream#limit(long)} to only extract the items to be shown on
+ * the current page.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * {@link #createLinkedPage(int)} will be called to create the resources that should be linked to through the &quot;next&quot;,
+ * &quot;prev&quot; and &quot;first&quot; links.
+ * &lt;/p&gt;
+ * @param &lt;P&gt; a {@link HalApiInterface} representing a page of items
+ * @param &lt;I&gt; a {@link HalApiInterface} representing an embedded item on each page
+ */
+public abstract class AbstractPagingResource&lt;P, I&gt; {
+
+  private final Integer currentPage;
+  private final long maxPageSize;
+
+  private List&lt;I&gt; itemsOnPagePlusOne;
+
+  /**
+   * @param currentPage the 0-based index of the current page (can be null if used to generate a link template)
+   * @param maxPageSize the maximum number of items per page
+   */
+<span class="fc" id="L38">  protected AbstractPagingResource(Integer currentPage, int maxPageSize) {</span>
+<span class="fc" id="L39">    this.currentPage = currentPage;</span>
+<span class="fc" id="L40">    this.maxPageSize = maxPageSize;</span>
+<span class="fc" id="L41">  }</span>
+
+  /**
+   * @return a (potentially infinite) stream of all items to be embedded across all pages
+   */
+  protected abstract Stream&lt;I&gt; getStreamOfAllItems();
+
+  /**
+   * @param linkedPage the (0-based) index of the page to be linked
+   * @return an implementation of the page to be linked
+   */
+  protected abstract P createLinkedPage(int linkedPage);
+
+  private List&lt;I&gt; getItemsOnPagePlusOne() {
+
+    // ensure that the potentially expensive call to #getStreamOfAllItems is only executed once
+<span class="fc bfc" id="L57" title="All 2 branches covered.">    if (itemsOnPagePlusOne == null) {</span>
+<span class="fc" id="L58">      itemsOnPagePlusOne = getStreamOfAllItems()</span>
+          // ignore the items from previous pages
+<span class="fc" id="L60">          .skip(maxPageSize * currentPage)</span>
+          // extract one more item than included on the current page (to be able to determine if there is a next page)
+<span class="fc" id="L62">          .limit(maxPageSize + 1)</span>
+<span class="fc" id="L63">          .collect(Collectors.toList());</span>
+    }
+
+<span class="fc" id="L66">    return itemsOnPagePlusOne;</span>
+  }
+
+  private void ensureThatCurrentPageIsNotNull() {
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (currentPage == null) {</span>
+<span class="fc" id="L72">      throw new HalApiDeveloperException(&quot;A null value was specified as 'currentPage' in the constructor. &quot;</span>
+          + &quot;This is valid to create a link template, but you cannot call any of the paging methods.&quot;);
+    }
+<span class="fc" id="L75">  }</span>
+
+  /**
+   * @return a {@link Stream} of all items to show on the current page
+   */
+  public Stream&lt;I&gt; getPageContent() {
+
+<span class="fc" id="L82">    ensureThatCurrentPageIsNotNull();</span>
+
+<span class="fc" id="L84">    return getItemsOnPagePlusOne().stream()</span>
+<span class="fc" id="L85">        .limit(maxPageSize);</span>
+  }
+
+  /**
+   * @return the next page (empty if the current page already include the last available items)
+   */
+  public Optional&lt;P&gt; getNextPage() {
+
+<span class="fc" id="L93">    ensureThatCurrentPageIsNotNull();</span>
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">    if (getItemsOnPagePlusOne().size() &lt;= maxPageSize) {</span>
+<span class="fc" id="L96">      return Optional.empty();</span>
+    }
+
+<span class="fc" id="L99">    return Optional.of(createLinkedPage(currentPage + 1));</span>
+  }
+
+  /**
+   * @return the first page (empty if the current page is the first page)
+   */
+  public Optional&lt;P&gt; getFirstPage() {
+
+<span class="fc" id="L107">    ensureThatCurrentPageIsNotNull();</span>
+
+<span class="fc" id="L109">    return createPreviousPage(0);</span>
+  }
+
+  /**
+   * @return the previous page (empty if the current page is the first page)
+   */
+  public Optional&lt;P&gt; getPrevPage() {
+
+<span class="fc" id="L117">    ensureThatCurrentPageIsNotNull();</span>
+
+<span class="fc" id="L119">    return createPreviousPage(currentPage - 1);</span>
+  }
+
+  private Optional&lt;P&gt; createPreviousPage(int index) {
+
+<span class="fc bfc" id="L124" title="All 2 branches covered.">    if (currentPage == 0) {</span>
+<span class="fc" id="L125">      return Optional.empty();</span>
+    }
+
+<span class="fc" id="L128">    return Optional.of(createLinkedPage(index));</span>
+  }
+
+  /**
+   * @return the 0-based index of the current page
+   */
+  public Integer getCurrentPageNumber() {
+<span class="fc" id="L135">    return currentPage;</span>
+  }
+
+  /**
+   * @return the maximum number of items per page
+   */
+  public int getMaxPageSize() {
+<span class="fc" id="L142">    return (int)maxPageSize;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

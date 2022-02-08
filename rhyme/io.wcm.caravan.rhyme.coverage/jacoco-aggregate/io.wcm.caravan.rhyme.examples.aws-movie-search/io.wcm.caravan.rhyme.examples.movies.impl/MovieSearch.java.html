@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>MovieSearch.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.aws-movie-search</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.examples.movies.impl</a> &gt; <span class="el_source">MovieSearch.java</span></div><h1>MovieSearch.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.examples.movies.impl;
+
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+
+import io.wcm.caravan.rhyme.awslambda.api.LambdaRhyme;
+import io.wcm.caravan.rhyme.awslambda.api.paging.AbstractPagingResource;
+import io.wcm.caravan.rhyme.awslambda.api.paging.PagingUtils;
+import io.wcm.caravan.rhyme.examples.movies.api.Director;
+import io.wcm.caravan.rhyme.examples.movies.api.Movie;
+import io.wcm.caravan.rhyme.examples.movies.api.MoviesDemoApi;
+import io.wcm.caravan.rhyme.examples.movies.api.MoviesPage;
+import io.wcm.caravan.rhyme.examples.movies.api.SearchResult;
+
+/**
+ * Implements the search functionality and all interaction with the upstream API.
+ */
+class MovieSearch {
+
+  /** the name of the AWS staging variable to configure the URL of the data source */
+  static final String UPSTREAM_URL_VARIABLE = &quot;moviesDemoEntryPointUrl&quot;;
+  /** the default URL of the data source if no such staging variable is present */
+  static final String UPSTREAM_URL_DEFAULT = &quot;https://hypermedia-movies-demo.herokuapp.com/api&quot;;
+
+  private final LambdaRhyme rhyme;
+
+<span class="fc" id="L28">  MovieSearch(LambdaRhyme rhyme) {</span>
+<span class="fc" id="L29">    this.rhyme = rhyme;</span>
+<span class="fc" id="L30">  }</span>
+
+  /**
+   * @return a dynamic client proxy for the entry point of the Hypermedia Movies Demo API
+   */
+  MoviesDemoApi getUpstreamEntryPoint() {
+
+    // the URL for the entry point can be overridden for different AWS stages (or integration tests)
+<span class="fc" id="L38">    String entryPointUrl = rhyme.getRequest().getStageVariables()</span>
+<span class="fc" id="L39">        .getOrDefault(UPSTREAM_URL_VARIABLE, UPSTREAM_URL_DEFAULT);</span>
+
+<span class="fc" id="L41">    return rhyme.getRemoteResource(entryPointUrl, MoviesDemoApi.class);</span>
+  }
+
+  /**
+   * Executes a case-insensitive text search across all available movies from the upstream API.
+   * If you are using {@link Stream#limit(long)} on the returned stream (as the paging logic in
+   * {@link AbstractPagingResource} does), only the required amount
+   * of movie pages from the upstream API will be loaded.
+   * @param searchTerm the text to search for in the title of the movie and names of their directors
+   * @return a lazy-loading {@link Stream} that provides one {@link SearchResult} for each movie matching the search
+   *         term
+   */
+  Stream&lt;SearchResult&gt; findMovies(String searchTerm) {
+
+    // create a client proxy to load the first page of up to 25 movies
+<span class="fc" id="L56">    MoviesPage firstPage = getUpstreamEntryPoint().getMoviesPage(0, 25);</span>
+
+    // Recursively follow the &quot;next&quot; links in the page resources to create a Stream that lazily loads all pages of movies
+<span class="fc" id="L59">    Stream&lt;Movie&gt; streamOfAllMovies = PagingUtils.createLazyAutoPagingStream(firstPage, MoviesPage::getPageContent, MoviesPage::getNextPage);</span>
+
+    // return a result for each of the movies that it is considered a search hit
+<span class="fc" id="L62">    return streamOfAllMovies.flatMap(movie -&gt; createResultIfMovieMatchesSearchTerm(movie, searchTerm));</span>
+  }
+
+  private Stream&lt;SearchResult&gt; createResultIfMovieMatchesSearchTerm(Movie movie, String searchTerm) {
+
+<span class="fc" id="L67">    String title = movie.getTitle();</span>
+
+    // provide a search result if the search term can be found in the movie title
+<span class="fc bfc" id="L70" title="All 2 branches covered.">    if (StringUtils.containsIgnoreCase(title, searchTerm)) {</span>
+<span class="fc" id="L71">      return Stream.of(createResult(movie, title + &quot; (a movie ranked &quot; + movie.getRank() + &quot; on IMDB)&quot;));</span>
+    }
+
+    // otherwise provide a search result only if a director's name contains the search term
+<span class="fc" id="L75">    return movie.getDirectors()</span>
+        // we can avoid actually loading the director's resource by reading the director's name from the link
+<span class="fc" id="L77">        .filter(director -&gt; StringUtils.containsIgnoreCase(director.createLink().getName(), searchTerm))</span>
+<span class="fc" id="L78">        .map(director -&gt; createResult(movie, title + &quot; (a movie directed by &quot; + director.createLink().getName() + &quot;)&quot;))</span>
+        // even if multiple directors of this movie match the search term, we want the movie to only show up once
+<span class="fc" id="L80">        .limit(1);</span>
+  }
+
+  private SearchResult createResult(Movie movie, String title) {
+
+<span class="fc" id="L85">    return new SearchResult() {</span>
+
+      @Override
+      public String getTitle() {
+<span class="fc" id="L89">        return title;</span>
+      }
+
+      @Override
+      public Movie getMovie() {
+<span class="fc" id="L94">        return movie;</span>
+      }
+
+      @Override
+      public Stream&lt;Director&gt; getDirectors() {
+<span class="fc" id="L99">        return movie.getDirectors();</span>
+      }
+    };
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

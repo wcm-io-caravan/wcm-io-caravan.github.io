@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>LambdaRhymeImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Rhyme - Code Coverage</a> &gt; <a href="../index.html" class="el_bundle">io.wcm.caravan.rhyme.examples.aws-movie-search</a> &gt; <a href="index.source.html" class="el_package">io.wcm.caravan.rhyme.awslambda.impl</a> &gt; <span class="el_source">LambdaRhymeImpl.java</span></div><h1>LambdaRhymeImpl.java</h1><pre class="source lang-java linenums">package io.wcm.caravan.rhyme.awslambda.impl;
+
+import java.time.Duration;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.google.common.net.HttpHeaders;
+
+import io.wcm.caravan.rhyme.api.Rhyme;
+import io.wcm.caravan.rhyme.api.RhymeBuilder;
+import io.wcm.caravan.rhyme.api.common.HalResponse;
+import io.wcm.caravan.rhyme.api.exceptions.HalApiServerException;
+import io.wcm.caravan.rhyme.api.resources.LinkableResource;
+import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
+import io.wcm.caravan.rhyme.awslambda.api.LambdaLinkBuilder;
+import io.wcm.caravan.rhyme.awslambda.api.LambdaResourceRouting;
+import io.wcm.caravan.rhyme.awslambda.api.LambdaRhyme;
+import io.wcm.caravan.rhyme.awslambda.api.RhymeRequestHandler;
+import software.amazon.awssdk.http.HttpStatusCode;
+
+/**
+ * The core class of Rhyme's AWS lambda integration that handles the main request cycle (from resource instance
+ * creation to rendering success and error responses).
+ * &lt;p&gt;
+ * You shouldn't need to interact with this implementation directly, as instances are automatically created
+ * from within {@link RhymeRequestHandler#handleRequest(APIGatewayProxyRequestEvent, Context)} and then passed
+ * on to your server-side resource implementations via
+ * {@link LambdaResourceRouting#createRequestedResource(LambdaRhyme)}
+ * &lt;/p&gt;
+ * @see RhymeRequestHandler
+ * @see LambdaResourceRouting
+ */
+public class LambdaRhymeImpl implements LambdaRhyme {
+
+  private final APIGatewayProxyRequestEvent request;
+  private final Context context;
+
+  private final LambdaRhymeDocsSupport rhymeDocs;
+
+  private final Rhyme rhyme;
+
+  /**
+   * @param request the incoming request
+   * @param context the {@link Context} instance passed to {@link RequestHandler#handleRequest(Object, Context)}
+   * @param rhymeBuilder a {@link RhymeBuilder} instance (that can be customized by
+   *          {@link RhymeRequestHandler#withCustomizedRhymeBuilder(java.util.function.BiFunction)}
+   * @param rhymeDocs the {@link LambdaRhymeDocsSupport} class (to serve the HTML documentation from classpath
+   *          resources)
+   */
+<span class="fc" id="L54">  public LambdaRhymeImpl(APIGatewayProxyRequestEvent request, Context context, RhymeBuilder rhymeBuilder, LambdaRhymeDocsSupport rhymeDocs) {</span>
+
+<span class="fc" id="L56">    this.request = request;</span>
+<span class="fc" id="L57">    this.context = context;</span>
+<span class="fc" id="L58">    this.rhymeDocs = rhymeDocs;</span>
+
+<span class="fc" id="L60">    String incomingRequestUrl = buildAbsoluteUrl(request.getPath());</span>
+<span class="fc" id="L61">    this.rhyme = rhymeBuilder.buildForRequestTo(incomingRequestUrl);</span>
+<span class="fc" id="L62">  }</span>
+
+  private String buildAbsoluteUrl(String resourcePath) {
+
+<span class="fc" id="L66">    return getBaseUrl(request) + resourcePath;</span>
+  }
+
+  static String getBaseUrl(APIGatewayProxyRequestEvent request) {
+
+<span class="fc" id="L71">    String apiGatewayUrl = request.getStageVariables().getOrDefault(&quot;apiGatewayUrl&quot;, &quot;&quot;);</span>
+
+<span class="fc" id="L73">    return apiGatewayUrl + &quot;/&quot; + request.getRequestContext().getStage();</span>
+  }
+
+  @Override
+  public APIGatewayProxyRequestEvent getRequest() {
+<span class="fc" id="L78">    return request;</span>
+  }
+
+  @Override
+  public Context getContext() {
+<span class="fc" id="L83">    return context;</span>
+  }
+
+  @Override
+  public &lt;T&gt; T getRemoteResource(String uri, Class&lt;T&gt; halApiInterface) {
+<span class="fc" id="L88">    return rhyme.getRemoteResource(uri, halApiInterface);</span>
+  }
+
+  @Override
+  public void setResponseMaxAge(Duration duration) {
+<span class="fc" id="L93">    rhyme.setResponseMaxAge(duration);</span>
+<span class="fc" id="L94">  }</span>
+
+  @Override
+  public Rhyme getCoreRhyme() {
+<span class="fc" id="L98">    return rhyme;</span>
+  }
+
+  @Override
+  public LambdaLinkBuilder buildLinkTo(String resourcePath) {
+
+<span class="fc" id="L104">    return new LambdaLinkBuilderImpl(buildAbsoluteUrl(resourcePath));</span>
+  }
+
+  /**
+   * Handles the main request cycle for the incoming request:
+   * &lt;ul&gt;
+   * &lt;li&gt;if HTML documentation is requested, it is returned by {@link LambdaRhymeDocsSupport}&lt;/li&gt;
+   * &lt;li&gt;otherwise the server-side resource implementation for the current request is created by the given
+   * {@link LambdaResourceRouting} strategy&lt;/li&gt;
+   * &lt;li&gt;the HAL+JSON response will be rendered using the core Rhyme framework's {@link AsyncHalResponseRenderer}&lt;/li&gt;
+   * &lt;li&gt;the response is converted to an {@link APIGatewayProxyRequestEvent}&lt;/li&gt;
+   * &lt;li&gt;any exceptions thrown and caught in this whole process will be rendered as a vnd.error resource&lt;/li&gt;
+   * &lt;/ul&gt;
+   * @param routing will be called to create the server-side resource implementation
+   * @return a {@link APIGatewayProxyRequestEvent} with status, headers and body already set
+   */
+  public APIGatewayProxyResponseEvent createResourceAndRenderResponse(LambdaResourceRouting routing) {
+    try {
+<span class="fc bfc" id="L122" title="All 2 branches covered.">      if (rhymeDocs.isRhymeDocsRequest()) {</span>
+<span class="fc" id="L123">        return rhymeDocs.createHtmlResponse();</span>
+      }
+
+<span class="fc" id="L126">      LinkableResource resource = routing.createRequestedResource(this);</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">      if (resource == null) {</span>
+<span class="fc" id="L128">        throw new HalApiServerException(HttpStatusCode.NOT_FOUND, &quot;No resource implementation was found for relative path &quot; + request.getPath());</span>
+      }
+
+<span class="fc" id="L131">      HalResponse response = rhyme.renderResponse(resource).blockingGet();</span>
+
+<span class="fc" id="L133">      return convertResponse(response);</span>
+    }
+<span class="fc" id="L135">    catch (Exception ex) {</span>
+<span class="fc" id="L136">      return convertResponse(rhyme.renderVndErrorResponse(ex));</span>
+    }
+  }
+
+  private APIGatewayProxyResponseEvent convertResponse(HalResponse halResponse) {
+
+<span class="fc" id="L142">    Map&lt;String, String&gt; headers = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L143">    headers.put(HttpHeaders.CONTENT_TYPE, halResponse.getContentType());</span>
+
+<span class="fc bfc" id="L145" title="All 2 branches covered.">    if (halResponse.getMaxAge() != null) {</span>
+<span class="fc" id="L146">      headers.put(HttpHeaders.CACHE_CONTROL, &quot;max-age=&quot; + halResponse.getMaxAge());</span>
+    }
+
+<span class="fc" id="L149">    return new APIGatewayProxyResponseEvent()</span>
+<span class="fc" id="L150">        .withStatusCode(halResponse.getStatus())</span>
+<span class="fc" id="L151">        .withHeaders(headers)</span>
+<span class="fc" id="L152">        .withBody(halResponse.getBody().getModel().toString());</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
