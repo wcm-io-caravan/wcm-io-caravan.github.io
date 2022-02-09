@@ -27,10 +27,10 @@ public class MovieSearchRequestHandler implements LambdaResourceRouting, Request
   private final RhymeRequestHandler requestHandler;
 
   /**
-   * Default constructor that is called for each cold start of your lambda
+   * Default constructor that is called for each cold start of the lambda
    */
 <span class="fc" id="L32">  public MovieSearchRequestHandler() {</span>
-
+    // the project-specific configuration of this generic request handler happens in the other methods of this class
 <span class="fc" id="L34">    requestHandler = new RhymeRequestHandler(this)</span>
 <span class="fc" id="L35">        .withResourceLoader(configureResourceLoader().build())</span>
 <span class="fc" id="L36">        .withCustomizedRhymeBuilder(this::configureRhymeBuilder);</span>
@@ -38,7 +38,7 @@ public class MovieSearchRequestHandler implements LambdaResourceRouting, Request
 
   @Override
   public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent input, Context context) {
-
+    // render the resource returned by #createRequestedResource and convert it to an AWS Lambda response
 <span class="fc" id="L42">    APIGatewayProxyResponseEvent response = requestHandler.handleRequest(input, context);</span>
 
     // additional CORS headers required to load resources from an externally hosted HAL Explorer frontend
@@ -50,18 +50,17 @@ public class MovieSearchRequestHandler implements LambdaResourceRouting, Request
 
   @Override
   public LinkableResource createRequestedResource(LambdaRhyme rhyme) {
-
+    // pick the resource to be rendered based on the path of the incoming request
 <span class="fc" id="L54">    String path = rhyme.getRequest().getPath();</span>
-
+    
 <span class="fc bfc" id="L56" title="All 2 branches covered.">    if (MovieSearchRootResource.PATH.equals(path)) {</span>
 <span class="fc" id="L57">      return new MovieSearchRootResource(rhyme);</span>
     }
-
-<span class="fc bfc" id="L60" title="All 2 branches covered.">    if (MovieSearchResultResource.PATH.equals(path)) {</span>
-<span class="fc" id="L61">      return MovieSearchResultResource.createWithRequestParametersFrom(rhyme);</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">    if (MovieSearchResultResource.PATH.equals(path)) {</span>
+<span class="fc" id="L60">      return MovieSearchResultResource.createWithRequestParametersFrom(rhyme);</span>
     }
-
-<span class="fc" id="L64">    return null;</span>
+    // a 404 response will be rendered if no resource was found for the given path
+<span class="fc" id="L63">    return null;</span>
   }
 
   /**
@@ -70,21 +69,21 @@ public class MovieSearchRequestHandler implements LambdaResourceRouting, Request
    */
   protected HalResourceLoaderBuilder configureResourceLoader() {
 
-<span class="fc" id="L73">    return HalResourceLoaderBuilder.create()</span>
-        // we want to cache all responses from the upstream API
-<span class="fc" id="L75">        .withMemoryCache()</span>
-        // because the responses from the Hypermedia Movie Demo do not set any &quot;max-age&quot; cache control directives,
-        // we are using a custom configuration to ensure that those responses are cached for one hour
-<span class="fc" id="L78">        .withCachingConfiguration(new CachingConfiguration() {</span>
+<span class="fc" id="L72">    return HalResourceLoaderBuilder.create()</span>
+        // we want to cache all responses from the upstream API...
+<span class="fc" id="L74">        .withMemoryCache()</span>
+        // ...but because the responses from the Hypermedia Movie Demo do not set any &quot;max-age&quot; cache control directives,
+        // we need to use a custom configuration that ensures those responses are cached for one hour
+<span class="fc" id="L77">        .withCachingConfiguration(new CachingConfiguration() {</span>
 
           @Override
           public boolean isCachingOfHalApiClientExceptionsEnabled() {
-<span class="fc" id="L82">            return false;</span>
+<span class="fc" id="L81">            return false;</span>
           }
 
           @Override
           public int getDefaultMaxAge(Optional&lt;Integer&gt; statusCode) {
-<span class="fc" id="L87">            return 3600;</span>
+<span class="fc" id="L86">            return 3600;</span>
           }
         });
   }
@@ -99,11 +98,11 @@ public class MovieSearchRequestHandler implements LambdaResourceRouting, Request
 
     // in this example we always want to show the embedded &quot;rhyme:metadata&quot; resource so you can
     // easily inspect which upstream resources are requested in the background
-<span class="fc" id="L102">    return builder.withMetadataConfiguration(new RhymeMetadataConfiguration() {</span>
+<span class="fc" id="L101">    return builder.withMetadataConfiguration(new RhymeMetadataConfiguration() {</span>
 
       @Override
       public boolean isMetadataGenerationEnabled() {
-<span class="fc" id="L106">        return true;</span>
+<span class="fc" id="L105">        return true;</span>
       }
     });
   }
