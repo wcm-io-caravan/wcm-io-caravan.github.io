@@ -19,29 +19,27 @@ class MovieSearchRootResource implements ApiEntryPoint {
 
 <span class="fc" id="L20">  MovieSearchRootResource(LambdaRhyme rhyme) {</span>
 <span class="fc" id="L21">    this.rhyme = rhyme;</span>
-
     // allow the entry point to be cached, but only for a short amount of time
-<span class="fc" id="L24">    rhyme.setResponseMaxAge(Duration.ofMinutes(1));</span>
-<span class="fc" id="L25">  }</span>
+<span class="fc" id="L23">    rhyme.setResponseMaxAge(Duration.ofMinutes(1));</span>
+<span class="fc" id="L24">  }</span>
 
   @Override
   public SearchResultPage getSearchResults(String searchTerm) {
-
-<span class="fc" id="L30">    return new MovieSearchResultResource(rhyme, searchTerm, 0);</span>
+    // this creates a link template, because searchTerm will be null when this resource is being rendered
+<span class="fc" id="L29">    return new MovieSearchResultResource(rhyme, searchTerm, 0);</span>
   }
 
   @Override
   public MoviesDemoApi getUpstreamEntryPoint() {
-
-    // to create the link, we can simply return the dynamic client proxy that is also used to fetch data from there
-<span class="fc" id="L37">    return new MovieSearch(rhyme).getUpstreamEntryPoint();</span>
+    // to generate the link to a remote resource, we can simply returns its dynamic client proxy
+<span class="fc" id="L35">    return new MovieSearch(rhyme).getUpstreamEntryPoint();</span>
   }
 
   @Override
   public Link createLink() {
-
-<span class="fc" id="L43">    return rhyme.buildLinkTo(PATH)</span>
-<span class="fc" id="L44">        .build();</span>
+    // the RymeLinkBuilder will take care of converting this to an absolute URL
+<span class="fc" id="L41">    return rhyme.buildLinkTo(PATH)</span>
+<span class="fc" id="L42">        .build();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
