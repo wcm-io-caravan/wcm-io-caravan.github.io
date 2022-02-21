@@ -44,7 +44,7 @@ final class BeanUtil {
    */
   public static SortedMap&lt;String, Object&gt; getMaskedBeanProperties(Object beanObject, String[] maskProperties) {
     try {
-<span class="fc" id="L47">      SortedMap&lt;String, Object&gt; configProperties = new TreeMap&lt;String, Object&gt;(BeanUtils.describe(beanObject));</span>
+<span class="fc" id="L47">      SortedMap&lt;String, Object&gt; configProperties = new TreeMap&lt;&gt;(BeanUtils.describe(beanObject));</span>
 
       // always ignore &quot;class&quot; properties which is added by BeanUtils.describe by default
 <span class="fc" id="L50">      configProperties.remove(&quot;class&quot;);</span>
