@@ -186,20 +186,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineInputException.java">io/wcm/caravan/pipeline/JsonPipelineInputException.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipeline.java">io/wcm/caravan/pipeline/JsonPipeline.java</a>
                 </td>
                 <td>
@@ -207,6 +193,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineInputException.java">io/wcm/caravan/pipeline/JsonPipelineInputException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -228,7 +228,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineExceptionHandler.java">io/wcm/caravan/pipeline/JsonPipelineExceptionHandler.java</a>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.CacheStrategy.java">io/wcm/caravan/pipeline/cache/CacheStrategy.java</a>
                 </td>
                 <td>
                   0
@@ -242,7 +242,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.cache.CacheStrategy.java">io/wcm/caravan/pipeline/cache/CacheStrategy.java</a>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineExceptionHandler.java">io/wcm/caravan/pipeline/JsonPipelineExceptionHandler.java</a>
                 </td>
                 <td>
                   0
