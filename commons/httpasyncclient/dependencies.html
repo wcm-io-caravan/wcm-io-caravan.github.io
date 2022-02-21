@@ -214,41 +214,34 @@
      <td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td> 
     </tr> 
     <tr class="a"> 
-     <td align="left">org.apache.felix</td> 
-     <td><a class="externalLink" href="http://felix.apache.org/org.apache.felix.scr.annotations/">org.apache.felix.scr.annotations</a></td> 
-     <td>1.12.0</td> 
-     <td>jar</td> 
-     <td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td> 
-    </tr> 
-    <tr class="b"> 
      <td align="left">org.osgi</td> 
      <td><a class="externalLink" href="https://www.osgi.org/">org.osgi.annotation.bundle</a></td> 
      <td>1.0.0</td> 
      <td>jar</td> 
      <td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache-2.0</a></td> 
     </tr> 
-    <tr class="a"> 
+    <tr class="b"> 
      <td align="left">org.osgi</td> 
      <td><a class="externalLink" href="http://www.osgi.org/">org.osgi.annotation.versioning</a></td> 
      <td>1.0.0</td> 
      <td>jar</td> 
      <td><a class="externalLink" href="http://opensource.org/licenses/apache2.0.php">Apache License, Version 2.0</a></td> 
     </tr> 
-    <tr class="b"> 
+    <tr class="a"> 
      <td align="left">org.osgi</td> 
      <td><a class="externalLink" href="https://www.osgi.org/">org.osgi.service.component.annotations</a></td> 
      <td>1.4.0</td> 
      <td>jar</td> 
      <td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache-2.0</a></td> 
     </tr> 
-    <tr class="a"> 
+    <tr class="b"> 
      <td align="left">org.osgi</td> 
      <td><a class="externalLink" href="http://www.osgi.org/">org.osgi.service.metatype.annotations</a></td> 
      <td>1.3.0</td> 
      <td>jar</td> 
      <td><a class="externalLink" href="http://opensource.org/licenses/apache2.0.php">Apache License, Version 2.0</a></td> 
     </tr> 
-    <tr class="b"> 
+    <tr class="a"> 
      <td align="left">org.slf4j</td> 
      <td><a class="externalLink" href="http://www.slf4j.org">slf4j-api</a></td> 
      <td>1.7.6</td> 
@@ -499,7 +492,7 @@
  <section> 
   <h3 id="Dependency_Tree">Dependency Tree</h3> 
   <ul> 
-   <li>io.wcm.caravan:io.wcm.caravan.commons.httpasyncclient:bundle:1.3.1-SNAPSHOT <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep0"><i class="icon-info-sign"></i></button> 
+   <li>io.wcm.caravan:io.wcm.caravan.commons.httpasyncclient:jar:1.3.1-SNAPSHOT <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep0"><i class="icon-info-sign"></i></button> 
     <div id="_dep0" style="" class="collapse"> 
      <table border="0" class="bodyTable table table-striped table-hover"> 
       <thead> 
@@ -515,23 +508,8 @@
      </table> 
     </div> 
     <ul> 
-     <li>org.apache.felix:org.apache.felix.scr.annotations:jar:1.12.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep2"><i class="icon-info-sign"></i></button> 
+     <li>io.wcm.caravan:io.wcm.caravan.commons.httpclient:jar:1.3.1-SNAPSHOT (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep2"><i class="icon-info-sign"></i></button> 
       <div id="_dep2" style="" class="collapse"> 
-       <table border="0" class="bodyTable table table-striped table-hover"> 
-        <thead> 
-         <tr class="a"> 
-          <th>Annotations for SCR</th> 
-         </tr> 
-        </thead> 
-        <tbody> 
-         <tr class="b"> 
-          <td> <p><b>Description: </b>Annotations for generating OSGi service descriptors.</p> <p><b>URL: </b><a class="externalLink" href="http://felix.apache.org/org.apache.felix.scr.annotations/">http://felix.apache.org/org.apache.felix.scr.annotations/</a></p> <p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td> 
-         </tr> 
-        </tbody> 
-       </table> 
-      </div></li> 
-     <li>io.wcm.caravan:io.wcm.caravan.commons.httpclient:jar:1.3.1-SNAPSHOT (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep4"><i class="icon-info-sign"></i></button> 
-      <div id="_dep4" style="" class="collapse"> 
        <table border="0" class="bodyTable table table-striped table-hover"> 
         <thead> 
          <tr class="a"> 
@@ -546,8 +524,8 @@
        </table> 
       </div> 
       <ul> 
-       <li>org.osgi:org.osgi.framework:jar:1.8.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep6"><i class="icon-info-sign"></i></button> 
-        <div id="_dep6" style="" class="collapse"> 
+       <li>org.osgi:org.osgi.framework:jar:1.8.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep4"><i class="icon-info-sign"></i></button> 
+        <div id="_dep4" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -561,8 +539,8 @@
           </tbody> 
          </table> 
         </div></li> 
-       <li>org.apache.sling:org.apache.sling.commons.osgi:jar:2.4.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep8"><i class="icon-info-sign"></i></button> 
-        <div id="_dep8" style="" class="collapse"> 
+       <li>org.apache.sling:org.apache.sling.commons.osgi:jar:2.4.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep6"><i class="icon-info-sign"></i></button> 
+        <div id="_dep6" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -576,8 +554,8 @@
           </tbody> 
          </table> 
         </div></li> 
-       <li>org.apache.commons:commons-lang3:jar:3.0.1 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep10"><i class="icon-info-sign"></i></button> 
-        <div id="_dep10" style="" class="collapse"> 
+       <li>org.apache.commons:commons-lang3:jar:3.0.1 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep8"><i class="icon-info-sign"></i></button> 
+        <div id="_dep8" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -591,8 +569,8 @@
           </tbody> 
          </table> 
         </div></li> 
-       <li>commons-beanutils:commons-beanutils:jar:1.9.2 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep12"><i class="icon-info-sign"></i></button> 
-        <div id="_dep12" style="" class="collapse"> 
+       <li>commons-beanutils:commons-beanutils:jar:1.9.2 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep10"><i class="icon-info-sign"></i></button> 
+        <div id="_dep10" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -607,8 +585,8 @@
          </table> 
         </div> 
         <ul> 
-         <li>commons-collections:commons-collections:jar:3.2.1 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep14"><i class="icon-info-sign"></i></button> 
-          <div id="_dep14" style="" class="collapse"> 
+         <li>commons-collections:commons-collections:jar:3.2.1 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep12"><i class="icon-info-sign"></i></button> 
+          <div id="_dep12" style="" class="collapse"> 
            <table border="0" class="bodyTable table table-striped table-hover"> 
             <thead> 
              <tr class="a"> 
@@ -623,8 +601,8 @@
            </table> 
           </div></li> 
         </ul></li> 
-       <li>org.apache.httpcomponents:httpclient:jar:4.3.4 (compile) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep16"><i class="icon-info-sign"></i></button> 
-        <div id="_dep16" style="" class="collapse"> 
+       <li>org.apache.httpcomponents:httpclient:jar:4.3.4 (compile) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep14"><i class="icon-info-sign"></i></button> 
+        <div id="_dep14" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -639,8 +617,8 @@
          </table> 
         </div> 
         <ul> 
-         <li>commons-codec:commons-codec:jar:1.6 (compile) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep18"><i class="icon-info-sign"></i></button> 
-          <div id="_dep18" style="" class="collapse"> 
+         <li>commons-codec:commons-codec:jar:1.6 (compile) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep16"><i class="icon-info-sign"></i></button> 
+          <div id="_dep16" style="" class="collapse"> 
            <table border="0" class="bodyTable table table-striped table-hover"> 
             <thead> 
              <tr class="a"> 
@@ -656,8 +634,8 @@
           </div></li> 
         </ul></li> 
       </ul></li> 
-     <li>org.apache.httpcomponents:httpasyncclient:jar:4.0.2 (compile) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep20"><i class="icon-info-sign"></i></button> 
-      <div id="_dep20" style="" class="collapse"> 
+     <li>org.apache.httpcomponents:httpasyncclient:jar:4.0.2 (compile) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep18"><i class="icon-info-sign"></i></button> 
+      <div id="_dep18" style="" class="collapse"> 
        <table border="0" class="bodyTable table table-striped table-hover"> 
         <thead> 
          <tr class="a"> 
@@ -672,8 +650,8 @@
        </table> 
       </div> 
       <ul> 
-       <li>org.apache.httpcomponents:httpcore:jar:4.3.2 (compile) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep22"><i class="icon-info-sign"></i></button> 
-        <div id="_dep22" style="" class="collapse"> 
+       <li>org.apache.httpcomponents:httpcore:jar:4.3.2 (compile) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep20"><i class="icon-info-sign"></i></button> 
+        <div id="_dep20" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -687,8 +665,8 @@
           </tbody> 
          </table> 
         </div></li> 
-       <li>org.apache.httpcomponents:httpcore-nio:jar:4.3.2 (compile) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep24"><i class="icon-info-sign"></i></button> 
-        <div id="_dep24" style="" class="collapse"> 
+       <li>org.apache.httpcomponents:httpcore-nio:jar:4.3.2 (compile) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep22"><i class="icon-info-sign"></i></button> 
+        <div id="_dep22" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -702,8 +680,8 @@
           </tbody> 
          </table> 
         </div></li> 
-       <li>commons-logging:commons-logging:jar:1.1.3 (compile) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep26"><i class="icon-info-sign"></i></button> 
-        <div id="_dep26" style="" class="collapse"> 
+       <li>commons-logging:commons-logging:jar:1.1.3 (compile) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep24"><i class="icon-info-sign"></i></button> 
+        <div id="_dep24" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -718,8 +696,8 @@
          </table> 
         </div></li> 
       </ul></li> 
-     <li>com.google.guava:guava:jar:15.0 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep28"><i class="icon-info-sign"></i></button> 
-      <div id="_dep28" style="" class="collapse"> 
+     <li>com.google.guava:guava:jar:15.0 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep26"><i class="icon-info-sign"></i></button> 
+      <div id="_dep26" style="" class="collapse"> 
        <table border="0" class="bodyTable table table-striped table-hover"> 
         <thead> 
          <tr class="a"> 
@@ -733,8 +711,8 @@
         </tbody> 
        </table> 
       </div></li> 
-     <li>org.slf4j:slf4j-api:jar:1.7.6 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep30"><i class="icon-info-sign"></i></button> 
-      <div id="_dep30" style="" class="collapse"> 
+     <li>org.slf4j:slf4j-api:jar:1.7.6 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep28"><i class="icon-info-sign"></i></button> 
+      <div id="_dep28" style="" class="collapse"> 
        <table border="0" class="bodyTable table table-striped table-hover"> 
         <thead> 
          <tr class="a"> 
@@ -748,8 +726,8 @@
         </tbody> 
        </table> 
       </div></li> 
-     <li>junit:junit:jar:4.13.2 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep32"><i class="icon-info-sign"></i></button> 
-      <div id="_dep32" style="" class="collapse"> 
+     <li>junit:junit:jar:4.13.2 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep30"><i class="icon-info-sign"></i></button> 
+      <div id="_dep30" style="" class="collapse"> 
        <table border="0" class="bodyTable table table-striped table-hover"> 
         <thead> 
          <tr class="a"> 
@@ -764,8 +742,8 @@
        </table> 
       </div> 
       <ul> 
-       <li>org.hamcrest:hamcrest-core:jar:1.3 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep34"><i class="icon-info-sign"></i></button> 
-        <div id="_dep34" style="" class="collapse"> 
+       <li>org.hamcrest:hamcrest-core:jar:1.3 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep32"><i class="icon-info-sign"></i></button> 
+        <div id="_dep32" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -780,8 +758,8 @@
          </table> 
         </div></li> 
       </ul></li> 
-     <li>org.mockito:mockito-core:jar:2.25.1 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep36"><i class="icon-info-sign"></i></button> 
-      <div id="_dep36" style="" class="collapse"> 
+     <li>org.mockito:mockito-core:jar:2.25.1 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep34"><i class="icon-info-sign"></i></button> 
+      <div id="_dep34" style="" class="collapse"> 
        <table border="0" class="bodyTable table table-striped table-hover"> 
         <thead> 
          <tr class="a"> 
@@ -796,8 +774,8 @@
        </table> 
       </div> 
       <ul> 
-       <li>net.bytebuddy:byte-buddy:jar:1.9.7 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep38"><i class="icon-info-sign"></i></button> 
-        <div id="_dep38" style="" class="collapse"> 
+       <li>net.bytebuddy:byte-buddy:jar:1.9.7 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep36"><i class="icon-info-sign"></i></button> 
+        <div id="_dep36" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -811,8 +789,8 @@
           </tbody> 
          </table> 
         </div></li> 
-       <li>net.bytebuddy:byte-buddy-agent:jar:1.9.7 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep40"><i class="icon-info-sign"></i></button> 
-        <div id="_dep40" style="" class="collapse"> 
+       <li>net.bytebuddy:byte-buddy-agent:jar:1.9.7 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep38"><i class="icon-info-sign"></i></button> 
+        <div id="_dep38" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -826,8 +804,8 @@
           </tbody> 
          </table> 
         </div></li> 
-       <li>org.objenesis:objenesis:jar:2.6 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep42"><i class="icon-info-sign"></i></button> 
-        <div id="_dep42" style="" class="collapse"> 
+       <li>org.objenesis:objenesis:jar:2.6 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep40"><i class="icon-info-sign"></i></button> 
+        <div id="_dep40" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -842,8 +820,8 @@
          </table> 
         </div></li> 
       </ul></li> 
-     <li>org.apache.sling:org.apache.sling.testing.osgi-mock.junit4:jar:3.2.2 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep44"><i class="icon-info-sign"></i></button> 
-      <div id="_dep44" style="" class="collapse"> 
+     <li>org.apache.sling:org.apache.sling.testing.osgi-mock.junit4:jar:3.2.2 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep42"><i class="icon-info-sign"></i></button> 
+      <div id="_dep42" style="" class="collapse"> 
        <table border="0" class="bodyTable table table-striped table-hover"> 
         <thead> 
          <tr class="a"> 
@@ -858,8 +836,8 @@
        </table> 
       </div> 
       <ul> 
-       <li>org.apache.sling:org.apache.sling.testing.osgi-mock.core:jar:3.2.2 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep46"><i class="icon-info-sign"></i></button> 
-        <div id="_dep46" style="" class="collapse"> 
+       <li>org.apache.sling:org.apache.sling.testing.osgi-mock.core:jar:3.2.2 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep44"><i class="icon-info-sign"></i></button> 
+        <div id="_dep44" style="" class="collapse"> 
          <table border="0" class="bodyTable table table-striped table-hover"> 
           <thead> 
            <tr class="a"> 
@@ -874,8 +852,8 @@
          </table> 
         </div> 
         <ul> 
-         <li>org.osgi:org.osgi.service.component:jar:1.4.0 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep48"><i class="icon-info-sign"></i></button> 
-          <div id="_dep48" style="" class="collapse"> 
+         <li>org.osgi:org.osgi.service.component:jar:1.4.0 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep46"><i class="icon-info-sign"></i></button> 
+          <div id="_dep46" style="" class="collapse"> 
            <table border="0" class="bodyTable table table-striped table-hover"> 
             <thead> 
              <tr class="a"> 
@@ -889,8 +867,8 @@
             </tbody> 
            </table> 
           </div></li> 
-         <li>org.osgi:org.osgi.service.cm:jar:1.6.0 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep50"><i class="icon-info-sign"></i></button> 
-          <div id="_dep50" style="" class="collapse"> 
+         <li>org.osgi:org.osgi.service.cm:jar:1.6.0 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep48"><i class="icon-info-sign"></i></button> 
+          <div id="_dep48" style="" class="collapse"> 
            <table border="0" class="bodyTable table table-striped table-hover"> 
             <thead> 
              <tr class="a"> 
@@ -904,8 +882,8 @@
             </tbody> 
            </table> 
           </div></li> 
-         <li>org.osgi:org.osgi.service.event:jar:1.3.1 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep52"><i class="icon-info-sign"></i></button> 
-          <div id="_dep52" style="" class="collapse"> 
+         <li>org.osgi:org.osgi.service.event:jar:1.3.1 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep50"><i class="icon-info-sign"></i></button> 
+          <div id="_dep50" style="" class="collapse"> 
            <table border="0" class="bodyTable table table-striped table-hover"> 
             <thead> 
              <tr class="a"> 
@@ -919,8 +897,8 @@
             </tbody> 
            </table> 
           </div></li> 
-         <li>org.osgi:org.osgi.service.log:jar:1.3.0 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep54"><i class="icon-info-sign"></i></button> 
-          <div id="_dep54" style="" class="collapse"> 
+         <li>org.osgi:org.osgi.service.log:jar:1.3.0 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep52"><i class="icon-info-sign"></i></button> 
+          <div id="_dep52" style="" class="collapse"> 
            <table border="0" class="bodyTable table table-striped table-hover"> 
             <thead> 
              <tr class="a"> 
@@ -934,8 +912,8 @@
             </tbody> 
            </table> 
           </div></li> 
-         <li>org.apache.commons:commons-collections4:jar:4.1 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep56"><i class="icon-info-sign"></i></button> 
-          <div id="_dep56" style="" class="collapse"> 
+         <li>org.apache.commons:commons-collections4:jar:4.1 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep54"><i class="icon-info-sign"></i></button> 
+          <div id="_dep54" style="" class="collapse"> 
            <table border="0" class="bodyTable table table-striped table-hover"> 
             <thead> 
              <tr class="a"> 
@@ -949,8 +927,8 @@
             </tbody> 
            </table> 
           </div></li> 
-         <li>commons-io:commons-io:jar:2.4 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep58"><i class="icon-info-sign"></i></button> 
-          <div id="_dep58" style="" class="collapse"> 
+         <li>commons-io:commons-io:jar:2.4 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep56"><i class="icon-info-sign"></i></button> 
+          <div id="_dep56" style="" class="collapse"> 
            <table border="0" class="bodyTable table table-striped table-hover"> 
             <thead> 
              <tr class="a"> 
@@ -964,8 +942,8 @@
             </tbody> 
            </table> 
           </div></li> 
-         <li>org.reflections:reflections:jar:0.10.2 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep60"><i class="icon-info-sign"></i></button> 
-          <div id="_dep60" style="" class="collapse"> 
+         <li>org.reflections:reflections:jar:0.10.2 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep58"><i class="icon-info-sign"></i></button> 
+          <div id="_dep58" style="" class="collapse"> 
            <table border="0" class="bodyTable table table-striped table-hover"> 
             <thead> 
              <tr class="a"> 
@@ -980,8 +958,8 @@
            </table> 
           </div> 
           <ul> 
-           <li>org.javassist:javassist:jar:3.28.0-GA (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep62"><i class="icon-info-sign"></i></button> 
-            <div id="_dep62" style="" class="collapse"> 
+           <li>org.javassist:javassist:jar:3.28.0-GA (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep60"><i class="icon-info-sign"></i></button> 
+            <div id="_dep60" style="" class="collapse"> 
              <table border="0" class="bodyTable table table-striped table-hover"> 
               <thead> 
                <tr class="a"> 
@@ -998,8 +976,8 @@
           </ul></li> 
         </ul></li> 
       </ul></li> 
-     <li>org.slf4j:slf4j-simple:jar:1.7.6 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep64"><i class="icon-info-sign"></i></button> 
-      <div id="_dep64" style="" class="collapse"> 
+     <li>org.slf4j:slf4j-simple:jar:1.7.6 (test) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep62"><i class="icon-info-sign"></i></button> 
+      <div id="_dep62" style="" class="collapse"> 
        <table border="0" class="bodyTable table table-striped table-hover"> 
         <thead> 
          <tr class="a"> 
@@ -1013,8 +991,8 @@
         </tbody> 
        </table> 
       </div></li> 
-     <li>org.osgi:org.osgi.annotation.bundle:jar:1.0.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep66"><i class="icon-info-sign"></i></button> 
-      <div id="_dep66" style="" class="collapse"> 
+     <li>org.osgi:org.osgi.annotation.bundle:jar:1.0.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep64"><i class="icon-info-sign"></i></button> 
+      <div id="_dep64" style="" class="collapse"> 
        <table border="0" class="bodyTable table table-striped table-hover"> 
         <thead> 
          <tr class="a"> 
@@ -1028,8 +1006,8 @@
         </tbody> 
        </table> 
       </div></li> 
-     <li>org.osgi:org.osgi.annotation.versioning:jar:1.0.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep68"><i class="icon-info-sign"></i></button> 
-      <div id="_dep68" style="" class="collapse"> 
+     <li>org.osgi:org.osgi.annotation.versioning:jar:1.0.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep66"><i class="icon-info-sign"></i></button> 
+      <div id="_dep66" style="" class="collapse"> 
        <table border="0" class="bodyTable table table-striped table-hover"> 
         <thead> 
          <tr class="a"> 
@@ -1043,8 +1021,8 @@
         </tbody> 
        </table> 
       </div></li> 
-     <li>org.osgi:org.osgi.service.component.annotations:jar:1.4.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep70"><i class="icon-info-sign"></i></button> 
-      <div id="_dep70" style="" class="collapse"> 
+     <li>org.osgi:org.osgi.service.component.annotations:jar:1.4.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep68"><i class="icon-info-sign"></i></button> 
+      <div id="_dep68" style="" class="collapse"> 
        <table border="0" class="bodyTable table table-striped table-hover"> 
         <thead> 
          <tr class="a"> 
@@ -1058,8 +1036,8 @@
         </tbody> 
        </table> 
       </div></li> 
-     <li>org.osgi:org.osgi.service.metatype.annotations:jar:1.3.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep72"><i class="icon-info-sign"></i></button> 
-      <div id="_dep72" style="" class="collapse"> 
+     <li>org.osgi:org.osgi.service.metatype.annotations:jar:1.3.0 (provided) <button title="Information" class="btn btn-link btn-small" type="button" data-toggle="collapse" data-target="#_dep70"><i class="icon-info-sign"></i></button> 
+      <div id="_dep70" style="" class="collapse"> 
        <table border="0" class="bodyTable table table-striped table-hover"> 
         <thead> 
          <tr class="a"> 
@@ -1085,7 +1063,7 @@
  <p><b>Apache License 2.0: </b>Javassist</p> 
  <p><b>MIT License: </b>SLF4J API Module, SLF4J Simple Binding</p> 
  <p><b>The MIT License: </b>mockito-core</p> 
- <p><b>Apache License, Version 2.0: </b>Annotations for SCR, Apache Commons Collections, Apache HttpAsyncClient, Apache HttpClient, Apache HttpCore, Apache HttpCore NIO, Apache Sling Commons OSGi support, Apache Sling Testing OSGi Mock Core, Apache Sling Testing OSGi Mock JUnit 4, org.osgi:org.osgi.annotation.versioning, org.osgi:org.osgi.framework, org.osgi:org.osgi.service.event, org.osgi:org.osgi.service.log, org.osgi:org.osgi.service.metatype.annotations</p> 
+ <p><b>Apache License, Version 2.0: </b>Apache Commons Collections, Apache HttpAsyncClient, Apache HttpClient, Apache HttpCore, Apache HttpCore NIO, Apache Sling Commons OSGi support, Apache Sling Testing OSGi Mock Core, Apache Sling Testing OSGi Mock JUnit 4, org.osgi:org.osgi.annotation.versioning, org.osgi:org.osgi.framework, org.osgi:org.osgi.service.event, org.osgi:org.osgi.service.log, org.osgi:org.osgi.service.metatype.annotations</p> 
  <p><b>Apache-2.0: </b>org.osgi:org.osgi.annotation.bundle, org.osgi:org.osgi.service.cm, org.osgi:org.osgi.service.component, org.osgi:org.osgi.service.component.annotations</p> 
  <p><b>LGPL 2.1: </b>Javassist</p> 
  <p><b>MPL 1.1: </b>Javassist</p> 
@@ -1096,7 +1074,7 @@
  <h2 id="Dependency_File_Details">Dependency File Details</h2> 
  <table border="0" class="bodyTable table table-striped table-hover"> 
   <thead> 
-   <tr class="b"> 
+   <tr class="a"> 
     <th>Total</th> 
     <th>Size</th> 
     <th>Entries</th> 
@@ -1174,9 +1152,9 @@
    </tr> 
    <tr class="b"> 
     <td align="left">io.wcm.caravan.commons.httpclient-1.3.1-SNAPSHOT.jar</td> 
-    <td align="right">28.3 kB</td> 
-    <td align="right">32</td> 
-    <td align="right">11</td> 
+    <td align="right">26.9 kB</td> 
+    <td align="right">31</td> 
+    <td align="right">12</td> 
     <td align="right">3</td> 
     <td align="center">1.8</td> 
     <td align="center">Yes</td> 
@@ -1227,15 +1205,6 @@
     <td align="center">Yes</td> 
    </tr> 
    <tr class="b"> 
-    <td align="left">org.apache.felix.scr.annotations-1.12.0.jar</td> 
-    <td align="right">35 kB</td> 
-    <td align="right">44</td> 
-    <td align="right">23</td> 
-    <td align="right">3</td> 
-    <td align="center">1.6</td> 
-    <td align="center">Yes</td> 
-   </tr> 
-   <tr class="a"> 
     <td align="left">httpasyncclient-4.0.2.jar</td> 
     <td align="right">157.9 kB</td> 
     <td align="right">105</td> 
@@ -1244,7 +1213,7 @@
     <td align="center">1.5</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="b"> 
+   <tr class="a"> 
     <td align="left">httpclient-4.3.4.jar</td> 
     <td align="right">590 kB</td> 
     <td align="right">459</td> 
@@ -1253,7 +1222,7 @@
     <td align="center">1.5</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td align="left">httpcore-4.3.2.jar</td> 
     <td align="right">282.3 kB</td> 
     <td align="right">260</td> 
@@ -1262,7 +1231,7 @@
     <td align="center">1.5</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="b"> 
+   <tr class="a"> 
     <td align="left">httpcore-nio-4.3.2.jar</td> 
     <td align="right">316.5 kB</td> 
     <td align="right">249</td> 
@@ -1271,7 +1240,7 @@
     <td align="center">1.5</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td align="left">org.apache.sling.commons.osgi-2.4.0.jar</td> 
     <td align="right">33.7 kB</td> 
     <td align="right">36</td> 
@@ -1280,7 +1249,7 @@
     <td align="center">1.6</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="b"> 
+   <tr class="a"> 
     <td align="left">org.apache.sling.testing.osgi-mock.core-3.2.2.jar</td> 
     <td align="right">519.2 kB</td> 
     <td align="right">225</td> 
@@ -1289,7 +1258,7 @@
     <td align="center">1.8</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td align="left">org.apache.sling.testing.osgi-mock.junit4-3.2.2.jar</td> 
     <td align="right">12.9 kB</td> 
     <td align="right">22</td> 
@@ -1298,7 +1267,7 @@
     <td align="center">1.8</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="b"> 
+   <tr class="a"> 
     <td align="left">hamcrest-core-1.3.jar</td> 
     <td align="right">45 kB</td> 
     <td align="right">52</td> 
@@ -1307,7 +1276,7 @@
     <td align="center">1.5</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td align="left">javassist-3.28.0-GA.jar</td> 
     <td align="right">851.5 kB</td> 
     <td align="right">474</td> 
@@ -1316,7 +1285,7 @@
     <td align="center">1.8</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="b"> 
+   <tr class="a"> 
     <td align="left">mockito-core-2.25.1.jar</td> 
     <td align="right">581 kB</td> 
     <td align="right">623</td> 
@@ -1325,7 +1294,7 @@
     <td align="center">1.6</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td align="left">objenesis-2.6.jar</td> 
     <td align="right">55.7 kB</td> 
     <td align="right">59</td> 
@@ -1334,7 +1303,7 @@
     <td align="center">1.6</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="b"> 
+   <tr class="a"> 
     <td align="left">org.osgi.annotation.bundle-1.0.0.jar</td> 
     <td align="right">28.6 kB</td> 
     <td align="right">42</td> 
@@ -1343,7 +1312,7 @@
     <td align="center">1.7</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td align="left">org.osgi.annotation.versioning-1.0.0.jar</td> 
     <td align="right">14.8 kB</td> 
     <td align="right">28</td> 
@@ -1352,7 +1321,7 @@
     <td align="center">1.5</td> 
     <td align="center">No</td> 
    </tr> 
-   <tr class="b"> 
+   <tr class="a"> 
     <td align="left">org.osgi.framework-1.8.0.jar</td> 
     <td align="right">345 kB</td> 
     <td align="right">257</td> 
@@ -1361,7 +1330,7 @@
     <td align="center">1.5</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td align="left">org.osgi.service.cm-1.6.0.jar</td> 
     <td align="right">55.2 kB</td> 
     <td align="right">53</td> 
@@ -1370,7 +1339,7 @@
     <td align="center">1.7</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="b"> 
+   <tr class="a"> 
     <td align="left">org.osgi.service.component-1.4.0.jar</td> 
     <td align="right">47.6 kB</td> 
     <td align="right">65</td> 
@@ -1379,7 +1348,7 @@
     <td align="center">1.7</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td align="left">org.osgi.service.component.annotations-1.4.0.jar</td> 
     <td align="right">42.6 kB</td> 
     <td align="right">53</td> 
@@ -1388,7 +1357,7 @@
     <td align="center">1.7</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="b"> 
+   <tr class="a"> 
     <td align="left">org.osgi.service.event-1.3.1.jar</td> 
     <td align="right">36.8 kB</td> 
     <td align="right">36</td> 
@@ -1397,7 +1366,7 @@
     <td align="center">1.5</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td align="left">org.osgi.service.log-1.3.0.jar</td> 
     <td align="right">16.7 kB</td> 
     <td align="right">29</td> 
@@ -1406,7 +1375,7 @@
     <td align="center">1.2</td> 
     <td align="center">No</td> 
    </tr> 
-   <tr class="b"> 
+   <tr class="a"> 
     <td align="left">org.osgi.service.metatype.annotations-1.3.0.jar</td> 
     <td align="right">23.6 kB</td> 
     <td align="right">36</td> 
@@ -1415,7 +1384,7 @@
     <td align="center">1.5</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td align="left">reflections-0.10.2.jar</td> 
     <td align="right">130.4 kB</td> 
     <td align="right">87</td> 
@@ -1424,7 +1393,7 @@
     <td align="center">1.8</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="b"> 
+   <tr class="a"> 
     <td align="left">slf4j-api-1.7.6.jar</td> 
     <td align="right">28.7 kB</td> 
     <td align="right">35</td> 
@@ -1433,7 +1402,7 @@
     <td align="center">1.5</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td align="left">slf4j-simple-1.7.6.jar</td> 
     <td align="right">10.7 kB</td> 
     <td align="right">16</td> 
@@ -1442,16 +1411,16 @@
     <td align="center">1.5</td> 
     <td align="center">Yes</td> 
    </tr> 
-   <tr class="a"> 
-    <td align="right">36</td> 
-    <td align="right">12.5 MB</td> 
-    <td align="right">9565</td> 
-    <td align="right">8361</td> 
-    <td align="right">356</td> 
-    <td align="center">1.8</td> 
-    <td align="right">34</td> 
-   </tr> 
    <tr class="b"> 
+    <td align="right">35</td> 
+    <td align="right">12.5 MB</td> 
+    <td align="right">9520</td> 
+    <td align="right">8339</td> 
+    <td align="right">353</td> 
+    <td align="center">1.8</td> 
+    <td align="right">33</td> 
+   </tr> 
+   <tr class="a"> 
     <td align="right">compile: 6</td> 
     <td align="right">compile: 1.6 MB</td> 
     <td align="right">compile: 1333</td> 
@@ -1460,7 +1429,7 @@
     <td align="center">-</td> 
     <td align="right">compile: 6</td> 
    </tr> 
-   <tr class="a"> 
+   <tr class="b"> 
     <td align="right">test: 18</td> 
     <td align="right">test: 9.2 MB</td> 
     <td align="right">test: 6857</td> 
@@ -1469,14 +1438,14 @@
     <td align="center">-</td> 
     <td align="right">test: 17</td> 
    </tr> 
-   <tr class="b"> 
-    <td align="right">provided: 12</td> 
-    <td align="right">provided: 1.7 MB</td> 
-    <td align="right">provided: 1375</td> 
-    <td align="right">provided: 973</td> 
-    <td align="right">provided: 56</td> 
-    <td align="center">-</td> 
+   <tr class="a"> 
     <td align="right">provided: 11</td> 
+    <td align="right">provided: 1.7 MB</td> 
+    <td align="right">provided: 1330</td> 
+    <td align="right">provided: 951</td> 
+    <td align="right">provided: 53</td> 
+    <td align="center">-</td> 
+    <td align="right">provided: 10</td> 
    </tr> 
   </tbody> 
  </table> 

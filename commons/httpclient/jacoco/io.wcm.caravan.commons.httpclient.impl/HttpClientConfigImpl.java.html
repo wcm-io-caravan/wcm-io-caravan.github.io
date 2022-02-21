@@ -20,19 +20,17 @@
 package io.wcm.caravan.commons.httpclient.impl;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.ConfigurationPolicy;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Service;
-import org.apache.sling.commons.osgi.PropertiesUtil;
-import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,187 +41,181 @@ import io.wcm.caravan.commons.httpclient.impl.helpers.CertificateLoader;
 /**
  * Default implementation of {@link HttpClientConfig}.
  */
-@Component(metatype = true, immediate = true,
-label = &quot;wcm.io Caravan HTTP Client Configuration&quot;,
-description = &quot;Allows to configure special HTTP client settings for target hosts&quot;,
-configurationFactory = true, policy = ConfigurationPolicy.REQUIRE)
-@Service(HttpClientConfig.class)
-@Property(name = &quot;webconsole.configurationFactory.nameHint&quot;, value = &quot;{hostPatterns} {wsAddressingToUris} {pathPatterns}&quot;)
-<span class="fc" id="L52">public class HttpClientConfigImpl extends AbstractHttpClientConfig {</span>
+@Component(service = HttpClientConfig.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
+    property = &quot;webconsole.configurationFactory.nameHint={hostPatterns} {wsAddressingToUris} {pathPatterns}&quot;)
+@Designate(ocd = HttpClientConfigImpl.Config.class, factory = true)
+<span class="fc" id="L47">public class HttpClientConfigImpl extends AbstractHttpClientConfig {</span>
 
-  /**
-   * Host pattern
-   */
-  @Property(label = &quot;Host pattern&quot;, description = &quot;Regular expressions for matching the host name(s)&quot;,
-      cardinality = Integer.MAX_VALUE)
-  public static final String HOST_PATTERNS_PROPERTY = &quot;hostPatterns&quot;;
+  @ObjectClassDefinition(name = &quot;wcm.io Caravan HTTP Client Configuration&quot;,
+      description = &quot;Allows to configure special HTTP client settings for target hosts.&quot;)
+  static @interface Config {
 
-  /**
-   * WS Uri
-   */
-  @Property(label = &quot;WS Uri&quot;, description = &quot;List of WS Addressing To URIs for SOAP calls&quot;,
-      cardinality = Integer.MAX_VALUE)
-  public static final String WS_ADDRESSINGTO_URIS_PROPERTY = &quot;wsAddressingToUris&quot;;
+    /**
+     * Host pattern
+     */
+    @AttributeDefinition(name = &quot;Host pattern&quot;, description = &quot;Regular expressions for matching the host name(s)&quot;)
+    String[] hostPatterns();
 
-  /**
-   * Path pattern
-   */
-  @Property(label = &quot;Path pattern&quot;, description = &quot;Regular expressions for matching the path part of the target URLs&quot;,
-      cardinality = Integer.MAX_VALUE)
-  public static final String PATH_PATTERNS_PROPERTY = &quot;pathPatterns&quot;;
+    /**
+     * WS Uri
+     */
+    @AttributeDefinition(name = &quot;WS Uri&quot;, description = &quot;List of WS Addressing To URIs for SOAP calls&quot;)
+    String[] wsAddressingToUris();
 
-  /**
-   * Connection request timeout
-   */
-  @Property(label = &quot;Connection request timeout&quot;, description = &quot;Max. timeout to wait for getting a connection from the connection manager (ms)&quot;,
-      intValue = HttpClientConfig.CONNECTION_REQUEST_TIMEOUT_DEFAULT)
-  public static final String CONNECTION_REQUEST_TIMEOUT_PROPERTY = &quot;connectionRequestTimeout&quot;;
+    /**
+     * Path pattern
+     */
+    @AttributeDefinition(name = &quot;Path pattern&quot;, description = &quot;Regular expressions for matching the path part of the target URLs&quot;)
+    String[] pathPatterns();
 
-  /**
-   * Connect timeout
-   */
-  @Property(label = &quot;Connect timeout&quot;, description = &quot;Max. timeout to wait for HTTP connection (ms)&quot;,
-      intValue = HttpClientConfig.CONNECT_TIMEOUT_DEFAULT)
-  public static final String CONNECT_TIMEOUT_PROPERTY = &quot;connectTimeout&quot;;
+    /**
+     * Connection request timeout
+     */
+    @AttributeDefinition(name = &quot;Connection request timeout&quot;, description = &quot;Max. timeout to wait for getting a connection from the connection manager (ms)&quot;)
+    int connectionRequestTimeout() default HttpClientConfig.CONNECTION_REQUEST_TIMEOUT_DEFAULT;
 
-  /**
-   * Socket timeout
-   */
-  @Property(label = &quot;Socket timeout&quot;, description = &quot;Max. timeout to wait for a HTTP response (ms)&quot;,
-      intValue = HttpClientConfig.SOCKET_TIMEOUT_DEFAULT)
-  public static final String SOCKET_TIMEOUT_PROPERTY = &quot;socketTimeout&quot;;
+    /**
+     * Connect timeout
+     */
+    @AttributeDefinition(name = &quot;Connect timeout&quot;, description = &quot;Max. timeout to wait for HTTP connection (ms)&quot;)
+    int connectTimeout() default HttpClientConfig.CONNECT_TIMEOUT_DEFAULT;
 
-  /**
-   * Max per host
-   */
-  @Property(label = &quot;Max per host&quot;, description = &quot;Max connections per host&quot;,
-      intValue = HttpClientConfig.MAX_CONNECTIONS_PER_HOST_DEFAULT)
-  public static final String MAX_CONNECTIONS_PER_HOST_PROPERTY = &quot;maxConnectionsPerHost&quot;;
+    /**
+     * Socket timeout
+     */
+    @AttributeDefinition(name = &quot;Socket timeout&quot;, description = &quot;Max. timeout to wait for a HTTP response (ms)&quot;)
+    int socketTimeout() default HttpClientConfig.SOCKET_TIMEOUT_DEFAULT;
 
-  /**
-   * Max total
-   */
-  @Property(label = &quot;Max total&quot;, description = &quot;Max total connections&quot;,
-      intValue = HttpClientConfig.MAX_TOTAL_CONNECTIONS_DEFAULT)
-  public static final String MAX_TOTAL_CONNECTIONS_PROPERTY = &quot;maxTotalConnections&quot;;
+    /**
+     * Max per host
+     */
+    @AttributeDefinition(name = &quot;Max per host&quot;, description = &quot;Max connections per host&quot;)
+    int maxConnectionsPerHost() default HttpClientConfig.MAX_CONNECTIONS_PER_HOST_DEFAULT;
 
-  /**
-   * Http user
-   */
-  @Property(label = &quot;Http user&quot;, description = &quot;User name for basic HTTP authentication&quot;)
-  public static final String HTTP_USER_PROPERTY = &quot;httpUser&quot;;
+    /**
+     * Max total
+     */
+    @AttributeDefinition(name = &quot;Max total&quot;, description = &quot;Max total connections&quot;)
+    int maxTotalConnections() default HttpClientConfig.MAX_TOTAL_CONNECTIONS_DEFAULT;
 
-  /**
-   * Http password
-   */
-  @Property(label = &quot;Http password&quot;, description = &quot;Password for basic HTTP authentication&quot;)
-  public static final String HTTP_PASSWORD_PROPERTY = &quot;httpPassword&quot;;
+    /**
+     * Http user
+     */
+    @AttributeDefinition(name = &quot;Http user&quot;, description = &quot;User name for basic HTTP authentication&quot;)
+    String httpUser();
 
-  /**
-   * Proxy host
-   */
-  @Property(label = &quot;Proxy host&quot;, description = &quot;Proxy hostname&quot;)
-  public static final String PROXY_HOST_PROPERTY = &quot;proxyHost&quot;;
+    /**
+     * Http password
+     */
+    @AttributeDefinition(name = &quot;Http password&quot;, description = &quot;Password for basic HTTP authentication&quot;)
+    String httpPassword();
 
-  /**
-   * Proxy port
-   */
-  @Property(label = &quot;Proxy port&quot;, description = &quot;Proxy port&quot;, intValue = 0)
-  public static final String PROXY_PORT_PROPERTY = &quot;proxyPort&quot;;
+    /**
+     * Proxy host
+     */
+    @AttributeDefinition(name = &quot;Proxy host&quot;, description = &quot;Proxy hostname&quot;)
+    String proxyHost();
 
-  /**
-   * Proxy user
-   */
-  @Property(label = &quot;Proxy user&quot;, description = &quot;Proxy user name&quot;)
-  public static final String PROXY_USER_PROPERTY = &quot;proxyUser&quot;;
+    /**
+     * Proxy port
+     */
+    @AttributeDefinition(name = &quot;Proxy port&quot;, description = &quot;Proxy port&quot;)
+    int proxyPort();
 
-  /**
-   * Proxy password
-   */
-  @Property(label = &quot;Proxy password&quot;, description = &quot;Proxy password&quot;)
-  public static final String PROXY_PASSWORD_PROPERTY = &quot;proxyPassword&quot;;
+    /**
+     * Proxy user
+     */
+    @AttributeDefinition(name = &quot;Proxy user&quot;, description = &quot;Proxy user name&quot;)
+    String proxyUser();
 
-  /**
-   * SSL context type
-   */
-  @Property(label = &quot;SSL context type&quot;, description = &quot;SSL context type&quot;,
-      value = CertificateLoader.SSL_CONTEXT_TYPE_DEFAULT)
-  public static final String SSL_CONTEXT_TYPE_PROPERTY = &quot;sslContextType&quot;;
+    /**
+     * Proxy password
+     */
+    @AttributeDefinition(name = &quot;Proxy password&quot;, description = &quot;Proxy password&quot;)
+    String proxyPassword();
 
-  /**
-   * KeyManager type
-   */
-  @Property(label = &quot;KeyManager type&quot;, description = &quot;KeyManager type&quot;,
-      value = CertificateLoader.KEY_MANAGER_TYPE_DEFAULT)
-  public static final String KEYMANAGER_TYPE_PROPERTY = &quot;keyManagerType&quot;;
+    /**
+     * SSL context type
+     */
+    @AttributeDefinition(name = &quot;SSL context type&quot;, description = &quot;SSL context type&quot;)
+    String sslContextType() default CertificateLoader.SSL_CONTEXT_TYPE_DEFAULT;
 
-  /**
-   * KeyStore type
-   */
-  @Property(label = &quot;KeyStore type&quot;, description = &quot;KeyStore type&quot;,
-      value = CertificateLoader.KEY_STORE_TYPE_DEFAULT)
-  public static final String KEYSTORE_TYPE_PROPERTY = &quot;keyStoreType&quot;;
+    /**
+     * KeyManager type
+     */
+    @AttributeDefinition(name = &quot;KeyManager type&quot;, description = &quot;KeyManager type&quot;)
+    String keyManagerType() default CertificateLoader.KEY_MANAGER_TYPE_DEFAULT;
 
-  /**
-   * KeyStore provider
-   */
-  @Property(label = &quot;KeyStore provider&quot;, description = &quot;KeyStore provider. If not set the first matching security provider is used.&quot;)
-  public static final String KEYSTORE_PROVIDER_PROPERTY = &quot;keyStoreProvider&quot;;
+    /**
+     * KeyStore type
+     */
+    @AttributeDefinition(name = &quot;KeyStore type&quot;, description = &quot;KeyStore type&quot;)
+    String keyStoreType() default CertificateLoader.KEY_STORE_TYPE_DEFAULT;
 
-  /**
-   * KeyStore path
-   */
-  @Property(label = &quot;KeyStore path&quot;, description = &quot;KeyStore path&quot;)
-  public static final String KEYSTORE_PATH_PROPERTY = &quot;keyStorePath&quot;;
+    /**
+     * KeyStore provider
+     */
+    @AttributeDefinition(name = &quot;KeyStore provider&quot;, description = &quot;KeyStore provider. If not set the first matching security provider is used.&quot;)
+    String keyStoreProvider();
 
-  /**
-   * KeyStore password
-   */
-  @Property(label = &quot;KeyStore password&quot;, description = &quot;KeyStore password&quot;)
-  public static final String KEYSTORE_PASSWORD_PROPERTY = &quot;keyStorePassword&quot;;
+    /**
+     * KeyStore path
+     */
+    @AttributeDefinition(name = &quot;KeyStore path&quot;, description = &quot;KeyStore path&quot;)
+    String keyStorePath();
 
-  /**
-   * TrustManager type
-   */
-  @Property(label = &quot;TrustManager type&quot;, description = &quot;TrustManager type&quot;,
-      value = CertificateLoader.TRUST_MANAGER_TYPE_DEFAULT)
-  public static final String TRUSTMANAGER_TYPE_PROPERTY = &quot;trustManagerType&quot;;
+    /**
+     * KeyStore password
+     */
+    @AttributeDefinition(name = &quot;KeyStore password&quot;, description = &quot;KeyStore password&quot;)
+    String keyStorePassword();
 
-  /**
-   * TrustStore type
-   */
-  @Property(label = &quot;TrustStore type&quot;, description = &quot;TrustStore type&quot;,
-      value = CertificateLoader.TRUST_STORE_TYPE_DEFAULT)
-  public static final String TRUSTSTORE_TYPE_PROPERTY = &quot;trustStoreType&quot;;
+    /**
+     * TrustManager type
+     */
+    @AttributeDefinition(name = &quot;TrustManager type&quot;, description = &quot;TrustManager type&quot;)
+    String trustManagerType() default CertificateLoader.TRUST_MANAGER_TYPE_DEFAULT;
 
-  /**
-   * TrustStore provider
-   */
-  @Property(label = &quot;TrustStore provider&quot;, description = &quot;TrustStore provider. If not set the first matching security provider is used.&quot;)
-  public static final String TRUSTSTORE_PROVIDER_PROPERTY = &quot;trustStoreProvider&quot;;
+    /**
+     * TrustStore type
+     */
+    @AttributeDefinition(name = &quot;TrustStore type&quot;, description = &quot;TrustStore type&quot;)
+    String trustStoreType() default CertificateLoader.TRUST_STORE_TYPE_DEFAULT;
 
-  /**
-   * TrustStore path
-   */
-  @Property(label = &quot;TrustStore path&quot;, description = &quot;TrustStore path&quot;)
-  public static final String TRUSTSTORE_PATH_PROPERTY = &quot;trustStorePath&quot;;
+    /**
+     * TrustStore provider
+     */
+    @AttributeDefinition(name = &quot;TrustStore provider&quot;, description = &quot;TrustStore provider. If not set the first matching security provider is used.&quot;)
+    String trustStoreProvider();
 
-  /**
-   * TrustStore password
-   */
-  @Property(label = &quot;TrustStore password&quot;, description = &quot;TrustStore password&quot;)
-  public static final String TRUSTSTORE_PASSWORD_PROPERTY = &quot;trustStorePassword&quot;;
+    /**
+     * TrustStore path
+     */
+    @AttributeDefinition(name = &quot;TrustStore path&quot;, description = &quot;TrustStore path&quot;)
+    String trustStorePath();
 
-  /**
-   * Enabled
-   */
-  @Property(label = &quot;Enabled&quot;, description = &quot;Enable this HTTP client configuration&quot;,
-      boolValue = HttpClientConfigImpl.ENABLED_DEFAULT)
-  public static final String ENABLED_PROPERTY = &quot;enabled&quot;;
-  static final boolean ENABLED_DEFAULT = true;
-  @Property(label = &quot;Service Ranking&quot;, description = &quot;Allows to define an order in which the HTTP client configurations are evaluated. Lower value = higher ranking.&quot;,
-      propertyPrivate = false)
-  private static final String SERVICE_RANKING = Constants.SERVICE_RANKING;
+    /**
+     * TrustStore password
+     */
+    @AttributeDefinition(name = &quot;TrustStore password&quot;, description = &quot;TrustStore password&quot;)
+    String trustStorePassword();
+
+    /**
+     * Enabled
+     */
+    @AttributeDefinition(name = &quot;Enabled&quot;, description = &quot;Enable this HTTP client configuration&quot;)
+    boolean enabled() default true;
+
+    /**
+     * Service Ranking.
+     */
+    @AttributeDefinition(name = &quot;Service Ranking&quot;,
+        description = &quot;Allows to define an order in which the HTTP client configurations are evaluated. Lower value = higher ranking.&quot;)
+    @SuppressWarnings(&quot;java:S100&quot;) // property name is service.ranking
+    int service_ranking();
+
+  }
+
 
   private boolean enabled;
 
@@ -254,229 +246,229 @@ configurationFactory = true, policy = ConfigurationPolicy.REQUIRE)
   private String trustStorePath;
   private String trustStorePassword;
 
-<span class="fc" id="L257">  private static final Logger log = LoggerFactory.getLogger(HttpClientConfigImpl.class);</span>
+<span class="fc" id="L249">  private static final Logger log = LoggerFactory.getLogger(HttpClientConfigImpl.class);</span>
 
   @Activate
-  private void activate(Map&lt;String, Object&gt; config) {
-<span class="fc" id="L261">    enabled = PropertiesUtil.toBoolean(config.get(ENABLED_PROPERTY), ENABLED_DEFAULT);</span>
+  private void activate(Config config) {
+<span class="fc" id="L253">    enabled = config.enabled();</span>
 
-<span class="fc" id="L263">    connectionRequestTimeout = PropertiesUtil.toInteger(config.get(CONNECTION_REQUEST_TIMEOUT_PROPERTY), HttpClientConfig.CONNECTION_REQUEST_TIMEOUT_DEFAULT);</span>
-<span class="fc" id="L264">    connectTimeout = PropertiesUtil.toInteger(config.get(CONNECT_TIMEOUT_PROPERTY), HttpClientConfig.CONNECT_TIMEOUT_DEFAULT);</span>
-<span class="fc" id="L265">    socketTimeout = PropertiesUtil.toInteger(config.get(SOCKET_TIMEOUT_PROPERTY), HttpClientConfig.SOCKET_TIMEOUT_DEFAULT);</span>
-<span class="fc" id="L266">    maxConnectionsPerHost = PropertiesUtil.toInteger(config.get(MAX_CONNECTIONS_PER_HOST_PROPERTY), HttpClientConfig.MAX_CONNECTIONS_PER_HOST_DEFAULT);</span>
-<span class="fc" id="L267">    maxTotalConnections = PropertiesUtil.toInteger(config.get(MAX_TOTAL_CONNECTIONS_PROPERTY), HttpClientConfig.MAX_TOTAL_CONNECTIONS_DEFAULT);</span>
-<span class="fc" id="L268">    httpUser = PropertiesUtil.toString(config.get(HTTP_USER_PROPERTY), null);</span>
-<span class="fc" id="L269">    httpPassword = PropertiesUtil.toString(config.get(HTTP_PASSWORD_PROPERTY), null);</span>
-<span class="fc" id="L270">    proxyHost = PropertiesUtil.toString(config.get(PROXY_HOST_PROPERTY), null);</span>
-<span class="fc" id="L271">    proxyPort = PropertiesUtil.toInteger(config.get(PROXY_PORT_PROPERTY), 0);</span>
-<span class="fc" id="L272">    proxyUser = PropertiesUtil.toString(config.get(PROXY_USER_PROPERTY), null);</span>
-<span class="fc" id="L273">    proxyPassword = PropertiesUtil.toString(config.get(PROXY_PASSWORD_PROPERTY), null);</span>
+<span class="fc" id="L255">    connectionRequestTimeout = config.connectionRequestTimeout();</span>
+<span class="fc" id="L256">    connectTimeout = config.connectTimeout();</span>
+<span class="fc" id="L257">    socketTimeout = config.socketTimeout();</span>
+<span class="fc" id="L258">    maxConnectionsPerHost = config.maxConnectionsPerHost();</span>
+<span class="fc" id="L259">    maxTotalConnections = config.maxTotalConnections();</span>
+<span class="fc" id="L260">    httpUser = config.httpUser();</span>
+<span class="fc" id="L261">    httpPassword = config.httpPassword();</span>
+<span class="fc" id="L262">    proxyHost = config.proxyHost();</span>
+<span class="fc" id="L263">    proxyPort = config.proxyPort();</span>
+<span class="fc" id="L264">    proxyUser = config.proxyUser();</span>
+<span class="fc" id="L265">    proxyPassword = config.proxyPassword();</span>
 
-<span class="fc" id="L275">    hostPatterns = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L276">    String[] hostPatternsArray = PropertiesUtil.toStringArray(config.get(HOST_PATTERNS_PROPERTY), new String[0]);</span>
-<span class="fc bfc" id="L277" title="All 2 branches covered.">    for (String hostPatternString : hostPatternsArray) {</span>
-<span class="pc bpc" id="L278" title="1 of 2 branches missed.">      if (StringUtils.isNotBlank(hostPatternString)) {</span>
+<span class="fc" id="L267">    hostPatterns = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L268">    String[] hostPatternsArray = config.hostPatterns();</span>
+<span class="fc bfc" id="L269" title="All 2 branches covered.">    for (String hostPatternString : hostPatternsArray) {</span>
+<span class="pc bpc" id="L270" title="1 of 2 branches missed.">      if (StringUtils.isNotBlank(hostPatternString)) {</span>
         try {
-<span class="fc" id="L280">          hostPatterns.add(Pattern.compile(hostPatternString));</span>
+<span class="fc" id="L272">          hostPatterns.add(Pattern.compile(hostPatternString));</span>
         }
-<span class="fc" id="L282">        catch (PatternSyntaxException ex) {</span>
-<span class="fc" id="L283">          log.warn(&quot;Invalid host name pattern '&quot; + hostPatternString + &quot;': &quot; + ex.getMessage(), ex);</span>
-<span class="fc" id="L284">          this.enabled = false;</span>
-<span class="fc" id="L285">        }</span>
+<span class="fc" id="L274">        catch (PatternSyntaxException ex) {</span>
+<span class="fc" id="L275">          log.warn(&quot;Invalid host name pattern '&quot; + hostPatternString + &quot;': &quot; + ex.getMessage(), ex);</span>
+<span class="fc" id="L276">          this.enabled = false;</span>
+<span class="fc" id="L277">        }</span>
       }
     }
 
-<span class="fc" id="L289">    wsAddressingToUris = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L290">    String[] wsAddressingToUrisArray = PropertiesUtil.toStringArray(config.get(WS_ADDRESSINGTO_URIS_PROPERTY), new String[0]);</span>
-<span class="fc bfc" id="L291" title="All 2 branches covered.">    for (String wsAddressingToUriString : wsAddressingToUrisArray) {</span>
-<span class="pc bpc" id="L292" title="1 of 2 branches missed.">      if (StringUtils.isNotBlank(wsAddressingToUriString)) {</span>
-<span class="fc" id="L293">        wsAddressingToUris.add(wsAddressingToUriString);</span>
+<span class="fc" id="L281">    wsAddressingToUris = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L282">    String[] wsAddressingToUrisArray = config.wsAddressingToUris();</span>
+<span class="fc bfc" id="L283" title="All 2 branches covered.">    for (String wsAddressingToUriString : wsAddressingToUrisArray) {</span>
+<span class="pc bpc" id="L284" title="1 of 2 branches missed.">      if (StringUtils.isNotBlank(wsAddressingToUriString)) {</span>
+<span class="fc" id="L285">        wsAddressingToUris.add(wsAddressingToUriString);</span>
       }
     }
 
-<span class="fc" id="L297">    pathPatterns = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L298">    String[] pathPatternsArray = PropertiesUtil.toStringArray(config.get(PATH_PATTERNS_PROPERTY), new String[0]);</span>
-<span class="fc bfc" id="L299" title="All 2 branches covered.">    for (String pathPatternString : pathPatternsArray) {</span>
-<span class="pc bpc" id="L300" title="1 of 2 branches missed.">      if (StringUtils.isNotBlank(pathPatternString)) {</span>
+<span class="fc" id="L289">    pathPatterns = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L290">    String[] pathPatternsArray = config.pathPatterns();</span>
+<span class="fc bfc" id="L291" title="All 2 branches covered.">    for (String pathPatternString : pathPatternsArray) {</span>
+<span class="pc bpc" id="L292" title="1 of 2 branches missed.">      if (StringUtils.isNotBlank(pathPatternString)) {</span>
         try {
-<span class="fc" id="L302">          pathPatterns.add(Pattern.compile(pathPatternString));</span>
+<span class="fc" id="L294">          pathPatterns.add(Pattern.compile(pathPatternString));</span>
         }
-<span class="nc" id="L304">        catch (PatternSyntaxException ex) {</span>
-<span class="nc" id="L305">          log.warn(&quot;Invalid path pattern '&quot; + pathPatternString + &quot;': &quot; + ex.getMessage(), ex);</span>
-<span class="nc" id="L306">          this.enabled = false;</span>
-<span class="fc" id="L307">        }</span>
+<span class="nc" id="L296">        catch (PatternSyntaxException ex) {</span>
+<span class="nc" id="L297">          log.warn(&quot;Invalid path pattern '&quot; + pathPatternString + &quot;': &quot; + ex.getMessage(), ex);</span>
+<span class="nc" id="L298">          this.enabled = false;</span>
+<span class="fc" id="L299">        }</span>
       }
     }
 
-<span class="fc" id="L311">    sslContextType = PropertiesUtil.toString(config.get(SSL_CONTEXT_TYPE_PROPERTY), CertificateLoader.SSL_CONTEXT_TYPE_DEFAULT);</span>
-<span class="fc" id="L312">    keyManagerType = PropertiesUtil.toString(config.get(KEYMANAGER_TYPE_PROPERTY), CertificateLoader.KEY_MANAGER_TYPE_DEFAULT);</span>
-<span class="fc" id="L313">    keyStoreType = PropertiesUtil.toString(config.get(KEYSTORE_TYPE_PROPERTY), CertificateLoader.KEY_STORE_TYPE_DEFAULT);</span>
-<span class="fc" id="L314">    keyStoreProvider = PropertiesUtil.toString(config.get(KEYSTORE_PROVIDER_PROPERTY), null);</span>
-<span class="fc" id="L315">    keyStorePath = PropertiesUtil.toString(config.get(KEYSTORE_PATH_PROPERTY), null);</span>
-<span class="fc" id="L316">    keyStorePassword = PropertiesUtil.toString(config.get(KEYSTORE_PASSWORD_PROPERTY), null);</span>
-<span class="fc" id="L317">    trustManagerType = PropertiesUtil.toString(config.get(TRUSTMANAGER_TYPE_PROPERTY), CertificateLoader.TRUST_MANAGER_TYPE_DEFAULT);</span>
-<span class="fc" id="L318">    trustStoreType = PropertiesUtil.toString(config.get(TRUSTSTORE_TYPE_PROPERTY), CertificateLoader.TRUST_STORE_TYPE_DEFAULT);</span>
-<span class="fc" id="L319">    trustStoreProvider = PropertiesUtil.toString(config.get(TRUSTSTORE_PROVIDER_PROPERTY), null);</span>
-<span class="fc" id="L320">    trustStorePath = PropertiesUtil.toString(config.get(TRUSTSTORE_PATH_PROPERTY), null);</span>
-<span class="fc" id="L321">    trustStorePassword = PropertiesUtil.toString(config.get(TRUSTSTORE_PASSWORD_PROPERTY), null);</span>
-<span class="fc" id="L322">  }</span>
+<span class="fc" id="L303">    sslContextType = config.sslContextType();</span>
+<span class="fc" id="L304">    keyManagerType = config.keyManagerType();</span>
+<span class="fc" id="L305">    keyStoreType = config.keyStoreType();</span>
+<span class="fc" id="L306">    keyStoreProvider = config.keyStoreProvider();</span>
+<span class="fc" id="L307">    keyStorePath = config.keyStorePath();</span>
+<span class="fc" id="L308">    keyStorePassword = config.keyStorePassword();</span>
+<span class="fc" id="L309">    trustManagerType = config.trustManagerType();</span>
+<span class="fc" id="L310">    trustStoreType = config.trustStoreType();</span>
+<span class="fc" id="L311">    trustStoreProvider = config.trustStoreProvider();</span>
+<span class="fc" id="L312">    trustStorePath = config.trustStorePath();</span>
+<span class="fc" id="L313">    trustStorePassword = config.trustStorePassword();</span>
+<span class="fc" id="L314">  }</span>
 
   @Override
   public boolean isEnabled() {
-<span class="fc" id="L326">    return this.enabled;</span>
+<span class="fc" id="L318">    return this.enabled;</span>
   }
 
   @Override
   public int getConnectionRequestTimeout() {
-<span class="fc" id="L331">    return connectionRequestTimeout;</span>
+<span class="fc" id="L323">    return connectionRequestTimeout;</span>
   }
 
   @Override
   public int getConnectTimeout() {
-<span class="fc" id="L336">    return connectTimeout;</span>
+<span class="fc" id="L328">    return connectTimeout;</span>
   }
 
   @Override
   public int getSocketTimeout() {
-<span class="fc" id="L341">    return socketTimeout;</span>
+<span class="fc" id="L333">    return socketTimeout;</span>
   }
 
   @Override
   public int getMaxConnectionsPerHost() {
-<span class="fc" id="L346">    return maxConnectionsPerHost;</span>
+<span class="fc" id="L338">    return maxConnectionsPerHost;</span>
   }
 
   @Override
   public int getMaxTotalConnections() {
-<span class="fc" id="L351">    return maxTotalConnections;</span>
+<span class="fc" id="L343">    return maxTotalConnections;</span>
   }
 
   @Override
   public String getHttpUser() {
-<span class="fc" id="L356">    return httpUser;</span>
+<span class="fc" id="L348">    return httpUser;</span>
   }
 
   @Override
   public String getHttpPassword() {
-<span class="fc" id="L361">    return httpPassword;</span>
+<span class="fc" id="L353">    return httpPassword;</span>
   }
 
   @Override
   public String getProxyHost() {
-<span class="fc" id="L366">    return proxyHost;</span>
+<span class="fc" id="L358">    return proxyHost;</span>
   }
 
   @Override
   public int getProxyPort() {
-<span class="fc" id="L371">    return proxyPort;</span>
+<span class="fc" id="L363">    return proxyPort;</span>
   }
 
   @Override
   public String getProxyUser() {
-<span class="fc" id="L376">    return proxyUser;</span>
+<span class="fc" id="L368">    return proxyUser;</span>
   }
 
   @Override
   public String getProxyPassword() {
-<span class="fc" id="L381">    return proxyPassword;</span>
+<span class="fc" id="L373">    return proxyPassword;</span>
   }
 
   @Override
   public boolean matchesHost(String host) {
-<span class="fc bfc" id="L386" title="All 2 branches covered.">    if (hostPatterns.isEmpty()) {</span>
-<span class="fc" id="L387">      return true;</span>
+<span class="fc bfc" id="L378" title="All 2 branches covered.">    if (hostPatterns.isEmpty()) {</span>
+<span class="fc" id="L379">      return true;</span>
     }
-<span class="pc bpc" id="L389" title="1 of 2 branches missed.">    if (StringUtils.isEmpty(host)) {</span>
-<span class="nc" id="L390">      return false;</span>
+<span class="pc bpc" id="L381" title="1 of 2 branches missed.">    if (StringUtils.isEmpty(host)) {</span>
+<span class="nc" id="L382">      return false;</span>
     }
-<span class="fc bfc" id="L392" title="All 2 branches covered.">    for (Pattern hostPattern : hostPatterns) {</span>
-<span class="fc bfc" id="L393" title="All 2 branches covered.">      if (hostPattern.matcher(host).matches()) {</span>
-<span class="fc" id="L394">        return true;</span>
+<span class="fc bfc" id="L384" title="All 2 branches covered.">    for (Pattern hostPattern : hostPatterns) {</span>
+<span class="fc bfc" id="L385" title="All 2 branches covered.">      if (hostPattern.matcher(host).matches()) {</span>
+<span class="fc" id="L386">        return true;</span>
       }
-<span class="fc" id="L396">    }</span>
-<span class="fc" id="L397">    return false;</span>
+<span class="fc" id="L388">    }</span>
+<span class="fc" id="L389">    return false;</span>
   }
 
   @Override
   public boolean matchesWsAddressingToUri(String addressingToUri) {
-<span class="fc bfc" id="L402" title="All 2 branches covered.">    if (wsAddressingToUris.isEmpty()) {</span>
-<span class="fc" id="L403">      return true;</span>
+<span class="fc bfc" id="L394" title="All 2 branches covered.">    if (wsAddressingToUris.isEmpty()) {</span>
+<span class="fc" id="L395">      return true;</span>
     }
-<span class="fc bfc" id="L405" title="All 2 branches covered.">    if (StringUtils.isEmpty(addressingToUri)) {</span>
-<span class="fc" id="L406">      return false;</span>
+<span class="fc bfc" id="L397" title="All 2 branches covered.">    if (StringUtils.isEmpty(addressingToUri)) {</span>
+<span class="fc" id="L398">      return false;</span>
     }
-<span class="fc" id="L408">    return wsAddressingToUris.contains(addressingToUri);</span>
+<span class="fc" id="L400">    return wsAddressingToUris.contains(addressingToUri);</span>
   }
 
   @Override
   public boolean matchesPath(final String path) {
-<span class="fc bfc" id="L413" title="All 2 branches covered.">    if (pathPatterns.isEmpty()) {</span>
-<span class="fc" id="L414">      return true;</span>
+<span class="fc bfc" id="L405" title="All 2 branches covered.">    if (pathPatterns.isEmpty()) {</span>
+<span class="fc" id="L406">      return true;</span>
     }
-<span class="fc bfc" id="L416" title="All 2 branches covered.">    if (StringUtils.isEmpty(path)) {</span>
-<span class="fc" id="L417">      return false;</span>
+<span class="fc bfc" id="L408" title="All 2 branches covered.">    if (StringUtils.isEmpty(path)) {</span>
+<span class="fc" id="L409">      return false;</span>
     }
-<span class="fc bfc" id="L419" title="All 2 branches covered.">    for (Pattern pathPattern : pathPatterns) {</span>
-<span class="fc bfc" id="L420" title="All 2 branches covered.">      if (pathPattern.matcher(path).matches()) {</span>
-<span class="fc" id="L421">        return true;</span>
+<span class="fc bfc" id="L411" title="All 2 branches covered.">    for (Pattern pathPattern : pathPatterns) {</span>
+<span class="fc bfc" id="L412" title="All 2 branches covered.">      if (pathPattern.matcher(path).matches()) {</span>
+<span class="fc" id="L413">        return true;</span>
       }
-<span class="fc" id="L423">    }</span>
-<span class="fc" id="L424">    return false;</span>
+<span class="fc" id="L415">    }</span>
+<span class="fc" id="L416">    return false;</span>
   }
 
   @Override
   public String getSslContextType() {
-<span class="fc" id="L429">    return sslContextType;</span>
+<span class="fc" id="L421">    return sslContextType;</span>
   }
 
   @Override
   public String getKeyManagerType() {
-<span class="fc" id="L434">    return keyManagerType;</span>
+<span class="fc" id="L426">    return keyManagerType;</span>
   }
 
   @Override
   public String getKeyStoreType() {
-<span class="fc" id="L439">    return keyStoreType;</span>
+<span class="fc" id="L431">    return keyStoreType;</span>
   }
 
   @Override
   public String getKeyStoreProvider() {
-<span class="fc" id="L444">    return keyStoreProvider;</span>
+<span class="fc" id="L436">    return keyStoreProvider;</span>
   }
 
   @Override
   public String getKeyStorePath() {
-<span class="fc" id="L449">    return keyStorePath;</span>
+<span class="fc" id="L441">    return keyStorePath;</span>
   }
 
   @Override
   public String getKeyStorePassword() {
-<span class="fc" id="L454">    return keyStorePassword;</span>
+<span class="fc" id="L446">    return keyStorePassword;</span>
   }
 
   @Override
   public String getTrustManagerType() {
-<span class="fc" id="L459">    return trustManagerType;</span>
+<span class="fc" id="L451">    return trustManagerType;</span>
   }
 
   @Override
   public String getTrustStoreType() {
-<span class="fc" id="L464">    return trustStoreType;</span>
+<span class="fc" id="L456">    return trustStoreType;</span>
   }
 
   @Override
   public String getTrustStoreProvider() {
-<span class="fc" id="L469">    return trustStoreProvider;</span>
+<span class="fc" id="L461">    return trustStoreProvider;</span>
   }
 
   @Override
   public String getTrustStorePath() {
-<span class="fc" id="L474">    return trustStorePath;</span>
+<span class="fc" id="L466">    return trustStorePath;</span>
   }
 
   @Override
   public String getTrustStorePassword() {
-<span class="fc" id="L479">    return trustStorePassword;</span>
+<span class="fc" id="L471">    return trustStorePassword;</span>
   }
 
 }
