@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":18,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":18,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6,"i15":6,"i16":6,"i17":6,"i18":6,"i19":6,"i20":18,"i21":6,"i22":6,"i23":6,"i24":18,"i25":6};
+var methods = {"i0":18,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":18,"i9":6,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6,"i15":6,"i16":6,"i17":6,"i18":6,"i19":6,"i20":6,"i21":18,"i22":6,"i23":6,"i24":6,"i25":18,"i26":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -134,18 +134,24 @@ public interface <span class="typeNameLabel">HttpClientConfig</span></pre>
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#COOKIE_SPEC_DEFAULT">COOKIE_SPEC_DEFAULT</a></span></code>
+<div class="block">Default value for cookie specs.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#MAX_CONNECTIONS_PER_HOST_DEFAULT">MAX_CONNECTIONS_PER_HOST_DEFAULT</a></span></code>
 <div class="block">Default value for default maximum connections per host</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#MAX_TOTAL_CONNECTIONS_DEFAULT">MAX_TOTAL_CONNECTIONS_DEFAULT</a></span></code>
 <div class="block">Default value for maximum total connections</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#SOCKET_TIMEOUT_DEFAULT">SOCKET_TIMEOUT_DEFAULT</a></span></code>
 <div class="block">Default value for response timeout (in ms)</div>
@@ -180,121 +186,127 @@ public interface <span class="typeNameLabel">HttpClientConfig</span></pre>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getCookieSpec--">getCookieSpec</a></span>()</code>
+<div class="block">Standard cookie specification for HttpClient.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getHttpPassword--">getHttpPassword</a></span>()</code>
 <div class="block">Http basic authentication password (optional).</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getHttpUser--">getHttpUser</a></span>()</code>
 <div class="block">Http basic authentication user (optional).</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getKeyManagerType--">getKeyManagerType</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getKeyStorePassword--">getKeyStorePassword</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getKeyStorePath--">getKeyStorePath</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>default <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getKeyStoreProvider--">getKeyStoreProvider</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getKeyStoreType--">getKeyStoreType</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getMaxConnectionsPerHost--">getMaxConnectionsPerHost</a></span>()</code>
 <div class="block">Maximal HTTP connections per host.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getMaxTotalConnections--">getMaxTotalConnections</a></span>()</code>
 <div class="block">Maximal total HTTP connections.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getProxyHost--">getProxyHost</a></span>()</code>
 <div class="block">Proxy host (optional).</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getProxyPassword--">getProxyPassword</a></span>()</code>
 <div class="block">Proxy password (optional).</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getProxyPort--">getProxyPort</a></span>()</code>
 <div class="block">Proxy port (optional).</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getProxyUser--">getProxyUser</a></span>()</code>
 <div class="block">Proxy user (optional).</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getSocketTimeout--">getSocketTimeout</a></span>()</code>
 <div class="block">Response timeout in ms.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getSslContextType--">getSslContextType</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getTrustManagerType--">getTrustManagerType</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getTrustStorePassword--">getTrustStorePassword</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getTrustStorePath--">getTrustStorePath</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>default <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getTrustStoreProvider--">getTrustStoreProvider</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#getTrustStoreType--">getTrustStoreType</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#isEnabled--">isEnabled</a></span>()</code>
 <div class="block">Configuration enabled.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#matchesHost-java.lang.String-">matchesHost</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;host)</code>
 <div class="block">Check if this configuration should be applied to a given host name.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>default boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#matchesPath-java.lang.String-">matchesPath</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;path)</code>
 <div class="block">Check if this configuration should be applied for a given path of the target URL</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientConfig.html#matchesWsAddressingToUri-java.lang.String-">matchesWsAddressingToUri</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;addressingToUri)</code>
 <div class="block">Check if this configuration should be applied for a given WS addressing to URI.</div>
@@ -374,7 +386,7 @@ public interface <span class="typeNameLabel">HttpClientConfig</span></pre>
 <a name="MAX_TOTAL_CONNECTIONS_DEFAULT">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>MAX_TOTAL_CONNECTIONS_DEFAULT</h4>
 <pre>static final&nbsp;int MAX_TOTAL_CONNECTIONS_DEFAULT</pre>
@@ -382,6 +394,20 @@ public interface <span class="typeNameLabel">HttpClientConfig</span></pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#io.wcm.caravan.commons.httpclient.HttpClientConfig.MAX_TOTAL_CONNECTIONS_DEFAULT">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a name="COOKIE_SPEC_DEFAULT">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>COOKIE_SPEC_DEFAULT</h4>
+<pre>static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> COOKIE_SPEC_DEFAULT</pre>
+<div class="block">Default value for cookie specs.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../constant-values.html#io.wcm.caravan.commons.httpclient.HttpClientConfig.COOKIE_SPEC_DEFAULT">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -474,6 +500,20 @@ public interface <span class="typeNameLabel">HttpClientConfig</span></pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Maximal total HTTP connections.</dd>
+</dl>
+</li>
+</ul>
+<a name="getCookieSpec--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCookieSpec</h4>
+<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;getCookieSpec()</pre>
+<div class="block">Standard cookie specification for HttpClient.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Cookie spec</dd>
 </dl>
 </li>
 </ul>

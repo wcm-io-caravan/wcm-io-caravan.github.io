@@ -19,6 +19,7 @@
  */
 package io.wcm.caravan.commons.httpclient;
 
+import org.apache.http.client.config.CookieSpecs;
 import org.osgi.annotation.versioning.ConsumerType;
 
 /**
@@ -53,6 +54,11 @@ public interface HttpClientConfig {
   int MAX_TOTAL_CONNECTIONS_DEFAULT = 50;
 
   /**
+   * Default value for cookie specs.
+   */
+  String COOKIE_SPEC_DEFAULT = CookieSpecs.STANDARD;
+
+  /**
    * Configuration enabled.
    * @return true if configuration is enabled.
    */
@@ -63,7 +69,7 @@ public interface HttpClientConfig {
    * @return Connection request timeout in ms.
    */
   default int getConnectionRequestTimeout() {
-<span class="nc" id="L66">    return CONNECTION_REQUEST_TIMEOUT_DEFAULT;</span>
+<span class="nc" id="L72">    return CONNECTION_REQUEST_TIMEOUT_DEFAULT;</span>
   }
 
   /**
@@ -89,6 +95,12 @@ public interface HttpClientConfig {
    * @return Maximal total HTTP connections.
    */
   int getMaxTotalConnections();
+
+  /**
+   * Standard cookie specification for HttpClient.
+   * @return Cookie spec
+   */
+  String getCookieSpec();
 
   /**
    * Http basic authentication user (optional).
@@ -146,7 +158,7 @@ public interface HttpClientConfig {
    * @return true if configuration matches
    */
   default boolean matchesPath(String path) {
-<span class="nc" id="L149">    return true;</span>
+<span class="nc" id="L161">    return true;</span>
   }
 
   /**
@@ -168,7 +180,7 @@ public interface HttpClientConfig {
    * @return Key store provider (default: null = use first matching security provider)
    */
   default String getKeyStoreProvider() {
-<span class="nc" id="L171">    return null;</span>
+<span class="nc" id="L183">    return null;</span>
   }
 
   /**
@@ -195,7 +207,7 @@ public interface HttpClientConfig {
    * @return Trust store provider (default: null = use first matching security provider)
    */
   default String getTrustStoreProvider() {
-<span class="nc" id="L198">    return null;</span>
+<span class="nc" id="L210">    return null;</span>
   }
 
   /**

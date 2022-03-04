@@ -134,28 +134,30 @@ class HttpAsyncClientItem {
 <span class="fc" id="L134">    httpClientAsyncBuilder.setDefaultRequestConfig(RequestConfig.custom()</span>
 <span class="fc" id="L135">        .setConnectionRequestTimeout(config.getConnectionRequestTimeout())</span>
 <span class="fc" id="L136">        .setConnectTimeout(config.getConnectTimeout())</span>
-<span class="fc" id="L137">        .setSocketTimeout(config.getSocketTimeout()).build());</span>
+<span class="fc" id="L137">        .setSocketTimeout(config.getSocketTimeout())</span>
+<span class="fc" id="L138">        .setCookieSpec(config.getCookieSpec())</span>
+<span class="fc" id="L139">        .build());</span>
 
-<span class="fc" id="L139">    httpClientAsyncBuilder.setDefaultCredentialsProvider(credentialsProvider);</span>
+<span class="fc" id="L141">    httpClientAsyncBuilder.setDefaultCredentialsProvider(credentialsProvider);</span>
 
     // optional proxy support
-<span class="fc bfc" id="L142" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getProxyHost())) {</span>
-<span class="fc" id="L143">      httpClientAsyncBuilder.setProxy(new HttpHost(config.getProxyHost(), config.getProxyPort()));</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getProxyHost())) {</span>
+<span class="fc" id="L145">      httpClientAsyncBuilder.setProxy(new HttpHost(config.getProxyHost(), config.getProxyPort()));</span>
 
       // optional proxy authentication
-<span class="fc bfc" id="L146" title="All 2 branches covered.">      if (StringUtils.isNotEmpty(config.getProxyUser())) {</span>
-<span class="fc" id="L147">        httpClientAsyncBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">      if (StringUtils.isNotEmpty(config.getProxyUser())) {</span>
+<span class="fc" id="L149">        httpClientAsyncBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());</span>
       }
     }
 
-<span class="fc" id="L151">    return httpClientAsyncBuilder.build();</span>
+<span class="fc" id="L153">    return httpClientAsyncBuilder.build();</span>
   }
 
   /**
    * @return Http client instance (asynchronous)
    */
   public CloseableHttpAsyncClient getHttpAsyncClient() {
-<span class="fc" id="L158">    return httpAsyncClient;</span>
+<span class="fc" id="L160">    return httpAsyncClient;</span>
   }
 
   /**
@@ -166,16 +168,16 @@ class HttpAsyncClientItem {
    * @return true if host name is associated with this http client config
    */
   public boolean matches(String hostName, String wsAddressingToURI, String path, boolean isWsCall) {
-<span class="fc bfc" id="L169" title="All 2 branches covered.">    if (isWsCall) {</span>
-<span class="pc bpc" id="L170" title="1 of 2 branches missed.">      return config.isEnabled()</span>
-<span class="fc bfc" id="L171" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
-<span class="fc bfc" id="L172" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path)</span>
-<span class="fc bfc" id="L173" title="All 2 branches covered.">          &amp;&amp; config.matchesWsAddressingToUri(wsAddressingToURI);</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">    if (isWsCall) {</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">      return config.isEnabled()</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path)</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">          &amp;&amp; config.matchesWsAddressingToUri(wsAddressingToURI);</span>
     }
     else {
-<span class="pc bpc" id="L176" title="1 of 2 branches missed.">      return config.isEnabled()</span>
-<span class="fc bfc" id="L177" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
-<span class="fc bfc" id="L178" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path);</span>
+<span class="pc bpc" id="L178" title="1 of 2 branches missed.">      return config.isEnabled()</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path);</span>
     }
   }
 
@@ -184,16 +186,16 @@ class HttpAsyncClientItem {
    */
   public void close() {
     try {
-<span class="fc" id="L187">      httpAsyncClient.close();</span>
+<span class="fc" id="L189">      httpAsyncClient.close();</span>
     }
-<span class="nc" id="L189">    catch (IOException ex) {</span>
-<span class="nc" id="L190">      log.warn(&quot;Error closing async HTTP client.&quot;, ex);</span>
-<span class="fc" id="L191">    }</span>
-<span class="fc" id="L192">  }</span>
+<span class="nc" id="L191">    catch (IOException ex) {</span>
+<span class="nc" id="L192">      log.warn(&quot;Error closing async HTTP client.&quot;, ex);</span>
+<span class="fc" id="L193">    }</span>
+<span class="fc" id="L194">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L196">    return &quot;HttpClientItem[&quot; + config.toString() + &quot;]&quot;;</span>
+<span class="nc" id="L198">    return &quot;HttpClientItem[&quot; + config.toString() + &quot;]&quot;;</span>
   }
 
 }

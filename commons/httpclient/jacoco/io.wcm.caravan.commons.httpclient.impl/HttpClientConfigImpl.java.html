@@ -25,12 +25,14 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.config.CookieSpecs;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+import org.osgi.service.metatype.annotations.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +46,7 @@ import io.wcm.caravan.commons.httpclient.impl.helpers.CertificateLoader;
 @Component(service = HttpClientConfig.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
     property = &quot;webconsole.configurationFactory.nameHint={hostPatterns} {wsAddressingToUris} {pathPatterns}&quot;)
 @Designate(ocd = HttpClientConfigImpl.Config.class, factory = true)
-<span class="fc" id="L47">public class HttpClientConfigImpl extends AbstractHttpClientConfig {</span>
+<span class="fc" id="L49">public class HttpClientConfigImpl extends AbstractHttpClientConfig {</span>
 
   @ObjectClassDefinition(name = &quot;wcm.io Caravan HTTP Client Configuration&quot;,
       description = &quot;Allows to configure special HTTP client settings for target hosts.&quot;)
@@ -97,6 +99,20 @@ import io.wcm.caravan.commons.httpclient.impl.helpers.CertificateLoader;
      */
     @AttributeDefinition(name = &quot;Max total&quot;, description = &quot;Max total connections&quot;)
     int maxTotalConnections() default HttpClientConfig.MAX_TOTAL_CONNECTIONS_DEFAULT;
+
+    /**
+     * Cookie Specs
+     */
+    @AttributeDefinition(name = &quot;Cookie Spec&quot;, description = &quot;Standard cookie specification for HttpClient. &quot;
+        + &quot;See https://www.javadoc.io/static/org.apache.httpcomponents/httpclient/4.3.4/org/apache/http/client/config/CookieSpecs.html&quot;,
+        options = {
+            @Option(value = CookieSpecs.BROWSER_COMPATIBILITY, label = &quot;BROWSER_COMPATIBILITY&quot;),
+            @Option(value = CookieSpecs.NETSCAPE, label = &quot;NETSCAPE&quot;),
+            @Option(value = CookieSpecs.STANDARD, label = &quot;STANDARD&quot;),
+            @Option(value = CookieSpecs.BEST_MATCH, label = &quot;BEST_MATCH&quot;),
+            @Option(value = CookieSpecs.IGNORE_COOKIES, label = &quot;IGNORE_COOKIES&quot;)
+        })
+    String cookieSpec() default HttpClientConfig.COOKIE_SPEC_DEFAULT;
 
     /**
      * Http user
@@ -224,6 +240,7 @@ import io.wcm.caravan.commons.httpclient.impl.helpers.CertificateLoader;
   private int socketTimeout;
   private int maxConnectionsPerHost;
   private int maxTotalConnections;
+  private String cookieSpec;
   private String httpUser;
   private String httpPassword;
   private String proxyHost;
@@ -246,229 +263,235 @@ import io.wcm.caravan.commons.httpclient.impl.helpers.CertificateLoader;
   private String trustStorePath;
   private String trustStorePassword;
 
-<span class="fc" id="L249">  private static final Logger log = LoggerFactory.getLogger(HttpClientConfigImpl.class);</span>
+<span class="fc" id="L266">  private static final Logger log = LoggerFactory.getLogger(HttpClientConfigImpl.class);</span>
 
   @Activate
   private void activate(Config config) {
-<span class="fc" id="L253">    enabled = config.enabled();</span>
+<span class="fc" id="L270">    enabled = config.enabled();</span>
 
-<span class="fc" id="L255">    connectionRequestTimeout = config.connectionRequestTimeout();</span>
-<span class="fc" id="L256">    connectTimeout = config.connectTimeout();</span>
-<span class="fc" id="L257">    socketTimeout = config.socketTimeout();</span>
-<span class="fc" id="L258">    maxConnectionsPerHost = config.maxConnectionsPerHost();</span>
-<span class="fc" id="L259">    maxTotalConnections = config.maxTotalConnections();</span>
-<span class="fc" id="L260">    httpUser = config.httpUser();</span>
-<span class="fc" id="L261">    httpPassword = config.httpPassword();</span>
-<span class="fc" id="L262">    proxyHost = config.proxyHost();</span>
-<span class="fc" id="L263">    proxyPort = config.proxyPort();</span>
-<span class="fc" id="L264">    proxyUser = config.proxyUser();</span>
-<span class="fc" id="L265">    proxyPassword = config.proxyPassword();</span>
+<span class="fc" id="L272">    connectionRequestTimeout = config.connectionRequestTimeout();</span>
+<span class="fc" id="L273">    connectTimeout = config.connectTimeout();</span>
+<span class="fc" id="L274">    socketTimeout = config.socketTimeout();</span>
+<span class="fc" id="L275">    maxConnectionsPerHost = config.maxConnectionsPerHost();</span>
+<span class="fc" id="L276">    maxTotalConnections = config.maxTotalConnections();</span>
+<span class="fc" id="L277">    cookieSpec = config.cookieSpec();</span>
+<span class="fc" id="L278">    httpUser = config.httpUser();</span>
+<span class="fc" id="L279">    httpPassword = config.httpPassword();</span>
+<span class="fc" id="L280">    proxyHost = config.proxyHost();</span>
+<span class="fc" id="L281">    proxyPort = config.proxyPort();</span>
+<span class="fc" id="L282">    proxyUser = config.proxyUser();</span>
+<span class="fc" id="L283">    proxyPassword = config.proxyPassword();</span>
 
-<span class="fc" id="L267">    hostPatterns = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L268">    String[] hostPatternsArray = config.hostPatterns();</span>
-<span class="fc bfc" id="L269" title="All 2 branches covered.">    for (String hostPatternString : hostPatternsArray) {</span>
-<span class="pc bpc" id="L270" title="1 of 2 branches missed.">      if (StringUtils.isNotBlank(hostPatternString)) {</span>
+<span class="fc" id="L285">    hostPatterns = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L286">    String[] hostPatternsArray = config.hostPatterns();</span>
+<span class="fc bfc" id="L287" title="All 2 branches covered.">    for (String hostPatternString : hostPatternsArray) {</span>
+<span class="pc bpc" id="L288" title="1 of 2 branches missed.">      if (StringUtils.isNotBlank(hostPatternString)) {</span>
         try {
-<span class="fc" id="L272">          hostPatterns.add(Pattern.compile(hostPatternString));</span>
+<span class="fc" id="L290">          hostPatterns.add(Pattern.compile(hostPatternString));</span>
         }
-<span class="fc" id="L274">        catch (PatternSyntaxException ex) {</span>
-<span class="fc" id="L275">          log.warn(&quot;Invalid host name pattern '&quot; + hostPatternString + &quot;': &quot; + ex.getMessage(), ex);</span>
-<span class="fc" id="L276">          this.enabled = false;</span>
-<span class="fc" id="L277">        }</span>
+<span class="fc" id="L292">        catch (PatternSyntaxException ex) {</span>
+<span class="fc" id="L293">          log.warn(&quot;Invalid host name pattern '&quot; + hostPatternString + &quot;': &quot; + ex.getMessage(), ex);</span>
+<span class="fc" id="L294">          this.enabled = false;</span>
+<span class="fc" id="L295">        }</span>
       }
     }
 
-<span class="fc" id="L281">    wsAddressingToUris = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L282">    String[] wsAddressingToUrisArray = config.wsAddressingToUris();</span>
-<span class="fc bfc" id="L283" title="All 2 branches covered.">    for (String wsAddressingToUriString : wsAddressingToUrisArray) {</span>
-<span class="pc bpc" id="L284" title="1 of 2 branches missed.">      if (StringUtils.isNotBlank(wsAddressingToUriString)) {</span>
-<span class="fc" id="L285">        wsAddressingToUris.add(wsAddressingToUriString);</span>
+<span class="fc" id="L299">    wsAddressingToUris = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L300">    String[] wsAddressingToUrisArray = config.wsAddressingToUris();</span>
+<span class="fc bfc" id="L301" title="All 2 branches covered.">    for (String wsAddressingToUriString : wsAddressingToUrisArray) {</span>
+<span class="pc bpc" id="L302" title="1 of 2 branches missed.">      if (StringUtils.isNotBlank(wsAddressingToUriString)) {</span>
+<span class="fc" id="L303">        wsAddressingToUris.add(wsAddressingToUriString);</span>
       }
     }
 
-<span class="fc" id="L289">    pathPatterns = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L290">    String[] pathPatternsArray = config.pathPatterns();</span>
-<span class="fc bfc" id="L291" title="All 2 branches covered.">    for (String pathPatternString : pathPatternsArray) {</span>
-<span class="pc bpc" id="L292" title="1 of 2 branches missed.">      if (StringUtils.isNotBlank(pathPatternString)) {</span>
+<span class="fc" id="L307">    pathPatterns = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L308">    String[] pathPatternsArray = config.pathPatterns();</span>
+<span class="fc bfc" id="L309" title="All 2 branches covered.">    for (String pathPatternString : pathPatternsArray) {</span>
+<span class="pc bpc" id="L310" title="1 of 2 branches missed.">      if (StringUtils.isNotBlank(pathPatternString)) {</span>
         try {
-<span class="fc" id="L294">          pathPatterns.add(Pattern.compile(pathPatternString));</span>
+<span class="fc" id="L312">          pathPatterns.add(Pattern.compile(pathPatternString));</span>
         }
-<span class="nc" id="L296">        catch (PatternSyntaxException ex) {</span>
-<span class="nc" id="L297">          log.warn(&quot;Invalid path pattern '&quot; + pathPatternString + &quot;': &quot; + ex.getMessage(), ex);</span>
-<span class="nc" id="L298">          this.enabled = false;</span>
-<span class="fc" id="L299">        }</span>
+<span class="nc" id="L314">        catch (PatternSyntaxException ex) {</span>
+<span class="nc" id="L315">          log.warn(&quot;Invalid path pattern '&quot; + pathPatternString + &quot;': &quot; + ex.getMessage(), ex);</span>
+<span class="nc" id="L316">          this.enabled = false;</span>
+<span class="fc" id="L317">        }</span>
       }
     }
 
-<span class="fc" id="L303">    sslContextType = config.sslContextType();</span>
-<span class="fc" id="L304">    keyManagerType = config.keyManagerType();</span>
-<span class="fc" id="L305">    keyStoreType = config.keyStoreType();</span>
-<span class="fc" id="L306">    keyStoreProvider = config.keyStoreProvider();</span>
-<span class="fc" id="L307">    keyStorePath = config.keyStorePath();</span>
-<span class="fc" id="L308">    keyStorePassword = config.keyStorePassword();</span>
-<span class="fc" id="L309">    trustManagerType = config.trustManagerType();</span>
-<span class="fc" id="L310">    trustStoreType = config.trustStoreType();</span>
-<span class="fc" id="L311">    trustStoreProvider = config.trustStoreProvider();</span>
-<span class="fc" id="L312">    trustStorePath = config.trustStorePath();</span>
-<span class="fc" id="L313">    trustStorePassword = config.trustStorePassword();</span>
-<span class="fc" id="L314">  }</span>
+<span class="fc" id="L321">    sslContextType = config.sslContextType();</span>
+<span class="fc" id="L322">    keyManagerType = config.keyManagerType();</span>
+<span class="fc" id="L323">    keyStoreType = config.keyStoreType();</span>
+<span class="fc" id="L324">    keyStoreProvider = config.keyStoreProvider();</span>
+<span class="fc" id="L325">    keyStorePath = config.keyStorePath();</span>
+<span class="fc" id="L326">    keyStorePassword = config.keyStorePassword();</span>
+<span class="fc" id="L327">    trustManagerType = config.trustManagerType();</span>
+<span class="fc" id="L328">    trustStoreType = config.trustStoreType();</span>
+<span class="fc" id="L329">    trustStoreProvider = config.trustStoreProvider();</span>
+<span class="fc" id="L330">    trustStorePath = config.trustStorePath();</span>
+<span class="fc" id="L331">    trustStorePassword = config.trustStorePassword();</span>
+<span class="fc" id="L332">  }</span>
 
   @Override
   public boolean isEnabled() {
-<span class="fc" id="L318">    return this.enabled;</span>
+<span class="fc" id="L336">    return this.enabled;</span>
   }
 
   @Override
   public int getConnectionRequestTimeout() {
-<span class="fc" id="L323">    return connectionRequestTimeout;</span>
+<span class="fc" id="L341">    return connectionRequestTimeout;</span>
   }
 
   @Override
   public int getConnectTimeout() {
-<span class="fc" id="L328">    return connectTimeout;</span>
+<span class="fc" id="L346">    return connectTimeout;</span>
   }
 
   @Override
   public int getSocketTimeout() {
-<span class="fc" id="L333">    return socketTimeout;</span>
+<span class="fc" id="L351">    return socketTimeout;</span>
   }
 
   @Override
   public int getMaxConnectionsPerHost() {
-<span class="fc" id="L338">    return maxConnectionsPerHost;</span>
+<span class="fc" id="L356">    return maxConnectionsPerHost;</span>
   }
 
   @Override
   public int getMaxTotalConnections() {
-<span class="fc" id="L343">    return maxTotalConnections;</span>
+<span class="fc" id="L361">    return maxTotalConnections;</span>
+  }
+
+  @Override
+  public String getCookieSpec() {
+<span class="fc" id="L366">    return cookieSpec;</span>
   }
 
   @Override
   public String getHttpUser() {
-<span class="fc" id="L348">    return httpUser;</span>
+<span class="fc" id="L371">    return httpUser;</span>
   }
 
   @Override
   public String getHttpPassword() {
-<span class="fc" id="L353">    return httpPassword;</span>
+<span class="fc" id="L376">    return httpPassword;</span>
   }
 
   @Override
   public String getProxyHost() {
-<span class="fc" id="L358">    return proxyHost;</span>
+<span class="fc" id="L381">    return proxyHost;</span>
   }
 
   @Override
   public int getProxyPort() {
-<span class="fc" id="L363">    return proxyPort;</span>
+<span class="fc" id="L386">    return proxyPort;</span>
   }
 
   @Override
   public String getProxyUser() {
-<span class="fc" id="L368">    return proxyUser;</span>
+<span class="fc" id="L391">    return proxyUser;</span>
   }
 
   @Override
   public String getProxyPassword() {
-<span class="fc" id="L373">    return proxyPassword;</span>
+<span class="fc" id="L396">    return proxyPassword;</span>
   }
 
   @Override
   public boolean matchesHost(String host) {
-<span class="fc bfc" id="L378" title="All 2 branches covered.">    if (hostPatterns.isEmpty()) {</span>
-<span class="fc" id="L379">      return true;</span>
+<span class="fc bfc" id="L401" title="All 2 branches covered.">    if (hostPatterns.isEmpty()) {</span>
+<span class="fc" id="L402">      return true;</span>
     }
-<span class="pc bpc" id="L381" title="1 of 2 branches missed.">    if (StringUtils.isEmpty(host)) {</span>
-<span class="nc" id="L382">      return false;</span>
+<span class="pc bpc" id="L404" title="1 of 2 branches missed.">    if (StringUtils.isEmpty(host)) {</span>
+<span class="nc" id="L405">      return false;</span>
     }
-<span class="fc bfc" id="L384" title="All 2 branches covered.">    for (Pattern hostPattern : hostPatterns) {</span>
-<span class="fc bfc" id="L385" title="All 2 branches covered.">      if (hostPattern.matcher(host).matches()) {</span>
-<span class="fc" id="L386">        return true;</span>
+<span class="fc bfc" id="L407" title="All 2 branches covered.">    for (Pattern hostPattern : hostPatterns) {</span>
+<span class="fc bfc" id="L408" title="All 2 branches covered.">      if (hostPattern.matcher(host).matches()) {</span>
+<span class="fc" id="L409">        return true;</span>
       }
-<span class="fc" id="L388">    }</span>
-<span class="fc" id="L389">    return false;</span>
+<span class="fc" id="L411">    }</span>
+<span class="fc" id="L412">    return false;</span>
   }
 
   @Override
   public boolean matchesWsAddressingToUri(String addressingToUri) {
-<span class="fc bfc" id="L394" title="All 2 branches covered.">    if (wsAddressingToUris.isEmpty()) {</span>
-<span class="fc" id="L395">      return true;</span>
+<span class="fc bfc" id="L417" title="All 2 branches covered.">    if (wsAddressingToUris.isEmpty()) {</span>
+<span class="fc" id="L418">      return true;</span>
     }
-<span class="fc bfc" id="L397" title="All 2 branches covered.">    if (StringUtils.isEmpty(addressingToUri)) {</span>
-<span class="fc" id="L398">      return false;</span>
+<span class="fc bfc" id="L420" title="All 2 branches covered.">    if (StringUtils.isEmpty(addressingToUri)) {</span>
+<span class="fc" id="L421">      return false;</span>
     }
-<span class="fc" id="L400">    return wsAddressingToUris.contains(addressingToUri);</span>
+<span class="fc" id="L423">    return wsAddressingToUris.contains(addressingToUri);</span>
   }
 
   @Override
   public boolean matchesPath(final String path) {
-<span class="fc bfc" id="L405" title="All 2 branches covered.">    if (pathPatterns.isEmpty()) {</span>
-<span class="fc" id="L406">      return true;</span>
+<span class="fc bfc" id="L428" title="All 2 branches covered.">    if (pathPatterns.isEmpty()) {</span>
+<span class="fc" id="L429">      return true;</span>
     }
-<span class="fc bfc" id="L408" title="All 2 branches covered.">    if (StringUtils.isEmpty(path)) {</span>
-<span class="fc" id="L409">      return false;</span>
+<span class="fc bfc" id="L431" title="All 2 branches covered.">    if (StringUtils.isEmpty(path)) {</span>
+<span class="fc" id="L432">      return false;</span>
     }
-<span class="fc bfc" id="L411" title="All 2 branches covered.">    for (Pattern pathPattern : pathPatterns) {</span>
-<span class="fc bfc" id="L412" title="All 2 branches covered.">      if (pathPattern.matcher(path).matches()) {</span>
-<span class="fc" id="L413">        return true;</span>
+<span class="fc bfc" id="L434" title="All 2 branches covered.">    for (Pattern pathPattern : pathPatterns) {</span>
+<span class="fc bfc" id="L435" title="All 2 branches covered.">      if (pathPattern.matcher(path).matches()) {</span>
+<span class="fc" id="L436">        return true;</span>
       }
-<span class="fc" id="L415">    }</span>
-<span class="fc" id="L416">    return false;</span>
+<span class="fc" id="L438">    }</span>
+<span class="fc" id="L439">    return false;</span>
   }
 
   @Override
   public String getSslContextType() {
-<span class="fc" id="L421">    return sslContextType;</span>
+<span class="fc" id="L444">    return sslContextType;</span>
   }
 
   @Override
   public String getKeyManagerType() {
-<span class="fc" id="L426">    return keyManagerType;</span>
+<span class="fc" id="L449">    return keyManagerType;</span>
   }
 
   @Override
   public String getKeyStoreType() {
-<span class="fc" id="L431">    return keyStoreType;</span>
+<span class="fc" id="L454">    return keyStoreType;</span>
   }
 
   @Override
   public String getKeyStoreProvider() {
-<span class="fc" id="L436">    return keyStoreProvider;</span>
+<span class="fc" id="L459">    return keyStoreProvider;</span>
   }
 
   @Override
   public String getKeyStorePath() {
-<span class="fc" id="L441">    return keyStorePath;</span>
+<span class="fc" id="L464">    return keyStorePath;</span>
   }
 
   @Override
   public String getKeyStorePassword() {
-<span class="fc" id="L446">    return keyStorePassword;</span>
+<span class="fc" id="L469">    return keyStorePassword;</span>
   }
 
   @Override
   public String getTrustManagerType() {
-<span class="fc" id="L451">    return trustManagerType;</span>
+<span class="fc" id="L474">    return trustManagerType;</span>
   }
 
   @Override
   public String getTrustStoreType() {
-<span class="fc" id="L456">    return trustStoreType;</span>
+<span class="fc" id="L479">    return trustStoreType;</span>
   }
 
   @Override
   public String getTrustStoreProvider() {
-<span class="fc" id="L461">    return trustStoreProvider;</span>
+<span class="fc" id="L484">    return trustStoreProvider;</span>
   }
 
   @Override
   public String getTrustStorePath() {
-<span class="fc" id="L466">    return trustStorePath;</span>
+<span class="fc" id="L489">    return trustStorePath;</span>
   }
 
   @Override
   public String getTrustStorePassword() {
-<span class="fc" id="L471">    return trustStorePassword;</span>
+<span class="fc" id="L494">    return trustStorePassword;</span>
   }
 
 }
