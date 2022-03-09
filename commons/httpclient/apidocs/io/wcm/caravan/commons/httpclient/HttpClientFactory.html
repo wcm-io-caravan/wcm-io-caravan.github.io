@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -160,13 +160,25 @@ public interface <span class="typeNameLabel">HttpClientFactory</span></pre>
 </td>
 </tr>
 <tr id="i6" class="altColor">
+<td class="colFirst"><code>org.apache.http.client.config.RequestConfig</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientFactory.html#getDefaultRequestConfig-java.lang.String-">getDefaultRequestConfig</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;targetUrl)</code>
+<div class="block">Returns the default Request Configuration for the given target URL.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>org.apache.http.client.config.RequestConfig</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientFactory.html#getDefaultRequestConfig-java.net.URI-">getDefaultRequestConfig</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html?is-external=true" title="class or interface in java.net">URI</a>&nbsp;targetUrl)</code>
+<div class="block">Returns the default Request Configuration for the given target URL.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>org.apache.http.client.HttpClient</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientFactory.html#getWs-java.lang.String-java.lang.String-">getWs</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;targetUrl,
      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;wsAddressingToUri)</code>
 <div class="block">Returns a configured synchronous Http Client for the given target URL.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>org.apache.http.client.HttpClient</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/wcm/caravan/commons/httpclient/HttpClientFactory.html#getWs-java.net.URI-java.net.URI-">getWs</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html?is-external=true" title="class or interface in java.net">URI</a>&nbsp;targetUrl,
      <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html?is-external=true" title="class or interface in java.net">URI</a>&nbsp;wsAddressingToUri)</code>
@@ -322,7 +334,7 @@ public interface <span class="typeNameLabel">HttpClientFactory</span></pre>
 <a name="getCloseableWs-java.net.URI-java.net.URI-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getCloseableWs</h4>
 <pre>org.apache.http.impl.client.CloseableHttpClient&nbsp;getCloseableWs(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html?is-external=true" title="class or interface in java.net">URI</a>&nbsp;targetUrl,
@@ -337,6 +349,40 @@ public interface <span class="typeNameLabel">HttpClientFactory</span></pre>
 <dd><code>wsAddressingToUri</code> - WS Addressing "To" header</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Http Client</dd>
+</dl>
+</li>
+</ul>
+<a name="getDefaultRequestConfig-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDefaultRequestConfig</h4>
+<pre>org.apache.http.client.config.RequestConfig&nbsp;getDefaultRequestConfig(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;targetUrl)</pre>
+<div class="block">Returns the default Request Configuration for the given target URL. If a special configuration
+ (e.g. timeout setting, proxy server, authentication) is configured it is applied in the factory.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>targetUrl</code> - Target URL to call (this url is not called, but required to check for configuration)</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Default Request Config</dd>
+</dl>
+</li>
+</ul>
+<a name="getDefaultRequestConfig-java.net.URI-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getDefaultRequestConfig</h4>
+<pre>org.apache.http.client.config.RequestConfig&nbsp;getDefaultRequestConfig(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html?is-external=true" title="class or interface in java.net">URI</a>&nbsp;targetUrl)</pre>
+<div class="block">Returns the default Request Configuration for the given target URL. If a special configuration
+ (e.g. timeout setting, proxy server, authentication) is configured it is applied in the factory.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>targetUrl</code> - Target URL to call (this url is not called, but required to check for configuration)</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Default Request Config</dd>
 </dl>
 </li>
 </ul>

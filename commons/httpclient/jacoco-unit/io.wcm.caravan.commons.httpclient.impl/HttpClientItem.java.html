@@ -53,97 +53,113 @@ class HttpClientItem {
 
   private final HttpClientConfig config;
   private final CloseableHttpClient httpClient;
+  private final RequestConfig defaultRequestConfig;
 
-<span class="fc" id="L57">  private static final Logger log = LoggerFactory.getLogger(HttpClientItem.class);</span>
+<span class="fc" id="L58">  private static final Logger log = LoggerFactory.getLogger(HttpClientItem.class);</span>
 
   /**
    * @param config Http client configuration
    */
-<span class="fc" id="L62">  HttpClientItem(HttpClientConfig config) {</span>
-<span class="fc" id="L63">    this.config = config;</span>
+<span class="fc" id="L63">  HttpClientItem(HttpClientConfig config) {</span>
+<span class="fc" id="L64">    this.config = config;</span>
 
     // optional SSL client certificate support
     SSLContext sslContext;
-<span class="pc bpc" id="L67" title="1 of 4 branches missed.">    if (CertificateLoader.isSslKeyManagerEnabled(config) || CertificateLoader.isSslTrustStoreEnbaled(config)) {</span>
+<span class="pc bpc" id="L68" title="1 of 4 branches missed.">    if (CertificateLoader.isSslKeyManagerEnabled(config) || CertificateLoader.isSslTrustStoreEnbaled(config)) {</span>
       try {
-<span class="fc" id="L69">        sslContext = CertificateLoader.buildSSLContext(config);</span>
+<span class="fc" id="L70">        sslContext = CertificateLoader.buildSSLContext(config);</span>
       }
-<span class="nc" id="L71">      catch (IOException | GeneralSecurityException ex) {</span>
-<span class="nc" id="L72">        throw new IllegalArgumentException(&quot;Invalid SSL client certificate configuration.&quot;, ex);</span>
-<span class="fc" id="L73">      }</span>
+<span class="nc" id="L72">      catch (IOException | GeneralSecurityException ex) {</span>
+<span class="nc" id="L73">        throw new IllegalArgumentException(&quot;Invalid SSL client certificate configuration.&quot;, ex);</span>
+<span class="fc" id="L74">      }</span>
     }
     else {
-<span class="fc" id="L76">      sslContext = CertificateLoader.createDefaultSSlContext();</span>
+<span class="fc" id="L77">      sslContext = CertificateLoader.createDefaultSSlContext();</span>
     }
 
-<span class="fc" id="L79">    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();</span>
+<span class="fc" id="L80">    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();</span>
     // optional proxy authentication
-<span class="fc bfc" id="L81" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getProxyUser())) {</span>
-<span class="fc" id="L82">      credentialsProvider.setCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()),</span>
-<span class="fc" id="L83">          new UsernamePasswordCredentials(config.getProxyUser(), config.getProxyPassword()));</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getProxyUser())) {</span>
+<span class="fc" id="L83">      credentialsProvider.setCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()),</span>
+<span class="fc" id="L84">          new UsernamePasswordCredentials(config.getProxyUser(), config.getProxyPassword()));</span>
     }
     // optional http basic authentication support
-<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getHttpUser())) {</span>
-<span class="fc" id="L87">      credentialsProvider.setCredentials(AuthScope.ANY,</span>
-<span class="fc" id="L88">          new UsernamePasswordCredentials(config.getHttpUser(), config.getHttpPassword()));</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getHttpUser())) {</span>
+<span class="fc" id="L88">      credentialsProvider.setCredentials(AuthScope.ANY,</span>
+<span class="fc" id="L89">          new UsernamePasswordCredentials(config.getHttpUser(), config.getHttpPassword()));</span>
     }
 
+    // build request config
+<span class="fc" id="L93">    defaultRequestConfig = buildDefaultRequestConfig(config);</span>
+
     // build http clients
-<span class="fc" id="L92">    PoolingHttpClientConnectionManager connectionManager = buildConnectionManager(config, sslContext);</span>
-<span class="fc" id="L93">    httpClient = buildHttpClient(config, connectionManager, credentialsProvider);</span>
-<span class="fc" id="L94">  }</span>
+<span class="fc" id="L96">    PoolingHttpClientConnectionManager connectionManager = buildConnectionManager(config, sslContext);</span>
+<span class="fc" id="L97">    httpClient = buildHttpClient(config, connectionManager, credentialsProvider, defaultRequestConfig);</span>
+<span class="fc" id="L98">  }</span>
+
+  private static RequestConfig buildDefaultRequestConfig(HttpClientConfig config) {
+<span class="fc" id="L101">    return RequestConfig.custom()</span>
+        // timeout settings
+<span class="fc" id="L103">        .setConnectionRequestTimeout(config.getConnectionRequestTimeout())</span>
+<span class="fc" id="L104">        .setConnectTimeout(config.getConnectTimeout())</span>
+<span class="fc" id="L105">        .setSocketTimeout(config.getSocketTimeout())</span>
+<span class="fc" id="L106">        .setCookieSpec(config.getCookieSpec())</span>
+<span class="fc" id="L107">        .build();</span>
+  }
 
   private static PoolingHttpClientConnectionManager buildConnectionManager(HttpClientConfig config,
       SSLContext sslContext) {
     // scheme configuration
-<span class="fc" id="L99">    ConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext);</span>
-<span class="fc" id="L100">    Registry&lt;ConnectionSocketFactory&gt; schemeRegistry = RegistryBuilder.&lt;ConnectionSocketFactory&gt;create()</span>
-<span class="fc" id="L101">        .register(&quot;http&quot;, PlainConnectionSocketFactory.getSocketFactory())</span>
-<span class="fc" id="L102">        .register(&quot;https&quot;, sslSocketFactory)</span>
-<span class="fc" id="L103">        .build();</span>
+<span class="fc" id="L113">    ConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext);</span>
+<span class="fc" id="L114">    Registry&lt;ConnectionSocketFactory&gt; schemeRegistry = RegistryBuilder.&lt;ConnectionSocketFactory&gt;create()</span>
+<span class="fc" id="L115">        .register(&quot;http&quot;, PlainConnectionSocketFactory.getSocketFactory())</span>
+<span class="fc" id="L116">        .register(&quot;https&quot;, sslSocketFactory)</span>
+<span class="fc" id="L117">        .build();</span>
 
     // pooling settings
-<span class="fc" id="L106">    PoolingHttpClientConnectionManager conmgr = new PoolingHttpClientConnectionManager(schemeRegistry);</span>
-<span class="fc" id="L107">    conmgr.setMaxTotal(config.getMaxTotalConnections());</span>
-<span class="fc" id="L108">    conmgr.setDefaultMaxPerRoute(config.getMaxConnectionsPerHost());</span>
-<span class="fc" id="L109">    return conmgr;</span>
+<span class="fc" id="L120">    PoolingHttpClientConnectionManager conmgr = new PoolingHttpClientConnectionManager(schemeRegistry);</span>
+<span class="fc" id="L121">    conmgr.setMaxTotal(config.getMaxTotalConnections());</span>
+<span class="fc" id="L122">    conmgr.setDefaultMaxPerRoute(config.getMaxConnectionsPerHost());</span>
+<span class="fc" id="L123">    return conmgr;</span>
   }
 
   private static CloseableHttpClient buildHttpClient(HttpClientConfig config,
-      PoolingHttpClientConnectionManager connectionManager, CredentialsProvider credentialsProvider) {
+      PoolingHttpClientConnectionManager connectionManager, CredentialsProvider credentialsProvider,
+      RequestConfig defaultRequestConfig) {
 
     // prepare HTTPClient builder
-<span class="fc" id="L116">    HttpClientBuilder httpClientBuilder = HttpClientBuilder.create()</span>
-<span class="fc" id="L117">        .setConnectionManager(connectionManager);</span>
+<span class="fc" id="L131">    HttpClientBuilder httpClientBuilder = HttpClientBuilder.create()</span>
+<span class="fc" id="L132">        .setConnectionManager(connectionManager);</span>
 
-<span class="fc" id="L119">    httpClientBuilder.setDefaultRequestConfig(RequestConfig.custom()</span>
-        // timeout settings
-<span class="fc" id="L121">        .setConnectionRequestTimeout(config.getConnectionRequestTimeout())</span>
-<span class="fc" id="L122">        .setConnectTimeout(config.getConnectTimeout())</span>
-<span class="fc" id="L123">        .setSocketTimeout(config.getSocketTimeout())</span>
-<span class="fc" id="L124">        .setCookieSpec(config.getCookieSpec())</span>
-<span class="fc" id="L125">        .build());</span>
+<span class="fc" id="L134">    httpClientBuilder.setDefaultRequestConfig(defaultRequestConfig);</span>
 
-<span class="fc" id="L127">    httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);</span>
+<span class="fc" id="L136">    httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);</span>
 
     // optional proxy support
-<span class="fc bfc" id="L130" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getProxyHost())) {</span>
-<span class="fc" id="L131">      httpClientBuilder.setProxy(new HttpHost(config.getProxyHost(), config.getProxyPort()));</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getProxyHost())) {</span>
+<span class="fc" id="L140">      httpClientBuilder.setProxy(new HttpHost(config.getProxyHost(), config.getProxyPort()));</span>
 
       // optional proxy authentication
-<span class="fc bfc" id="L134" title="All 2 branches covered.">      if (StringUtils.isNotEmpty(config.getProxyUser())) {</span>
-<span class="fc" id="L135">        httpClientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">      if (StringUtils.isNotEmpty(config.getProxyUser())) {</span>
+<span class="fc" id="L144">        httpClientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());</span>
       }
     }
 
-<span class="fc" id="L139">    return httpClientBuilder.build();</span>
+<span class="fc" id="L148">    return httpClientBuilder.build();</span>
   }
 
   /**
    * @return Http client instance (synchronous)
    */
   public CloseableHttpClient getHttpClient() {
-<span class="fc" id="L146">    return httpClient;</span>
+<span class="fc" id="L155">    return httpClient;</span>
+  }
+
+  /**
+   * @return Default request config
+   */
+  public RequestConfig getDefaultRequestConfig() {
+<span class="fc" id="L162">    return defaultRequestConfig;</span>
   }
 
   /**
@@ -154,16 +170,16 @@ class HttpClientItem {
    * @return true if host name is associated with this http client config
    */
   public boolean matches(String hostName, String wsAddressingToURI, String path, boolean isWsCall) {
-<span class="fc bfc" id="L157" title="All 2 branches covered.">    if (isWsCall) {</span>
-<span class="pc bpc" id="L158" title="1 of 2 branches missed.">      return config.isEnabled()</span>
-<span class="fc bfc" id="L159" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
-<span class="fc bfc" id="L160" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path)</span>
-<span class="fc bfc" id="L161" title="All 2 branches covered.">          &amp;&amp; config.matchesWsAddressingToUri(wsAddressingToURI);</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">    if (isWsCall) {</span>
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">      return config.isEnabled()</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path)</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">          &amp;&amp; config.matchesWsAddressingToUri(wsAddressingToURI);</span>
     }
     else {
-<span class="fc bfc" id="L164" title="All 2 branches covered.">      return config.isEnabled()</span>
-<span class="fc bfc" id="L165" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
-<span class="fc bfc" id="L166" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path);</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">      return config.isEnabled()</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path);</span>
     }
   }
 
@@ -172,17 +188,16 @@ class HttpClientItem {
    */
   public void close() {
     try {
-<span class="fc" id="L175">      httpClient.close();</span>
+<span class="fc" id="L191">      httpClient.close();</span>
     }
-<span class="nc" id="L177">    catch (IOException ex) {</span>
-<span class="nc" id="L178">      log.warn(&quot;Error closing HTTP client.&quot;, ex);</span>
-<span class="fc" id="L179">    }</span>
-<span class="fc" id="L180">  }</span>
+<span class="nc" id="L193">    catch (IOException ex) {</span>
+<span class="nc" id="L194">      log.warn(&quot;Error closing HTTP client.&quot;, ex);</span>
+<span class="fc" id="L195">    }</span>
+<span class="fc" id="L196">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L184">    return &quot;HttpClientItem[&quot; + config.toString() + &quot;]&quot;;</span>
+<span class="nc" id="L200">    return &quot;HttpClientItem[&quot; + config.toString() + &quot;]&quot;;</span>
   }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

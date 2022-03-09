@@ -5,6 +5,6 @@ Commons HTTP Client,io.wcm.caravan.commons.httpclient.impl.helpers,DefaultHttpCl
 Commons HTTP Client,io.wcm.caravan.commons.httpclient.impl.helpers,AbstractHttpClientConfig,0,59,0,4,0,9,0,5,0,3
 Commons HTTP Client,io.wcm.caravan.commons.httpclient.impl.helpers,StoreProperties,0,27,0,0,0,10,0,5,0,5
 Commons HTTP Client,io.wcm.caravan.commons.httpclient.impl.helpers,CertificateLoader,33,256,9,31,9,58,8,22,0,10
-Commons HTTP Client,io.wcm.caravan.commons.httpclient.impl,HttpClientFactoryImpl,47,144,5,9,9,30,7,15,3,12
+Commons HTTP Client,io.wcm.caravan.commons.httpclient.impl,HttpClientFactoryImpl,59,164,7,11,10,33,10,16,4,13
 Commons HTTP Client,io.wcm.caravan.commons.httpclient.impl,HttpClientConfigImpl,22,374,4,28,4,93,4,42,0,30
-Commons HTTP Client,io.wcm.caravan.commons.httpclient.impl,HttpClientItem,25,202,2,26,5,52,3,19,1,7
+Commons HTTP Client,io.wcm.caravan.commons.httpclient.impl,HttpClientItem,25,213,2,26,5,55,3,21,1,9
