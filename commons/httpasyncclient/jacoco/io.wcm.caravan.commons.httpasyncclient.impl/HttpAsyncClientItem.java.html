@@ -44,6 +44,8 @@ import org.apache.http.nio.conn.SchemeIOSessionStrategy;
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.apache.http.nio.reactor.ConnectingIOReactor;
 import org.apache.http.nio.reactor.IOReactorException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,121 +61,121 @@ class HttpAsyncClientItem {
   private final CloseableHttpAsyncClient httpAsyncClient;
   private final RequestConfig defaultRequestConfig;
 
-<span class="fc" id="L62">  private static final Logger log = LoggerFactory.getLogger(HttpAsyncClientItem.class);</span>
+<span class="fc" id="L64">  private static final Logger log = LoggerFactory.getLogger(HttpAsyncClientItem.class);</span>
 
   /**
    * @param config Http client configuration
    */
-<span class="fc" id="L67">  HttpAsyncClientItem(HttpClientConfig config) {</span>
-<span class="fc" id="L68">    this.config = config;</span>
+<span class="fc" id="L69">  HttpAsyncClientItem(@NotNull HttpClientConfig config) {</span>
+<span class="fc" id="L70">    this.config = config;</span>
 
     // optional SSL client certificate support
     SSLContext sslContext;
-<span class="pc bpc" id="L72" title="1 of 4 branches missed.">    if (CertificateLoader.isSslKeyManagerEnabled(config) || CertificateLoader.isSslTrustStoreEnbaled(config)) {</span>
+<span class="pc bpc" id="L74" title="1 of 4 branches missed.">    if (CertificateLoader.isSslKeyManagerEnabled(config) || CertificateLoader.isSslTrustStoreEnbaled(config)) {</span>
       try {
-<span class="fc" id="L74">        sslContext = CertificateLoader.buildSSLContext(config);</span>
+<span class="fc" id="L76">        sslContext = CertificateLoader.buildSSLContext(config);</span>
       }
-<span class="nc" id="L76">      catch (IOException | GeneralSecurityException ex) {</span>
-<span class="nc" id="L77">        throw new IllegalArgumentException(&quot;Invalid SSL client certificate configuration.&quot;, ex);</span>
-<span class="fc" id="L78">      }</span>
+<span class="nc" id="L78">      catch (IOException | GeneralSecurityException ex) {</span>
+<span class="nc" id="L79">        throw new IllegalArgumentException(&quot;Invalid SSL client certificate configuration.&quot;, ex);</span>
+<span class="fc" id="L80">      }</span>
     }
     else {
-<span class="fc" id="L81">      sslContext = CertificateLoader.createDefaultSSlContext();</span>
+<span class="fc" id="L83">      sslContext = CertificateLoader.createDefaultSSlContext();</span>
     }
 
-<span class="fc" id="L84">    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();</span>
+<span class="fc" id="L86">    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();</span>
     // optional proxy authentication
-<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getProxyUser())) {</span>
-<span class="fc" id="L87">      credentialsProvider.setCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()),</span>
-<span class="fc" id="L88">          new UsernamePasswordCredentials(config.getProxyUser(), config.getProxyPassword()));</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getProxyUser())) {</span>
+<span class="fc" id="L89">      credentialsProvider.setCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()),</span>
+<span class="fc" id="L90">          new UsernamePasswordCredentials(config.getProxyUser(), config.getProxyPassword()));</span>
     }
     // optional http basic authentication support
-<span class="fc bfc" id="L91" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getHttpUser())) {</span>
-<span class="fc" id="L92">      credentialsProvider.setCredentials(AuthScope.ANY,</span>
-<span class="fc" id="L93">          new UsernamePasswordCredentials(config.getHttpUser(), config.getHttpPassword()));</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getHttpUser())) {</span>
+<span class="fc" id="L94">      credentialsProvider.setCredentials(AuthScope.ANY,</span>
+<span class="fc" id="L95">          new UsernamePasswordCredentials(config.getHttpUser(), config.getHttpPassword()));</span>
     }
 
     // build request config
-<span class="fc" id="L97">    defaultRequestConfig = buildDefaultRequestConfig(config);</span>
+<span class="fc" id="L99">    defaultRequestConfig = buildDefaultRequestConfig(config);</span>
 
     // build http clients
-<span class="fc" id="L100">    PoolingNHttpClientConnectionManager asyncConnectionManager = buildAsyncConnectionManager(config, sslContext);</span>
-<span class="fc" id="L101">    httpAsyncClient = buildHttpAsyncClient(config, asyncConnectionManager, credentialsProvider, defaultRequestConfig);</span>
+<span class="fc" id="L102">    PoolingNHttpClientConnectionManager asyncConnectionManager = buildAsyncConnectionManager(config, sslContext);</span>
+<span class="fc" id="L103">    httpAsyncClient = buildHttpAsyncClient(config, asyncConnectionManager, credentialsProvider, defaultRequestConfig);</span>
 
     // start async client
-<span class="fc" id="L104">    httpAsyncClient.start();</span>
-<span class="fc" id="L105">  }</span>
+<span class="fc" id="L106">    httpAsyncClient.start();</span>
+<span class="fc" id="L107">  }</span>
 
-  private static RequestConfig buildDefaultRequestConfig(HttpClientConfig config) {
-<span class="fc" id="L108">    return RequestConfig.custom()</span>
-<span class="fc" id="L109">            .setConnectionRequestTimeout(config.getConnectionRequestTimeout())</span>
-<span class="fc" id="L110">            .setConnectTimeout(config.getConnectTimeout())</span>
-<span class="fc" id="L111">            .setSocketTimeout(config.getSocketTimeout())</span>
-<span class="fc" id="L112">            .setCookieSpec(config.getCookieSpec())</span>
-<span class="fc" id="L113">            .build();</span>
+  private static @NotNull RequestConfig buildDefaultRequestConfig(@NotNull HttpClientConfig config) {
+<span class="fc" id="L110">    return RequestConfig.custom()</span>
+<span class="fc" id="L111">            .setConnectionRequestTimeout(config.getConnectionRequestTimeout())</span>
+<span class="fc" id="L112">            .setConnectTimeout(config.getConnectTimeout())</span>
+<span class="fc" id="L113">            .setSocketTimeout(config.getSocketTimeout())</span>
+<span class="fc" id="L114">            .setCookieSpec(config.getCookieSpec())</span>
+<span class="fc" id="L115">            .build();</span>
   }
 
-  private static PoolingNHttpClientConnectionManager buildAsyncConnectionManager(HttpClientConfig config,
-      SSLContext sslContext) {
+  private static @NotNull PoolingNHttpClientConnectionManager buildAsyncConnectionManager(@NotNull HttpClientConfig config,
+      @NotNull SSLContext sslContext) {
     // scheme configuration
-<span class="fc" id="L119">    SchemeIOSessionStrategy sslSocketFactory = new SSLIOSessionStrategy(sslContext);</span>
-<span class="fc" id="L120">    Registry&lt;SchemeIOSessionStrategy&gt; asyncSchemeRegistry = RegistryBuilder.&lt;SchemeIOSessionStrategy&gt;create()</span>
-<span class="fc" id="L121">        .register(&quot;http&quot;, NoopIOSessionStrategy.INSTANCE)</span>
-<span class="fc" id="L122">        .register(&quot;https&quot;, sslSocketFactory)</span>
-<span class="fc" id="L123">        .build();</span>
+<span class="fc" id="L121">    SchemeIOSessionStrategy sslSocketFactory = new SSLIOSessionStrategy(sslContext);</span>
+<span class="fc" id="L122">    Registry&lt;SchemeIOSessionStrategy&gt; asyncSchemeRegistry = RegistryBuilder.&lt;SchemeIOSessionStrategy&gt;create()</span>
+<span class="fc" id="L123">        .register(&quot;http&quot;, NoopIOSessionStrategy.INSTANCE)</span>
+<span class="fc" id="L124">        .register(&quot;https&quot;, sslSocketFactory)</span>
+<span class="fc" id="L125">        .build();</span>
 
     // pooling settings
     ConnectingIOReactor ioreactor;
     try {
-<span class="fc" id="L128">      ioreactor = new DefaultConnectingIOReactor(IOReactorConfig.DEFAULT);</span>
+<span class="fc" id="L130">      ioreactor = new DefaultConnectingIOReactor(IOReactorConfig.DEFAULT);</span>
     }
-<span class="nc" id="L130">    catch (IOReactorException ex) {</span>
-<span class="nc" id="L131">      throw new RuntimeException(&quot;Unable to initialize IO reactor.&quot;, ex);</span>
-<span class="fc" id="L132">    }</span>
-<span class="fc" id="L133">    PoolingNHttpClientConnectionManager conmgr = new PoolingNHttpClientConnectionManager(ioreactor, asyncSchemeRegistry);</span>
-<span class="fc" id="L134">    conmgr.setMaxTotal(config.getMaxTotalConnections());</span>
-<span class="fc" id="L135">    conmgr.setDefaultMaxPerRoute(config.getMaxConnectionsPerHost());</span>
-<span class="fc" id="L136">    return conmgr;</span>
+<span class="nc" id="L132">    catch (IOReactorException ex) {</span>
+<span class="nc" id="L133">      throw new RuntimeException(&quot;Unable to initialize IO reactor.&quot;, ex);</span>
+<span class="fc" id="L134">    }</span>
+<span class="fc" id="L135">    PoolingNHttpClientConnectionManager conmgr = new PoolingNHttpClientConnectionManager(ioreactor, asyncSchemeRegistry);</span>
+<span class="fc" id="L136">    conmgr.setMaxTotal(config.getMaxTotalConnections());</span>
+<span class="fc" id="L137">    conmgr.setDefaultMaxPerRoute(config.getMaxConnectionsPerHost());</span>
+<span class="fc" id="L138">    return conmgr;</span>
   }
 
-  private static CloseableHttpAsyncClient buildHttpAsyncClient(HttpClientConfig config,
-      PoolingNHttpClientConnectionManager connectionManager, CredentialsProvider credentialsProvider,
-      RequestConfig defaultRequestConfig) {
+  private static @NotNull CloseableHttpAsyncClient buildHttpAsyncClient(@NotNull HttpClientConfig config,
+      @NotNull PoolingNHttpClientConnectionManager connectionManager, @NotNull CredentialsProvider credentialsProvider,
+      @NotNull RequestConfig defaultRequestConfig) {
 
     // prepare HTTPClient builder
-<span class="fc" id="L144">    HttpAsyncClientBuilder httpClientAsyncBuilder = HttpAsyncClientBuilder.create()</span>
-<span class="fc" id="L145">        .setConnectionManager(connectionManager);</span>
+<span class="fc" id="L146">    HttpAsyncClientBuilder httpClientAsyncBuilder = HttpAsyncClientBuilder.create()</span>
+<span class="fc" id="L147">        .setConnectionManager(connectionManager);</span>
 
     // timeout settings
-<span class="fc" id="L148">    httpClientAsyncBuilder.setDefaultRequestConfig(defaultRequestConfig);</span>
+<span class="fc" id="L150">    httpClientAsyncBuilder.setDefaultRequestConfig(defaultRequestConfig);</span>
 
-<span class="fc" id="L150">    httpClientAsyncBuilder.setDefaultCredentialsProvider(credentialsProvider);</span>
+<span class="fc" id="L152">    httpClientAsyncBuilder.setDefaultCredentialsProvider(credentialsProvider);</span>
 
     // optional proxy support
-<span class="fc bfc" id="L153" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getProxyHost())) {</span>
-<span class="fc" id="L154">      httpClientAsyncBuilder.setProxy(new HttpHost(config.getProxyHost(), config.getProxyPort()));</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">    if (StringUtils.isNotEmpty(config.getProxyHost())) {</span>
+<span class="fc" id="L156">      httpClientAsyncBuilder.setProxy(new HttpHost(config.getProxyHost(), config.getProxyPort()));</span>
 
       // optional proxy authentication
-<span class="fc bfc" id="L157" title="All 2 branches covered.">      if (StringUtils.isNotEmpty(config.getProxyUser())) {</span>
-<span class="fc" id="L158">        httpClientAsyncBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">      if (StringUtils.isNotEmpty(config.getProxyUser())) {</span>
+<span class="fc" id="L160">        httpClientAsyncBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());</span>
       }
     }
 
-<span class="fc" id="L162">    return httpClientAsyncBuilder.build();</span>
+<span class="fc" id="L164">    return httpClientAsyncBuilder.build();</span>
   }
 
   /**
    * @return Http client instance (asynchronous)
    */
-  public CloseableHttpAsyncClient getHttpAsyncClient() {
-<span class="fc" id="L169">    return httpAsyncClient;</span>
+  public @NotNull CloseableHttpAsyncClient getHttpAsyncClient() {
+<span class="fc" id="L171">    return httpAsyncClient;</span>
   }
 
   /**
    * @return Default request config
    */
-  public RequestConfig getDefaultRequestConfig() {
-<span class="fc" id="L176">    return defaultRequestConfig;</span>
+  public @NotNull RequestConfig getDefaultRequestConfig() {
+<span class="fc" id="L178">    return defaultRequestConfig;</span>
   }
 
   /**
@@ -183,17 +185,17 @@ class HttpAsyncClientItem {
    * @param isWsCall indicates if the call is a soap webservice call
    * @return true if host name is associated with this http client config
    */
-  public boolean matches(String hostName, String wsAddressingToURI, String path, boolean isWsCall) {
-<span class="fc bfc" id="L187" title="All 2 branches covered.">    if (isWsCall) {</span>
-<span class="pc bpc" id="L188" title="1 of 2 branches missed.">      return config.isEnabled()</span>
-<span class="fc bfc" id="L189" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
-<span class="fc bfc" id="L190" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path)</span>
-<span class="fc bfc" id="L191" title="All 2 branches covered.">          &amp;&amp; config.matchesWsAddressingToUri(wsAddressingToURI);</span>
+  public boolean matches(@Nullable String hostName, @Nullable String wsAddressingToURI, @Nullable String path, boolean isWsCall) {
+<span class="fc bfc" id="L189" title="All 2 branches covered.">    if (isWsCall) {</span>
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">      return config.isEnabled()</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path)</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">          &amp;&amp; config.matchesWsAddressingToUri(wsAddressingToURI);</span>
     }
     else {
-<span class="pc bpc" id="L194" title="1 of 2 branches missed.">      return config.isEnabled()</span>
-<span class="fc bfc" id="L195" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
-<span class="fc bfc" id="L196" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path);</span>
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">      return config.isEnabled()</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">          &amp;&amp; config.matchesHost(hostName)</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">          &amp;&amp; config.matchesPath(path);</span>
     }
   }
 
@@ -202,16 +204,16 @@ class HttpAsyncClientItem {
    */
   public void close() {
     try {
-<span class="fc" id="L205">      httpAsyncClient.close();</span>
+<span class="fc" id="L207">      httpAsyncClient.close();</span>
     }
-<span class="nc" id="L207">    catch (IOException ex) {</span>
-<span class="nc" id="L208">      log.warn(&quot;Error closing async HTTP client.&quot;, ex);</span>
-<span class="fc" id="L209">    }</span>
-<span class="fc" id="L210">  }</span>
+<span class="nc" id="L209">    catch (IOException ex) {</span>
+<span class="nc" id="L210">      log.warn(&quot;Error closing async HTTP client.&quot;, ex);</span>
+<span class="fc" id="L211">    }</span>
+<span class="fc" id="L212">  }</span>
 
   @Override
-  public String toString() {
-<span class="nc" id="L214">    return &quot;HttpClientItem[&quot; + config.toString() + &quot;]&quot;;</span>
+  public @NotNull String toString() {
+<span class="nc" id="L216">    return &quot;HttpClientItem[&quot; + config.toString() + &quot;]&quot;;</span>
   }
 
 }

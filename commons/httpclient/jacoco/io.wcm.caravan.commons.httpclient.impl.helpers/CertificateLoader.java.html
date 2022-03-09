@@ -35,7 +35,10 @@ import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.conn.ssl.SSLInitializationException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.caravan.commons.httpclient.HttpClientConfig;
 
 /**
@@ -80,26 +83,28 @@ public final class CertificateLoader {
    * @throws IOException I/O exception
    * @throws GeneralSecurityException General security exception
    */
-  public static SSLContext buildSSLContext(HttpClientConfig config) throws IOException, GeneralSecurityException {
+  @SuppressWarnings(&quot;null&quot;)
+  @SuppressFBWarnings(&quot;NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE&quot;) // null checks happen in separate methods
+  public static @NotNull SSLContext buildSSLContext(@NotNull HttpClientConfig config) throws IOException, GeneralSecurityException {
 
-<span class="fc" id="L85">    KeyManagerFactory kmf = null;</span>
-<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (isSslKeyManagerEnabled(config)) {</span>
-<span class="fc" id="L87">      kmf = getKeyManagerFactory(config.getKeyStorePath(),</span>
-<span class="fc" id="L88">          new StoreProperties(config.getKeyStorePassword(), config.getKeyManagerType(),</span>
-<span class="fc" id="L89">              config.getKeyStoreType(), config.getKeyStoreProvider()));</span>
+<span class="fc" id="L90">    KeyManagerFactory kmf = null;</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">    if (isSslKeyManagerEnabled(config)) {</span>
+<span class="fc" id="L92">      kmf = getKeyManagerFactory(config.getKeyStorePath(),</span>
+<span class="fc" id="L93">          new StoreProperties(config.getKeyStorePassword(), config.getKeyManagerType(),</span>
+<span class="fc" id="L94">              config.getKeyStoreType(), config.getKeyStoreProvider()));</span>
     }
-<span class="fc" id="L91">    TrustManagerFactory tmf = null;</span>
-<span class="fc bfc" id="L92" title="All 2 branches covered.">    if (isSslTrustStoreEnbaled(config)) {</span>
-<span class="fc" id="L93">      tmf = getTrustManagerFactory(config.getTrustStorePath(), new StoreProperties(config.getTrustStorePassword(),</span>
-<span class="fc" id="L94">          config.getTrustManagerType(), config.getTrustStoreType(), config.getTrustStoreProvider()));</span>
+<span class="fc" id="L96">    TrustManagerFactory tmf = null;</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (isSslTrustStoreEnbaled(config)) {</span>
+<span class="fc" id="L98">      tmf = getTrustManagerFactory(config.getTrustStorePath(), new StoreProperties(config.getTrustStorePassword(),</span>
+<span class="fc" id="L99">          config.getTrustManagerType(), config.getTrustStoreType(), config.getTrustStoreProvider()));</span>
     }
 
-<span class="fc" id="L97">    SSLContext sslContext = SSLContext.getInstance(config.getSslContextType());</span>
-<span class="fc bfc" id="L98" title="All 4 branches covered.">    sslContext.init(kmf != null ? kmf.getKeyManagers() : null,</span>
-<span class="fc" id="L99">        tmf != null ? tmf.getTrustManagers() : null,</span>
+<span class="fc" id="L102">    SSLContext sslContext = SSLContext.getInstance(config.getSslContextType());</span>
+<span class="fc bfc" id="L103" title="All 4 branches covered.">    sslContext.init(kmf != null ? kmf.getKeyManagers() : null,</span>
+<span class="fc" id="L104">        tmf != null ? tmf.getTrustManagers() : null,</span>
         null);
 
-<span class="fc" id="L102">    return sslContext;</span>
+<span class="fc" id="L107">    return sslContext;</span>
   }
 
   /**
@@ -110,22 +115,22 @@ public final class CertificateLoader {
    * @throws IOException I/O exception
    * @throws GeneralSecurityException General security exception
    */
-  public static KeyManagerFactory getKeyManagerFactory(String keyStoreFilename, StoreProperties storeProperties)
+  public static @NotNull KeyManagerFactory getKeyManagerFactory(@NotNull String keyStoreFilename, @NotNull StoreProperties storeProperties)
       throws IOException, GeneralSecurityException {
-<span class="fc" id="L115">    InputStream is = getResourceAsStream(keyStoreFilename);</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">    if (is == null) {</span>
-<span class="fc" id="L117">      throw new FileNotFoundException(&quot;Certificate file not found: &quot; + getFilenameInfo(keyStoreFilename));</span>
+<span class="fc" id="L120">    InputStream is = getResourceAsStream(keyStoreFilename);</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">    if (is == null) {</span>
+<span class="fc" id="L122">      throw new FileNotFoundException(&quot;Certificate file not found: &quot; + getFilenameInfo(keyStoreFilename));</span>
     }
     try {
-<span class="fc" id="L120">      return getKeyManagerFactory(is, storeProperties);</span>
+<span class="fc" id="L125">      return getKeyManagerFactory(is, storeProperties);</span>
     }
     finally {
       try {
-<span class="fc" id="L124">        is.close();</span>
+<span class="fc" id="L129">        is.close();</span>
       }
-<span class="nc" id="L126">      catch (IOException ex) {</span>
+<span class="nc" id="L131">      catch (IOException ex) {</span>
         // ignore
-<span class="fc" id="L128">      }</span>
+<span class="fc" id="L133">      }</span>
     }
   }
 
@@ -137,20 +142,20 @@ public final class CertificateLoader {
    * @throws IOException I/O exception
    * @throws GeneralSecurityException General security exception
    */
-  private static KeyManagerFactory getKeyManagerFactory(InputStream keyStoreStream, StoreProperties storeProperties)
+  private static @NotNull KeyManagerFactory getKeyManagerFactory(@NotNull InputStream keyStoreStream, @NotNull StoreProperties storeProperties)
       throws IOException, GeneralSecurityException {
     // use provider if given, otherwise use the first matching security provider
     final KeyStore ks;
-<span class="fc bfc" id="L144" title="All 2 branches covered.">    if (StringUtils.isNotBlank(storeProperties.getProvider())) {</span>
-<span class="fc" id="L145">      ks = KeyStore.getInstance(storeProperties.getType(), storeProperties.getProvider());</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">    if (StringUtils.isNotBlank(storeProperties.getProvider())) {</span>
+<span class="fc" id="L150">      ks = KeyStore.getInstance(storeProperties.getType(), storeProperties.getProvider());</span>
     }
     else {
-<span class="fc" id="L148">      ks = KeyStore.getInstance(storeProperties.getType());</span>
+<span class="fc" id="L153">      ks = KeyStore.getInstance(storeProperties.getType());</span>
     }
-<span class="fc" id="L150">    ks.load(keyStoreStream, storeProperties.getPassword().toCharArray());</span>
-<span class="fc" id="L151">    KeyManagerFactory kmf = KeyManagerFactory.getInstance(storeProperties.getManagerType());</span>
-<span class="fc" id="L152">    kmf.init(ks, storeProperties.getPassword().toCharArray());</span>
-<span class="fc" id="L153">    return kmf;</span>
+<span class="fc" id="L155">    ks.load(keyStoreStream, storeProperties.getPassword().toCharArray());</span>
+<span class="fc" id="L156">    KeyManagerFactory kmf = KeyManagerFactory.getInstance(storeProperties.getManagerType());</span>
+<span class="fc" id="L157">    kmf.init(ks, storeProperties.getPassword().toCharArray());</span>
+<span class="fc" id="L158">    return kmf;</span>
   }
 
   /**
@@ -161,22 +166,22 @@ public final class CertificateLoader {
    * @throws IOException I/O exception
    * @throws GeneralSecurityException General security exception
    */
-  public static TrustManagerFactory getTrustManagerFactory(String trustStoreFilename, StoreProperties storeProperties)
+  public static @NotNull TrustManagerFactory getTrustManagerFactory(@NotNull String trustStoreFilename, @NotNull StoreProperties storeProperties)
       throws IOException, GeneralSecurityException {
-<span class="fc" id="L166">    InputStream is = getResourceAsStream(trustStoreFilename);</span>
-<span class="fc bfc" id="L167" title="All 2 branches covered.">    if (is == null) {</span>
-<span class="fc" id="L168">      throw new FileNotFoundException(&quot;Certificate file not found: &quot; + getFilenameInfo(trustStoreFilename));</span>
+<span class="fc" id="L171">    InputStream is = getResourceAsStream(trustStoreFilename);</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">    if (is == null) {</span>
+<span class="fc" id="L173">      throw new FileNotFoundException(&quot;Certificate file not found: &quot; + getFilenameInfo(trustStoreFilename));</span>
     }
     try {
-<span class="fc" id="L171">      return getTrustManagerFactory(is, storeProperties);</span>
+<span class="fc" id="L176">      return getTrustManagerFactory(is, storeProperties);</span>
     }
     finally {
       try {
-<span class="fc" id="L175">        is.close();</span>
+<span class="fc" id="L180">        is.close();</span>
       }
-<span class="nc" id="L177">      catch (IOException ex) {</span>
+<span class="nc" id="L182">      catch (IOException ex) {</span>
         // ignore
-<span class="fc" id="L179">      }</span>
+<span class="fc" id="L184">      }</span>
     }
   }
 
@@ -188,22 +193,22 @@ public final class CertificateLoader {
    * @throws IOException I/O exception
    * @throws GeneralSecurityException General security exception
    */
-  private static TrustManagerFactory getTrustManagerFactory(InputStream trustStoreStream, StoreProperties storeProperties)
+  private static @NotNull TrustManagerFactory getTrustManagerFactory(@NotNull InputStream trustStoreStream, @NotNull StoreProperties storeProperties)
       throws IOException, GeneralSecurityException {
 
     // use provider if given, otherwise use the first matching security provider
     final KeyStore ks;
-<span class="fc bfc" id="L196" title="All 2 branches covered.">    if (StringUtils.isNotBlank(storeProperties.getProvider())) {</span>
-<span class="fc" id="L197">      ks = KeyStore.getInstance(storeProperties.getType(), storeProperties.getProvider());</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">    if (StringUtils.isNotBlank(storeProperties.getProvider())) {</span>
+<span class="fc" id="L202">      ks = KeyStore.getInstance(storeProperties.getType(), storeProperties.getProvider());</span>
     }
     else {
-<span class="fc" id="L200">      ks = KeyStore.getInstance(storeProperties.getType());</span>
+<span class="fc" id="L205">      ks = KeyStore.getInstance(storeProperties.getType());</span>
     }
 
-<span class="fc" id="L203">    ks.load(trustStoreStream, storeProperties.getPassword().toCharArray());</span>
-<span class="fc" id="L204">    TrustManagerFactory tmf = TrustManagerFactory.getInstance(storeProperties.getManagerType());</span>
-<span class="fc" id="L205">    tmf.init(ks);</span>
-<span class="fc" id="L206">    return tmf;</span>
+<span class="fc" id="L208">    ks.load(trustStoreStream, storeProperties.getPassword().toCharArray());</span>
+<span class="fc" id="L209">    TrustManagerFactory tmf = TrustManagerFactory.getInstance(storeProperties.getManagerType());</span>
+<span class="fc" id="L210">    tmf.init(ks);</span>
+<span class="fc" id="L211">    return tmf;</span>
   }
 
   /**
@@ -212,19 +217,19 @@ public final class CertificateLoader {
    * @return InputStream or null if neither file nor classpath resource is found
    * @throws IOException I/O exception
    */
-  private static InputStream getResourceAsStream(String path) throws IOException {
-<span class="fc bfc" id="L216" title="All 2 branches covered.">    if (StringUtils.isEmpty(path)) {</span>
-<span class="fc" id="L217">      return null;</span>
+  private static @Nullable InputStream getResourceAsStream(@NotNull String path) throws IOException {
+<span class="fc bfc" id="L221" title="All 2 branches covered.">    if (StringUtils.isEmpty(path)) {</span>
+<span class="fc" id="L222">      return null;</span>
     }
 
     // first try to load as file
-<span class="fc" id="L221">    File file = new File(path);</span>
-<span class="pc bpc" id="L222" title="3 of 4 branches missed.">    if (file.exists() &amp;&amp; file.isFile()) {</span>
-<span class="nc" id="L223">      return new FileInputStream(file);</span>
+<span class="fc" id="L226">    File file = new File(path);</span>
+<span class="pc bpc" id="L227" title="3 of 4 branches missed.">    if (file.exists() &amp;&amp; file.isFile()) {</span>
+<span class="nc" id="L228">      return new FileInputStream(file);</span>
     }
 
     // if not a file fallback to classloader resource
-<span class="fc" id="L227">    return CertificateLoader.class.getResourceAsStream(path);</span>
+<span class="fc" id="L232">    return CertificateLoader.class.getResourceAsStream(path);</span>
   }
 
   /**
@@ -232,15 +237,15 @@ public final class CertificateLoader {
    * @param path Path
    * @return Absolute path
    */
-  private static String getFilenameInfo(String path) {
-<span class="fc bfc" id="L236" title="All 2 branches covered.">    if (StringUtils.isEmpty(path)) {</span>
-<span class="fc" id="L237">      return null;</span>
+  private static @Nullable String getFilenameInfo(@Nullable String path) {
+<span class="fc bfc" id="L241" title="All 2 branches covered.">    if (StringUtils.isEmpty(path)) {</span>
+<span class="fc" id="L242">      return null;</span>
     }
     try {
-<span class="fc" id="L240">      return new File(path).getCanonicalPath();</span>
+<span class="fc" id="L245">      return new File(path).getCanonicalPath();</span>
     }
-<span class="nc" id="L242">    catch (IOException ex) {</span>
-<span class="nc" id="L243">      return new File(path).getAbsolutePath();</span>
+<span class="nc" id="L247">    catch (IOException ex) {</span>
+<span class="nc" id="L248">      return new File(path).getAbsolutePath();</span>
     }
   }
 
@@ -249,11 +254,11 @@ public final class CertificateLoader {
    * @param config Http client configuration
    * @return true if client certificates are enabled
    */
-  public static boolean isSslKeyManagerEnabled(HttpClientConfig config) {
-<span class="pc bpc" id="L253" title="1 of 2 branches missed.">    return StringUtils.isNotEmpty(config.getSslContextType())</span>
-<span class="pc bpc" id="L254" title="1 of 2 branches missed.">        &amp;&amp; StringUtils.isNotEmpty(config.getKeyManagerType())</span>
-<span class="pc bpc" id="L255" title="1 of 2 branches missed.">        &amp;&amp; StringUtils.isNotEmpty(config.getKeyStoreType())</span>
-<span class="fc bfc" id="L256" title="All 2 branches covered.">        &amp;&amp; StringUtils.isNotEmpty(config.getKeyStorePath());</span>
+  public static boolean isSslKeyManagerEnabled(@NotNull HttpClientConfig config) {
+<span class="pc bpc" id="L258" title="1 of 2 branches missed.">    return StringUtils.isNotEmpty(config.getSslContextType())</span>
+<span class="pc bpc" id="L259" title="1 of 2 branches missed.">        &amp;&amp; StringUtils.isNotEmpty(config.getKeyManagerType())</span>
+<span class="pc bpc" id="L260" title="1 of 2 branches missed.">        &amp;&amp; StringUtils.isNotEmpty(config.getKeyStoreType())</span>
+<span class="fc bfc" id="L261" title="All 2 branches covered.">        &amp;&amp; StringUtils.isNotEmpty(config.getKeyStorePath());</span>
   }
 
   /**
@@ -261,28 +266,25 @@ public final class CertificateLoader {
    * @param config Http client configuration
    * @return true if client certificates are enabled
    */
-  public static boolean isSslTrustStoreEnbaled(HttpClientConfig config) {
-<span class="pc bpc" id="L265" title="1 of 2 branches missed.">    return StringUtils.isNotEmpty(config.getSslContextType())</span>
-<span class="pc bpc" id="L266" title="1 of 2 branches missed.">        &amp;&amp; StringUtils.isNotEmpty(config.getTrustManagerType())</span>
-<span class="pc bpc" id="L267" title="1 of 2 branches missed.">        &amp;&amp; StringUtils.isNotEmpty(config.getTrustStoreType())</span>
-<span class="fc bfc" id="L268" title="All 2 branches covered.">        &amp;&amp; StringUtils.isNotEmpty(config.getTrustStorePath());</span>
+  public static boolean isSslTrustStoreEnbaled(@NotNull HttpClientConfig config) {
+<span class="pc bpc" id="L270" title="1 of 2 branches missed.">    return StringUtils.isNotEmpty(config.getSslContextType())</span>
+<span class="pc bpc" id="L271" title="1 of 2 branches missed.">        &amp;&amp; StringUtils.isNotEmpty(config.getTrustManagerType())</span>
+<span class="pc bpc" id="L272" title="1 of 2 branches missed.">        &amp;&amp; StringUtils.isNotEmpty(config.getTrustStoreType())</span>
+<span class="fc bfc" id="L273" title="All 2 branches covered.">        &amp;&amp; StringUtils.isNotEmpty(config.getTrustStorePath());</span>
   }
 
   /**
    * Creates default SSL context.
    * @return SSL context
    */
-  public static SSLContext createDefaultSSlContext() throws SSLInitializationException {
+  public static @NotNull SSLContext createDefaultSSlContext() throws SSLInitializationException {
     try {
-<span class="fc" id="L277">      final SSLContext sslcontext = SSLContext.getInstance(SSL_CONTEXT_TYPE_DEFAULT);</span>
-<span class="fc" id="L278">      sslcontext.init(null, null, null);</span>
-<span class="fc" id="L279">      return sslcontext;</span>
+<span class="fc" id="L282">      final SSLContext sslcontext = SSLContext.getInstance(SSL_CONTEXT_TYPE_DEFAULT);</span>
+<span class="fc" id="L283">      sslcontext.init(null, null, null);</span>
+<span class="fc" id="L284">      return sslcontext;</span>
     }
-<span class="nc" id="L281">    catch (NoSuchAlgorithmException ex) {</span>
-<span class="nc" id="L282">      throw new SSLInitializationException(ex.getMessage(), ex);</span>
-    }
-<span class="nc" id="L284">    catch (KeyManagementException ex) {</span>
-<span class="nc" id="L285">      throw new SSLInitializationException(ex.getMessage(), ex);</span>
+<span class="nc" id="L286">    catch (NoSuchAlgorithmException | KeyManagementException ex) {</span>
+<span class="nc" id="L287">      throw new SSLInitializationException(ex.getMessage(), ex);</span>
     }
   }
 

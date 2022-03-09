@@ -24,6 +24,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper methods for managing java beans.
@@ -42,26 +44,26 @@ final class BeanUtil {
    * @param maskProperties List of property names
    * @return Map with masked key/value pairs
    */
-  public static SortedMap&lt;String, Object&gt; getMaskedBeanProperties(Object beanObject, String[] maskProperties) {
+  public static @NotNull SortedMap&lt;String, Object&gt; getMaskedBeanProperties(@NotNull Object beanObject, @NotNull String @Nullable [] maskProperties) {
     try {
-<span class="fc" id="L47">      SortedMap&lt;String, Object&gt; configProperties = new TreeMap&lt;&gt;(BeanUtils.describe(beanObject));</span>
+<span class="fc" id="L49">      SortedMap&lt;String, Object&gt; configProperties = new TreeMap&lt;&gt;(BeanUtils.describe(beanObject));</span>
 
       // always ignore &quot;class&quot; properties which is added by BeanUtils.describe by default
-<span class="fc" id="L50">      configProperties.remove(&quot;class&quot;);</span>
+<span class="fc" id="L52">      configProperties.remove(&quot;class&quot;);</span>
 
       // Mask some properties with confidential information (if set to any value)
-<span class="pc bpc" id="L53" title="1 of 2 branches missed.">      if (maskProperties != null) {</span>
-<span class="fc bfc" id="L54" title="All 2 branches covered.">        for (String propertyName : maskProperties) {</span>
-<span class="pc bpc" id="L55" title="1 of 4 branches missed.">          if (configProperties.containsKey(propertyName) &amp;&amp; configProperties.get(propertyName) != null) {</span>
-<span class="fc" id="L56">            configProperties.put(propertyName, &quot;***&quot;);</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">      if (maskProperties != null) {</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        for (String propertyName : maskProperties) {</span>
+<span class="pc bpc" id="L57" title="1 of 4 branches missed.">          if (configProperties.containsKey(propertyName) &amp;&amp; configProperties.get(propertyName) != null) {</span>
+<span class="fc" id="L58">            configProperties.put(propertyName, &quot;***&quot;);</span>
           }
         }
       }
 
-<span class="fc" id="L61">      return configProperties;</span>
+<span class="fc" id="L63">      return configProperties;</span>
     }
-<span class="nc" id="L63">    catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException ex) {</span>
-<span class="nc" id="L64">      throw new IllegalArgumentException(&quot;Unable to get properties from: &quot; + beanObject, ex);</span>
+<span class="nc" id="L65">    catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException ex) {</span>
+<span class="nc" id="L66">      throw new IllegalArgumentException(&quot;Unable to get properties from: &quot; + beanObject, ex);</span>
     }
   }
 

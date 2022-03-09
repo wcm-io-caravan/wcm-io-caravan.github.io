@@ -31,6 +31,8 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.sling.commons.osgi.Order;
 import org.apache.sling.commons.osgi.ServiceUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -50,114 +52,118 @@ import io.wcm.caravan.commons.httpclient.impl.helpers.DefaultHttpClientConfig;
         cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
         bind = &quot;bindHttpClientConfig&quot;, unbind = &quot;unbindHttpClientConfig&quot;)
 })
-<span class="fc" id="L53">public class HttpClientFactoryImpl implements HttpClientFactory {</span>
+<span class="fc" id="L55">public class HttpClientFactoryImpl implements HttpClientFactory {</span>
 
-<span class="fc" id="L55">  private final ConcurrentMap&lt;Comparable&lt;Object&gt;, HttpClientItem&gt; factoryItems = new ConcurrentSkipListMap&lt;&gt;();</span>
+<span class="fc" id="L57">  private final ConcurrentMap&lt;Comparable&lt;Object&gt;, HttpClientItem&gt; factoryItems = new ConcurrentSkipListMap&lt;&gt;();</span>
 
   private HttpClientItem defaultFactoryItem;
 
   @Activate
   private void activate() {
-<span class="fc" id="L61">    defaultFactoryItem = new HttpClientItem(DefaultHttpClientConfig.INSTANCE);</span>
-<span class="fc" id="L62">  }</span>
+<span class="fc" id="L63">    defaultFactoryItem = new HttpClientItem(DefaultHttpClientConfig.INSTANCE);</span>
+<span class="fc" id="L64">  }</span>
 
   @Deactivate
   private void deactivate() {
-<span class="fc bfc" id="L66" title="All 2 branches covered.">    for (HttpClientItem item : factoryItems.values()) {</span>
-<span class="fc" id="L67">      item.close();</span>
-<span class="fc" id="L68">    }</span>
-<span class="fc" id="L69">    factoryItems.clear();</span>
-<span class="fc" id="L70">    defaultFactoryItem.close();</span>
-<span class="fc" id="L71">    defaultFactoryItem = null;</span>
-<span class="fc" id="L72">  }</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">    for (HttpClientItem item : factoryItems.values()) {</span>
+<span class="fc" id="L69">      item.close();</span>
+<span class="fc" id="L70">    }</span>
+<span class="fc" id="L71">    factoryItems.clear();</span>
+<span class="fc" id="L72">    defaultFactoryItem.close();</span>
+<span class="fc" id="L73">    defaultFactoryItem = null;</span>
+<span class="fc" id="L74">  }</span>
 
   protected void bindHttpClientConfig(HttpClientConfig httpClientConfig, Map&lt;String, Object&gt; config) {
-<span class="fc" id="L75">    factoryItems.put(ServiceUtil.getComparableForServiceRanking(config, Order.ASCENDING), new HttpClientItem(httpClientConfig));</span>
-<span class="fc" id="L76">  }</span>
+<span class="fc" id="L77">    factoryItems.put(ServiceUtil.getComparableForServiceRanking(config, Order.ASCENDING), new HttpClientItem(httpClientConfig));</span>
+<span class="fc" id="L78">  }</span>
 
   @SuppressWarnings(&quot;unused&quot;)
   protected void unbindHttpClientConfig(HttpClientConfig httpClientConfig, Map&lt;String, Object&gt; config) {
-<span class="nc" id="L80">    HttpClientItem removed = factoryItems.remove(ServiceUtil.getComparableForServiceRanking(config, Order.ASCENDING));</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">    if (removed != null) {</span>
-<span class="nc" id="L82">      removed.close();</span>
+<span class="nc" id="L82">    HttpClientItem removed = factoryItems.remove(ServiceUtil.getComparableForServiceRanking(config, Order.ASCENDING));</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">    if (removed != null) {</span>
+<span class="nc" id="L84">      removed.close();</span>
     }
-<span class="nc" id="L84">  }</span>
+<span class="nc" id="L86">  }</span>
 
   @Override
-  public CloseableHttpClient get(String targetUrl) {
-<span class="fc" id="L88">    return getCloseable(targetUrl);</span>
+  public @NotNull CloseableHttpClient get(@Nullable String targetUrl) {
+<span class="fc" id="L90">    return getCloseable(targetUrl);</span>
   }
 
   @Override
-  public CloseableHttpClient getCloseable(String targetUrl) {
-<span class="fc" id="L93">    final URI uri = toUri(targetUrl);</span>
-<span class="pc bpc" id="L94" title="1 of 2 branches missed.">    final String path = uri != null ? uri.getPath() : null;</span>
-<span class="fc" id="L95">    return getFactoryItem(uri, null, path, false).getHttpClient();</span>
+  public @NotNull CloseableHttpClient getCloseable(@Nullable String targetUrl) {
+<span class="fc" id="L95">    final URI uri = toUri(targetUrl);</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">    final String path = uri != null ? uri.getPath() : null;</span>
+<span class="fc" id="L97">    return getFactoryItem(uri, null, path, false).getHttpClient();</span>
   }
 
   @Override
-  public HttpClient get(URI targetUrl) {
-<span class="fc" id="L100">    return getCloseable(targetUrl);</span>
+  public @NotNull HttpClient get(@Nullable URI targetUrl) {
+<span class="fc" id="L102">    return getCloseable(targetUrl);</span>
   }
 
   @Override
-  public CloseableHttpClient getCloseable(URI targetUrl) {
-<span class="fc" id="L105">    return getFactoryItem(targetUrl, null, targetUrl.getPath(), false).getHttpClient();</span>
+  public @NotNull CloseableHttpClient getCloseable(@Nullable URI targetUrl) {
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">    String path = targetUrl != null ? targetUrl.getPath() : null;</span>
+<span class="fc" id="L108">    return getFactoryItem(targetUrl, null, path, false).getHttpClient();</span>
   }
 
   @Override
-  public HttpClient getWs(String targetUrl, String wsAddressingToUri) {
-<span class="fc" id="L110">    return getCloseableWs(targetUrl, wsAddressingToUri);</span>
+  public @NotNull HttpClient getWs(@Nullable String targetUrl, @Nullable String wsAddressingToUri) {
+<span class="fc" id="L113">    return getCloseableWs(targetUrl, wsAddressingToUri);</span>
   }
 
   @Override
-  public CloseableHttpClient getCloseableWs(String targetUrl, String wsAddressingToUri) {
-<span class="fc" id="L115">    final URI uri = toUri(targetUrl);</span>
-<span class="pc bpc" id="L116" title="1 of 2 branches missed.">    final String path = uri != null ? uri.getPath() : null;</span>
-<span class="fc" id="L117">    return getFactoryItem(uri, wsAddressingToUri, path, true).getHttpClient();</span>
+  public @NotNull CloseableHttpClient getCloseableWs(@Nullable String targetUrl, @Nullable String wsAddressingToUri) {
+<span class="fc" id="L118">    final URI uri = toUri(targetUrl);</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">    final String path = uri != null ? uri.getPath() : null;</span>
+<span class="fc" id="L120">    return getFactoryItem(uri, wsAddressingToUri, path, true).getHttpClient();</span>
   }
 
   @Override
-  public HttpClient getWs(URI targetUrl, URI wsAddressingToUri) {
-<span class="nc" id="L122">    return getCloseableWs(targetUrl, wsAddressingToUri);</span>
+  public @NotNull HttpClient getWs(@Nullable URI targetUrl, @Nullable URI wsAddressingToUri) {
+<span class="nc" id="L125">    return getCloseableWs(targetUrl, wsAddressingToUri);</span>
   }
 
   @Override
-  public CloseableHttpClient getCloseableWs(URI targetUrl, URI wsAddressingToUri) {
-<span class="nc" id="L127">    return getFactoryItem(targetUrl, wsAddressingToUri.toString(), targetUrl.getPath(), true).getHttpClient();</span>
+  public @NotNull CloseableHttpClient getCloseableWs(@Nullable URI targetUrl, @Nullable URI wsAddressingToUri) {
+<span class="nc bnc" id="L130" title="All 2 branches missed.">    String wsAddressingToUriString = wsAddressingToUri != null ? wsAddressingToUri.toString() : null;</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">    String path = targetUrl != null ? targetUrl.getPath() : null;</span>
+<span class="nc" id="L132">    return getFactoryItem(targetUrl, wsAddressingToUriString, path, true).getHttpClient();</span>
   }
 
   @Override
-  public RequestConfig getDefaultRequestConfig(String targetUrl) {
-<span class="fc" id="L132">    final URI uri = toUri(targetUrl);</span>
-<span class="pc bpc" id="L133" title="1 of 2 branches missed.">    final String path = uri != null ? uri.getPath() : null;</span>
-<span class="pc bpc" id="L134" title="1 of 2 branches missed.">    return uri == null ? null : getFactoryItem(uri, null, path, false).getDefaultRequestConfig();</span>
+  public @NotNull RequestConfig getDefaultRequestConfig(@Nullable String targetUrl) {
+<span class="fc" id="L137">    final URI uri = toUri(targetUrl);</span>
+<span class="fc" id="L138">    return getDefaultRequestConfig(uri);</span>
   }
 
   @Override
-  public RequestConfig getDefaultRequestConfig(URI targetUrl) {
-<span class="nc" id="L139">    return getFactoryItem(targetUrl, null, targetUrl.getPath(), false).getDefaultRequestConfig();</span>
+  public @NotNull RequestConfig getDefaultRequestConfig(@Nullable URI targetUrl) {
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">    String path = targetUrl != null ? targetUrl.getPath() : null;</span>
+<span class="fc" id="L144">    return getFactoryItem(targetUrl, null, path, false).getDefaultRequestConfig();</span>
   }
 
-  private HttpClientItem getFactoryItem(URI targetUrl, String wsAddressingToUri, String path, boolean isWsCall) {
-<span class="fc bfc" id="L143" title="All 2 branches covered.">    for (HttpClientItem item : factoryItems.values()) {</span>
-<span class="fc bfc" id="L144" title="All 2 branches covered.">      if (item.matches(targetUrl.getHost(), wsAddressingToUri, path, isWsCall)) {</span>
-<span class="fc" id="L145">        return item;</span>
+  private @NotNull HttpClientItem getFactoryItem(@Nullable URI targetUrl, @Nullable String wsAddressingToUri, @Nullable String path, boolean isWsCall) {
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    for (HttpClientItem item : factoryItems.values()) {</span>
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">      String host = targetUrl != null ? targetUrl.getHost() : null;</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">      if (item.matches(host, wsAddressingToUri, path, isWsCall)) {</span>
+<span class="fc" id="L151">        return item;</span>
       }
-<span class="fc" id="L147">    }</span>
-<span class="fc" id="L148">    return defaultFactoryItem;</span>
+<span class="fc" id="L153">    }</span>
+<span class="fc" id="L154">    return defaultFactoryItem;</span>
   }
 
-  private URI toUri(String uri) {
-<span class="pc bpc" id="L152" title="1 of 2 branches missed.">    if (StringUtils.isEmpty(uri)) {</span>
-<span class="nc" id="L153">      return null;</span>
+  private @Nullable URI toUri(@Nullable String uri) {
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">    if (StringUtils.isEmpty(uri)) {</span>
+<span class="nc" id="L159">      return null;</span>
     }
     else {
       try {
-<span class="fc" id="L157">        return new URI(uri);</span>
+<span class="fc" id="L163">        return new URI(uri);</span>
       }
-<span class="nc" id="L159">      catch (URISyntaxException ex) {</span>
-<span class="nc" id="L160">        throw new IllegalArgumentException(&quot;Invalid URI: &quot; + ex.getMessage(), ex);</span>
+<span class="nc" id="L165">      catch (URISyntaxException ex) {</span>
+<span class="nc" id="L166">        throw new IllegalArgumentException(&quot;Invalid URI: &quot; + ex.getMessage(), ex);</span>
       }
     }
   }
