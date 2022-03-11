@@ -60,7 +60,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/testing/json//checkstyle.html#io.wcm.caravan.testing.json.JsonTestEnvironment.java">io/wcm/caravan/testing/json/JsonTestEnvironment.java</a>
+                  <a href="https://caravan.wcm.io/testing/json//checkstyle.html#io.wcm.caravan.testing.json.JsonFixture.java">io/wcm/caravan/testing/json/JsonFixture.java</a>
                 </td>
                 <td>
                   0
@@ -74,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/testing/json//checkstyle.html#io.wcm.caravan.testing.json.JsonFixture.java">io/wcm/caravan/testing/json/JsonFixture.java</a>
+                  <a href="https://caravan.wcm.io/testing/json//checkstyle.html#io.wcm.caravan.testing.json.JsonTestEnvironment.java">io/wcm/caravan/testing/json/JsonTestEnvironment.java</a>
                 </td>
                 <td>
                   0
