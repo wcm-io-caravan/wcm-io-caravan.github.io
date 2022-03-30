@@ -214,7 +214,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineExceptionHandler.java">io/wcm/caravan/pipeline/JsonPipelineExceptionHandler.java</a>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineOutputException.java">io/wcm/caravan/pipeline/JsonPipelineOutputException.java</a>
                 </td>
                 <td>
                   0
@@ -242,7 +242,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineOutputException.java">io/wcm/caravan/pipeline/JsonPipelineOutputException.java</a>
+                  <a href="https://caravan.wcm.io/pipeline/api//checkstyle.html#io.wcm.caravan.pipeline.JsonPipelineExceptionHandler.java">io/wcm/caravan/pipeline/JsonPipelineExceptionHandler.java</a>
                 </td>
                 <td>
                   0
