@@ -270,7 +270,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.matching.MatchingResult.java">io/wcm/caravan/hal/comparison/impl/matching/MatchingResult.java</a>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.properties.PropertyProcessing.java">io/wcm/caravan/hal/comparison/impl/properties/PropertyProcessing.java</a>
                 </td>
                 <td>
                   0
@@ -284,7 +284,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.properties.PropertyProcessing.java">io/wcm/caravan/hal/comparison/impl/properties/PropertyProcessing.java</a>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.matching.MatchingResult.java">io/wcm/caravan/hal/comparison/impl/matching/MatchingResult.java</a>
                 </td>
                 <td>
                   0
@@ -410,7 +410,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.HalComparisonRecursionImpl.java">io/wcm/caravan/hal/comparison/impl/HalComparisonRecursionImpl.java</a>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.util.HalJsonConversion.java">io/wcm/caravan/hal/comparison/impl/util/HalJsonConversion.java</a>
                 </td>
                 <td>
                   0
@@ -424,7 +424,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.util.HalJsonConversion.java">io/wcm/caravan/hal/comparison/impl/util/HalJsonConversion.java</a>
+                  <a href="https://caravan.wcm.io/hal/comparison//checkstyle.html#io.wcm.caravan.hal.comparison.impl.HalComparisonRecursionImpl.java">io/wcm/caravan/hal/comparison/impl/HalComparisonRecursionImpl.java</a>
                 </td>
                 <td>
                   0
