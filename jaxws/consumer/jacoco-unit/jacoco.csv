@@ -4,6 +4,6 @@ JAX-WS Consumer,io.wcm.caravan.jaxws.consumer.impl,OsgiAwareClientImpl,43,0,0,0,
 JAX-WS Consumer,io.wcm.caravan.jaxws.consumer.impl,OsgiAwareJaxWsClientFactoryBean,12,0,0,0,2,0,2,0,2,0
 JAX-WS Consumer,io.wcm.caravan.jaxws.consumer.impl,JaxWsClientFactoryImpl,146,0,14,0,36,0,14,0,7,0
 JAX-WS Consumer,io.wcm.caravan.jaxws.consumer.impl,CertificateLoader,57,175,19,13,13,38,12,14,2,8
-JAX-WS Consumer,io.wcm.caravan.jaxws.consumer,JaxWsClientInitializer.new AbstractPhaseInterceptor() {...},29,0,0,0,7,0,2,0,2,0
 JAX-WS Consumer,io.wcm.caravan.jaxws.consumer,JaxWsClientInitializer,369,116,28,0,112,39,52,19,38,19
+JAX-WS Consumer,io.wcm.caravan.jaxws.consumer,JaxWsClientInitializer.new AbstractPhaseInterceptor() {...},29,0,0,0,7,0,2,0,2,0
 JAX-WS Consumer,io.wcm.caravan.jaxws.consumer,JaxWsClientInitializeException,9,0,0,0,4,0,2,0,2,0
