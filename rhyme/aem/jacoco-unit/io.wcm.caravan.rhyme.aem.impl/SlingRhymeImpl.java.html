@@ -23,7 +23,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
 
 import io.wcm.caravan.rhyme.aem.api.SlingRhyme;
-import io.wcm.caravan.rhyme.aem.impl.client.ResourceLoaderManager;
 import io.wcm.caravan.rhyme.aem.impl.docs.RhymeDocsOsgiBundleSupport;
 import io.wcm.caravan.rhyme.aem.impl.util.PageUtils;
 import io.wcm.caravan.rhyme.api.Rhyme;
@@ -47,171 +46,174 @@ public class SlingRhymeImpl extends SlingAdaptable implements SlingRhyme {
   private final Rhyme rhyme;
 
   @Inject
-  public SlingRhymeImpl(@Self SlingHttpServletRequest request, ModelFactory modelFactory, ResourceLoaderManager resourceLoaders,
-<span class="fc" id="L51">      RhymeDocsOsgiBundleSupport rhymeDocs) {</span>
+  public SlingRhymeImpl(@Self SlingHttpServletRequest request, ModelFactory modelFactory, SlingRhymeCustomizationManager customization,
+<span class="fc" id="L50">      RhymeDocsOsgiBundleSupport rhymeDocs) {</span>
 
-<span class="fc" id="L53">    this.modelFactory = modelFactory;</span>
-<span class="fc" id="L54">    this.request = request;</span>
-<span class="fc" id="L55">    this.currentResource = request.getResource();</span>
+<span class="fc" id="L52">    this.modelFactory = modelFactory;</span>
+<span class="fc" id="L53">    this.request = request;</span>
+<span class="fc" id="L54">    this.currentResource = request.getResource();</span>
 
     // the UrlHandler is only created only once for each request, and re-used when new SlingRhymeImpl instances are
     // created for different context-resources.
-<span class="fc" id="L59">    this.urlHandler = request.adaptTo(UrlHandler.class);</span>
+<span class="fc" id="L58">    this.urlHandler = request.adaptTo(UrlHandler.class);</span>
 
-<span class="fc" id="L61">    this.rhyme = RhymeBuilder.withResourceLoader(resourceLoaders.getResourceLoader())</span>
-<span class="fc" id="L62">        .withRhymeDocsSupport(rhymeDocs)</span>
-<span class="fc" id="L63">        .withMetadataConfiguration(new RhymeMetadataConfiguration() {</span>
+<span class="fc" id="L60">    RhymeBuilder rhymeBuilder = RhymeBuilder.withResourceLoader(customization.getResourceLoader())</span>
+<span class="fc" id="L61">        .withRhymeDocsSupport(rhymeDocs)</span>
+<span class="fc" id="L62">        .withMetadataConfiguration(new RhymeMetadataConfiguration() {</span>
 
           @Override
           public boolean isMetadataGenerationEnabled() {
-<span class="fc" id="L67">            return request.getParameterMap().containsKey(EMBED_RHYME_METADATA);</span>
+<span class="fc" id="L66">            return request.getParameterMap().containsKey(EMBED_RHYME_METADATA);</span>
           }
-        })
-<span class="fc" id="L70">        .buildForRequestTo(request.getRequestURL().toString());</span>
-<span class="fc" id="L71">  }</span>
+        });
 
-<span class="fc" id="L73">  private SlingRhymeImpl(SlingRhymeImpl slingRhyme, Resource currentResource) {</span>
-<span class="fc" id="L74">    this.modelFactory = slingRhyme.modelFactory;</span>
-<span class="fc" id="L75">    this.request = slingRhyme.request;</span>
-<span class="fc" id="L76">    this.currentResource = currentResource;</span>
-<span class="fc" id="L77">    this.urlHandler = slingRhyme.urlHandler;</span>
-<span class="fc" id="L78">    this.rhyme = slingRhyme.rhyme;</span>
-<span class="fc" id="L79">  }</span>
+<span class="fc" id="L70">    customization.configureRhymeBuilder(rhymeBuilder, request);</span>
+
+<span class="fc" id="L72">    this.rhyme = rhymeBuilder.buildForRequestTo(request.getRequestURL().toString());</span>
+<span class="fc" id="L73">  }</span>
+
+<span class="fc" id="L75">  private SlingRhymeImpl(SlingRhymeImpl slingRhyme, Resource currentResource) {</span>
+<span class="fc" id="L76">    this.modelFactory = slingRhyme.modelFactory;</span>
+<span class="fc" id="L77">    this.request = slingRhyme.request;</span>
+<span class="fc" id="L78">    this.currentResource = currentResource;</span>
+<span class="fc" id="L79">    this.urlHandler = slingRhyme.urlHandler;</span>
+<span class="fc" id="L80">    this.rhyme = slingRhyme.rhyme;</span>
+<span class="fc" id="L81">  }</span>
 
   @Override
   public &lt;T&gt; T adaptResource(Resource resource, Class&lt;T&gt; modelClass) {
 
-<span class="fc bfc" id="L84" title="All 2 branches covered.">    if (resource == null) {</span>
-<span class="fc" id="L85">      throw new HalApiDeveloperException(&quot;Cannot adapt null resource to &quot; + modelClass.getSimpleName());</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (resource == null) {</span>
+<span class="fc" id="L87">      throw new HalApiDeveloperException(&quot;Cannot adapt null resource to &quot; + modelClass.getSimpleName());</span>
     }
 
-<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (resource != currentResource) {</span>
-<span class="fc" id="L89">      SlingRhyme slingRhymeWithNextResource = new SlingRhymeImpl(this, resource);</span>
-<span class="fc" id="L90">      return slingRhymeWithNextResource.adaptResource(resource, modelClass);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">    if (resource != currentResource) {</span>
+<span class="fc" id="L91">      SlingRhyme slingRhymeWithNextResource = new SlingRhymeImpl(this, resource);</span>
+<span class="fc" id="L92">      return slingRhymeWithNextResource.adaptResource(resource, modelClass);</span>
     }
 
-<span class="fc" id="L93">    verifyModelAnnotationIfPresent(modelClass);</span>
+<span class="fc" id="L95">    verifyModelAnnotationIfPresent(modelClass);</span>
 
     try {
-<span class="fc" id="L96">      T slingModel = adaptTo(modelClass);</span>
-<span class="fc bfc" id="L97" title="All 2 branches covered.">      if (slingModel == null) {</span>
-<span class="fc" id="L98">        throw new HalApiDeveloperException(&quot;SlingRhyme#adaptTo(&quot; + modelClass.getName() + &quot;) returned null, see previous log messages for the root cause&quot;);</span>
+<span class="fc" id="L98">      T slingModel = adaptTo(modelClass);</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">      if (slingModel == null) {</span>
+<span class="fc" id="L100">        throw new HalApiDeveloperException(&quot;SlingRhyme#adaptTo(&quot; + modelClass.getName() + &quot;) returned null, see previous log messages for the root cause&quot;);</span>
       }
 
-<span class="fc" id="L101">      return slingModel;</span>
+<span class="fc" id="L103">      return slingModel;</span>
     }
-<span class="fc" id="L103">    catch (RuntimeException ex) {</span>
-<span class="fc bfc" id="L104" title="All 2 branches covered.">      if (ex.getCause() instanceof HalApiServerException) {</span>
-<span class="fc" id="L105">        throw (HalApiServerException)ex.getCause();</span>
+<span class="fc" id="L105">    catch (RuntimeException ex) {</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">      if (ex.getCause() instanceof HalApiServerException) {</span>
+<span class="fc" id="L107">        throw (HalApiServerException)ex.getCause();</span>
       }
-<span class="fc" id="L107">      throw new HalApiDeveloperException(&quot;Failed to adapt &quot; + resource + &quot; to &quot; + modelClass.getSimpleName(), ex);</span>
+<span class="fc" id="L109">      throw new HalApiDeveloperException(&quot;Failed to adapt &quot; + resource + &quot; to &quot; + modelClass.getSimpleName(), ex);</span>
     }
   }
 
   private void verifyModelAnnotationIfPresent(Class&lt;?&gt; modelClass) {
 
-<span class="fc bfc" id="L113" title="All 4 branches covered.">    if (modelClass.isAnnotationPresent(Model.class) &amp;&amp; !isDirectlyAdaptableFromSlingRhyme(modelClass)) {</span>
-<span class="fc" id="L114">      throw new HalApiDeveloperException(modelClass + &quot; is not declared to be adaptable from &quot; + SlingRhyme.class);</span>
+<span class="fc bfc" id="L115" title="All 4 branches covered.">    if (modelClass.isAnnotationPresent(Model.class) &amp;&amp; !isDirectlyAdaptableFromSlingRhyme(modelClass)) {</span>
+<span class="fc" id="L116">      throw new HalApiDeveloperException(modelClass + &quot; is not declared to be adaptable from &quot; + SlingRhyme.class);</span>
     }
-<span class="fc" id="L116">  }</span>
+<span class="fc" id="L118">  }</span>
 
   @Override
   public &lt;T&gt; T adaptTo(Class&lt;T&gt; type) {
 
     // there was some confusing branch coverage issue when using this try-with-resource-statement
     // with multiple return statements, that's why the content was moved into a doAdaptTo method
-<span class="fc" id="L123">    try (RequestMetricsStopwatch sw = rhyme.startStopwatch(getClass(), () -&gt; &quot;calls to SlingRhyme#adaptTo(&quot; + type.getSimpleName() + &quot;)&quot;)) {</span>
-<span class="fc" id="L124">      return doAdaptTo(type);</span>
+<span class="fc" id="L125">    try (RequestMetricsStopwatch sw = rhyme.startStopwatch(getClass(), () -&gt; &quot;calls to SlingRhyme#adaptTo(&quot; + type.getSimpleName() + &quot;)&quot;)) {</span>
+<span class="fc" id="L126">      return doAdaptTo(type);</span>
     }
   }
 
   private &lt;T&gt; T doAdaptTo(Class&lt;T&gt; type) {
 
     // immediately return the current resource or request if they are the target of the adaption
-<span class="fc bfc" id="L131" title="All 2 branches covered.">    if (Resource.class.isAssignableFrom(type)) {</span>
-<span class="fc" id="L132">      return (T)currentResource;</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">    if (Resource.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L134">      return (T)currentResource;</span>
     }
-<span class="fc bfc" id="L134" title="All 2 branches covered.">    if (HttpServletRequest.class.isAssignableFrom(type)) {</span>
-<span class="fc" id="L135">      return (T)request;</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">    if (HttpServletRequest.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L137">      return (T)request;</span>
     }
 
     // use the model factory if the target type is a sling model, so that if anything goes wrong,
     // an exception is caught (and thrown) rather than just null being returned
-<span class="fc bfc" id="L140" title="All 2 branches covered.">    if (isDirectlyAdaptableFromSlingRhyme(type)) {</span>
-<span class="fc" id="L141">      return modelFactory.createModel(this, type);</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">    if (isDirectlyAdaptableFromSlingRhyme(type)) {</span>
+<span class="fc" id="L143">      return modelFactory.createModel(this, type);</span>
     }
-<span class="fc bfc" id="L143" title="All 2 branches covered.">    if (modelFactory.canCreateFromAdaptable(request, type)) {</span>
-<span class="fc" id="L144">      return modelFactory.createModel(request, type);</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">    if (modelFactory.canCreateFromAdaptable(request, type)) {</span>
+<span class="fc" id="L146">      return modelFactory.createModel(request, type);</span>
     }
-<span class="fc bfc" id="L146" title="All 2 branches covered.">    if (modelFactory.canCreateFromAdaptable(currentResource, type)) {</span>
-<span class="fc" id="L147">      return modelFactory.createModel(currentResource, type);</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    if (modelFactory.canCreateFromAdaptable(currentResource, type)) {</span>
+<span class="fc" id="L149">      return modelFactory.createModel(currentResource, type);</span>
     }
 
     // but we also want to adapt to other non-sling model types
-<span class="fc" id="L151">    return tryAdapting(type, getRelatedAdaptables())</span>
-<span class="fc" id="L152">        .orElseGet(() -&gt; super.adaptTo(type));</span>
+<span class="fc" id="L153">    return tryAdapting(type, getRelatedAdaptables())</span>
+<span class="fc" id="L154">        .orElseGet(() -&gt; super.adaptTo(type));</span>
   }
 
   private Collection&lt;Adaptable&gt; getRelatedAdaptables() {
 
-<span class="fc" id="L157">    Builder&lt;Adaptable&gt; builder = ImmutableSet.&lt;Adaptable&gt;builder();</span>
-<span class="fc" id="L158">    builder.add(currentResource);</span>
-<span class="fc" id="L159">    builder.add(request);</span>
+<span class="fc" id="L159">    Builder&lt;Adaptable&gt; builder = ImmutableSet.&lt;Adaptable&gt;builder();</span>
+<span class="fc" id="L160">    builder.add(currentResource);</span>
+<span class="fc" id="L161">    builder.add(request);</span>
 
-<span class="fc" id="L161">    PageUtils.getOptionalPageResource(currentResource).ifPresent(builder::add);</span>
+<span class="fc" id="L163">    PageUtils.getOptionalPageResource(currentResource).ifPresent(builder::add);</span>
 
-<span class="fc" id="L163">    return builder.build();</span>
+<span class="fc" id="L165">    return builder.build();</span>
   }
 
   private &lt;T&gt; Optional&lt;T&gt; tryAdapting(Class&lt;T&gt; type, Collection&lt;Adaptable&gt; adaptables) {
 
-<span class="fc" id="L168">    return adaptables.stream()</span>
-<span class="fc" id="L169">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L170">        .map(adaptable -&gt; adaptable.adaptTo(type))</span>
+<span class="fc" id="L170">    return adaptables.stream()</span>
 <span class="fc" id="L171">        .filter(Objects::nonNull)</span>
-<span class="fc" id="L172">        .findFirst();</span>
+<span class="fc" id="L172">        .map(adaptable -&gt; adaptable.adaptTo(type))</span>
+<span class="fc" id="L173">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L174">        .findFirst();</span>
   }
 
   private boolean isDirectlyAdaptableFromSlingRhyme(Class&lt;?&gt; adapterType) {
 
-<span class="fc" id="L177">    Model modelAnnotation = adapterType.getAnnotation(Model.class);</span>
-<span class="fc bfc" id="L178" title="All 2 branches covered.">    if (modelAnnotation == null) {</span>
-<span class="fc" id="L179">      return false;</span>
+<span class="fc" id="L179">    Model modelAnnotation = adapterType.getAnnotation(Model.class);</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">    if (modelAnnotation == null) {</span>
+<span class="fc" id="L181">      return false;</span>
     }
 
-<span class="fc" id="L182">    return Stream.of(modelAnnotation.adaptables())</span>
-<span class="fc" id="L183">        .anyMatch(modelAdaptable -&gt; SlingRhyme.class.isAssignableFrom(modelAdaptable));</span>
+<span class="fc" id="L184">    return Stream.of(modelAnnotation.adaptables())</span>
+<span class="fc" id="L185">        .anyMatch(modelAdaptable -&gt; SlingRhyme.class.isAssignableFrom(modelAdaptable));</span>
   }
 
   @Override
   public Resource getRequestedResource() {
 
-<span class="fc" id="L189">    return request.getResource();</span>
+<span class="fc" id="L191">    return request.getResource();</span>
   }
 
   @Override
   public Resource getCurrentResource() {
 
-<span class="fc" id="L195">    return currentResource;</span>
+<span class="fc" id="L197">    return currentResource;</span>
   }
 
   @Override
   public &lt;T&gt; T getRemoteResource(String uri, Class&lt;T&gt; halApiInterface) {
-<span class="fc" id="L200">    return rhyme.getRemoteResource(uri, halApiInterface);</span>
+<span class="fc" id="L202">    return rhyme.getRemoteResource(uri, halApiInterface);</span>
   }
 
   @Override
   public void setResponseMaxAge(Duration duration) {
-<span class="fc" id="L205">    rhyme.setResponseMaxAge(duration);</span>
-<span class="fc" id="L206">  }</span>
+<span class="fc" id="L207">    rhyme.setResponseMaxAge(duration);</span>
+<span class="fc" id="L208">  }</span>
 
   @Override
   public Rhyme getCoreRhyme() {
-<span class="fc" id="L210">    return rhyme;</span>
+<span class="fc" id="L212">    return rhyme;</span>
   }
 
   public UrlHandler getUrlHandler() {
-<span class="fc" id="L214">    return urlHandler;</span>
+<span class="fc" id="L216">    return urlHandler;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

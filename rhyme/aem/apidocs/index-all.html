@@ -95,6 +95,11 @@
 </a>
 <h2 class="title">C</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/aem/api/SlingRhymeCustomization.html#configureRhymeBuilder-io.wcm.caravan.rhyme.api.RhymeBuilder-org.apache.sling.api.SlingHttpServletRequest-">configureRhymeBuilder(RhymeBuilder, SlingHttpServletRequest)</a></span> - Method in interface io.wcm.caravan.rhyme.aem.api.<a href="io/wcm/caravan/rhyme/aem/api/SlingRhymeCustomization.html" title="interface in io.wcm.caravan.rhyme.aem.api">SlingRhymeCustomization</a></dt>
+<dd>
+<div class="block">An extension point that allows to configure the <code>RhymeBuilder</code> that is used when creating <a href="io/wcm/caravan/rhyme/aem/api/SlingRhyme.html" title="interface in io.wcm.caravan.rhyme.aem.api"><code>SlingRhyme</code></a>
+ instance</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/aem/api/resources/AbstractLinkableResource.html#createLink--">createLink()</a></span> - Method in class io.wcm.caravan.rhyme.aem.api.resources.<a href="io/wcm/caravan/rhyme/aem/api/resources/AbstractLinkableResource.html" title="class in io.wcm.caravan.rhyme.aem.api.resources">AbstractLinkableResource</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/wcm/caravan/rhyme/aem/api/linkbuilder/SlingLinkBuilder.html#createLinkToCurrentResource-io.wcm.caravan.rhyme.aem.api.resources.SlingLinkableResource-">createLinkToCurrentResource(SlingLinkableResource)</a></span> - Method in interface io.wcm.caravan.rhyme.aem.api.linkbuilder.<a href="io/wcm/caravan/rhyme/aem/api/linkbuilder/SlingLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.aem.api.linkbuilder">SlingLinkBuilder</a></dt>
@@ -287,6 +292,11 @@
 <dt><a href="io/wcm/caravan/rhyme/aem/api/SlingRhyme.html" title="interface in io.wcm.caravan.rhyme.aem.api"><span class="typeNameLink">SlingRhyme</span></a> - Interface in <a href="io/wcm/caravan/rhyme/aem/api/package-summary.html">io.wcm.caravan.rhyme.aem.api</a></dt>
 <dd>
 <div class="block">An AEM-specific wrapper for the general <code>Rhyme</code> facade interface.</div>
+</dd>
+<dt><a href="io/wcm/caravan/rhyme/aem/api/SlingRhymeCustomization.html" title="interface in io.wcm.caravan.rhyme.aem.api"><span class="typeNameLink">SlingRhymeCustomization</span></a> - Interface in <a href="io/wcm/caravan/rhyme/aem/api/package-summary.html">io.wcm.caravan.rhyme.aem.api</a></dt>
+<dd>
+<div class="block">An SPI interface to be implemented as an OSGi component if your application needs to apply further customizations
+ to <code>RhymeBuilder</code> instance created by the <code>HalApiServlet</code>.</div>
 </dd>
 </dl>
 <a name="I:W">
