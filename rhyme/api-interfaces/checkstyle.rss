@@ -172,20 +172,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.tooling.annotations.ExcludeFromJacocoGeneratedReport.java">io/wcm/caravan/rhyme/tooling/annotations/ExcludeFromJacocoGeneratedReport.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.api.annotations.TemplateVariables.java">io/wcm/caravan/rhyme/api/annotations/TemplateVariables.java</a>
                 </td>
                 <td>
@@ -214,6 +200,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.tooling.annotations.ExcludeFromJacocoGeneratedReport.java">io/wcm/caravan/rhyme/tooling/annotations/ExcludeFromJacocoGeneratedReport.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.api.resources.package-info.java">io/wcm/caravan/rhyme/api/resources/package-info.java</a>
                 </td>
                 <td>
@@ -228,7 +228,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.tooling.annotations.package-info.java">io/wcm/caravan/rhyme/tooling/annotations/package-info.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.api.annotations.package-info.java">io/wcm/caravan/rhyme/api/annotations/package-info.java</a>
                 </td>
                 <td>
                   0
@@ -242,7 +242,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.api.annotations.package-info.java">io/wcm/caravan/rhyme/api/annotations/package-info.java</a>
+                  <a href="https://caravan.wcm.io/rhyme/api-interfaces/io.wcm.caravan.rhyme.parent/io.wcm.caravan.rhyme.api-interfaces//checkstyle.html#io.wcm.caravan.rhyme.tooling.annotations.package-info.java">io/wcm/caravan/rhyme/tooling/annotations/package-info.java</a>
                 </td>
                 <td>
                   0

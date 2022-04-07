@@ -323,24 +323,25 @@ public abstract class RhymePropertyDocsImpl implements RhymePropertyDocs {
 
 <span class="fc" id="L324">    return Stream.of(observableType.getActualTypeArguments())</span>
 <span class="fc bfc" id="L325" title="All 2 branches covered.">        .filter(typeArgument -&gt; !&quot;?&quot;.equals(typeArgument.getTypeName()))</span>
-<span class="fc" id="L326">        .map(typeArgument -&gt; (Class&lt;?&gt;)typeArgument);</span>
+<span class="fc" id="L326">        .filter(typeArgument -&gt; typeArgument instanceof Class)</span>
+<span class="fc" id="L327">        .map(typeArgument -&gt; (Class&lt;?&gt;)typeArgument);</span>
   }
 
   private static boolean isSerialisedAsJsonArray(Class&lt;?&gt; propertyType) {
 
-<span class="fc bfc" id="L331" title="All 4 branches covered.">    return Collection.class.isAssignableFrom(propertyType) || propertyType.isArray();</span>
+<span class="fc bfc" id="L332" title="All 4 branches covered.">    return Collection.class.isAssignableFrom(propertyType) || propertyType.isArray();</span>
   }
 
   private static boolean hasNestedProperties(Class&lt;?&gt; propertyType) {
 
-<span class="fc bfc" id="L336" title="All 2 branches covered.">    boolean isObjectWithoutProperties = isPrimitiveOrWrapper(propertyType)</span>
-<span class="fc bfc" id="L337" title="All 2 branches covered.">        || String.class.isAssignableFrom(propertyType)</span>
+<span class="fc bfc" id="L337" title="All 2 branches covered.">    boolean isObjectWithoutProperties = isPrimitiveOrWrapper(propertyType)</span>
+<span class="fc bfc" id="L338" title="All 2 branches covered.">        || String.class.isAssignableFrom(propertyType)</span>
         // map entries will be serialized as JSON properties, but there is no way we can document them
-<span class="fc bfc" id="L339" title="All 2 branches covered.">        || Map.class.isAssignableFrom(propertyType)</span>
+<span class="fc bfc" id="L340" title="All 2 branches covered.">        || Map.class.isAssignableFrom(propertyType)</span>
         // arrays are handled separately in handleObjectsAndArrays
-<span class="fc bfc" id="L341" title="All 2 branches covered.">        || isSerialisedAsJsonArray(propertyType);</span>
+<span class="fc bfc" id="L342" title="All 2 branches covered.">        || isSerialisedAsJsonArray(propertyType);</span>
 
-<span class="fc bfc" id="L343" title="All 2 branches covered.">    return !isObjectWithoutProperties;</span>
+<span class="fc bfc" id="L344" title="All 2 branches covered.">    return !isObjectWithoutProperties;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
