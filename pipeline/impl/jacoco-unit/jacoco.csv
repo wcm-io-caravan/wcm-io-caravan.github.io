@@ -7,8 +7,8 @@ JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,AssertExists
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,ResponseHandlingOperator.new Subscriber() {...},32,165,2,4,6,27,2,5,0,4
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,PerformanceMetricsTransformer,18,105,1,1,3,26,4,10,3,10
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,CachePointTransformer.CacheResponseObserver,39,298,2,20,8,49,3,15,1,6
-JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,ExtractOperator.new Subscriber() {...},0,59,0,4,0,13,0,6,0,4
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,ExtractOperator,0,15,0,0,0,5,0,2,0,2
+JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,ExtractOperator.new Subscriber() {...},0,59,0,4,0,13,0,6,0,4
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,MergeTransformer,7,170,1,15,2,35,1,12,0,5
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,PerformanceMetricsTransformer.new Observer() {...},5,54,1,1,2,8,2,3,1,3
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,HandleExceptionOperator,0,15,0,0,0,5,0,2,0,2
@@ -16,8 +16,8 @@ JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,CachePointTr
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,CachePointTransformer.CacheResponseObserver.new Subscriber() {...},31,88,3,3,4,16,3,4,0,4
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,PerformanceMetricsTransformer.new Observable.Transformer() {...},0,19,0,0,0,4,0,3,0,3
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,PerformanceMetricsTransformer.new Observable.Transformer() {...},0,5,0,0,0,2,0,2,0,2
-JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,HandleExceptionOperator.new Subscriber() {...},4,64,1,3,1,19,1,5,0,4
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,PerformanceMetricsTransformer.new Observer() {...},5,33,1,1,2,8,2,3,1,3
+JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,HandleExceptionOperator.new Subscriber() {...},4,64,1,3,1,19,1,5,0,4
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,AssertExistsOperator,0,23,0,0,0,7,0,2,0,2
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,CachePointTransformer.CacheEnvelope,20,256,2,10,5,54,2,21,0,17
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,CollectOperator,0,15,0,0,0,5,0,2,0,2
