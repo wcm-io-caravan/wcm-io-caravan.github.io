@@ -52,10 +52,10 @@ public class CaravanHttpCallbackExecutor extends ThreadPoolExecutor {
   @Override
   public void shutdown() {
 
-<span class="nc" id="L55">    watchdogWorker.unsubscribe();</span>
+<span class="fc" id="L55">    watchdogWorker.unsubscribe();</span>
 
-<span class="nc" id="L57">    super.shutdown();</span>
-<span class="nc" id="L58">  }</span>
+<span class="fc" id="L57">    super.shutdown();</span>
+<span class="fc" id="L58">  }</span>
 
   @Override
   public List&lt;Runnable&gt; shutdownNow() {

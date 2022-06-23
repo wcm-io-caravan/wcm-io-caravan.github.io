@@ -88,7 +88,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ribbon.LoadBalancerCommandFactory.java">io/wcm/caravan/io/http/impl/ribbon/LoadBalancerCommandFactory.java</a>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.HystrixMetricsMounter.java">io/wcm/caravan/io/http/impl/HystrixMetricsMounter.java</a>
                 </td>
                 <td>
                   0
@@ -102,7 +102,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.HystrixMetricsMounter.java">io/wcm/caravan/io/http/impl/HystrixMetricsMounter.java</a>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ribbon.LoadBalancerCommandFactory.java">io/wcm/caravan/io/http/impl/ribbon/LoadBalancerCommandFactory.java</a>
                 </td>
                 <td>
                   0
@@ -186,20 +186,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ribbon.CachingLoadBalancerFactory.java">io/wcm/caravan/io/http/impl/ribbon/CachingLoadBalancerFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ApacheHttpClient.java">io/wcm/caravan/io/http/impl/ApacheHttpClient.java</a>
                 </td>
                 <td>
@@ -207,6 +193,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.ribbon.CachingLoadBalancerFactory.java">io/wcm/caravan/io/http/impl/ribbon/CachingLoadBalancerFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -284,20 +284,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.RequestUtil.java">io/wcm/caravan/io/http/impl/RequestUtil.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpServiceConfigValidator.java">io/wcm/caravan/io/http/impl/CaravanHttpServiceConfigValidator.java</a>
                 </td>
                 <td>
@@ -305,6 +291,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.RequestUtil.java">io/wcm/caravan/io/http/impl/RequestUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -340,20 +340,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.Body.java">io/wcm/caravan/io/http/response/Body.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.CaravanHttpResponse.java">io/wcm/caravan/io/http/response/CaravanHttpResponse.java</a>
                 </td>
                 <td>
@@ -368,7 +354,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.CaravanHttpResponseBuilder.java">io/wcm/caravan/io/http/response/CaravanHttpResponseBuilder.java</a>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.Body.java">io/wcm/caravan/io/http/response/Body.java</a>
                 </td>
                 <td>
                   0
@@ -396,7 +382,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#hystrix-dashboard.WEB-INF.classes.log4j.properties">hystrix-dashboard/WEB-INF/classes/log4j.properties</a>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.response.CaravanHttpResponseBuilder.java">io/wcm/caravan/io/http/response/CaravanHttpResponseBuilder.java</a>
                 </td>
                 <td>
                   0
@@ -410,7 +396,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.request.package-info.java">io/wcm/caravan/io/http/request/package-info.java</a>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#hystrix-dashboard.WEB-INF.classes.log4j.properties">hystrix-dashboard/WEB-INF/classes/log4j.properties</a>
                 </td>
                 <td>
                   0
@@ -438,7 +424,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpClientConfig.java">io/wcm/caravan/io/http/impl/CaravanHttpClientConfig.java</a>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.request.package-info.java">io/wcm/caravan/io/http/request/package-info.java</a>
                 </td>
                 <td>
                   0
@@ -453,6 +439,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.BundleActivator.java">io/wcm/caravan/io/http/impl/BundleActivator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/io/http//checkstyle.html#io.wcm.caravan.io.http.impl.CaravanHttpClientConfig.java">io/wcm/caravan/io/http/impl/CaravanHttpClientConfig.java</a>
                 </td>
                 <td>
                   0
