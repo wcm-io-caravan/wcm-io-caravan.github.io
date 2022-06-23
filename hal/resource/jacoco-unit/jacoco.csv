@@ -3,6 +3,6 @@ HAL Resource,io.wcm.caravan.hal.resource,HalResource,52,659,8,46,12,120,7,77,2,5
 HAL Resource,io.wcm.caravan.hal.resource,Link,67,204,2,14,14,44,10,23,8,17
 HAL Resource,io.wcm.caravan.hal.resource,HalResourceType,0,37,0,0,0,7,0,3,0,3
 HAL Resource,io.wcm.caravan.hal.resource,HalResourceFactory,21,15,0,0,4,2,4,2,4,2
-HAL Resource,io.wcm.caravan.hal.resource.util,HalUtil,0,128,0,8,0,18,0,16,0,12
 HAL Resource,io.wcm.caravan.hal.resource.util,HalBuilder,0,116,0,0,0,24,0,10,0,10
+HAL Resource,io.wcm.caravan.hal.resource.util,HalUtil,0,128,0,8,0,18,0,16,0,12
 HAL Resource,io.wcm.caravan.hal.resource.util,HalCuriAugmenter,2,168,2,8,0,33,2,20,0,17
