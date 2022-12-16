@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"io.wcm.caravan.common.performance","l":"PerformanceLogger"},{"p":"io.wcm.caravan.common.performance","l":"PerformanceMetrics"}]

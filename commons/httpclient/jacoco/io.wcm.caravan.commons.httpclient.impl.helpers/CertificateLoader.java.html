@@ -100,8 +100,8 @@ public final class CertificateLoader {
     }
 
 <span class="fc" id="L102">    SSLContext sslContext = SSLContext.getInstance(config.getSslContextType());</span>
-<span class="fc bfc" id="L103" title="All 4 branches covered.">    sslContext.init(kmf != null ? kmf.getKeyManagers() : null,</span>
-<span class="fc" id="L104">        tmf != null ? tmf.getTrustManagers() : null,</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">    sslContext.init(kmf != null ? kmf.getKeyManagers() : null,</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        tmf != null ? tmf.getTrustManagers() : null,</span>
         null);
 
 <span class="fc" id="L107">    return sslContext;</span>
