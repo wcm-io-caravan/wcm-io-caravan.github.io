@@ -266,7 +266,7 @@ public class CachePointTransformer implements Transformer&lt;JsonPipelineOutput,
             }
             else {
 <span class="fc" id="L268">              log.warn(&quot;CACHE FALLBACK - Using stale content from cache as a fallback after failing to fresh content for &quot; + cacheKey + &quot;,\n&quot;</span>
-<span class="fc" id="L269">                  + correlationId, e);</span>
+                  + correlationId, e);
             }
 
             // increase the fallbacks counter for the source serviceID
@@ -331,7 +331,7 @@ public class CachePointTransformer implements Transformer&lt;JsonPipelineOutput,
 
       // also fall back to the actual service if the couchbase request failed
 <span class="nc" id="L333">      log.warn(&quot;Failed to connect to couchbase server, falling back to direct connection to &quot; + getSourceServicePrefix() + &quot;,\n&quot;</span>
-<span class="nc" id="L334">          + correlationId, e);</span>
+          + correlationId, e);
 <span class="nc" id="L335">      fetchAndStore(subscriber);</span>
 <span class="nc" id="L336">    }</span>
 
@@ -350,7 +350,7 @@ public class CachePointTransformer implements Transformer&lt;JsonPipelineOutput,
           }
 
 <span class="fc" id="L352">          log.debug(&quot;CACHE PUT - response for {} has been fetched and will be put in the cache, max-age={} sec,\n{}&quot;, cacheKey, contentMaxAge,</span>
-<span class="fc" id="L353">              correlationId);</span>
+              correlationId);
 
 <span class="fc" id="L355">          CacheEnvelope cacheEntry = CacheEnvelope.from200Response(fetchedModel.getPayload(), contentMaxAge, requests,</span>
 <span class="fc" id="L356">              cacheKey, descriptor, context.getProperties());</span>
@@ -567,4 +567,4 @@ public class CachePointTransformer implements Transformer&lt;JsonPipelineOutput,
 <span class="fc" id="L567">    }</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

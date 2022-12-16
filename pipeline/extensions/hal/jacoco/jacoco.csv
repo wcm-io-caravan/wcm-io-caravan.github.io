@@ -1,5 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,HalCrawler,31,235,2,10,9,47,4,17,2,13
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,HalCrawler,31,221,2,10,9,47,4,17,2,13
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,UriParametersProviders,0,4,0,0,0,1,0,1,0,1
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,LinkExtractors.2.new Predicate() {...},0,17,0,2,0,2,0,3,0,2
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,StopCriteria.new StopCriterion() {...},2,5,0,0,1,2,1,2,1,2
@@ -8,41 +8,41 @@ JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,S
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,OutputProcessors.new OutputProcessor() {...},0,95,1,5,0,14,1,9,0,7
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,UriParametersProviders.new UriParametersProvider() {...},0,7,0,0,0,3,0,3,0,3
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,LinkExtractors.new LinkExtractor() {...},0,8,0,0,0,3,0,3,0,3
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,LinkExtractors.new LinkExtractor() {...},18,41,0,0,1,7,1,4,1,4
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,LinkExtractors.new LinkExtractor() {...},7,41,0,0,1,7,1,4,1,4
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,LinkExtractors.new LinkExtractor() {...},2,10,0,0,1,2,1,2,1,2
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.crawler,LinkExtractors,0,14,0,0,0,3,0,3,0,3
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,StripHal,0,18,0,0,0,5,0,3,0,3
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,BuildResource,0,62,0,2,0,11,0,4,0,3
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,InlineEmbeddedCollection,14,80,0,2,1,17,1,7,1,6
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,ModifyResource,0,60,0,2,0,11,0,4,0,3
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,InlineEmbedded,0,98,0,4,0,17,0,7,0,5
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,RemoveAllProperties,87,0,4,0,14,0,11,0,9,0
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,CreateResource,78,0,6,0,14,0,6,0,3,0
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,RemoveAllLinks,0,87,0,4,0,14,0,11,0,9
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceFilters.new HalResourcePredicate() {...},12,12,0,0,1,2,1,2,1,2
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceFilters.new HalResourcePredicate() {...},12,21,1,3,1,2,2,3,1,2
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceFilters.new HalResourcePredicate() {...},25,32,0,4,4,5,2,4,2,2
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceFilters.new HalResourcePredicate() {...},12,46,2,8,1,10,3,5,1,2
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceFilters.new HalResourcePredicate() {...},13,23,0,0,1,3,1,2,1,2
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,BuildResource,0,47,0,2,0,11,0,4,0,3
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,InlineEmbeddedCollection,6,80,0,2,1,17,1,7,1,6
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,ModifyResource,0,45,0,2,0,11,0,4,0,3
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,InlineEmbedded,0,90,0,4,0,17,0,7,0,5
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,RemoveAllProperties,79,0,4,0,14,0,11,0,9,0
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,CreateResource,63,0,6,0,14,0,6,0,3,0
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.action,RemoveAllLinks,0,79,0,4,0,14,0,11,0,9
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceFilters.new HalResourcePredicate() {...},4,12,0,0,1,2,1,2,1,2
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceFilters.new HalResourcePredicate() {...},4,21,1,3,1,2,2,3,1,2
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceFilters.new HalResourcePredicate() {...},17,32,0,4,4,5,2,4,2,2
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceFilters.new HalResourcePredicate() {...},4,46,2,8,1,10,3,5,1,2
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceFilters.new HalResourcePredicate() {...},5,23,0,0,1,3,1,2,1,2
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,ReportHalResourceFilters,0,56,0,2,0,10,0,4,0,3
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,ReportHalResourceFilters.new HalResourcePredicate() {...},25,54,0,4,2,8,2,6,2,4
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,ReportHalResourceFilters.new HalResourcePredicate() {...},17,54,0,4,2,8,2,6,2,4
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,ReportHalResourceFilters.new HalResourcePredicate() {...},4,41,0,2,1,5,1,3,1,2
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceMatchers,0,10,0,0,0,2,0,2,0,2
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceMatchers.new HalResourcePredicate() {...},12,22,1,3,1,3,2,3,1,2
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalPath,0,76,0,4,0,14,0,11,0,9
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceMatchers.new HalResourcePredicate() {...},12,12,0,0,1,2,1,2,1,2
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,FilterEmbeddedHalResource,19,103,1,7,1,24,2,9,1,6
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceMatchers.new HalResourcePredicate() {...},4,22,1,3,1,3,2,3,1,2
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceMatchers.new HalResourcePredicate() {...},4,12,0,0,1,2,1,2,1,2
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalPath,0,70,0,4,0,14,0,11,0,9
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,FilterEmbeddedHalResource,8,103,1,7,1,24,2,9,1,6
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.filter,HalResourceFilters,0,52,0,0,0,9,0,6,0,6
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,LinkSelectionStrategies.new LinkSelectionStrategy() {...},0,58,0,2,0,6,0,4,0,3
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,LinkSelectionStrategies.new LinkSelectionStrategy() {...},66,0,4,0,8,0,5,0,3,0
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,LinkSelectionStrategies.new LinkSelectionStrategy() {...},0,40,0,2,0,6,0,4,0,3
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,LinkSelectionStrategies.new LinkSelectionStrategy() {...},48,0,4,0,8,0,5,0,3,0
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,AbstractHalClientAction,2,47,1,1,0,16,1,10,0,10
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,EmbedLinks,0,41,0,0,0,9,0,5,0,5
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,FollowLink,39,79,0,0,12,15,3,4,3,4
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,DeepEmbedLinks,11,147,1,7,1,28,1,13,0,10
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,EmbedLinks,0,33,0,0,0,9,0,5,0,5
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,FollowLink,39,65,0,0,12,15,3,4,3,4
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,DeepEmbedLinks,5,140,1,7,1,28,1,13,0,10
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,LinkSelectionStrategies,6,6,0,0,1,1,1,1,1,1
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,AbstractEmbedLinks,0,139,0,2,0,32,0,13,0,12
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,EmbedLink,0,73,0,2,0,12,0,6,0,5
-JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,LoadLink,31,249,3,13,7,46,5,20,2,15
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,AbstractEmbedLinks,0,132,0,2,0,32,0,13,0,12
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,EmbedLink,0,62,0,2,0,12,0,6,0,5
+JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client.action,LoadLink,25,232,3,13,7,46,5,20,2,15
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client,HalClient,177,129,2,0,38,30,20,11,19,11
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client,HalClient.new ModifyResource() {...},15,0,0,0,3,0,2,0,2,0
 JSON Pipeline Extension for HAL,io.wcm.caravan.pipeline.extensions.hal.client,HalClient.new CreateResource() {...},16,0,0,0,2,0,2,0,2,0
