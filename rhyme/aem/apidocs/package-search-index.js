@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"io.wcm.caravan.rhyme.aem.api"},{"l":"io.wcm.caravan.rhyme.aem.api.adaptation"},{"l":"io.wcm.caravan.rhyme.aem.api.linkbuilder"},{"l":"io.wcm.caravan.rhyme.aem.api.parameters"},{"l":"io.wcm.caravan.rhyme.aem.api.resources"}]

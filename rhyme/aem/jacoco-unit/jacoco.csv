@@ -1,25 +1,25 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,TemplateProxyPostAdaptationStage,0,122,0,2,0,32,0,13,0,12
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingModelPostAdaptationStage,0,202,0,6,0,42,0,24,0,21
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,TemplateProxyPostAdaptationStage.new InvocationHandler() {...},0,37,0,2,0,5,0,3,0,2
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingResourceAdapterImpl.ResourceFilter,0,60,0,2,0,11,0,3,0,2
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingResourceAdapterImpl,0,491,0,20,0,78,0,51,0,41
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingResourceAdapterImpl.ResourceSelector,0,89,0,4,0,17,0,5,0,3
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,RhymeResourceRegistry,0,134,0,6,0,30,0,15,0,12
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,SlingRhymeImpl,0,346,0,24,0,71,0,31,0,19
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingModelPostAdaptationStage,0,185,0,6,0,42,0,24,0,21
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,TemplateProxyPostAdaptationStage.new InvocationHandler() {...},0,26,0,2,0,5,0,3,0,2
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingResourceAdapterImpl.ResourceFilter,0,52,0,2,0,11,0,3,0,2
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingResourceAdapterImpl,0,424,0,20,0,78,0,51,0,41
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.adaptation,SlingResourceAdapterImpl.ResourceSelector,0,81,0,4,0,17,0,5,0,3
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,RhymeResourceRegistry,0,127,0,6,0,30,0,15,0,12
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,SlingRhymeImpl,0,306,0,24,0,71,0,31,0,19
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,SlingRhymeCustomizationManager,9,26,1,1,2,9,1,4,0,4
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,HalApiServlet,0,153,0,8,0,32,0,11,0,7
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,HalApiServlet,0,135,0,8,0,32,0,11,0,7
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl,SlingRhymeImpl.new RhymeMetadataConfiguration() {...},0,15,0,0,0,2,0,2,0,2
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.client,ApacheHttpClientFactorySupport,0,69,0,2,0,15,0,4,0,3
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.client,ApacheHttpClientFactorySupport,0,67,0,2,0,15,0,4,0,3
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.resources,AemApiDiscoveryResourceImpl,0,27,0,0,0,7,0,4,0,4
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.docs,RhymeDocsBundleTracker,0,75,0,6,0,24,0,11,0,8
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.docs,RhymeDocsOsgiBundleSupport,0,64,0,4,0,18,0,10,0,8
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.docs,RhymeDocsServlet,0,77,0,6,0,18,0,8,0,5
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.docs,RhymeDocsServlet,0,71,0,6,0,18,0,8,0,5
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.api.resources,AbstractLinkableResource,0,36,0,4,0,8,0,5,0,3
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.util,PageUtils,0,71,0,6,0,14,0,9,0,6
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.util,PageUtils,0,55,0,6,0,14,0,9,0,6
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.util,ResourceStreams,0,102,0,0,0,30,0,15,0,15
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.parameters,QueryParamCollector,0,119,0,2,0,26,0,13,0,12
-Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.parameters,QueryParamInjector,0,127,0,10,0,29,0,14,0,9
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.parameters,QueryParamCollector,0,110,0,2,0,26,0,13,0,12
+Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.parameters,QueryParamInjector,0,113,0,10,0,29,0,14,0,9
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.parameters,QueryParamInjector.QueryParamAnnotationProcessor,0,22,0,2,0,8,0,5,0,4
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.impl.linkbuilder,SlingLinkBuilderImpl,0,119,0,6,0,26,0,10,0,7
 Rhyme - AEM Integration,io.wcm.caravan.rhyme.aem.api.linkbuilder,LinkProperties,0,24,0,0,0,10,0,7,0,7

@@ -314,9 +314,9 @@ public class JaxRsControllerProxyLinkBuilder&lt;T&gt; implements InvocationHandl
         boolean allRequiredParametersResolved) {
 
       // a query template variable should be kept if....
-<span class="fc bfc" id="L317" title="All 4 branches covered.">      return parameter.query &amp;&amp;</span>
+<span class="fc bfc" id="L317" title="All 6 branches covered.">      return parameter.query &amp;&amp;</span>
           (!allRequiredParametersResolved // not all required parameters have been set, so a full URI template is rendered
-<span class="fc bfc" id="L319" title="All 2 branches covered.">              || parameter.required // this specific template variable is required</span>
+              || parameter.required // this specific template variable is required
 <span class="fc bfc" id="L320" title="All 2 branches covered.">              || valueAvailableCheck.test(parameter)); // its (optional) template variable does have a value</span>
     }
 
@@ -451,4 +451,4 @@ public class JaxRsControllerProxyLinkBuilder&lt;T&gt; implements InvocationHandl
   }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

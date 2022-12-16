@@ -238,7 +238,7 @@ public final class TemplateVariableDetection {
 
     try {
 <span class="fc" id="L240">      return Stream.of(FieldUtils.getAllFields(dtoClass))</span>
-<span class="fc bfc" id="L241" title="All 2 branches covered.">          .filter(field -&gt; !field.isSynthetic())</span>
+<span class="pc bpc" id="L241" title="1 of 2 branches missed.">          .filter(field -&gt; !field.isSynthetic())</span>
 <span class="fc bfc" id="L242" title="All 2 branches covered.">          .filter(field -&gt; !Modifier.isStatic(field.getModifiers()))</span>
 <span class="fc" id="L243">          .map(field -&gt; {</span>
 <span class="fc" id="L244">            Object value = getFieldValue(field, instance);</span>
@@ -270,4 +270,4 @@ public final class TemplateVariableDetection {
   }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

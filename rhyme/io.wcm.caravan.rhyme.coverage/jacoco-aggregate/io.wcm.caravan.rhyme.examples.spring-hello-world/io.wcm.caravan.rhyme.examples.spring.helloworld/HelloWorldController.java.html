@@ -76,8 +76,8 @@ import io.wcm.caravan.rhyme.api.resources.LinkableResource;
       public Link createLink() {
         // to build links to controller methods with parameters we explicitly call the method on the
         // proxy provided my WebMvcLinkBuilder, and pass the parameters required to expand the link template
-<span class="fc bfc" id="L79" title="All 2 branches covered.">        return buildLinkTo(controller -&gt; controller.getCustomResource(text))</span>
-<span class="fc" id="L80">            .setTitle(text == null ? &quot;Load a resource with a customized message&quot; : &quot;A customized '&quot; + text + &quot;' message&quot;);</span>
+<span class="fc" id="L79">        return buildLinkTo(controller -&gt; controller.getCustomResource(text))</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">            .setTitle(text == null ? &quot;Load a resource with a customized message&quot; : &quot;A customized '&quot; + text + &quot;' message&quot;);</span>
       }
     };
   }
@@ -151,4 +151,4 @@ import io.wcm.caravan.rhyme.api.resources.LinkableResource;
     }
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
