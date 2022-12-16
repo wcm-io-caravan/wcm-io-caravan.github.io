@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"io.wcm.caravan.jaxrs.publisher","l":"ApplicationPath"},{"p":"io.wcm.caravan.jaxrs.publisher","l":"JaxRsClassesProvider"},{"p":"io.wcm.caravan.jaxrs.publisher","l":"JaxRsComponent"}]
