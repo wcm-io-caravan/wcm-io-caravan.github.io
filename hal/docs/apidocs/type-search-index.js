@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"io.wcm.caravan.hal.docs","l":"HalDocsAugmenter"},{"p":"io.wcm.caravan.hal.docs","l":"HalDocsAugmenterFactory"}]

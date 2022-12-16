@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"io.wcm.caravan.maven.plugins.haldocs","l":"GenerateHalDocsJsonMojo"},{"p":"io.wcm.caravan.maven.plugins.haldocs","l":"GenerateJsonSchemaMojo"},{"p":"io.wcm.caravan.maven.plugins.hal_docs_maven_plugin","l":"HelpMojo"}]
