@@ -10,7 +10,7 @@ Resilient HTTP,io.wcm.caravan.io.http.response,CaravanHttpResponse,0,133,1,5,0,2
 Resilient HTTP,io.wcm.caravan.io.http.response,ByteArrayBody,28,52,3,3,9,14,7,7,4,7
 Resilient HTTP,io.wcm.caravan.io.http.response,InputStreamBody,6,42,1,1,3,12,2,7,1,7
 Resilient HTTP,io.wcm.caravan.io.http.impl,HystrixMetricsMounter,40,0,2,0,7,0,7,0,6,0
-Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpCallbackExecutor.RejectionHandler,0,8,0,0,0,2,0,1,0,1
+Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpCallbackExecutor.RejectionHandler,8,0,0,0,2,0,1,0,1,0
 Resilient HTTP,io.wcm.caravan.io.http.impl,ApacheHttpClient.new Observable.OnSubscribe() {...},119,186,8,10,17,43,7,8,1,5
 Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpClientImpl.Context,0,12,0,0,0,4,0,1,0,1
 Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpClientImpl.ErrorDisassembleroperator.new Subscriber() {...},0,42,0,2,0,10,0,5,0,4
