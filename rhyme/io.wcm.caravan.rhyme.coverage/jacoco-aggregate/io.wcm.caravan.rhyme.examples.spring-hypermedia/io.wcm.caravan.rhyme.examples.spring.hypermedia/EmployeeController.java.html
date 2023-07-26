@@ -123,7 +123,7 @@ import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
    */
   List&lt;EmployeeResource&gt; findEmployeesOfManagerWithId(long id) {
 
-    // create an embedded resource implementation for every employee managed by the given amanger
+    // create an embedded resource implementation for every employee managed by the given manager
 <span class="fc" id="L127">    return StreamUtils.createResourcesFrom(repository.findByManagerId(id), EmployeeResourceImpl::new);</span>
   }
 

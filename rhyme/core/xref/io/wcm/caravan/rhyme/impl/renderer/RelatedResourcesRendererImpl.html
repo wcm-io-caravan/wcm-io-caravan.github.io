@@ -228,7 +228,7 @@
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>           .map(EmbeddableResource.<strong class="jxr_keyword">class</strong>::<strong class="jxr_keyword">cast</strong>)
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>           .filter(r -&gt; r.isEmbedded());
 <a class="jxr_linenumber" name="L222" href="#L222">222</a> 
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>       <em class="jxr_comment">// and render them by recursively calling the render function from AsyncHalresourceRendererImpl</em>
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>       <em class="jxr_comment">// and render them by recursively calling the render function from AsyncHalResourceRendererImpl</em>
 <a class="jxr_linenumber" name="L224" href="#L224">224</a>       Observable&lt;HalResource&gt; rxHalResources = rxEmbeddedResourceImpls
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>           .concatMapEager(r -&gt; recursiveRenderFunc.apply(r).toObservable());
 <a class="jxr_linenumber" name="L226" href="#L226">226</a> 

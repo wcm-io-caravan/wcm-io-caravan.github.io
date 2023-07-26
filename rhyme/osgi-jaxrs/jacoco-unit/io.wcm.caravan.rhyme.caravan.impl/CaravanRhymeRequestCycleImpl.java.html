@@ -82,7 +82,7 @@ import io.wcm.caravan.rhyme.jaxrs.api.JaxRsAsyncHalResponseRenderer;
 
 <span class="fc" id="L83">    CaravanRhymeImpl(CaravanHalApiClient halApiClient, UriInfo requestUri) {</span>
 
-      // only use the full implementation of RequestMetricsCollector (which will will collect and render extensive metadata
+      // only use the full implementation of RequestMetricsCollector (which will collect and render extensive metadata
       // into the response) if the request parameter that toggles this behaviour is set
 <span class="fc bfc" id="L87" title="All 2 branches covered.">      this.metrics = requestUri.getQueryParameters().containsKey(RequestMetricsCollector.EMBED_RHYME_METADATA)</span>
 <span class="fc" id="L88">          ? RequestMetricsCollector.create()</span>

@@ -74,7 +74,7 @@ class HalResourceLoaderWrapper implements HalResourceLoader {
 <span class="fc" id="L74">            .doOnSubscribe(d -&gt; startStopwatch(stopwatch))</span>
 <span class="fc" id="L75">            .doOnError(ex -&gt; registerErrorMetrics(uri, ex, stopwatch))</span>
 <span class="fc" id="L76">            .doOnSuccess(response -&gt; registerResponseMetrics(uri, response, stopwatch))</span>
-            // ensure that only HalApiClientExeptions are emitted
+            // ensure that only HalApiClientException are emitted
 <span class="fc" id="L78">            .onErrorResumeNext(ex -&gt; rethrowUnexpectedExceptions(uri, ex))</span>
             // rewrite any links that are not fully qualified
 <span class="fc" id="L80">            .map(response -&gt; new LinkRewriting(uri).resolveRelativeLinks(response))</span>

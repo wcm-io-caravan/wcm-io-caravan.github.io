@@ -100,7 +100,7 @@ public final class AsyncHalResourceRendererImpl implements AsyncHalResourceRende
 <span class="fc" id="L100">      return Single.zip(rxState, rxRelated,</span>
           // ...then create the HalResource instance
 <span class="fc" id="L102">          (stateNode, listOfRelated) -&gt; createHalResource(resourceImplInstance, stateNode, listOfRelated))</span>
-          // and measure the time of thsee emissions
+          // and measure the time of these emissions
 <span class="fc" id="L104">          .compose(EmissionStopwatch.collectMetrics(() -&gt; &quot;rendering &quot; + simpleClassName + &quot; instances&quot;, metrics));</span>
     }
   }
@@ -151,14 +151,14 @@ public final class AsyncHalResourceRendererImpl implements AsyncHalResourceRende
 
 <span class="fc" id="L152">          Observable&lt;?&gt; rxReturnValue = RxJavaReflectionUtils.invokeMethodAndReturnObservable(resourceImplInstance, method, metrics, typeSupport);</span>
 
-          // if the getter methods are returning an Observable, Stream or List, then the invocation above would give us a single
-          // observable that emits multiple item. We do however want to convert this all into one array, so we'll convert the observable to a list first
+          // If the getter methods are returning an Observable, Stream or List, then the invocation above would give us a single
+          // observable that emits multiple item. We do, however, want to convert this all into one array, so we'll convert the observable to a list first
 <span class="fc bfc" id="L156" title="All 2 branches covered.">          if (typeSupport.isProviderOfMultiplerValues(method.getReturnType())) {</span>
 <span class="fc" id="L157">            rxReturnValue = rxReturnValue.toList().toObservable();</span>
           }
 
 <span class="fc" id="L160">          return rxReturnValue</span>
-              // convert the emitted property value to a JSON  node
+              // convert the emitted property value to a JSON node
 <span class="fc" id="L162">              .map(returnValue -&gt; objectMapper.convertValue(returnValue, JsonNode.class))</span>
 <span class="fc" id="L163">              .map(jsonNode -&gt; Pair.of(propertyName, jsonNode));</span>
         });

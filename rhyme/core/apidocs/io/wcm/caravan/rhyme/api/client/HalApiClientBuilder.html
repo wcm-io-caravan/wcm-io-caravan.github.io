@@ -198,7 +198,7 @@ public interface <span class="typeNameLabel">HalApiClientBuilder</span></pre>
                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;<a href="../common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a>,&#8203;T&gt;&nbsp;factoryFunc)</code></th>
 <td class="colLast">
 <div class="block">Defines an override that will make <a href="HalApiClient.html#getRemoteResource(java.lang.String,java.lang.Class)"><code>HalApiClient.getRemoteResource(String, Class)</code></a> return a custom
- implementation for a specific combination of entry point URI and interface class (rather then the default
+ implementation for a specific combination of entry point URI and interface class (rather than the default
  dynamic proxy).</div>
 </td>
 </tr>
@@ -345,7 +345,7 @@ public interface <span class="typeNameLabel">HalApiClientBuilder</span></pre>
                                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;halApiInterface,
                                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Function</a>&lt;<a href="../common/RequestMetricsCollector.html" title="interface in io.wcm.caravan.rhyme.api.common">RequestMetricsCollector</a>,&#8203;T&gt;&nbsp;factoryFunc)</pre>
 <div class="block">Defines an override that will make <a href="HalApiClient.html#getRemoteResource(java.lang.String,java.lang.Class)"><code>HalApiClient.getRemoteResource(String, Class)</code></a> return a custom
- implementation for a specific combination of entry point URI and interface class (rather then the default
+ implementation for a specific combination of entry point URI and interface class (rather than the default
  dynamic proxy). This can be used to mock/stub remote resources in unit and integration tests, or to delegate
  remote resource proxy creation for a specific service to a completely different <a href="../Rhyme.html" title="interface in io.wcm.caravan.rhyme.api"><code>Rhyme</code></a> or
  <a href="HalApiClient.html" title="interface in io.wcm.caravan.rhyme.api.client"><code>HalApiClient</code></a> instance.</div>

@@ -281,20 +281,20 @@
 <a class="jxr_linenumber" name="L273" href="#L273">273</a> 
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String description;
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String developerHint;
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> useMaxForAggregration;
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> useMaxForAggregation;
 <a class="jxr_linenumber" name="L277" href="#L277">277</a> 
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>     TimingResourceCategory(String simpleClassName, String relation, String description, String developerHint, <strong class="jxr_keyword">boolean</strong> useMaxForAggregration) {
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>     TimingResourceCategory(String simpleClassName, String relation, String description, String developerHint, <strong class="jxr_keyword">boolean</strong> useMaxForAggregation) {
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>       <strong class="jxr_keyword">this</strong>.simpleClassName = simpleClassName;
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>       <strong class="jxr_keyword">this</strong>.relation = relation;
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>       <strong class="jxr_keyword">this</strong>.description = description;
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>       <strong class="jxr_keyword">this</strong>.developerHint = developerHint;
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>       <strong class="jxr_keyword">this</strong>.useMaxForAggregration = useMaxForAggregration;
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>       <strong class="jxr_keyword">this</strong>.useMaxForAggregation = useMaxForAggregation;
 <a class="jxr_linenumber" name="L284" href="#L284">284</a>     }
 <a class="jxr_linenumber" name="L285" href="#L285">285</a>   }
 <a class="jxr_linenumber" name="L286" href="#L286">286</a> 
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> createAndEmbed(HalResource metadataResource, TimingResourceCategory category) {
 <a class="jxr_linenumber" name="L288" href="#L288">288</a> 
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>     HalResource timingResource = createTimingResource(getGroupedAndSortedInvocationTimes(category.simpleClassName, category.useMaxForAggregration));
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>     HalResource timingResource = createTimingResource(getGroupedAndSortedInvocationTimes(category.simpleClassName, category.useMaxForAggregation));
 <a class="jxr_linenumber" name="L290" href="#L290">290</a> 
 <a class="jxr_linenumber" name="L291" href="#L291">291</a>     addEmbedded(metadataResource, category.relation, timingResource, category.description, category.developerHint);
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>   }

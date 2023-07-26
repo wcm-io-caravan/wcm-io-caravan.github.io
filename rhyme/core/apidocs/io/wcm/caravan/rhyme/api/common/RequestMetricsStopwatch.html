@@ -133,7 +133,7 @@ public interface <span class="typeNameLabel">RequestMetricsStopwatch</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang" class="externalLink">AutoCloseable</a></pre>
 <div class="block">Represents an ongoing measurement of execution time that was started with
  <a href="../Rhyme.html#startStopwatch(java.lang.Class,java.util.function.Supplier)"><code>Rhyme.startStopwatch(Class, Supplier)</code></a> or <a href="RequestMetricsCollector.html#startStopwatch(java.lang.Class,java.util.function.Supplier)"><code>RequestMetricsCollector.startStopwatch(Class, Supplier)</code></a>,
- and needs to beclosed to finish the measurement.
+ and needs to be closed to finish the measurement.
  This interface extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang" class="externalLink"><code>AutoCloseable</code></a> so the easiest way to use this is to wrap the code block in a
  try-with-resources statement</div>
 </li>

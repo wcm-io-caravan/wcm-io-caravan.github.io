@@ -102,15 +102,15 @@ public abstract class RhymePropertyDocsImpl implements RhymePropertyDocs {
 
   public static List&lt;RhymePropertyDocs&gt; create(JavaClass apiInterface, JavaProjectBuilder builder, ClassLoader projectClassLoader) {
 
-<span class="fc" id="L105">    Stream&lt;RhymePropertyDocs&gt; resourceStateDocs = crreateDocsFromResourceState(apiInterface, builder, projectClassLoader);</span>
+<span class="fc" id="L105">    Stream&lt;RhymePropertyDocs&gt; resourceStateDocs = createDocsFromResourceState(apiInterface, builder, projectClassLoader);</span>
 
-<span class="fc" id="L107">    Stream&lt;RhymePropertyDocs&gt; resourcePropertyDocs = crreateDocsFromResourceProperty(apiInterface, builder, projectClassLoader);</span>
+<span class="fc" id="L107">    Stream&lt;RhymePropertyDocs&gt; resourcePropertyDocs = createDocsFromResourceProperty(apiInterface, builder, projectClassLoader);</span>
 
 <span class="fc" id="L109">    return Stream.concat(resourceStateDocs, resourcePropertyDocs)</span>
 <span class="fc" id="L110">        .collect(Collectors.toList());</span>
   }
 
-  private static Stream&lt;RhymePropertyDocs&gt; crreateDocsFromResourceProperty(JavaClass apiInterface, JavaProjectBuilder builder, ClassLoader projectClassLoader) {
+  private static Stream&lt;RhymePropertyDocs&gt; createDocsFromResourceProperty(JavaClass apiInterface, JavaProjectBuilder builder, ClassLoader projectClassLoader) {
 
 <span class="fc" id="L115">    Stream&lt;JavaMethod&gt; javaMethods = DocumentationUtils.getMethodsWithAnnotation(apiInterface, ResourceProperty.class);</span>
 
@@ -144,7 +144,7 @@ public abstract class RhymePropertyDocsImpl implements RhymePropertyDocs {
 <span class="fc" id="L144">    return Introspector.decapitalize(name);</span>
   }
 
-  private static Stream&lt;RhymePropertyDocs&gt; crreateDocsFromResourceState(JavaClass apiInterface, JavaProjectBuilder builder, ClassLoader projectClassLoader) {
+  private static Stream&lt;RhymePropertyDocs&gt; createDocsFromResourceState(JavaClass apiInterface, JavaProjectBuilder builder, ClassLoader projectClassLoader) {
 
 <span class="fc" id="L149">    Optional&lt;JavaMethod&gt; javaMethod = DocumentationUtils.getMethodsWithAnnotation(apiInterface, ResourceState.class).findFirst();</span>
 <span class="fc bfc" id="L150" title="All 2 branches covered.">    if (!javaMethod.isPresent()) {</span>

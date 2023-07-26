@@ -230,7 +230,7 @@ public interface <span class="typeNameLabel">CaravanRhyme</span></pre>
 <h4>setResponseMaxAge</h4>
 <pre class="methodSignature">void&nbsp;setResponseMaxAge&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;duration)</pre>
 <div class="block">Limit the maximum time for which the response should be cached by clients and downstream services. Note that
- calling this method only sets the upper limit: if other upstream resource fetched during the current request
+ calling this method only sets the upper limit: if another upstream resource fetched during the current request
  indicate a lower max-age value in their header, that lower value will be used instead.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

@@ -108,7 +108,7 @@
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>       <strong class="jxr_keyword">return</strong> Single.zip(rxState, rxRelated,
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>           <em class="jxr_comment">// ...then create the HalResource instance</em>
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>           (stateNode, listOfRelated) -&gt; createHalResource(resourceImplInstance, stateNode, listOfRelated))
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>           <em class="jxr_comment">// and measure the time of thsee emissions</em>
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>           <em class="jxr_comment">// and measure the time of these emissions</em>
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>           .compose(EmissionStopwatch.collectMetrics(() -&gt; <span class="jxr_string">"rendering "</span> + simpleClassName + <span class="jxr_string">" instances"</span>, metrics));
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     }
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>   }
@@ -159,14 +159,14 @@
 <a class="jxr_linenumber" name="L151" href="#L151">151</a> 
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>           Observable&lt;?&gt; rxReturnValue = RxJavaReflectionUtils.invokeMethodAndReturnObservable(resourceImplInstance, method, metrics, typeSupport);
 <a class="jxr_linenumber" name="L153" href="#L153">153</a> 
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>           <em class="jxr_comment">// if the getter methods are returning an Observable, Stream or List, then the invocation above would give us a single</em>
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>           <em class="jxr_comment">// observable that emits multiple item. We do however want to convert this all into one array, so we'll convert the observable to a list first</em>
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>           <em class="jxr_comment">// If the getter methods are returning an Observable, Stream or List, then the invocation above would give us a single</em>
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>           <em class="jxr_comment">// observable that emits multiple item. We do, however, want to convert this all into one array, so we'll convert the observable to a list first</em>
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>           <strong class="jxr_keyword">if</strong> (typeSupport.isProviderOfMultiplerValues(method.getReturnType())) {
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>             rxReturnValue = rxReturnValue.toList().toObservable();
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>           }
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> 
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>           <strong class="jxr_keyword">return</strong> rxReturnValue
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>               <em class="jxr_comment">// convert the emitted property value to a JSON  node</em>
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>               <em class="jxr_comment">// convert the emitted property value to a JSON node</em>
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>               .map(returnValue -&gt; objectMapper.convertValue(returnValue, JsonNode.<strong class="jxr_keyword">class</strong>))
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>               .map(jsonNode -&gt; Pair.of(propertyName, jsonNode));
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>         });

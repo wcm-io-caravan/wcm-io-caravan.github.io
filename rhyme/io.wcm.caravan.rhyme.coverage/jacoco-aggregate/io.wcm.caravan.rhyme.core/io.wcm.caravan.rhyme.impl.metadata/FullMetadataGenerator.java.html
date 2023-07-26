@@ -273,20 +273,20 @@ import io.wcm.caravan.rhyme.api.server.AsyncHalResponseRenderer;
 
     private final String description;
     private final String developerHint;
-    private final boolean useMaxForAggregration;
+    private final boolean useMaxForAggregation;
 
-<span class="fc" id="L278">    TimingResourceCategory(String simpleClassName, String relation, String description, String developerHint, boolean useMaxForAggregration) {</span>
+<span class="fc" id="L278">    TimingResourceCategory(String simpleClassName, String relation, String description, String developerHint, boolean useMaxForAggregation) {</span>
 <span class="fc" id="L279">      this.simpleClassName = simpleClassName;</span>
 <span class="fc" id="L280">      this.relation = relation;</span>
 <span class="fc" id="L281">      this.description = description;</span>
 <span class="fc" id="L282">      this.developerHint = developerHint;</span>
-<span class="fc" id="L283">      this.useMaxForAggregration = useMaxForAggregration;</span>
+<span class="fc" id="L283">      this.useMaxForAggregation = useMaxForAggregation;</span>
 <span class="fc" id="L284">    }</span>
   }
 
   private void createAndEmbed(HalResource metadataResource, TimingResourceCategory category) {
 
-<span class="fc" id="L289">    HalResource timingResource = createTimingResource(getGroupedAndSortedInvocationTimes(category.simpleClassName, category.useMaxForAggregration));</span>
+<span class="fc" id="L289">    HalResource timingResource = createTimingResource(getGroupedAndSortedInvocationTimes(category.simpleClassName, category.useMaxForAggregation));</span>
 
 <span class="fc" id="L291">    addEmbedded(metadataResource, category.relation, timingResource, category.description, category.developerHint);</span>
 <span class="fc" id="L292">  }</span>
