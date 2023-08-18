@@ -7,8 +7,8 @@ JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,AssertExists
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,ResponseHandlingOperator.new Subscriber() {...},26,142,2,4,6,27,2,5,0,4
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,PerformanceMetricsTransformer,18,105,1,1,3,26,4,10,3,10
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,CachePointTransformer.CacheResponseObserver,30,252,2,20,7,49,3,15,1,6
-JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,ExtractOperator,0,15,0,0,0,5,0,2,0,2
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,ExtractOperator.new Subscriber() {...},0,59,0,4,0,13,0,6,0,4
+JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,ExtractOperator,0,15,0,0,0,5,0,2,0,2
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,MergeTransformer,7,146,1,15,2,35,1,12,0,5
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,PerformanceMetricsTransformer.new Observer() {...},5,40,1,1,2,8,2,3,1,3
 JSON Pipeline Implementation,io.wcm.caravan.pipeline.impl.operators,HandleExceptionOperator,0,15,0,0,0,5,0,2,0,2
