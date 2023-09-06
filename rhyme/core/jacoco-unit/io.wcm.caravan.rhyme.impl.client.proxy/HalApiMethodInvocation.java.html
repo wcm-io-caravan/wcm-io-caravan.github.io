@@ -22,7 +22,9 @@ package io.wcm.caravan.rhyme.impl.client.proxy;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,114 +48,122 @@ class HalApiMethodInvocation {
   private final HalApiTypeSupport typeSupport;
 
   private final Map&lt;String, Object&gt; templateVariables;
+  private final boolean calledWithOnlyNullParameters;
 
 
-<span class="fc" id="L51">  HalApiMethodInvocation(RequestMetricsCollector metrics, Class interfaze, Method method, Object[] args, HalApiTypeSupport typeSupport) {</span>
+<span class="fc" id="L54">  HalApiMethodInvocation(RequestMetricsCollector metrics, Class interfaze, Method method, Object[] args, HalApiTypeSupport typeSupport) {</span>
 
-<span class="fc" id="L53">    try (RequestMetricsStopwatch sw = metrics.startStopwatch(HalApiClient.class, () -&gt; &quot;creating HalApiMethodInvocation instances&quot;)) {</span>
-<span class="fc" id="L54">      this.interfaze = interfaze;</span>
-<span class="fc" id="L55">      this.method = method;</span>
-<span class="fc bfc" id="L56" title="All 2 branches covered.">      this.emissionType = hasTemplatedReturnType() ? RxJavaReflectionUtils.getObservableEmissionType(method, typeSupport) : method.getReturnType();</span>
-<span class="fc" id="L57">      this.typeSupport = typeSupport;</span>
+<span class="fc" id="L56">    try (RequestMetricsStopwatch sw = metrics.startStopwatch(HalApiClient.class, () -&gt; &quot;creating HalApiMethodInvocation instances&quot;)) {</span>
+<span class="fc" id="L57">      this.interfaze = interfaze;</span>
+<span class="fc" id="L58">      this.method = method;</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">      this.emissionType = hasTemplatedReturnType() ? RxJavaReflectionUtils.getObservableEmissionType(method, typeSupport) : method.getReturnType();</span>
+<span class="fc" id="L60">      this.typeSupport = typeSupport;</span>
 
-<span class="fc" id="L59">      this.templateVariables = TemplateVariableDetection.getVariablesNameValueMap(method, Optional.ofNullable(args));</span>
+<span class="fc" id="L62">      this.templateVariables = TemplateVariableDetection.getVariablesNameValueMap(method, Optional.ofNullable(args));</span>
+
+<span class="fc bfc" id="L64" title="All 4 branches covered.">      this.calledWithOnlyNullParameters = args != null &amp;&amp; Arrays.stream(args).allMatch(Objects::isNull);</span>
     }
-<span class="fc" id="L61">  }</span>
+<span class="fc" id="L66">  }</span>
 
 
   String getRelation() {
-<span class="fc" id="L65">    String relation = typeSupport.getRelation(method);</span>
-<span class="fc" id="L66">    Preconditions.checkNotNull(relation, this + &quot; does not have a @&quot; + Related.class.getSimpleName() + &quot; annotation&quot;);</span>
-<span class="fc" id="L67">    return relation;</span>
+<span class="fc" id="L70">    String relation = typeSupport.getRelation(method);</span>
+<span class="fc" id="L71">    Preconditions.checkNotNull(relation, this + &quot; does not have a @&quot; + Related.class.getSimpleName() + &quot; annotation&quot;);</span>
+<span class="fc" id="L72">    return relation;</span>
   }
 
   boolean isForMethodAnnotatedWithRelatedResource() {
-<span class="fc" id="L71">    return typeSupport.isRelatedResourceMethod(method);</span>
+<span class="fc" id="L76">    return typeSupport.isRelatedResourceMethod(method);</span>
   }
 
   boolean isForMethodAnnotatedWithResourceLink() {
-<span class="fc" id="L75">    return typeSupport.isResourceLinkMethod(method);</span>
+<span class="fc" id="L80">    return typeSupport.isResourceLinkMethod(method);</span>
   }
 
   boolean isForMethodAnnotatedWithResourceState() {
-<span class="fc" id="L79">    return typeSupport.isResourceStateMethod(method);</span>
+<span class="fc" id="L84">    return typeSupport.isResourceStateMethod(method);</span>
   }
 
   boolean isForMethodAnnotatedWithResourceProperties() {
-<span class="fc" id="L83">    return typeSupport.isResourcePropertyMethod(method);</span>
+<span class="fc" id="L88">    return typeSupport.isResourcePropertyMethod(method);</span>
   }
 
   boolean isForMethodAnnotatedWithResourceRepresentation() {
-<span class="fc" id="L87">    return typeSupport.isResourceRepresentationMethod(method);</span>
+<span class="fc" id="L92">    return typeSupport.isResourceRepresentationMethod(method);</span>
   }
 
   boolean hasTemplatedReturnType() {
-<span class="fc" id="L91">    return method.getGenericReturnType() instanceof ParameterizedType;</span>
+<span class="fc" id="L96">    return method.getGenericReturnType() instanceof ParameterizedType;</span>
   }
 
   Method getMethod() {
-<span class="fc" id="L95">    return method;</span>
+<span class="fc" id="L100">    return method;</span>
   }
 
   Class&lt;?&gt; getReturnType() {
-<span class="fc" id="L99">    return method.getReturnType();</span>
+<span class="fc" id="L104">    return method.getReturnType();</span>
   }
 
   Class&lt;?&gt; getEmissionType() {
-<span class="fc" id="L103">    return emissionType;</span>
+<span class="fc" id="L108">    return emissionType;</span>
   }
 
+  boolean isCalledWithOnlyNullParameters() {
+<span class="fc" id="L112">    return calledWithOnlyNullParameters;</span>
+  }
+
+
   Map&lt;String, Object&gt; getTemplateVariables() {
-<span class="fc" id="L107">    return templateVariables;</span>
+<span class="fc" id="L117">    return templateVariables;</span>
   }
 
   String getDescription() {
 
-<span class="fc" id="L112">    StringBuilder desc = new StringBuilder(&quot;emitting &quot;)</span>
-<span class="fc" id="L113">        .append(getEmissionType().getSimpleName());</span>
+<span class="fc" id="L122">    StringBuilder desc = new StringBuilder(&quot;emitting &quot;)</span>
+<span class="fc" id="L123">        .append(getEmissionType().getSimpleName());</span>
 
-<span class="fc bfc" id="L115" title="All 2 branches covered.">    if (isForMethodAnnotatedWithRelatedResource()) {</span>
-<span class="fc" id="L116">      desc.append(&quot; client proxies&quot;);</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">    if (isForMethodAnnotatedWithRelatedResource()) {</span>
+<span class="fc" id="L126">      desc.append(&quot; client proxies&quot;);</span>
     }
     else {
-<span class="fc" id="L119">      desc.append(&quot; client state&quot;);</span>
+<span class="fc" id="L129">      desc.append(&quot; client state&quot;);</span>
     }
 
-<span class="fc" id="L122">    desc.append(&quot; via &quot;).append(toString());</span>
+<span class="fc" id="L132">    desc.append(&quot; via &quot;).append(toString());</span>
 
-<span class="fc" id="L124">    return desc.toString();</span>
+<span class="fc" id="L134">    return desc.toString();</span>
   }
 
   public String getResourceInterfaceName() {
-<span class="fc" id="L128">    return interfaze.getSimpleName();</span>
+<span class="fc" id="L138">    return interfaze.getSimpleName();</span>
   }
 
   @Override
   public String toString() {
 
-<span class="fc" id="L134">    return interfaze.getSimpleName() + &quot;#&quot; + method.getName() + &quot;(&quot; + getVariableNamesString() + &quot;)&quot;;</span>
+<span class="fc" id="L144">    return interfaze.getSimpleName() + &quot;#&quot; + method.getName() + &quot;(&quot; + getVariableNamesString() + &quot;)&quot;;</span>
   }
 
   String getCacheKey() {
 
-<span class="fc" id="L139">    String parameterTypeNames = Stream.of(method.getParameterTypes())</span>
-<span class="fc" id="L140">        .map(Class::getName)</span>
-<span class="fc" id="L141">        .collect(Collectors.joining(&quot;,&quot;));</span>
+<span class="fc" id="L149">    String parameterTypeNames = Stream.of(method.getParameterTypes())</span>
+<span class="fc" id="L150">        .map(Class::getName)</span>
+<span class="fc" id="L151">        .collect(Collectors.joining(&quot;,&quot;));</span>
 
-<span class="fc" id="L143">    return interfaze.getName() + &quot;#&quot; + method.getName() + &quot;/&quot; + parameterTypeNames + &quot;?&quot; + getVariablesString();</span>
+<span class="fc" id="L153">    return interfaze.getName() + &quot;#&quot; + method.getName() + &quot;/&quot; + parameterTypeNames + &quot;?&quot; + getVariablesString();</span>
   }
 
   private String getVariableNamesString() {
 
-<span class="fc" id="L148">    return templateVariables.keySet().stream()</span>
-<span class="fc" id="L149">        .collect(Collectors.joining(&quot;,&quot;));</span>
+<span class="fc" id="L158">    return templateVariables.keySet().stream()</span>
+<span class="fc" id="L159">        .collect(Collectors.joining(&quot;,&quot;));</span>
   }
 
   private String getVariablesString() {
 
-<span class="fc" id="L154">    return templateVariables.entrySet().stream()</span>
-<span class="fc" id="L155">        .map(entry -&gt; entry.getKey() + &quot;=&quot; + entry.getValue())</span>
-<span class="fc" id="L156">        .collect(Collectors.joining(&quot;,&quot;));</span>
+<span class="fc" id="L164">    return templateVariables.entrySet().stream()</span>
+<span class="fc" id="L165">        .map(entry -&gt; entry.getKey() + &quot;=&quot; + entry.getValue())</span>
+<span class="fc" id="L166">        .collect(Collectors.joining(&quot;,&quot;));</span>
   }
 
 
