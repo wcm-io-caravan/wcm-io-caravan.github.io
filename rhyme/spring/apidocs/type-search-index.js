@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"io.wcm.caravan.rhyme.spring.api","l":"RhymeLinkBuilder"},{"p":"io.wcm.caravan.rhyme.spring.api","l":"SpringRhyme"},{"p":"io.wcm.caravan.rhyme.spring.api","l":"UrlFingerprinting"}]
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"io.wcm.caravan.rhyme.spring.api","l":"RhymeLinkBuilder"},{"p":"io.wcm.caravan.rhyme.spring.api","l":"SpringRhyme"},{"p":"io.wcm.caravan.rhyme.spring.api","l":"UrlFingerprinting"}];updateSearchResults();

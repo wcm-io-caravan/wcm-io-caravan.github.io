@@ -47,8 +47,10 @@ import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
 
   // inject the controllers for all related resources
   @Autowired
+  @org.springframework.context.annotation.Lazy
   private CompanyApiController api;
   @Autowired
+  @org.springframework.context.annotation.Lazy
   private EmployeeController employees;
 
   @Autowired
@@ -63,31 +65,31 @@ import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
   @GetMapping(&quot;/managers&quot;)
   ManagerCollectionResource findAll() {
 
-<span class="fc" id="L66">    return new ManagerCollectionResource() {</span>
+<span class="fc" id="L68">    return new ManagerCollectionResource() {</span>
 
       @Override
       public List&lt;ManagerResource&gt; getAll() {
 
-<span class="fc" id="L71">        return StreamUtils.createResourcesFrom(repository.findAll(), ManagerResourceImpl::new);</span>
+<span class="fc" id="L73">        return StreamUtils.createResourcesFrom(repository.findAll(), ManagerResourceImpl::new);</span>
       }
 
       @Override
       public CompanyApi getApi() {
-<span class="fc" id="L76">        return api.get();</span>
+<span class="fc" id="L78">        return api.get();</span>
       }
 
       @Override
       public EmployeeCollectionResource getEmployees() {
-<span class="fc" id="L81">        return employees.findAll();</span>
+<span class="fc" id="L83">        return employees.findAll();</span>
       }
 
       @Override
       public Link createLink() {
 
         // every link to this type of resource is created here, with the help of CompanyApiLinkBuilder
-<span class="fc" id="L88">        return linkBuilder.create(linkTo(methodOn(ManagerController.class).findAll()))</span>
-<span class="fc" id="L89">            .withTitle(&quot;A collection of all managers&quot;)</span>
-<span class="fc" id="L90">            .build();</span>
+<span class="fc" id="L90">        return linkBuilder.create(linkTo(methodOn(ManagerController.class).findAll()))</span>
+<span class="fc" id="L91">            .withTitle(&quot;A collection of all managers&quot;)</span>
+<span class="fc" id="L92">            .build();</span>
       }
     };
   }
@@ -102,10 +104,10 @@ import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
   ManagerResource findById(@PathVariable Long id) {
 
     // Create and return the resource instance (implemented as an inner class) that can load the entity from the repository
-<span class="fc" id="L105">    return new ManagerResourceImpl(id, () -&gt; repository.findById(id)</span>
+<span class="fc" id="L107">    return new ManagerResourceImpl(id, () -&gt; repository.findById(id)</span>
         // If no entity is found with the given ID, then throw an exception from which a status code can be extracted.
         // This will make Rhyme#renderResponse return a vnd.error response with that status code.
-<span class="fc" id="L108">        .orElseThrow(() -&gt; new HalApiServerException(404, &quot;No entity was found with id &quot; + id)));</span>
+<span class="fc" id="L110">        .orElseThrow(() -&gt; new HalApiServerException(404, &quot;No entity was found with id &quot; + id)));</span>
   }
 
   /**
@@ -126,57 +128,57 @@ import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
      * @param id of the manager
      * @param entityLoader a function that loads the manager from the {@link ManagerRepository}
      */
-<span class="fc" id="L129">    protected ManagerResourceImpl(Long id, Supplier&lt;Manager&gt; entityLoader) {</span>
-<span class="fc" id="L130">      this.id = id;</span>
-<span class="fc" id="L131">      this.state = Lazy.of(entityLoader);</span>
-<span class="fc" id="L132">      this.embedded = false;</span>
-<span class="fc" id="L133">    }</span>
+<span class="fc" id="L131">    protected ManagerResourceImpl(Long id, Supplier&lt;Manager&gt; entityLoader) {</span>
+<span class="fc" id="L132">      this.id = id;</span>
+<span class="fc" id="L133">      this.state = Lazy.of(entityLoader);</span>
+<span class="fc" id="L134">      this.embedded = false;</span>
+<span class="fc" id="L135">    }</span>
 
     /**
      * The constructor to create an *embedded* resource for an employee that was already loaded from the database
      * @param manager an entity loaded from the {@link ManagerRepository}
      */
-<span class="fc" id="L139">    private ManagerResourceImpl(Manager manager) {</span>
-<span class="fc" id="L140">      this.id = manager.getId();</span>
-<span class="fc" id="L141">      this.state = Lazy.of(manager);</span>
-<span class="fc" id="L142">      this.embedded = linkBuilder.isUseEmbeddedResources();</span>
-<span class="fc" id="L143">    }</span>
+<span class="fc" id="L141">    private ManagerResourceImpl(Manager manager) {</span>
+<span class="fc" id="L142">      this.id = manager.getId();</span>
+<span class="fc" id="L143">      this.state = Lazy.of(manager);</span>
+<span class="fc" id="L144">      this.embedded = linkBuilder.isUseEmbeddedResources();</span>
+<span class="fc" id="L145">    }</span>
 
     @Override
     public Manager getState() {
-<span class="fc" id="L147">      return state.get();</span>
+<span class="fc" id="L149">      return state.get();</span>
     }
 
     @Override
     public List&lt;EmployeeResource&gt; getManagedEmployees() {
-<span class="fc" id="L152">      return employees.findEmployeesOfManagerWithId(id);</span>
+<span class="fc" id="L154">      return employees.findEmployeesOfManagerWithId(id);</span>
     }
 
     @Override
     public Optional&lt;ManagerResource&gt; getCanonical() {
       // the canonical link is only present for variations of this resource
       // (which can be done by subclassing as you can see in #findManagerOfEmployeeWithId)
-<span class="fc" id="L159">      return Optional.empty();</span>
+<span class="fc" id="L161">      return Optional.empty();</span>
     }
 
     @Override
     public boolean isEmbedded() {
-<span class="fc" id="L164">      return embedded;</span>
+<span class="fc" id="L166">      return embedded;</span>
     }
 
     @Override
     public boolean isLinkedWhenEmbedded() {
-<span class="fc" id="L169">      return false;</span>
+<span class="fc" id="L171">      return false;</span>
     }
 
     @Override
     public Link createLink() {
 
       // every link to this type of resource is created here, with the help of CompanyApiLinkBuilder
-<span class="fc" id="L176">      return linkBuilder.create(linkTo(methodOn(ManagerController.class).findById(id)))</span>
-<span class="fc" id="L177">          .withTitle(&quot;The manager with ID &quot; + id)</span>
-<span class="fc" id="L178">          .withTemplateTitle(&quot;A link template to load a single manager by ID&quot;)</span>
-<span class="fc" id="L179">          .build();</span>
+<span class="fc" id="L178">      return linkBuilder.create(linkTo(methodOn(ManagerController.class).findById(id)))</span>
+<span class="fc" id="L179">          .withTitle(&quot;The manager with ID &quot; + id)</span>
+<span class="fc" id="L180">          .withTemplateTitle(&quot;A link template to load a single manager by ID&quot;)</span>
+<span class="fc" id="L181">          .build();</span>
     }
 
   }
@@ -191,25 +193,25 @@ import io.wcm.caravan.rhyme.api.resources.EmbeddableResource;
   ManagerResource findManagerOfEmployeeWithId(@PathVariable Long id) {
 
     // find the manager in the repository
-<span class="fc" id="L194">    Manager manager = repository.findByEmployeesId(id);</span>
+<span class="fc" id="L196">    Manager manager = repository.findByEmployeesId(id);</span>
 
     // Create a resource implementation (but don't use the constructor used to create embedded resources)
-<span class="fc" id="L197">    return new ManagerResourceImpl(manager.getId(), () -&gt; manager) {</span>
+<span class="fc" id="L199">    return new ManagerResourceImpl(manager.getId(), () -&gt; manager) {</span>
 
       @Override
       public Optional&lt;ManagerResource&gt; getCanonical() {
         // include a link to the version of this resource that uses the /managers/{id} path
-<span class="fc" id="L202">        return Optional.of(findById(manager.getId()));</span>
+<span class="fc" id="L204">        return Optional.of(findById(manager.getId()));</span>
       }
 
       @Override
       public Link createLink() {
 
         // overridden so that the path from this controller method is used
-<span class="fc" id="L209">        return linkBuilder.create(linkTo(methodOn(ManagerController.class).findManagerOfEmployeeWithId(id)))</span>
+<span class="fc" id="L211">        return linkBuilder.create(linkTo(methodOn(ManagerController.class).findManagerOfEmployeeWithId(id)))</span>
             // since the manager instance was already loaded, we can also give a bit more context in the link title for this resource
-<span class="fc" id="L211">            .withTitle(&quot;The manager (&quot; + manager.getName() + &quot;)  of the employee with id &quot; + id)</span>
-<span class="fc" id="L212">            .build();</span>
+<span class="fc" id="L213">            .withTitle(&quot;The manager (&quot; + manager.getName() + &quot;)  of the employee with id &quot; + id)</span>
+<span class="fc" id="L214">            .build();</span>
       }
     };
   }

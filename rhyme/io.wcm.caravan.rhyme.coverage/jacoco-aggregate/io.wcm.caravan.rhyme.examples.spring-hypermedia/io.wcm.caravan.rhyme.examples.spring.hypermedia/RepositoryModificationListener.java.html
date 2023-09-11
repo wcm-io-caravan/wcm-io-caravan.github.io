@@ -21,39 +21,38 @@ package io.wcm.caravan.rhyme.examples.spring.hypermedia;
 
 import java.time.Instant;
 
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
-import javax.persistence.PostUpdate;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import io.wcm.caravan.rhyme.spring.api.UrlFingerprinting;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostRemove;
+import jakarta.persistence.PostUpdate;
 
 /**
  * Keeps track of any modifications to the repositories for {@link Employee} and {@link Manager} entities, so that
  * timestamped URLs can be created by the {@link CompanyApiLinkBuilder} using {@link UrlFingerprinting}.
  */
 @Component
-<span class="fc" id="L39">class RepositoryModificationListener {</span>
+<span class="fc" id="L38">class RepositoryModificationListener {</span>
 
-<span class="fc" id="L41">  private static final Logger log = LoggerFactory.getLogger(RepositoryModificationListener.class);</span>
+<span class="fc" id="L40">  private static final Logger log = LoggerFactory.getLogger(RepositoryModificationListener.class);</span>
 
-<span class="fc" id="L43">  private volatile Instant lastModified = Instant.now();</span>
+<span class="fc" id="L42">  private volatile Instant lastModified = Instant.now();</span>
 
   @PostPersist
   @PostUpdate
   @PostRemove
   private void afterAnyUpdate(Object entity) {
 
-<span class="fc" id="L50">    log.debug(&quot;An update was detected for {}&quot;, entity);</span>
+<span class="fc" id="L49">    log.debug(&quot;An update was detected for {}&quot;, entity);</span>
 
-<span class="fc" id="L52">    lastModified = Instant.now();</span>
-<span class="fc" id="L53">  }</span>
+<span class="fc" id="L51">    lastModified = Instant.now();</span>
+<span class="fc" id="L52">  }</span>
 
   Instant getLastModified() {
-<span class="fc" id="L56">    return lastModified;</span>
+<span class="fc" id="L55">    return lastModified;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

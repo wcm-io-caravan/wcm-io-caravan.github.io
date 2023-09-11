@@ -41,8 +41,8 @@ import io.wcm.caravan.rhyme.api.spi.ExceptionStatusAndLoggingStrategy;
   @Override
   public Integer extractStatusCode(Throwable error) {
 
-<span class="nc bnc" id="L44" title="All 2 branches missed.">    if (error instanceof ResponseStatusException) {</span>
-<span class="nc" id="L45">      return ((ResponseStatusException)error).getStatus().value();</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">    if (error instanceof ResponseStatusException responsestatusexception) {</span>
+<span class="nc" id="L45">      return responsestatusexception.getStatusCode().value();</span>
     }
 
 <span class="nc bnc" id="L48" title="All 2 branches missed.">    if (error.getClass().isAnnotationPresent(ResponseStatus.class)) {</span>

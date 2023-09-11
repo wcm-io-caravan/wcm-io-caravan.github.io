@@ -27,8 +27,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.time.Duration;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +39,7 @@ import io.wcm.caravan.rhyme.api.resources.LinkableResource;
 import io.wcm.caravan.rhyme.spring.api.RhymeLinkBuilder;
 import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
 import io.wcm.caravan.rhyme.spring.api.UrlFingerprinting;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Defines common logic (e.g. URL fingerprinting) for building any link to your resources in this project .
@@ -76,18 +75,18 @@ class CompanyApiLinkBuilder {
   private boolean hasClientPreferences;
 
   CompanyApiLinkBuilder(@Autowired SpringRhyme rhyme, @Autowired RepositoryModificationListener repositoryListener,
-<span class="fc" id="L79">      @Autowired HttpServletRequest request) {</span>
+<span class="fc" id="L78">      @Autowired HttpServletRequest request) {</span>
 
-<span class="fc" id="L81">    this.fingerprinting = rhyme</span>
-<span class="fc" id="L82">        .enableUrlFingerprinting()</span>
-<span class="fc" id="L83">        .withConditionalMaxAge(Duration.ofSeconds(10), Duration.ofDays(100))</span>
-<span class="fc" id="L84">        .withTimestampParameter(TIMESTAMP_QUERY_PARAM, repositoryListener::getLastModified);</span>
+<span class="fc" id="L80">    this.fingerprinting = rhyme</span>
+<span class="fc" id="L81">        .enableUrlFingerprinting()</span>
+<span class="fc" id="L82">        .withConditionalMaxAge(Duration.ofSeconds(10), Duration.ofDays(100))</span>
+<span class="fc" id="L83">        .withTimestampParameter(TIMESTAMP_QUERY_PARAM, repositoryListener::getLastModified);</span>
 
-<span class="fc" id="L86">    this.useEmbeddedResources = keepIncomingRequestParameter(request, USE_EMBEDDED_RESOURCES);</span>
-<span class="fc" id="L87">    this.useFingerprinting = keepIncomingRequestParameter(request, USE_FINGERPRINTING);</span>
+<span class="fc" id="L85">    this.useEmbeddedResources = keepIncomingRequestParameter(request, USE_EMBEDDED_RESOURCES);</span>
+<span class="fc" id="L86">    this.useFingerprinting = keepIncomingRequestParameter(request, USE_FINGERPRINTING);</span>
 
-<span class="fc" id="L89">    keepIncomingRequestParameter(request, EMBED_RHYME_METADATA);</span>
-<span class="fc" id="L90">  }</span>
+<span class="fc" id="L88">    keepIncomingRequestParameter(request, EMBED_RHYME_METADATA);</span>
+<span class="fc" id="L89">  }</span>
 
   /**
    * If a query parameter with the given name is present in the incoming request, it will also be added
@@ -99,26 +98,26 @@ class CompanyApiLinkBuilder {
   private boolean keepIncomingRequestParameter(HttpServletRequest request, String name) {
 
     // if the query parameter was not present in the incoming request, then don't add it to any other links
-<span class="fc" id="L102">    String fromRequest = request.getParameter(name);</span>
-<span class="fc bfc" id="L103" title="All 2 branches covered.">    if (StringUtils.isBlank(fromRequest)) {</span>
+<span class="fc" id="L101">    String fromRequest = request.getParameter(name);</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">    if (StringUtils.isBlank(fromRequest)) {</span>
       // but the default behavior should be as if this parameter was set to true
-<span class="fc" id="L105">      return true;</span>
+<span class="fc" id="L104">      return true;</span>
     }
 
-<span class="fc" id="L108">    hasClientPreferences = true;</span>
+<span class="fc" id="L107">    hasClientPreferences = true;</span>
 
     // if the parameter *was* present, then make sure it's also added to every other link
-<span class="fc" id="L111">    boolean boolValue = BooleanUtils.toBoolean(fromRequest);</span>
-<span class="fc" id="L112">    fingerprinting.withQueryParameter(name, boolValue);</span>
-<span class="fc" id="L113">    return boolValue;</span>
+<span class="fc" id="L110">    boolean boolValue = BooleanUtils.toBoolean(fromRequest);</span>
+<span class="fc" id="L111">    fingerprinting.withQueryParameter(name, boolValue);</span>
+<span class="fc" id="L112">    return boolValue;</span>
   }
 
   boolean isUseEmbeddedResources() {
-<span class="fc" id="L117">    return useEmbeddedResources;</span>
+<span class="fc" id="L116">    return useEmbeddedResources;</span>
   }
 
   boolean hasClientPreferences() {
-<span class="fc" id="L121">    return hasClientPreferences;</span>
+<span class="fc" id="L120">    return hasClientPreferences;</span>
   }
 
   /**
@@ -126,19 +125,19 @@ class CompanyApiLinkBuilder {
    * by the {@link WebMvcLinkBuilder} class, but additional query parameters that are not directly
    * present in the API and controller signatures can be appended by {@link UrlFingerprinting}.
    * @param webMvcLinkBuilder created with {@link WebMvcLinkBuilder#linkTo(Class)} and
-   *          {@link WebMvcLinkBuilder#methodOn(Class, Object...)}
+   *     {@link WebMvcLinkBuilder#methodOn(Class, Object...)}
    * @return a {@link RhymeLinkBuilder} that you can use to decorate the link with name and title attributes, and
-   *         then finally build it
+   *     then finally build it
    * @see WebMvcLinkBuilder
    */
   RhymeLinkBuilder create(WebMvcLinkBuilder webMvcLinkBuilder) {
 
-<span class="fc" id="L136">    RhymeLinkBuilder linkBuilder = fingerprinting.createLinkWith(webMvcLinkBuilder);</span>
+<span class="fc" id="L135">    RhymeLinkBuilder linkBuilder = fingerprinting.createLinkWith(webMvcLinkBuilder);</span>
 
-<span class="fc bfc" id="L138" title="All 2 branches covered.">    if (!useFingerprinting) {</span>
-<span class="fc" id="L139">      linkBuilder = linkBuilder.withoutFingerprint();</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">    if (!useFingerprinting) {</span>
+<span class="fc" id="L138">      linkBuilder = linkBuilder.withoutFingerprint();</span>
     }
-<span class="fc" id="L141">    return linkBuilder;</span>
+<span class="fc" id="L140">    return linkBuilder;</span>
   }
 
   /**
@@ -149,14 +148,14 @@ class CompanyApiLinkBuilder {
    */
   String getLocalEntryPointUrl() {
 
-<span class="fc" id="L152">    RhymeLinkBuilder linkBuilder = create(linkTo(methodOn(CompanyApiController.class).get()));</span>
+<span class="fc" id="L151">    RhymeLinkBuilder linkBuilder = create(linkTo(methodOn(CompanyApiController.class).get()));</span>
 
-<span class="fc bfc" id="L154" title="All 4 branches covered.">    if (!useFingerprinting || !fingerprinting.isUsedInIncomingRequest()) {</span>
-<span class="fc" id="L155">      linkBuilder = linkBuilder.withoutFingerprint();</span>
+<span class="fc bfc" id="L153" title="All 4 branches covered.">    if (!useFingerprinting || !fingerprinting.isUsedInIncomingRequest()) {</span>
+<span class="fc" id="L154">      linkBuilder = linkBuilder.withoutFingerprint();</span>
     }
 
-<span class="fc" id="L158">    return linkBuilder.build()</span>
-<span class="fc" id="L159">        .getHref();</span>
+<span class="fc" id="L157">    return linkBuilder.build()</span>
+<span class="fc" id="L158">        .getHref();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

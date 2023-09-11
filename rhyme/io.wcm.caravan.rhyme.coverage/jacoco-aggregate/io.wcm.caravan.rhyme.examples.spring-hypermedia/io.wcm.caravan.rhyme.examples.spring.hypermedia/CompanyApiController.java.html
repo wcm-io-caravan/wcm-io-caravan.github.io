@@ -24,6 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,14 +45,17 @@ import io.wcm.caravan.rhyme.api.client.HalApiClient;
  * &lt;/p&gt;
  */
 @RestController
-<span class="fc" id="L47">class CompanyApiController implements CompanyApi {</span>
+<span class="fc" id="L48">class CompanyApiController implements CompanyApi {</span>
 
   // inject the controllers for all resources that are linked from the entry point
   @Autowired
+  @Lazy
   private EmployeeController employees;
   @Autowired
+  @Lazy
   private ManagerController managers;
   @Autowired
+  @Lazy
   private DetailedEmployeeController detailedEmployees;
 
   @Autowired
@@ -68,7 +72,7 @@ import io.wcm.caravan.rhyme.api.client.HalApiClient;
 
     // Because CompanyApi extends LinkableResource, all methods from the interface will be automatically invoked later
     // when the response is being rendered by the LinkableResourceMessageConverter.
-<span class="fc" id="L71">    return this;</span>
+<span class="fc" id="L75">    return this;</span>
   }
 
   // To create the links in the entry point, we are simply delegating to the controllers that create
@@ -79,12 +83,12 @@ import io.wcm.caravan.rhyme.api.client.HalApiClient;
 
   @Override
   public EmployeeCollectionResource getEmployees() {
-<span class="fc" id="L82">    return employees.findAll();</span>
+<span class="fc" id="L86">    return employees.findAll();</span>
   }
 
   @Override
   public ManagerCollectionResource getManagers() {
-<span class="fc" id="L87">    return managers.findAll();</span>
+<span class="fc" id="L91">    return managers.findAll();</span>
   }
 
   // For any link *templates* defined in the CompanyApi interface, the response renderer will invoke
@@ -99,18 +103,17 @@ import io.wcm.caravan.rhyme.api.client.HalApiClient;
     // we still pass the given ID to the controller method.
     // This allows these methods to also be called directly by API consumers in the same application context
     // (which do know the ID of the entity they are looking for).
-<span class="fc" id="L102">    return employees.findById(id);</span>
+<span class="fc" id="L106">    return employees.findById(id);</span>
   }
 
   @Override
   public ManagerResource getManagerById(Long id) {
-<span class="fc" id="L107">    return managers.findById(id);</span>
+<span class="fc" id="L111">    return managers.findById(id);</span>
   }
 
   @Override
-
   public DetailedEmployeeResource getDetailedEmployeeById(Long id) {
-<span class="fc" id="L113">    return detailedEmployees.findById(id);</span>
+<span class="fc" id="L116">    return detailedEmployees.findById(id);</span>
   }
 
   @Override
@@ -118,26 +121,26 @@ import io.wcm.caravan.rhyme.api.client.HalApiClient;
 
     // create a link to this controller, but explicitly add template variables for the preference parameters,
     // which will be read by the CompanyApiLinkBuilder when a request using these parameters is processed
-<span class="fc" id="L121">    return linkBuilder.create(linkTo(methodOn(CompanyApiController.class).get()))</span>
-<span class="fc" id="L122">        .withTemplateVariables(USE_EMBEDDED_RESOURCES, USE_FINGERPRINTING, EMBED_RHYME_METADATA)</span>
-<span class="fc" id="L123">        .withTitle(&quot;Reload the entry point with different settings&quot;)</span>
+<span class="fc" id="L124">    return linkBuilder.create(linkTo(methodOn(CompanyApiController.class).get()))</span>
+<span class="fc" id="L125">        .withTemplateVariables(USE_EMBEDDED_RESOURCES, USE_FINGERPRINTING, EMBED_RHYME_METADATA)</span>
+<span class="fc" id="L126">        .withTitle(&quot;Reload the entry point with different settings&quot;)</span>
         // since this method is never called by internal consumers, we don't have to return a full server-side
         // CompanyApi implementation. Instead, we create and return a minimal proxy that only can render the link.
-<span class="fc" id="L126">        .buildLinked(CompanyApi.class);</span>
+<span class="fc" id="L129">        .buildLinked(CompanyApi.class);</span>
   }
 
   @Override
   public Link createLink() {
 
     // the link title should vary depending on whether the entry point was re-loaded via CompanyApi#withClientPreferences
-<span class="fc" id="L133">    String title = &quot;The entry point of the hypermedia example API&quot;;</span>
-<span class="fc bfc" id="L134" title="All 2 branches covered.">    if (linkBuilder.hasClientPreferences()) {</span>
-<span class="fc" id="L135">      title += &quot; (with custom client preferences)&quot;;</span>
+<span class="fc" id="L136">    String title = &quot;The entry point of the hypermedia example API&quot;;</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">    if (linkBuilder.hasClientPreferences()) {</span>
+<span class="fc" id="L138">      title += &quot; (with custom client preferences)&quot;;</span>
     }
 
-<span class="fc" id="L138">    return linkBuilder.create(linkTo(methodOn(CompanyApiController.class).get()))</span>
-<span class="fc" id="L139">        .withTitle(title)</span>
-<span class="fc" id="L140">        .build();</span>
+<span class="fc" id="L141">    return linkBuilder.create(linkTo(methodOn(CompanyApiController.class).get()))</span>
+<span class="fc" id="L142">        .withTitle(title)</span>
+<span class="fc" id="L143">        .build();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

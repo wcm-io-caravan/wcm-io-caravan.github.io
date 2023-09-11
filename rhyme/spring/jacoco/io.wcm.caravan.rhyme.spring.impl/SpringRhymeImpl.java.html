@@ -25,7 +25,7 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +98,7 @@ class SpringRhymeImpl implements SpringRhyme {
 
   private static String getRequestUrl(HttpServletRequest httpRequest) {
 
-<span class="fc" id="L101">    StringBuffer requestUrl = httpRequest.getRequestURL();</span>
+<span class="fc" id="L101">    StringBuilder requestUrl = new StringBuilder(httpRequest.getRequestURL());</span>
 
 <span class="pc bpc" id="L103" title="1 of 2 branches missed.">    if (httpRequest.getQueryString() != null) {</span>
 <span class="fc" id="L104">      requestUrl.append(&quot;?&quot;);</span>
