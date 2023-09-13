@@ -49,7 +49,7 @@ loadScripts(document, 'script');</script>
 <div class="header">
 <h1>Index</h1>
 </div>
-<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a>
+<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a>
 <h2 class="title" id="I:B">B</h2>
 <dl class="index">
 <dt><a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#build()" class="member-name-link">build()</a> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></dt>
@@ -68,6 +68,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Creates a <a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api"><code>RhymeLinkBuilder</code></a> that generates the URL to a controller method and adds the
  additional URL fingerprinting parameters</div>
+</dd>
+<dt><a href="io/wcm/caravan/rhyme/spring/api/HttpClientCustomizer.html#customize(reactor.netty.http.client.HttpClient)" class="member-name-link">customize(HttpClient)</a> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/HttpClientCustomizer.html" title="interface in io.wcm.caravan.rhyme.spring.api">HttpClientCustomizer</a></dt>
+<dd>
+<div class="block">Callback to customize a <code>HttpClient</code> instance.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:E">E</h2>
@@ -89,6 +93,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Create a dynamic client proxy to load HAL+JSON resources from an upstream service (using the core framework's
  <code>HalApiClient</code>)</div>
+</dd>
+</dl>
+<h2 class="title" id="I:H">H</h2>
+<dl class="index">
+<dt><a href="io/wcm/caravan/rhyme/spring/api/HttpClientCustomizer.html" class="type-name-link" title="interface in io.wcm.caravan.rhyme.spring.api">HttpClientCustomizer</a> - Interface in <a href="io/wcm/caravan/rhyme/spring/api/package-summary.html">io.wcm.caravan.rhyme.spring.api</a></dt>
+<dd>
+<div class="block">Callback interface that can be used to customize a <code>HttpClient</code>.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:I">I</h2>
@@ -133,6 +144,14 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:W">W</h2>
 <dl class="index">
+<dt><a href="io/wcm/caravan/rhyme/spring/api/WebClientProvider.html#webClientForUri(java.net.URI)" class="member-name-link">webClientForUri(URI)</a> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/WebClientProvider.html" title="interface in io.wcm.caravan.rhyme.spring.api">WebClientProvider</a></dt>
+<dd>
+<div class="block">Returns an instance of <code>WebClient</code> for the given uri.</div>
+</dd>
+<dt><a href="io/wcm/caravan/rhyme/spring/api/WebClientProvider.html" class="type-name-link" title="interface in io.wcm.caravan.rhyme.spring.api">WebClientProvider</a> - Interface in <a href="io/wcm/caravan/rhyme/spring/api/package-summary.html">io.wcm.caravan.rhyme.spring.api</a></dt>
+<dd>
+<div class="block">Callback interface to provide an instance of <code>WebClient</code> for the given uri.</div>
+</dd>
 <dt><a href="io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html#withConditionalMaxAge(java.time.Duration,java.time.Duration)" class="member-name-link">withConditionalMaxAge(Duration, Duration)</a> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/UrlFingerprinting.html" title="interface in io.wcm.caravan.rhyme.spring.api">UrlFingerprinting</a></dt>
 <dd>
 <div class="block">Allows the URL fingerprinting logic to modify the max-age cache-control directive for the response that is
@@ -164,7 +183,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html#withTitle(java.lang.String)" class="member-name-link">withTitle(String)</a> - Method in interface io.wcm.caravan.rhyme.spring.api.<a href="io/wcm/caravan/rhyme/spring/api/RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></dt>
 <dd>&nbsp;</dd>
 </dl>
-<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a></main>
+<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a></main>
 <footer role="contentinfo">
 <hr>
 <p class="legal-copy"><small>Copyright &#169; 2014&#x2013;2023 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</small></p>

@@ -19,15 +19,23 @@
  */
 package io.wcm.caravan.rhyme.spring.impl;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import io.wcm.caravan.rhyme.api.client.HalResourceLoaderBuilder;
 import io.wcm.caravan.rhyme.api.spi.HalResourceLoader;
+import io.wcm.caravan.rhyme.api.spi.HttpClientSupport;
+import io.wcm.caravan.rhyme.spring.api.HttpClientCustomizer;
 import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
+import io.wcm.caravan.rhyme.spring.api.WebClientProvider;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 /**
  * Registers all components from the impl package, and provides default implementations for spring beans required by
@@ -36,7 +44,7 @@ import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
  */
 @Configuration
 @ComponentScan(basePackages = &quot;io.wcm.caravan.rhyme.spring.impl&quot;)
-<span class="fc" id="L39">class SpringRhymeAutoConfiguration {</span>
+<span class="fc" id="L47">class SpringRhymeAutoConfiguration {</span>
 
   /**
    * Defines the default resource loader used by the {@link SpringRhyme} implementation class: a
@@ -46,26 +54,65 @@ import io.wcm.caravan.rhyme.spring.api.SpringRhyme;
    */
   @Bean
   @ConditionalOnMissingBean
-  HalResourceLoader halResourceLoader() {
+  HalResourceLoader halResourceLoader(HalResourceLoaderBuilder halResourceBuilder) {
 
-<span class="fc" id="L51">    return halResourceBuilder()</span>
-<span class="fc" id="L52">        .withMemoryCache()</span>
-<span class="fc" id="L53">        .build();</span>
+<span class="fc" id="L59">    return halResourceBuilder</span>
+<span class="fc" id="L60">        .withMemoryCache()</span>
+<span class="fc" id="L61">        .build();</span>
   }
 
   /**
-   * Provides a {@link HalResourceLoaderBuilder} that is already pre-configured to use a {@link WebClientSupport}
+   * Provides a {@link HalResourceLoaderBuilder} that is pre-configured with the given {@link HttpClientSupport}
    * @return a {@link HalResourceLoaderBuilder} that can be further customised before a {@link HalResourceLoader} is
-   *         built
+   *     built
    */
   @Bean
   @ConditionalOnMissingBean
-  HalResourceLoaderBuilder halResourceBuilder() {
-
-<span class="fc" id="L65">    WebClientSupport client = new WebClientSupport();</span>
-
-<span class="fc" id="L67">    return HalResourceLoaderBuilder.create()</span>
-<span class="fc" id="L68">        .withCustomHttpClient(client);</span>
+  HalResourceLoaderBuilder halResourceBuilder(HttpClientSupport httpClientSupport) {
+<span class="fc" id="L72">    return HalResourceLoaderBuilder.create()</span>
+<span class="fc" id="L73">        .withCustomHttpClient(httpClientSupport);</span>
   }
+
+  /**
+   * Provides a {@link WebClientSupport} instance with the given {@link WebClient}
+   */
+  @Bean
+  @ConditionalOnMissingBean
+  WebClientSupport webClientSupport(WebClientProvider webClientProvider) {
+<span class="fc" id="L82">    return new WebClientSupport(webClientProvider);</span>
+  }
+
+  /**
+   * Simply provides a static instance of {@link WebClient} for all URIs created with the provided {@link WebClient.Builder}.
+   */
+  @Bean
+  @Scope(&quot;prototype&quot;)
+  @ConditionalOnMissingBean
+  WebClientProvider webClientProvider(WebClient.Builder webClientBuilder) {
+<span class="fc" id="L92">    WebClient webClient = webClientBuilder.build();</span>
+<span class="pc" id="L93">    return uri -&gt; webClient;</span>
+  }
+
+  /**
+   * Provides a default instance for a {@link WebClient.Builder} with a configured {@link ConnectionProvider}.
+   */
+  @Bean
+  @Scope(&quot;prototype&quot;)
+  @ConditionalOnMissingBean
+  WebClient.Builder defaultRhymeWebClientBuilder(ObjectProvider&lt;HttpClientCustomizer&gt; httpClientCustomizerProvider) {
+<span class="fc" id="L103">    ConnectionProvider connectionProvider = ConnectionProvider</span>
+<span class="fc" id="L104">        .builder(SpringRhymeAutoConfiguration.class.getSimpleName())</span>
+<span class="fc" id="L105">        .maxConnections(5000)</span>
+<span class="fc" id="L106">        .build();</span>
+
+<span class="fc" id="L108">    HttpClient httpClient = HttpClient.create(connectionProvider);</span>
+
+<span class="pc" id="L110">    httpClientCustomizerProvider.orderedStream().forEach(customizer -&gt; customizer.customize(httpClient));</span>
+
+<span class="fc" id="L112">    return WebClient.builder()</span>
+<span class="fc" id="L113">        .codecs(configurer -&gt; configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024))</span>
+<span class="fc" id="L114">        .clientConnector(new ReactorClientHttpConnector(httpClient));</span>
+  }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

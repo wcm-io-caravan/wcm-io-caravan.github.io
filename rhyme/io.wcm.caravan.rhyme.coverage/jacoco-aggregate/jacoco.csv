@@ -129,10 +129,10 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.carav
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.caravan.impl,CaravanHalApiClientImpl,0,72,0,2,0,19,0,7,0,6
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.osgi-jaxrs,io.wcm.caravan.rhyme.jaxrs.api,JaxRsLinkBuilder,0,6,0,0,0,1,0,1,0,1
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringExceptionStatusAndLoggingStrategy,0,61,0,10,0,15,0,8,0,3
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,WebClientSupport,0,105,0,0,0,24,0,8,0,8
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,WebClientSupport,0,82,0,0,0,15,0,6,0,6
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeImpl.DefaultMetadataConfiguration,0,28,0,4,0,5,0,5,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,LinkableResourceStatusCodeAdvice,0,21,0,0,0,7,0,3,0,3
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeAutoConfiguration,0,16,0,0,0,7,0,3,0,3
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeAutoConfiguration,4,54,0,0,0,18,1,8,1,8
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,VndErrorHandlingControllerAdvice,0,29,0,0,0,6,0,4,0,4
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeDocsIntegration,0,19,0,0,0,6,0,5,0,5
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.spring,io.wcm.caravan.rhyme.spring.impl,SpringRhymeLinkBuilder,0,228,0,18,0,48,0,24,0,15

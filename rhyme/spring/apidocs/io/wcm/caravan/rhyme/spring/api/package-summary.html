@@ -67,23 +67,31 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Class</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color class-summary class-summary-tab1"><a href="RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="HttpClientCustomizer.html" title="interface in io.wcm.caravan.rhyme.spring.api">HttpClientCustomizer</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">Callback interface that can be used to customize a <code>HttpClient</code>.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="RhymeLinkBuilder.html" title="interface in io.wcm.caravan.rhyme.spring.api">RhymeLinkBuilder</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
 <div class="block">An intermediate stage during link generation that is returned by
- <a href="UrlFingerprinting.html#createLinkWith(org.springframework.hateoas.server.mvc.WebMvcLinkBuilder)"><code>createLinkWith(WebMvcLinkBuilder)</code></a> and allows
+ <a href="UrlFingerprinting.html#createLinkWith(org.springframework.hateoas.server.mvc.WebMvcLinkBuilder)"><code>UrlFingerprinting.createLinkWith(WebMvcLinkBuilder)</code></a> and allows
  adding adding name and title attributes before calling <a href="RhymeLinkBuilder.html#build()"><code>RhymeLinkBuilder.build()</code></a> to finally create the link.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="SpringRhyme.html" title="interface in io.wcm.caravan.rhyme.spring.api">SpringRhyme</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab1">
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="SpringRhyme.html" title="interface in io.wcm.caravan.rhyme.spring.api">SpringRhyme</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
 <div class="block">A request-scoped <code>Component</code> that you need to inject into your controllers if you want to
  load remote resources from an upstream service, or control the max-age cache-control directive of the response
  that you are rendering.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab1"><a href="UrlFingerprinting.html" title="interface in io.wcm.caravan.rhyme.spring.api">UrlFingerprinting</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="UrlFingerprinting.html" title="interface in io.wcm.caravan.rhyme.spring.api">UrlFingerprinting</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
 <div class="block">Adds support for URL fingerprinting to your server-side resource implementations, by ensuring
  that all links in your service are using URLs that are guaranteed to change whenever the
  data, code or configuration of your service is updated.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="WebClientProvider.html" title="interface in io.wcm.caravan.rhyme.spring.api">WebClientProvider</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">Callback interface to provide an instance of <code>WebClient</code> for the given uri.</div>
 </div>
 </div>
 </div>
