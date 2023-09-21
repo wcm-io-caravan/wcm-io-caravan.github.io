@@ -107,11 +107,13 @@ import reactor.netty.resources.ConnectionProvider;
 
 <span class="fc" id="L108">    HttpClient httpClient = HttpClient.create(connectionProvider);</span>
 
-<span class="pc" id="L110">    httpClientCustomizerProvider.orderedStream().forEach(customizer -&gt; customizer.customize(httpClient));</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">    for (HttpClientCustomizer customizer : httpClientCustomizerProvider) {</span>
+<span class="nc" id="L111">      httpClient = customizer.customize(httpClient);</span>
+<span class="nc" id="L112">    }</span>
 
-<span class="fc" id="L112">    return WebClient.builder()</span>
-<span class="fc" id="L113">        .codecs(configurer -&gt; configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024))</span>
-<span class="fc" id="L114">        .clientConnector(new ReactorClientHttpConnector(httpClient));</span>
+<span class="fc" id="L114">    return WebClient.builder()</span>
+<span class="fc" id="L115">        .codecs(configurer -&gt; configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024))</span>
+<span class="fc" id="L116">        .clientConnector(new ReactorClientHttpConnector(httpClient));</span>
   }
 
 }
