@@ -23,7 +23,7 @@ under the License.
     <link>https://caravan.wcm.io/commons/metrics/</link>
     <description>Commons Metrics - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2014 - 2023 wcm.io Caravan</copyright>
+    <copyright>&#169;2014 - 2024 wcm.io Caravan</copyright>
     <item>
       <title>File: 8,
              Errors: 0,
@@ -60,7 +60,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/commons/metrics//checkstyle.html#io.wcm.caravan.commons.metrics.rx.HitsAndMissesCountingMetricsOperator.java">io/wcm/caravan/commons/metrics/rx/HitsAndMissesCountingMetricsOperator.java</a>
+                  <a href="https://caravan.wcm.io/commons/metrics//checkstyle.html#io.wcm.caravan.commons.metrics.impl.BundleActivator.java">io/wcm/caravan/commons/metrics/impl/BundleActivator.java</a>
                 </td>
                 <td>
                   0
@@ -74,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/commons/metrics//checkstyle.html#io.wcm.caravan.commons.metrics.impl.BundleActivator.java">io/wcm/caravan/commons/metrics/impl/BundleActivator.java</a>
+                  <a href="https://caravan.wcm.io/commons/metrics//checkstyle.html#io.wcm.caravan.commons.metrics.rx.HitsAndMissesCountingMetricsOperator.java">io/wcm/caravan/commons/metrics/rx/HitsAndMissesCountingMetricsOperator.java</a>
                 </td>
                 <td>
                   0
