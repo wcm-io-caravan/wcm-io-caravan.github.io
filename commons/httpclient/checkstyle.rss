@@ -88,20 +88,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/commons/httpclient//checkstyle.html#io.wcm.caravan.commons.httpclient.impl.HttpClientConfigImpl.java">io/wcm/caravan/commons/httpclient/impl/HttpClientConfigImpl.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://caravan.wcm.io/commons/httpclient//checkstyle.html#io.wcm.caravan.commons.httpclient.impl.helpers.CertificateLoader.java">io/wcm/caravan/commons/httpclient/impl/helpers/CertificateLoader.java</a>
                 </td>
                 <td>
@@ -117,6 +103,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://caravan.wcm.io/commons/httpclient//checkstyle.html#io.wcm.caravan.commons.httpclient.impl.HttpClientItem.java">io/wcm/caravan/commons/httpclient/impl/HttpClientItem.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://caravan.wcm.io/commons/httpclient//checkstyle.html#io.wcm.caravan.commons.httpclient.impl.HttpClientConfigImpl.java">io/wcm/caravan/commons/httpclient/impl/HttpClientConfigImpl.java</a>
                 </td>
                 <td>
                   0
