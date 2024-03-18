@@ -80,7 +80,7 @@ import org.slf4j.LoggerFactory;
       // register JAX-RS application as servlet on HTTP whiteboard
 <span class="nc" id="L81">      Dictionary&lt;String, Object&gt; serviceConfig = new Hashtable&lt;&gt;();</span>
 <span class="nc" id="L82">      serviceConfig.put(&quot;alias&quot;, applicationPath);</span>
-<span class="nc" id="L83">      serviceConfig.put(ServletContainerBridge.PROPERTY_BUNDLE, bundle);</span>
+<span class="nc" id="L83">      serviceConfig.put(ServletContainerBridge.PROPERTY_BUNDLE_ID, bundle.getBundleId());</span>
 <span class="nc" id="L84">      return servletContainerBridgeFactory.newInstance(serviceConfig);</span>
     }
 <span class="nc" id="L86">    return null;</span>
