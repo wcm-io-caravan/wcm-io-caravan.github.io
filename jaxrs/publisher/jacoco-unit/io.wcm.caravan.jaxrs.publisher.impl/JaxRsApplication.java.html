@@ -28,7 +28,6 @@ import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.server.ServerProperties;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 
 import io.wcm.caravan.jaxrs.publisher.JaxRsClassesProvider;
@@ -39,14 +38,13 @@ import io.wcm.caravan.jaxrs.publisher.JaxRsComponent;
  */
 class JaxRsApplication extends Application {
 
-<span class="fc" id="L42">  private static final Map&lt;String, Object&gt; DEFAULT_PROPERTIES = ImmutableMap.&lt;String, Object&gt;builder()</span>
+<span class="fc" id="L41">  private static final Map&lt;String, Object&gt; DEFAULT_PROPERTIES = Map.of(</span>
       // look for implementations described by META-INF/services/*
-<span class="fc" id="L44">      .put(ServerProperties.METAINF_SERVICES_LOOKUP_DISABLE, false)</span>
+<span class="fc" id="L43">      ServerProperties.METAINF_SERVICES_LOOKUP_DISABLE, false,</span>
       // disable auto discovery on server, as it's handled via OSGI
-<span class="fc" id="L46">      .put(ServerProperties.FEATURE_AUTO_DISCOVERY_DISABLE, true)</span>
+<span class="fc" id="L45">      ServerProperties.FEATURE_AUTO_DISCOVERY_DISABLE, true,</span>
       // disable WADL generation by default
-<span class="fc" id="L48">      .put(ServerProperties.WADL_FEATURE_DISABLE, true)</span>
-<span class="fc" id="L49">      .build();</span>
+<span class="fc" id="L47">      ServerProperties.WADL_FEATURE_DISABLE, true);</span>
 
   private final Set&lt;JaxRsComponent&gt; localComponents;
   private final Set&lt;JaxRsComponent&gt; globalComponents;
@@ -54,28 +52,28 @@ class JaxRsApplication extends Application {
   private Set&lt;JaxRsClassesProvider&gt; globalClassesProviders;
 
   JaxRsApplication(Set&lt;JaxRsComponent&gt; localComponents, Set&lt;JaxRsComponent&gt; globalComponents,
-<span class="fc" id="L57">      Set&lt;JaxRsClassesProvider&gt; localClassesProviders, Set&lt;JaxRsClassesProvider&gt; globalClassesProviders) {</span>
-<span class="fc" id="L58">    this.localComponents = localComponents;</span>
-<span class="fc" id="L59">    this.globalComponents = globalComponents;</span>
-<span class="fc" id="L60">    this.localClassesProviders = localClassesProviders;</span>
-<span class="fc" id="L61">    this.globalClassesProviders = globalClassesProviders;</span>
-<span class="fc" id="L62">  }</span>
+<span class="fc" id="L55">      Set&lt;JaxRsClassesProvider&gt; localClassesProviders, Set&lt;JaxRsClassesProvider&gt; globalClassesProviders) {</span>
+<span class="fc" id="L56">    this.localComponents = localComponents;</span>
+<span class="fc" id="L57">    this.globalComponents = globalComponents;</span>
+<span class="fc" id="L58">    this.localClassesProviders = localClassesProviders;</span>
+<span class="fc" id="L59">    this.globalClassesProviders = globalClassesProviders;</span>
+<span class="fc" id="L60">  }</span>
 
   @Override
   public Set&lt;Object&gt; getSingletons() {
-<span class="fc" id="L66">    return Sets.union(globalComponents, localComponents);</span>
+<span class="fc" id="L64">    return Sets.union(globalComponents, localComponents);</span>
   }
 
   @Override
   public Set&lt;Class&lt;?&gt;&gt; getClasses() {
-<span class="fc" id="L71">    return Stream.concat(localClassesProviders.stream(), globalClassesProviders.stream())</span>
-<span class="fc" id="L72">        .flatMap(component -&gt; component.getClasses().stream())</span>
-<span class="fc" id="L73">        .collect(Collectors.toSet());</span>
+<span class="fc" id="L69">    return Stream.concat(localClassesProviders.stream(), globalClassesProviders.stream())</span>
+<span class="fc" id="L70">        .flatMap(component -&gt; component.getClasses().stream())</span>
+<span class="fc" id="L71">        .collect(Collectors.toSet());</span>
   }
 
   @Override
   public Map&lt;String, Object&gt; getProperties() {
-<span class="nc" id="L78">    return DEFAULT_PROPERTIES;</span>
+<span class="nc" id="L76">    return DEFAULT_PROPERTIES;</span>
   }
 
 }
