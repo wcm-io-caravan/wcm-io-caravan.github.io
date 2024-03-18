@@ -27,27 +27,27 @@
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">package</strong> io.wcm.caravan.jaxrs.publisher.impl;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.jaxrs.publisher.ApplicationPath;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.util.Dictionary;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> java.util.Hashtable;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.StringUtils;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.apache.felix.scr.annotations.Activate;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.apache.felix.scr.annotations.Component;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.apache.felix.scr.annotations.Deactivate;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.apache.felix.scr.annotations.Reference;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.osgi.framework.Bundle;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.osgi.framework.BundleContext;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.osgi.framework.BundleEvent;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.osgi.service.component.ComponentConstants;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.osgi.service.component.ComponentContext;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.osgi.service.component.ComponentFactory;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.osgi.service.component.ComponentInstance;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.osgi.util.tracker.BundleTracker;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.osgi.util.tracker.BundleTrackerCustomizer;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.util.Dictionary;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.util.Hashtable;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.StringUtils;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.osgi.framework.Bundle;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.osgi.framework.BundleContext;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.osgi.framework.BundleEvent;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.osgi.service.component.ComponentConstants;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.osgi.service.component.ComponentContext;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.osgi.service.component.ComponentFactory;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.osgi.service.component.ComponentInstance;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.osgi.service.component.annotations.Activate;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.osgi.service.component.annotations.Component;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.osgi.service.component.annotations.Deactivate;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.osgi.service.component.annotations.Reference;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.osgi.util.tracker.BundleTracker;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.osgi.util.tracker.BundleTrackerCustomizer;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> io.wcm.caravan.jaxrs.publisher.ApplicationPath;
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment"> * Bundle tracker that listens for all bundles added to the OSGi systems, and searches for JAX-RS components.</em>
@@ -58,60 +58,59 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger log = LoggerFactory.getLogger(JaxRsBundleTracker.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <strong class="jxr_keyword">private</strong> BundleContext bundleContext;
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">private</strong> BundleTracker bundleTracker;
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>    @Reference(target = <span class="jxr_string">"("</span> + ComponentConstants.COMPONENT_FACTORY + <span class="jxr_string">"="</span> + ServletContainerBridge.SERVLETCONTAINER_BRIDGE_FACTORY + <span class="jxr_string">")"</span>)
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">private</strong> ComponentFactory servletContainerBridgeFactory;
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>    @Activate
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>    <strong class="jxr_keyword">void</strong> activate(ComponentContext componentContext) {
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      bundleContext = componentContext.getBundleContext();
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">this</strong>.bundleTracker = <strong class="jxr_keyword">new</strong> BundleTracker&lt;ComponentInstance&gt;(bundleContext, Bundle.ACTIVE, <strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">this</strong>.bundleTracker.open();
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>    }
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>    @Deactivate
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>    <strong class="jxr_keyword">void</strong> deactivate(ComponentContext componentContext) {
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">this</strong>.bundleTracker.close();
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>    }
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>    @Override
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>    <strong class="jxr_keyword">public</strong> ComponentInstance addingBundle(Bundle bundle, BundleEvent event) {
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      String applicationPath = ApplicationPath.get(bundle);
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      <strong class="jxr_keyword">if</strong> (StringUtils.isNotBlank(applicationPath)) {
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>        <strong class="jxr_keyword">if</strong> (log.isInfoEnabled()) {
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>          log.info(<span class="jxr_string">"Mount JAX-RS application {} to {}"</span>, bundle.getSymbolicName(), applicationPath);
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>        }
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>  
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>        <em class="jxr_comment">// register JAX-RS application as servlet on HTTP whiteboard</em>
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>        Dictionary&lt;String, Object&gt; serviceConfig = <strong class="jxr_keyword">new</strong> Hashtable&lt;&gt;();
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>        serviceConfig.put(<span class="jxr_string">"alias"</span>, applicationPath);
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>        serviceConfig.put(ServletContainerBridge.PROPERTY_BUNDLE_ID, bundle.getBundleId());
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>        <strong class="jxr_keyword">return</strong> servletContainerBridgeFactory.newInstance(serviceConfig);
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>      }
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>    }
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>    @Override
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> modifiedBundle(Bundle bundle, BundleEvent event, ComponentInstance componentInstance) {
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <em class="jxr_comment">// nothing to do</em>
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>    }
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>    @Override
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removedBundle(Bundle bundle, BundleEvent event, ComponentInstance componentInstance) {
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">if</strong> (componentInstance == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>        <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>      }
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>      <strong class="jxr_keyword">if</strong> (log.isInfoEnabled()) {
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>       String applicationPath = ApplicationPath.get(bundle);
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>       log.info(<span class="jxr_string">"Unmount JAX-RS application {} from {}"</span>, bundle.getSymbolicName(), applicationPath);
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>     }
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>     componentInstance.dispose();
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>   }
-<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
-<a class="jxr_linenumber" name="L106" href="#L106">106</a> }
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <strong class="jxr_keyword">private</strong> BundleTracker&lt;ComponentInstance&gt; bundleTracker;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>    @Reference(target = <span class="jxr_string">"("</span> + ComponentConstants.COMPONENT_FACTORY + <span class="jxr_string">"="</span> + ServletContainerBridge.SERVLETCONTAINER_BRIDGE_FACTORY + <span class="jxr_string">")"</span>)
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>    <strong class="jxr_keyword">private</strong> ComponentFactory servletContainerBridgeFactory;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>    @Activate
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>    <strong class="jxr_keyword">void</strong> activate(ComponentContext componentContext) {
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      BundleContext bundleContext = componentContext.getBundleContext();
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      <strong class="jxr_keyword">this</strong>.bundleTracker = <strong class="jxr_keyword">new</strong> BundleTracker&lt;ComponentInstance&gt;(bundleContext, Bundle.ACTIVE, <strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">this</strong>.bundleTracker.open();
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>    }
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>    @Deactivate
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>    <strong class="jxr_keyword">void</strong> deactivate() {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">this</strong>.bundleTracker.close();
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>    }
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>    @Override
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>    <strong class="jxr_keyword">public</strong> ComponentInstance addingBundle(Bundle bundle, BundleEvent event) {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      String applicationPath = ApplicationPath.get(bundle);
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>      <strong class="jxr_keyword">if</strong> (StringUtils.isNotBlank(applicationPath)) {
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>        <strong class="jxr_keyword">if</strong> (log.isInfoEnabled()) {
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>          log.info(<span class="jxr_string">"Mount JAX-RS application {} to {}"</span>, bundle.getSymbolicName(), applicationPath);
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>        }
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>        <em class="jxr_comment">// register JAX-RS application as servlet on HTTP whiteboard</em>
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>        Dictionary&lt;String, Object&gt; serviceConfig = <strong class="jxr_keyword">new</strong> Hashtable&lt;&gt;();
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>        serviceConfig.put(<span class="jxr_string">"alias"</span>, applicationPath);
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>        serviceConfig.put(ServletContainerBridge.PROPERTY_BUNDLE_ID, bundle.getBundleId());
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>        <strong class="jxr_keyword">return</strong> servletContainerBridgeFactory.newInstance(serviceConfig);
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>    }
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>    @Override
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> modifiedBundle(Bundle bundle, BundleEvent event, ComponentInstance componentInstance) {
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <em class="jxr_comment">// nothing to do</em>
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>    }
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>    @Override
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removedBundle(Bundle bundle, BundleEvent event, ComponentInstance componentInstance) {
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">if</strong> (componentInstance == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>        <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      }
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      <strong class="jxr_keyword">if</strong> (log.isInfoEnabled()) {
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>        String applicationPath = ApplicationPath.get(bundle);
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>       log.info(<span class="jxr_string">"Unmount JAX-RS application {} from {}"</span>, bundle.getSymbolicName(), applicationPath);
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>     }
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     componentInstance.dispose();
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>   }
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> 
+<a class="jxr_linenumber" name="L105" href="#L105">105</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2014&#x2013;2024 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All rights reserved.</div>

@@ -19,16 +19,10 @@
  */
 package io.wcm.caravan.jaxrs.publisher.impl;
 
-import io.wcm.caravan.jaxrs.publisher.ApplicationPath;
-
 import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Deactivate;
-import org.apache.felix.scr.annotations.Reference;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -36,10 +30,16 @@ import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.wcm.caravan.jaxrs.publisher.ApplicationPath;
 
 /**
  * Bundle tracker that listens for all bundles added to the OSGi systems, and searches for JAX-RS components.
@@ -50,58 +50,57 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L51">  private static final Logger log = LoggerFactory.getLogger(JaxRsBundleTracker.class);</span>
 
-  private BundleContext bundleContext;
-  private BundleTracker bundleTracker;
+  private BundleTracker&lt;ComponentInstance&gt; bundleTracker;
 
   @Reference(target = &quot;(&quot; + ComponentConstants.COMPONENT_FACTORY + &quot;=&quot; + ServletContainerBridge.SERVLETCONTAINER_BRIDGE_FACTORY + &quot;)&quot;)
   private ComponentFactory servletContainerBridgeFactory;
 
   @Activate
   void activate(ComponentContext componentContext) {
-<span class="nc" id="L61">    bundleContext = componentContext.getBundleContext();</span>
-<span class="nc" id="L62">    this.bundleTracker = new BundleTracker&lt;ComponentInstance&gt;(bundleContext, Bundle.ACTIVE, this);</span>
-<span class="nc" id="L63">    this.bundleTracker.open();</span>
-<span class="nc" id="L64">  }</span>
+<span class="nc" id="L60">    BundleContext bundleContext = componentContext.getBundleContext();</span>
+<span class="nc" id="L61">    this.bundleTracker = new BundleTracker&lt;ComponentInstance&gt;(bundleContext, Bundle.ACTIVE, this);</span>
+<span class="nc" id="L62">    this.bundleTracker.open();</span>
+<span class="nc" id="L63">  }</span>
 
   @Deactivate
-  void deactivate(ComponentContext componentContext) {
-<span class="nc" id="L68">    this.bundleTracker.close();</span>
-<span class="nc" id="L69">  }</span>
+  void deactivate() {
+<span class="nc" id="L67">    this.bundleTracker.close();</span>
+<span class="nc" id="L68">  }</span>
 
   @Override
   public ComponentInstance addingBundle(Bundle bundle, BundleEvent event) {
-<span class="nc" id="L73">    String applicationPath = ApplicationPath.get(bundle);</span>
-<span class="nc bnc" id="L74" title="All 2 branches missed.">    if (StringUtils.isNotBlank(applicationPath)) {</span>
+<span class="nc" id="L72">    String applicationPath = ApplicationPath.get(bundle);</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">    if (StringUtils.isNotBlank(applicationPath)) {</span>
 
-<span class="nc bnc" id="L76" title="All 2 branches missed.">      if (log.isInfoEnabled()) {</span>
-<span class="nc" id="L77">        log.info(&quot;Mount JAX-RS application {} to {}&quot;, bundle.getSymbolicName(), applicationPath);</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">      if (log.isInfoEnabled()) {</span>
+<span class="nc" id="L76">        log.info(&quot;Mount JAX-RS application {} to {}&quot;, bundle.getSymbolicName(), applicationPath);</span>
       }
 
       // register JAX-RS application as servlet on HTTP whiteboard
-<span class="nc" id="L81">      Dictionary&lt;String, Object&gt; serviceConfig = new Hashtable&lt;&gt;();</span>
-<span class="nc" id="L82">      serviceConfig.put(&quot;alias&quot;, applicationPath);</span>
-<span class="nc" id="L83">      serviceConfig.put(ServletContainerBridge.PROPERTY_BUNDLE_ID, bundle.getBundleId());</span>
-<span class="nc" id="L84">      return servletContainerBridgeFactory.newInstance(serviceConfig);</span>
+<span class="nc" id="L80">      Dictionary&lt;String, Object&gt; serviceConfig = new Hashtable&lt;&gt;();</span>
+<span class="nc" id="L81">      serviceConfig.put(&quot;alias&quot;, applicationPath);</span>
+<span class="nc" id="L82">      serviceConfig.put(ServletContainerBridge.PROPERTY_BUNDLE_ID, bundle.getBundleId());</span>
+<span class="nc" id="L83">      return servletContainerBridgeFactory.newInstance(serviceConfig);</span>
     }
-<span class="nc" id="L86">    return null;</span>
+<span class="nc" id="L85">    return null;</span>
   }
 
   @Override
   public void modifiedBundle(Bundle bundle, BundleEvent event, ComponentInstance componentInstance) {
     // nothing to do
-<span class="nc" id="L92">  }</span>
+<span class="nc" id="L91">  }</span>
 
   @Override
   public void removedBundle(Bundle bundle, BundleEvent event, ComponentInstance componentInstance) {
-<span class="nc bnc" id="L96" title="All 2 branches missed.">    if (componentInstance == null) {</span>
-<span class="nc" id="L97">      return;</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">    if (componentInstance == null) {</span>
+<span class="nc" id="L96">      return;</span>
     }
-<span class="nc bnc" id="L99" title="All 2 branches missed.">    if (log.isInfoEnabled()) {</span>
-<span class="nc" id="L100">      String applicationPath = ApplicationPath.get(bundle);</span>
-<span class="nc" id="L101">      log.info(&quot;Unmount JAX-RS application {} from {}&quot;, bundle.getSymbolicName(), applicationPath);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">    if (log.isInfoEnabled()) {</span>
+<span class="nc" id="L99">      String applicationPath = ApplicationPath.get(bundle);</span>
+<span class="nc" id="L100">      log.info(&quot;Unmount JAX-RS application {} from {}&quot;, bundle.getSymbolicName(), applicationPath);</span>
     }
-<span class="nc" id="L103">    componentInstance.dispose();</span>
-<span class="nc" id="L104">  }</span>
+<span class="nc" id="L102">    componentInstance.dispose();</span>
+<span class="nc" id="L103">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

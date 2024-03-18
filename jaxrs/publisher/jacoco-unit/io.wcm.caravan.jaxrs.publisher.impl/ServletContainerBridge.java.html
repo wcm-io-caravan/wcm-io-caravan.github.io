@@ -28,10 +28,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 
-import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Deactivate;
-import org.apache.felix.scr.annotations.Service;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.osgi.framework.Bundle;
@@ -39,6 +35,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,9 +53,8 @@ import io.wcm.caravan.jaxrs.publisher.JaxRsComponent;
  * It automatically registers JAX-RS components from the current bundle and instances
  * from global JAX-RS components factories.
  */
-@Component(factory = ServletContainerBridge.SERVLETCONTAINER_BRIDGE_FACTORY)
-@Service(Servlet.class)
-<span class="nc" id="L59">public class ServletContainerBridge extends HttpServlet {</span>
+@Component(service = Servlet.class, factory = ServletContainerBridge.SERVLETCONTAINER_BRIDGE_FACTORY)
+<span class="nc" id="L57">public class ServletContainerBridge extends HttpServlet {</span>
   private static final long serialVersionUID = 1L;
 
   static final String SERVLETCONTAINER_BRIDGE_FACTORY = &quot;caravan.jaxrs.servletcontainer.bridge.factory&quot;;
@@ -69,63 +67,63 @@ import io.wcm.caravan.jaxrs.publisher.JaxRsComponent;
   private volatile boolean isDirty;
   private Set&lt;JaxRsComponent&gt; localComponents;
   private Set&lt;JaxRsComponent&gt; globalComponents;
-  private ServiceTracker jaxRsComponentTracker;
+  private ServiceTracker&lt;JaxRsComponent, Object&gt; jaxRsComponentTracker;
   private Set&lt;JaxRsClassesProvider&gt; localClassesProviders;
   private Set&lt;JaxRsClassesProvider&gt; globalClassesProviders;
-  private ServiceTracker jaxClassesProviderTracker;
+  private ServiceTracker&lt;JaxRsClassesProvider, Object&gt; jaxClassesProviderTracker;
 
-<span class="nc" id="L77">  static final Logger log = LoggerFactory.getLogger(ServletContainerBridge.class);</span>
+<span class="nc" id="L75">  static final Logger log = LoggerFactory.getLogger(ServletContainerBridge.class);</span>
 
   @Activate
   void activate(ComponentContext componentContext) {
     // bundle which contains the JAX-RS services
-<span class="nc" id="L82">    bundle = componentContext.getBundleContext().getBundle(</span>
-<span class="nc" id="L83">        (Long)componentContext.getProperties().get(PROPERTY_BUNDLE_ID));</span>
-<span class="nc" id="L84">    bundleContext = bundle.getBundleContext();</span>
+<span class="nc" id="L80">    bundle = componentContext.getBundleContext().getBundle(</span>
+<span class="nc" id="L81">        (Long)componentContext.getProperties().get(PROPERTY_BUNDLE_ID));</span>
+<span class="nc" id="L82">    bundleContext = bundle.getBundleContext();</span>
 
     // initialize component tracker to detect local and global JAX-RS components for current bundle
-<span class="nc" id="L87">    localComponents = Sets.newConcurrentHashSet();</span>
-<span class="nc" id="L88">    globalComponents = Sets.newConcurrentHashSet();</span>
-<span class="nc" id="L89">    jaxRsComponentTracker = new JaxRsComponentTracker(this);</span>
-<span class="nc" id="L90">    jaxRsComponentTracker.open();</span>
+<span class="nc" id="L85">    localComponents = Sets.newConcurrentHashSet();</span>
+<span class="nc" id="L86">    globalComponents = Sets.newConcurrentHashSet();</span>
+<span class="nc" id="L87">    jaxRsComponentTracker = new JaxRsComponentTracker(this);</span>
+<span class="nc" id="L88">    jaxRsComponentTracker.open();</span>
 
     // initialize component tracker to detect local and global additionall JAX-RS classes
-<span class="nc" id="L93">    localClassesProviders = Sets.newConcurrentHashSet();</span>
-<span class="nc" id="L94">    globalClassesProviders = Sets.newConcurrentHashSet();</span>
-<span class="nc" id="L95">    jaxClassesProviderTracker = new JaxRsClassesProviderTracker(this);</span>
-<span class="nc" id="L96">    jaxClassesProviderTracker.open();</span>
-<span class="nc" id="L97">  }</span>
+<span class="nc" id="L91">    localClassesProviders = Sets.newConcurrentHashSet();</span>
+<span class="nc" id="L92">    globalClassesProviders = Sets.newConcurrentHashSet();</span>
+<span class="nc" id="L93">    jaxClassesProviderTracker = new JaxRsClassesProviderTracker(this);</span>
+<span class="nc" id="L94">    jaxClassesProviderTracker.open();</span>
+<span class="nc" id="L95">  }</span>
 
   @Deactivate
-  void deactivate(ComponentContext componentContext) {
-<span class="nc bnc" id="L101" title="All 2 branches missed.">    if (jaxRsComponentTracker != null) {</span>
-<span class="nc" id="L102">      jaxRsComponentTracker.close();</span>
+  void deactivate() {
+<span class="nc bnc" id="L99" title="All 2 branches missed.">    if (jaxRsComponentTracker != null) {</span>
+<span class="nc" id="L100">      jaxRsComponentTracker.close();</span>
     }
-<span class="nc bnc" id="L104" title="All 2 branches missed.">    if (jaxClassesProviderTracker != null) {</span>
-<span class="nc" id="L105">      jaxClassesProviderTracker.close();</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">    if (jaxClassesProviderTracker != null) {</span>
+<span class="nc" id="L103">      jaxClassesProviderTracker.close();</span>
     }
-<span class="nc" id="L107">  }</span>
+<span class="nc" id="L105">  }</span>
 
   @Override
   public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-<span class="nc" id="L111">    reloadIfDirty();</span>
+<span class="nc" id="L109">    reloadIfDirty();</span>
     // delegate all calls to jersey servlet container
-<span class="nc" id="L113">    servletContainer.service(request, response);</span>
-<span class="nc" id="L114">  }</span>
+<span class="nc" id="L111">    servletContainer.service(request, response);</span>
+<span class="nc" id="L112">  }</span>
 
   @Override
   public void init() throws ServletException {
     // initialize JAX-RS application and Jersey Servlet container
-<span class="nc" id="L119">    application = new JaxRsApplication(localComponents, globalComponents,</span>
+<span class="nc" id="L117">    application = new JaxRsApplication(localComponents, globalComponents,</span>
         localClassesProviders, globalClassesProviders);
-<span class="nc" id="L121">    servletContainer = new ServletContainer(ResourceConfig.forApplication(application));</span>
-<span class="nc" id="L122">    servletContainer.init(getServletConfig());</span>
-<span class="nc" id="L123">  }</span>
+<span class="nc" id="L119">    servletContainer = new ServletContainer(ResourceConfig.forApplication(application));</span>
+<span class="nc" id="L120">    servletContainer.init(getServletConfig());</span>
+<span class="nc" id="L121">  }</span>
 
   @Override
   public void destroy() {
-<span class="nc" id="L127">    servletContainer.destroy();</span>
-<span class="nc" id="L128">  }</span>
+<span class="nc" id="L125">    servletContainer.destroy();</span>
+<span class="nc" id="L126">  }</span>
 
   /**
    * Checks if components where added or removed.
@@ -133,54 +131,54 @@ import io.wcm.caravan.jaxrs.publisher.JaxRsComponent;
    * meantime.
    */
   private void reloadIfDirty() {
-<span class="nc bnc" id="L136" title="All 2 branches missed.">    if (isDirty) {</span>
-<span class="nc" id="L137">      synchronized (this) {</span>
-<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (isDirty) {</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">    if (isDirty) {</span>
+<span class="nc" id="L135">      synchronized (this) {</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (isDirty) {</span>
           // reload configuration if any service requests have changed
-<span class="nc" id="L140">          log.debug(&quot;Reload JAX-RS servlet container of {}&quot;, bundle.getSymbolicName());</span>
-<span class="nc" id="L141">          servletContainer.reload(ResourceConfig.forApplication(application));</span>
-<span class="nc" id="L142">          isDirty = false;</span>
+<span class="nc" id="L138">          log.debug(&quot;Reload JAX-RS servlet container of {}&quot;, bundle.getSymbolicName());</span>
+<span class="nc" id="L139">          servletContainer.reload(ResourceConfig.forApplication(application));</span>
+<span class="nc" id="L140">          isDirty = false;</span>
         }
-<span class="nc" id="L144">      }</span>
+<span class="nc" id="L142">      }</span>
     }
-<span class="nc" id="L146">  }</span>
+<span class="nc" id="L144">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L150">    return &quot;jaxrs-servlet:&quot; + bundle.getSymbolicName();</span>
+<span class="nc" id="L148">    return &quot;jaxrs-servlet:&quot; + bundle.getSymbolicName();</span>
   }
 
   BundleContext getBundleContext() {
-<span class="nc" id="L154">    return this.bundleContext;</span>
+<span class="nc" id="L152">    return this.bundleContext;</span>
   }
 
   Bundle getBundle() {
-<span class="nc" id="L158">    return this.bundle;</span>
+<span class="nc" id="L156">    return this.bundle;</span>
   }
 
   Set&lt;JaxRsComponent&gt; getLocalComponents() {
-<span class="nc" id="L162">    return this.localComponents;</span>
+<span class="nc" id="L160">    return this.localComponents;</span>
   }
 
   Set&lt;JaxRsComponent&gt; getGlobalComponents() {
-<span class="nc" id="L166">    return this.globalComponents;</span>
+<span class="nc" id="L164">    return this.globalComponents;</span>
   }
 
   Set&lt;JaxRsClassesProvider&gt; getLocalClassesProviders() {
-<span class="nc" id="L170">    return this.localClassesProviders;</span>
+<span class="nc" id="L168">    return this.localClassesProviders;</span>
   }
 
   Set&lt;JaxRsClassesProvider&gt; getGlobalClassesProviders() {
-<span class="nc" id="L174">    return this.globalClassesProviders;</span>
+<span class="nc" id="L172">    return this.globalClassesProviders;</span>
   }
 
   void markAsDirty() {
-<span class="nc" id="L178">    this.isDirty = true;</span>
-<span class="nc" id="L179">  }</span>
+<span class="nc" id="L176">    this.isDirty = true;</span>
+<span class="nc" id="L177">  }</span>
 
   static boolean isJaxRsGlobal(ServiceReference&lt;?&gt; serviceReference) {
-<span class="nc bnc" id="L182" title="All 2 branches missed.">    return &quot;true&quot;.equals(serviceReference.getProperty(JaxRsComponent.PROPERTY_GLOBAL_COMPONENT))</span>
-<span class="nc bnc" id="L183" title="All 2 branches missed.">        &amp;&amp; Constants.SCOPE_BUNDLE.equals(serviceReference.getProperty(Constants.SERVICE_SCOPE));</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">    return &quot;true&quot;.equals(serviceReference.getProperty(JaxRsComponent.PROPERTY_GLOBAL_COMPONENT))</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        &amp;&amp; Constants.SCOPE_BUNDLE.equals(serviceReference.getProperty(Constants.SERVICE_SCOPE));</span>
   }
 
 }
