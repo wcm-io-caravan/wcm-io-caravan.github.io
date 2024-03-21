@@ -31,8 +31,8 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.server,
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.server,RhymeMetadataConfiguration,0,2,0,0,0,1,0,1,0,1
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.server,ResourceConversions,0,12,0,0,0,3,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api.server,AsyncHalResponseRenderer,0,18,0,0,0,10,0,2,0,2
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.metadata,FullMetadataGenerator,0,544,0,16,0,97,0,33,0,25
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.metadata,MaxAgeOnlyCollector.new RequestMetricsStopwatch() {...},0,7,0,0,0,2,0,2,0,2
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.metadata,FullMetadataGenerator,0,544,0,16,0,97,0,33,0,25
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.metadata,FullMetadataGenerator.TimingResourceCategory,0,18,0,0,0,7,0,1,0,1
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.metadata,FullMetadataGenerator.TimeMeasurement,0,27,0,0,0,9,0,5,0,5
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.metadata,EmissionStopwatch,0,53,0,2,0,16,0,9,0,8
@@ -66,8 +66,8 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.reflec
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils.EmbeddedResourceProxyInvocationHandler,0,55,0,8,0,15,0,6,0,2
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.reflection,RxJavaReflectionUtils,0,156,0,12,0,37,0,11,0,5
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.reflection,HalApiTypeSupportAdapter.NoAdditionalAnnotationSupport,0,21,0,0,0,10,0,10,0,10
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils,0,240,0,14,0,58,0,22,0,15
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.reflection,CompositeHalApiTypeSupport,0,146,0,0,0,18,0,29,0,29
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils,0,240,0,14,0,58,0,22,0,15
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils.InterfaceCollector,0,39,0,2,0,11,0,4,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.impl.reflection,HalApiTypeSupportAdapter,0,109,0,4,0,27,0,19,0,17
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.core,io.wcm.caravan.rhyme.api,RhymeBuilder,0,7,0,0,0,3,0,3,0,3
@@ -192,8 +192,8 @@ Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,i
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection,ClientItemResourceImpl,0,84,0,4,0,22,0,8,0,6
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection,ClientCollectionResourceImpl.EmbeddedItemResourceImpl,0,14,0,0,0,6,0,3,0,3
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.osgi-jaxrs-example-service,io.wcm.caravan.rhyme.osgi.sampleservice.impl.resource.collection,CollectionExamplesResourceImpl,0,52,0,0,0,9,0,7,0,7
-Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hello-world,io.wcm.caravan.rhyme.examples.spring.helloworld,HelloWorldController.AbstractHelloWorldResource,0,24,0,0,0,5,0,4,0,4
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hello-world,io.wcm.caravan.rhyme.examples.spring.helloworld,HelloWorldController.new HelloWorldController.AbstractHelloWorldResource() {...},0,57,0,2,0,8,0,7,0,6
+Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hello-world,io.wcm.caravan.rhyme.examples.spring.helloworld,HelloWorldController.AbstractHelloWorldResource,0,24,0,0,0,5,0,4,0,4
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hello-world,io.wcm.caravan.rhyme.examples.spring.helloworld,HelloWorldController.new HelloWorldController.AbstractHelloWorldResource() {...},0,35,0,2,0,5,0,6,0,5
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hello-world,io.wcm.caravan.rhyme.examples.spring.helloworld,HelloWorldController.new HelloWorldController.AbstractHelloWorldResource() {...},0,18,0,0,0,5,0,4,0,4
 Rhyme - Code Coverage/io.wcm.caravan.rhyme.examples.spring-hello-world,io.wcm.caravan.rhyme.examples.spring.helloworld,HelloWorldController,0,44,0,0,0,7,0,6,0,6
