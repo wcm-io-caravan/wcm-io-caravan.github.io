@@ -60,7 +60,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/commons/metrics//checkstyle.html#io.wcm.caravan.commons.metrics.rx.HitsAndMissesCountingMetricsOperator.java">io/wcm/caravan/commons/metrics/rx/HitsAndMissesCountingMetricsOperator.java</a>
+                  <a href="https://caravan.wcm.io/commons/metrics//checkstyle.html#io.wcm.caravan.commons.metrics.impl.BundleActivator.java">io/wcm/caravan/commons/metrics/impl/BundleActivator.java</a>
                 </td>
                 <td>
                   0
@@ -74,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://caravan.wcm.io/commons/metrics//checkstyle.html#io.wcm.caravan.commons.metrics.impl.BundleActivator.java">io/wcm/caravan/commons/metrics/impl/BundleActivator.java</a>
+                  <a href="https://caravan.wcm.io/commons/metrics//checkstyle.html#io.wcm.caravan.commons.metrics.rx.HitsAndMissesCountingMetricsOperator.java">io/wcm/caravan/commons/metrics/rx/HitsAndMissesCountingMetricsOperator.java</a>
                 </td>
                 <td>
                   0
