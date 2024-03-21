@@ -63,7 +63,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Contribute <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li ><a href="https://wcm.io/contribute.html" title="Contribute" class="externalLink">Contribute</a></li>
-                  <li ><a href="https://wcm-io.atlassian.net" title="Issues" class="externalLink">Issues</a></li>
+                  <li ><a href="https://github.com/wcm-io-caravan" title="Issues" class="externalLink">Issues</a></li>
                   <li ><a href="https://wcm-io.atlassian.net/wiki/" title="Wiki" class="externalLink">Wiki</a></li>
                   <li ><a href="https://wcm.io/mailing-lists.html" title="Mailing Lists" class="externalLink">Mailing Lists</a></li>
                   <li ><a href="http://github.com/wcm-io-caravan" title="Fork on GitHub" class="externalLink">Fork on GitHub</a></li>
@@ -116,7 +116,7 @@
   <h2 id="SpotBugs_Bug_Detector_Report">SpotBugs Bug Detector Report</h2>
  </div> 
  <p>The following document contains the results of <a class="externalLink" href="https://spotbugs.github.io/">SpotBugs</a></p> 
- <p>SpotBugs Version is <i>4.5.3</i></p> 
+ <p>SpotBugs Version is <i>4.8.3</i></p> 
  <p>Threshold is <i>medium</i></p> 
  <p>Effort is <i>default</i></p> 
 </section> 
@@ -134,9 +134,9 @@
   <tbody> 
    <tr class="b"> 
     <td>12</td> 
-    <td>3</td> 
+    <td>4</td> 
     <td>0</td> 
-    <td>0</td> 
+    <td>1</td> 
    </tr> 
   </tbody> 
  </table> 
@@ -152,8 +152,35 @@
   </thead> 
   <tbody> 
    <tr class="b"> 
+    <td><a href="#io.wcm.caravan.commons.httpclient.impl.HttpClientItem">io.wcm.caravan.commons.httpclient.impl.HttpClientItem</a></td> 
+    <td>1</td> 
+   </tr> 
+   <tr class="a"> 
     <td><a href="#io.wcm.caravan.commons.httpclient.impl.helpers.CertificateLoader">io.wcm.caravan.commons.httpclient.impl.helpers.CertificateLoader</a></td> 
     <td>3</td> 
+   </tr> 
+  </tbody> 
+ </table> 
+</section><a name="io.wcm.caravan.commons.httpclient.impl.HttpClientItem"></a> 
+<section> 
+ <h3 id="io.wcm.caravan.commons.httpclient.impl.HttpClientItem">io.wcm.caravan.commons.httpclient.impl.HttpClientItem</h3> 
+ <table border="0" class="bodyTable table table-striped table-hover"> 
+  <thead> 
+   <tr class="a"> 
+    <th>Bug</th> 
+    <th>Category</th> 
+    <th>Details</th> 
+    <th>Line</th> 
+    <th>Priority</th> 
+   </tr> 
+  </thead> 
+  <tbody> 
+   <tr class="b"> 
+    <td>Exception thrown in class io.wcm.caravan.commons.httpclient.impl.HttpClientItem at new io.wcm.caravan.commons.httpclient.impl.HttpClientItem(HttpClientConfig) will leave the constructor. The object under construction remains partially initialized and may be vulnerable to Finalizer attacks.</td> 
+    <td>BAD_PRACTICE</td> 
+    <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CT_CONSTRUCTOR_THROW">CT_CONSTRUCTOR_THROW</a></td> 
+    <td><a href="./xref/io/wcm/caravan/commons/httpclient/impl/HttpClientItem.html#L75">75</a></td> 
+    <td>Medium</td> 
    </tr> 
   </tbody> 
  </table> 
@@ -206,6 +233,7 @@
     <li><a href="#Summary" title="Summary">Summary</a>
     <li class="dropdown"><a href="#Files" title="Files">Files <b class="caret"></b></a>
       <ul class="nav nav-list">
+    <li><a href="#io.wcm.caravan.commons.httpclient.impl.HttpClientItem" title="io.wcm.caravan.commons.httpclient.impl.HttpClientItem">io.wcm.caravan.commons.httpclient.impl.HttpClientItem</a>
     <li><a href="#io.wcm.caravan.commons.httpclient.impl.helpers.CertificateLoader" title="io.wcm.caravan.commons.httpclient.impl.helpers.CertificateLoader">io.wcm.caravan.commons.httpclient.impl.helpers.CertificateLoader</a>
         <li class="divider"></li>
       </ul>
@@ -298,7 +326,7 @@
               <a href="https://wcm.io/contribute.html" title="Contribute" class="externalLink">Contribute</a>
             </li>
             <li >
-              <a href="https://wcm-io.atlassian.net" title="Issues" class="externalLink">Issues</a>
+              <a href="https://github.com/wcm-io-caravan" title="Issues" class="externalLink">Issues</a>
             </li>
             <li >
               <a href="https://wcm-io.atlassian.net/wiki/" title="Wiki" class="externalLink">Wiki</a>
