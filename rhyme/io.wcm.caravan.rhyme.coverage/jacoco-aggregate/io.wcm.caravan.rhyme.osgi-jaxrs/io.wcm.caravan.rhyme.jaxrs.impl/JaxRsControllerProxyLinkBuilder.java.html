@@ -46,6 +46,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.osgi.service.component.annotations.Component;
@@ -55,6 +56,7 @@ import com.damnhandy.uri.template.UriTemplate;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import io.wcm.caravan.hal.resource.Link;
@@ -77,38 +79,38 @@ public class JaxRsControllerProxyLinkBuilder&lt;T&gt; implements InvocationHandl
   private final Class&lt;T&gt; resourceClass;
   private final Class&lt;? extends T&gt; proxyClass;
 
-<span class="fc" id="L80">  private final List&lt;TemplateParameter&gt; additionalQueryParameters = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L82">  private final List&lt;TemplateParameter&gt; additionalQueryParameters = new LinkedList&lt;&gt;();</span>
 
-<span class="fc" id="L82">  private final Cache&lt;Method, MethodDetails&gt; cache = CacheBuilder.newBuilder().build();</span>
+<span class="fc" id="L84">  private final Cache&lt;Method, MethodDetails&gt; cache = CacheBuilder.newBuilder().build();</span>
 
   /**
    * @param baseUrl the base path of the JAX-RS {@link Application}
    * @param resourceClass the class of the {@link Component} annotated with {@link JaxrsResource}
    */
-<span class="fc" id="L88">  public JaxRsControllerProxyLinkBuilder(String baseUrl, Class&lt;T&gt; resourceClass) {</span>
+<span class="fc" id="L90">  public JaxRsControllerProxyLinkBuilder(String baseUrl, Class&lt;T&gt; resourceClass) {</span>
 
-<span class="fc" id="L90">    this.baseUrl = baseUrl;</span>
-<span class="fc" id="L91">    this.resourceClass = resourceClass;</span>
+<span class="fc" id="L92">    this.baseUrl = baseUrl;</span>
+<span class="fc" id="L93">    this.resourceClass = resourceClass;</span>
 
-<span class="fc" id="L93">    this.proxyClass = createProxyClass(resourceClass);</span>
-<span class="fc" id="L94">  }</span>
+<span class="fc" id="L95">    this.proxyClass = createProxyClass(resourceClass);</span>
+<span class="fc" id="L96">  }</span>
 
   private Class&lt;? extends T&gt; createProxyClass(Class&lt;T&gt; superClass) {
 
     try {
-<span class="fc" id="L99">      return new ByteBuddy()</span>
-<span class="fc" id="L100">          .subclass(superClass)</span>
-<span class="fc" id="L101">          .method(ElementMatchers.any())</span>
-<span class="fc" id="L102">          .intercept(InvocationHandlerAdapter.of(this))</span>
-<span class="fc" id="L103">          .defineField(CAPTURED_URI_FIELD_NAME, String.class, java.lang.reflect.Modifier.PUBLIC)</span>
-<span class="fc" id="L104">          .make()</span>
-<span class="fc" id="L105">          .load(superClass.getClassLoader())</span>
-<span class="fc" id="L106">          .getLoaded();</span>
+<span class="fc" id="L101">      return new ByteBuddy()</span>
+<span class="fc" id="L102">          .subclass(superClass)</span>
+<span class="fc" id="L103">          .method(ElementMatchers.any())</span>
+<span class="fc" id="L104">          .intercept(InvocationHandlerAdapter.of(this))</span>
+<span class="fc" id="L105">          .defineField(CAPTURED_URI_FIELD_NAME, String.class, java.lang.reflect.Modifier.PUBLIC)</span>
+<span class="fc" id="L106">          .make()</span>
+<span class="fc" id="L107">          .load(superClass.getClassLoader())</span>
+<span class="fc" id="L108">          .getLoaded();</span>
     }
     // CHECKSTYLE:OFF
-<span class="fc" id="L109">    catch (RuntimeException | IllegalAccessError ex) {</span>
+<span class="fc" id="L111">    catch (RuntimeException | IllegalAccessError ex) {</span>
       // CHECKSTYLE:ON
-<span class="fc" id="L111">      throw new HalApiDeveloperException(&quot;Failed to create proxy subclass for &quot; + superClass.getSimpleName() +</span>
+<span class="fc" id="L113">      throw new HalApiDeveloperException(&quot;Failed to create proxy subclass for &quot; + superClass.getSimpleName() +</span>
           &quot;, please make sure it's public and not final&quot;, ex);
     }
   }
@@ -116,57 +118,57 @@ public class JaxRsControllerProxyLinkBuilder&lt;T&gt; implements InvocationHandl
   @Override
   public JaxRsLinkBuilder&lt;T&gt; withAdditionalQueryParameters(Map&lt;String, Object&gt; parameters) {
 
-<span class="fc" id="L119">    parameters.forEach((name, value) -&gt; {</span>
+<span class="fc" id="L121">    parameters.forEach((name, value) -&gt; {</span>
 
-<span class="fc" id="L121">      TemplateParameter param = new TemplateParameter();</span>
-<span class="fc" id="L122">      param.name = name;</span>
-<span class="fc" id="L123">      param.iterable = value instanceof Iterable;</span>
-<span class="fc" id="L124">      param.query = true;</span>
-<span class="fc" id="L125">      param.required = true;</span>
-<span class="fc" id="L126">      param.valueProvider = args -&gt; value;</span>
+<span class="fc" id="L123">      TemplateParameter param = new TemplateParameter();</span>
+<span class="fc" id="L124">      param.name = name;</span>
+<span class="fc" id="L125">      param.iterable = value instanceof Iterable;</span>
+<span class="fc" id="L126">      param.query = true;</span>
+<span class="fc" id="L127">      param.required = true;</span>
+<span class="fc" id="L128">      param.valueProvider = args -&gt; value;</span>
 
-<span class="fc" id="L128">      additionalQueryParameters.add(param);</span>
-<span class="fc" id="L129">    });</span>
+<span class="fc" id="L130">      additionalQueryParameters.add(param);</span>
+<span class="fc" id="L131">    });</span>
 
-<span class="fc" id="L131">    return this;</span>
+<span class="fc" id="L133">    return this;</span>
   }
 
   @Override
   public Link buildLinkTo(Consumer&lt;T&gt; consumer) {
 
     try {
-<span class="fc" id="L138">      T instance = proxyClass.newInstance();</span>
+<span class="fc" id="L140">      T instance = proxyClass.newInstance();</span>
 
-<span class="fc" id="L140">      consumer.accept(instance);</span>
+<span class="fc" id="L142">      consumer.accept(instance);</span>
 
-<span class="fc" id="L142">      String url = (String)FieldUtils.readField(instance, CAPTURED_URI_FIELD_NAME);</span>
+<span class="fc" id="L144">      String url = (String)FieldUtils.readField(instance, CAPTURED_URI_FIELD_NAME);</span>
 
-<span class="fc" id="L144">      return new Link(url);</span>
+<span class="fc" id="L146">      return new Link(url);</span>
     }
-<span class="fc" id="L146">    catch (InstantiationException | IllegalAccessException | RuntimeException ex) {</span>
-<span class="fc" id="L147">      throw new HalApiDeveloperException(&quot;Failed to build link with proxy for &quot; + resourceClass.getName(), ex);</span>
+<span class="fc" id="L148">    catch (InstantiationException | IllegalAccessException | RuntimeException ex) {</span>
+<span class="fc" id="L149">      throw new HalApiDeveloperException(&quot;Failed to build link with proxy for &quot; + resourceClass.getName(), ex);</span>
     }
   }
 
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-<span class="fc" id="L154">    MethodDetails details = getCachedMethodDetails(method);</span>
+<span class="fc" id="L156">    MethodDetails details = getCachedMethodDetails(method);</span>
 
-<span class="fc" id="L156">    String uriTemplate = details.getUriTemplate(args);</span>
+<span class="fc" id="L158">    String uriTemplate = details.getUriTemplate(args);</span>
 
-<span class="fc" id="L158">    FieldUtils.writeField(proxy, CAPTURED_URI_FIELD_NAME, uriTemplate, false);</span>
+<span class="fc" id="L160">    FieldUtils.writeField(proxy, CAPTURED_URI_FIELD_NAME, uriTemplate, false);</span>
 
-<span class="fc" id="L160">    return null;</span>
+<span class="fc" id="L162">    return null;</span>
   }
 
   private JaxRsControllerProxyLinkBuilder&lt;T&gt;.MethodDetails getCachedMethodDetails(Method method) throws ExecutionException {
 
     try {
-<span class="fc" id="L166">      return cache.get(method, () -&gt; new MethodDetails(resourceClass, method));</span>
+<span class="fc" id="L168">      return cache.get(method, () -&gt; new MethodDetails(resourceClass, method));</span>
     }
-<span class="fc" id="L168">    catch (UncheckedExecutionException ex) {</span>
-<span class="fc" id="L169">      throw (RuntimeException)ex.getCause();</span>
+<span class="fc" id="L170">    catch (UncheckedExecutionException ex) {</span>
+<span class="fc" id="L171">      throw (RuntimeException)ex.getCause();</span>
     }
   }
 
@@ -180,18 +182,18 @@ public class JaxRsControllerProxyLinkBuilder&lt;T&gt; implements InvocationHandl
     private Function&lt;Object[], Object&gt; valueProvider;
 
     String getVarName() {
-<span class="fc bfc" id="L183" title="All 2 branches covered.">      if (!iterable) {</span>
-<span class="fc" id="L184">        return name;</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">      if (!iterable) {</span>
+<span class="fc" id="L186">        return name;</span>
       }
-<span class="fc" id="L186">      return name + &quot;*&quot;;</span>
+<span class="fc" id="L188">      return name + &quot;*&quot;;</span>
     }
 
     ImmutablePair&lt;String, Object&gt; resolve(Object[] args) {
-<span class="fc" id="L190">      Object value = valueProvider.apply(args);</span>
-<span class="fc bfc" id="L191" title="All 2 branches covered.">      if (value == null) {</span>
-<span class="fc" id="L192">        return null;</span>
+<span class="fc" id="L192">      Object value = valueProvider.apply(args);</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">      if (value == null) {</span>
+<span class="fc" id="L194">        return null;</span>
       }
-<span class="fc" id="L194">      return new ImmutablePair&lt;&gt;(name, value);</span>
+<span class="fc" id="L196">      return new ImmutablePair&lt;&gt;(name, value);</span>
     }
   }
 
@@ -200,154 +202,165 @@ public class JaxRsControllerProxyLinkBuilder&lt;T&gt; implements InvocationHandl
     private final String methodName;
     private final Method method;
 
-<span class="fc" id="L203">    private final List&lt;TemplateParameter&gt; parameters = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L205">    private final List&lt;TemplateParameter&gt; parameters = new ArrayList&lt;&gt;();</span>
 
     private final String templatePath;
 
-<span class="fc" id="L207">    MethodDetails(Class&lt;?&gt; controllerClass, Method method) {</span>
+<span class="fc" id="L209">    MethodDetails(Class&lt;?&gt; controllerClass, Method method) {</span>
 
-<span class="fc" id="L209">      this.methodName = controllerClass.getName() + &quot;#&quot; + method.getName();</span>
-<span class="fc" id="L210">      this.method = method;</span>
+<span class="fc" id="L211">      this.methodName = controllerClass.getName() + &quot;#&quot; + method.getName();</span>
+<span class="fc" id="L212">      this.method = method;</span>
 
-<span class="fc" id="L212">      this.templatePath = baseUrl + getPathFromAnnotation();</span>
+<span class="fc" id="L214">      this.templatePath = baseUrl + getPathFromAnnotation();</span>
 
-<span class="fc" id="L214">      this.parameters.addAll(getQueryParameters());</span>
-<span class="fc" id="L215">      this.parameters.addAll(getPathParameters());</span>
-<span class="fc" id="L216">      this.parameters.addAll(getBeanParameters());</span>
+<span class="fc" id="L216">      this.parameters.addAll(getQueryParameters());</span>
+<span class="fc" id="L217">      this.parameters.addAll(getPathParameters());</span>
+<span class="fc" id="L218">      this.parameters.addAll(getBeanParameters());</span>
 
-<span class="fc" id="L218">      this.parameters.addAll(additionalQueryParameters);</span>
-<span class="fc" id="L219">    }</span>
+<span class="fc" id="L220">      this.parameters.addAll(additionalQueryParameters);</span>
+<span class="fc" id="L221">    }</span>
 
     private String getPathFromAnnotation() {
 
-<span class="fc" id="L223">      Path pathAnnotation = method.getAnnotation(Path.class);</span>
-<span class="fc bfc" id="L224" title="All 2 branches covered.">      if (pathAnnotation == null) {</span>
-<span class="fc" id="L225">        throw new HalApiDeveloperException(&quot;The method &quot; + methodName + &quot; must have a @&quot; + Path.class.getSimpleName() + &quot; annotation&quot;);</span>
+<span class="fc" id="L225">      Path pathAnnotation = method.getAnnotation(Path.class);</span>
+<span class="fc bfc" id="L226" title="All 2 branches covered.">      if (pathAnnotation == null) {</span>
+<span class="fc" id="L227">        throw new HalApiDeveloperException(&quot;The method &quot; + methodName + &quot; must have a @&quot; + Path.class.getSimpleName() + &quot; annotation&quot;);</span>
       }
 
-<span class="fc" id="L228">      return pathAnnotation.value();</span>
+<span class="fc" id="L230">      return pathAnnotation.value();</span>
     }
 
     private List&lt;TemplateParameter&gt; getQueryParameters() {
 
-<span class="fc" id="L233">      return new QueryParamFinder().findParameters();</span>
+<span class="fc" id="L235">      return new QueryParamFinder().findParameters();</span>
     }
 
     private List&lt;TemplateParameter&gt; getPathParameters() {
 
-<span class="fc" id="L238">      return new PathParamFinder().findParameters();</span>
+<span class="fc" id="L240">      return new PathParamFinder().findParameters();</span>
     }
 
     private List&lt;TemplateParameter&gt; getBeanParameters() {
 
-<span class="fc" id="L243">      return new BeanParamFinder().findParameters();</span>
+<span class="fc" id="L245">      return new BeanParamFinder().findParameters();</span>
     }
 
     private Map&lt;String, Object&gt; getParameterMap(Object[] args) {
 
-<span class="fc" id="L248">      return parameters.stream()</span>
-<span class="fc" id="L249">          .map(tp -&gt; tp.resolve(args))</span>
-<span class="fc" id="L250">          .filter(Objects::nonNull)</span>
-<span class="fc" id="L251">          .collect(Collectors.toMap(Entry::getKey, Entry::getValue));</span>
+<span class="fc" id="L250">      return parameters.stream()</span>
+<span class="fc" id="L251">          .map(tp -&gt; tp.resolve(args))</span>
+<span class="fc" id="L252">          .filter(Objects::nonNull)</span>
+<span class="fc" id="L253">          .collect(Collectors.toMap(Entry::getKey, Entry::getValue));</span>
     }
 
     String getUriTemplate(Object[] args) {
 
-<span class="fc" id="L256">      Map&lt;String, Object&gt; parameterMap = getParameterMap(args);</span>
+<span class="fc" id="L258">      Map&lt;String, Object&gt; parameterMap = getParameterMap(args);</span>
 
-<span class="fc" id="L258">      String queries = createQueryParamsTemplate(parameterMap);</span>
+<span class="fc" id="L260">      String queries = createQueryParamsTemplate(parameterMap);</span>
 
-<span class="fc" id="L260">      UriTemplate template = UriTemplate.fromTemplate(templatePath + queries);</span>
-<span class="fc" id="L261">      template.set(parameterMap);</span>
-<span class="fc" id="L262">      return template.expandPartial();</span>
+<span class="fc" id="L262">      UriTemplate template = UriTemplate.fromTemplate(templatePath + queries);</span>
+<span class="fc" id="L263">      template.set(parameterMap);</span>
+<span class="fc" id="L264">      return template.expandPartial();</span>
     }
 
     private String createQueryParamsTemplate(Map&lt;String, Object&gt; parameterMap) {
 
-<span class="fc" id="L267">      StringBuilder queries = new StringBuilder();</span>
+<span class="fc" id="L269">      StringBuilder queries = new StringBuilder();</span>
 
-<span class="fc" id="L269">      String[] sortedVarNames = getQueryParameterVarNames(tp -&gt; parameterMap.containsKey(tp.name));</span>
+<span class="fc" id="L271">      String[] sortedVarNames = getQueryParameterVarNames(tp -&gt; parameterMap.containsKey(tp.name));</span>
 
-<span class="fc bfc" id="L271" title="All 2 branches covered.">      for (String varName : sortedVarNames) {</span>
-<span class="fc bfc" id="L272" title="All 2 branches covered.">        if (queries.length() == 0) {</span>
-<span class="fc" id="L273">          queries.append(&quot;{?&quot;);</span>
+<span class="fc bfc" id="L273" title="All 2 branches covered.">      for (String varName : sortedVarNames) {</span>
+
+        // Here comes a workaround for a weird issue that was introduced with Java 21:
+        // The UriTemplate class is suddenly no longer able to expand a query parameter template
+        // with an empty list/array value.
+        // This can be avoided by simply not adding this parameter to the template in the first place
+<span class="fc" id="L279">        String key = StringUtils.substringBefore(varName, &quot;*&quot;);</span>
+<span class="fc" id="L280">        Object value = parameterMap.get(key);</span>
+<span class="fc bfc" id="L281" title="All 4 branches covered.">        if (value instanceof Iterable &amp;&amp; Iterables.isEmpty((Iterable)value)) {</span>
+<span class="fc" id="L282">            continue;</span>
+        }
+
+<span class="fc bfc" id="L285" title="All 2 branches covered.">        if (queries.length() == 0) {</span>
+<span class="fc" id="L286">          queries.append(&quot;{?&quot;);</span>
         }
         else {
-<span class="fc" id="L276">          queries.append(&quot;,&quot;);</span>
+<span class="fc" id="L289">          queries.append(&quot;,&quot;);</span>
         }
-<span class="fc" id="L278">        queries.append(varName);</span>
+<span class="fc" id="L291">        queries.append(varName);</span>
       }
 
-<span class="fc bfc" id="L281" title="All 2 branches covered.">      if (queries.length() &gt; 0) {</span>
-<span class="fc" id="L282">        queries.append(&quot;}&quot;);</span>
+<span class="fc bfc" id="L294" title="All 2 branches covered.">      if (queries.length() &gt; 0) {</span>
+<span class="fc" id="L295">        queries.append(&quot;}&quot;);</span>
       }
 
-<span class="fc" id="L285">      return queries.toString();</span>
+<span class="fc" id="L298">      return queries.toString();</span>
     }
 
     private String[] getQueryParameterVarNames(Predicate&lt;TemplateParameter&gt; valueAvailableCheck) {
 
-<span class="fc" id="L290">      Comparator&lt;TemplateParameter&gt; comparator = (p1, p2) -&gt; {</span>
-<span class="fc" id="L291">        boolean p1Resolved = valueAvailableCheck.test(p1);</span>
-<span class="fc" id="L292">        boolean p2Resolved = valueAvailableCheck.test(p2);</span>
-<span class="fc bfc" id="L293" title="All 4 branches covered.">        if (p1Resolved &amp;&amp; !p2Resolved) {</span>
-<span class="fc" id="L294">          return -1;</span>
+<span class="fc" id="L303">      Comparator&lt;TemplateParameter&gt; comparator = (p1, p2) -&gt; {</span>
+<span class="fc" id="L304">        boolean p1Resolved = valueAvailableCheck.test(p1);</span>
+<span class="fc" id="L305">        boolean p2Resolved = valueAvailableCheck.test(p2);</span>
+<span class="fc bfc" id="L306" title="All 4 branches covered.">        if (p1Resolved &amp;&amp; !p2Resolved) {</span>
+<span class="fc" id="L307">          return -1;</span>
         }
-<span class="fc bfc" id="L296" title="All 4 branches covered.">        if (p2Resolved &amp;&amp; !p1Resolved) {</span>
-<span class="fc" id="L297">          return 1;</span>
+<span class="fc bfc" id="L309" title="All 4 branches covered.">        if (p2Resolved &amp;&amp; !p1Resolved) {</span>
+<span class="fc" id="L310">          return 1;</span>
         }
-<span class="fc" id="L299">        return 0;</span>
+<span class="fc" id="L312">        return 0;</span>
       };
 
-<span class="fc" id="L302">      boolean allRequiredParametersResolved = parameters.stream()</span>
-<span class="fc" id="L303">          .filter(tp -&gt; tp.required)</span>
-<span class="fc" id="L304">          .allMatch(valueAvailableCheck::test);</span>
+<span class="fc" id="L315">      boolean allRequiredParametersResolved = parameters.stream()</span>
+<span class="fc" id="L316">          .filter(tp -&gt; tp.required)</span>
+<span class="fc" id="L317">          .allMatch(valueAvailableCheck::test);</span>
 
-<span class="fc" id="L306">      return parameters.stream()</span>
-<span class="fc" id="L307">          .filter(tp -&gt; isQueryParamToKeep(tp, valueAvailableCheck, allRequiredParametersResolved))</span>
-<span class="fc" id="L308">          .sorted(comparator)</span>
-<span class="fc" id="L309">          .map(TemplateParameter::getVarName)</span>
-<span class="fc" id="L310">          .toArray(String[]::new);</span>
+<span class="fc" id="L319">      return parameters.stream()</span>
+<span class="fc" id="L320">          .filter(tp -&gt; isQueryParamToKeep(tp, valueAvailableCheck, allRequiredParametersResolved))</span>
+<span class="fc" id="L321">          .sorted(comparator)</span>
+<span class="fc" id="L322">          .map(TemplateParameter::getVarName)</span>
+<span class="fc" id="L323">          .toArray(String[]::new);</span>
     }
 
     private boolean isQueryParamToKeep(TemplateParameter parameter, Predicate&lt;TemplateParameter&gt; valueAvailableCheck,
         boolean allRequiredParametersResolved) {
 
       // a query template variable should be kept if....
-<span class="fc bfc" id="L317" title="All 6 branches covered.">      return parameter.query &amp;&amp;</span>
+<span class="fc bfc" id="L330" title="All 6 branches covered.">      return parameter.query &amp;&amp;</span>
           (!allRequiredParametersResolved // not all required parameters have been set, so a full URI template is rendered
               || parameter.required // this specific template variable is required
-<span class="fc bfc" id="L320" title="All 2 branches covered.">              || valueAvailableCheck.test(parameter)); // its (optional) template variable does have a value</span>
+<span class="fc bfc" id="L333" title="All 2 branches covered.">              || valueAvailableCheck.test(parameter)); // its (optional) template variable does have a value</span>
     }
 
     abstract class AnnotatedParamFinder&lt;A extends Annotation&gt; {
 
       protected final Class&lt;A&gt; annotationClass;
 
-<span class="fc" id="L327">      AnnotatedParamFinder(Class&lt;A&gt; annotationClass) {</span>
-<span class="fc" id="L328">        this.annotationClass = annotationClass;</span>
-<span class="fc" id="L329">      }</span>
+<span class="fc" id="L340">      AnnotatedParamFinder(Class&lt;A&gt; annotationClass) {</span>
+<span class="fc" id="L341">        this.annotationClass = annotationClass;</span>
+<span class="fc" id="L342">      }</span>
 
       List&lt;TemplateParameter&gt; findParameters() {
 
-<span class="fc" id="L333">        List&lt;TemplateParameter&gt; specs = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L346">        List&lt;TemplateParameter&gt; specs = new LinkedList&lt;&gt;();</span>
 
-<span class="fc" id="L335">        Parameter[] params = method.getParameters();</span>
-<span class="fc bfc" id="L336" title="All 2 branches covered.">        for (int i = 0; i &lt; params.length; i++) {</span>
-<span class="fc bfc" id="L337" title="All 2 branches covered.">          if (params[i].isAnnotationPresent(annotationClass)) {</span>
+<span class="fc" id="L348">        Parameter[] params = method.getParameters();</span>
+<span class="fc bfc" id="L349" title="All 2 branches covered.">        for (int i = 0; i &lt; params.length; i++) {</span>
+<span class="fc bfc" id="L350" title="All 2 branches covered.">          if (params[i].isAnnotationPresent(annotationClass)) {</span>
 
-<span class="fc" id="L339">            specs.addAll(createTemplateParameters(params[i], i));</span>
+<span class="fc" id="L352">            specs.addAll(createTemplateParameters(params[i], i));</span>
           }
         }
-<span class="fc" id="L342">        return specs;</span>
+<span class="fc" id="L355">        return specs;</span>
       }
 
       protected boolean isOfIterableType(Parameter p) {
-<span class="fc" id="L346">        return Iterable.class.isAssignableFrom(p.getType());</span>
+<span class="fc" id="L359">        return Iterable.class.isAssignableFrom(p.getType());</span>
       }
 
       protected boolean isOfIterableType(Field f) {
-<span class="fc" id="L350">        return Iterable.class.isAssignableFrom(f.getType());</span>
+<span class="fc" id="L363">        return Iterable.class.isAssignableFrom(f.getType());</span>
       }
 
       protected abstract Collection&lt;TemplateParameter&gt; createTemplateParameters(Parameter param, int index);
@@ -355,97 +368,97 @@ public class JaxRsControllerProxyLinkBuilder&lt;T&gt; implements InvocationHandl
 
     class QueryParamFinder extends AnnotatedParamFinder&lt;QueryParam&gt; {
 
-<span class="fc" id="L358">      QueryParamFinder() {</span>
-<span class="fc" id="L359">        super(QueryParam.class);</span>
-<span class="fc" id="L360">      }</span>
+<span class="fc" id="L371">      QueryParamFinder() {</span>
+<span class="fc" id="L372">        super(QueryParam.class);</span>
+<span class="fc" id="L373">      }</span>
 
       @Override
       protected Collection&lt;TemplateParameter&gt; createTemplateParameters(Parameter p, int index) {
 
-<span class="fc" id="L365">        TemplateParameter parameter = new TemplateParameter();</span>
+<span class="fc" id="L378">        TemplateParameter parameter = new TemplateParameter();</span>
 
-<span class="fc" id="L367">        parameter.name = p.getAnnotation(annotationClass).value();</span>
-<span class="fc" id="L368">        parameter.iterable = isOfIterableType(p);</span>
-<span class="fc" id="L369">        parameter.query = true;</span>
-<span class="fc bfc" id="L370" title="All 2 branches covered.">        parameter.required = !p.isAnnotationPresent(DefaultValue.class);</span>
-<span class="fc" id="L371">        parameter.valueProvider = (args -&gt; args[index]);</span>
+<span class="fc" id="L380">        parameter.name = p.getAnnotation(annotationClass).value();</span>
+<span class="fc" id="L381">        parameter.iterable = isOfIterableType(p);</span>
+<span class="fc" id="L382">        parameter.query = true;</span>
+<span class="fc bfc" id="L383" title="All 2 branches covered.">        parameter.required = !p.isAnnotationPresent(DefaultValue.class);</span>
+<span class="fc" id="L384">        parameter.valueProvider = (args -&gt; args[index]);</span>
 
-<span class="fc" id="L373">        return ImmutableList.of(parameter);</span>
+<span class="fc" id="L386">        return ImmutableList.of(parameter);</span>
       }
     }
 
     class PathParamFinder extends AnnotatedParamFinder&lt;PathParam&gt; {
 
-<span class="fc" id="L379">      PathParamFinder() {</span>
-<span class="fc" id="L380">        super(PathParam.class);</span>
-<span class="fc" id="L381">      }</span>
+<span class="fc" id="L392">      PathParamFinder() {</span>
+<span class="fc" id="L393">        super(PathParam.class);</span>
+<span class="fc" id="L394">      }</span>
 
       @Override
       protected Collection&lt;TemplateParameter&gt; createTemplateParameters(Parameter p, int index) {
 
-<span class="fc" id="L386">        TemplateParameter parameter = new TemplateParameter();</span>
+<span class="fc" id="L399">        TemplateParameter parameter = new TemplateParameter();</span>
 
-<span class="fc" id="L388">        parameter.name = p.getAnnotation(annotationClass).value();</span>
-<span class="fc" id="L389">        parameter.iterable = isOfIterableType(p);</span>
-<span class="fc" id="L390">        parameter.query = false;</span>
-<span class="fc" id="L391">        parameter.required = true;</span>
-<span class="fc" id="L392">        parameter.valueProvider = (args -&gt; args[index]);</span>
+<span class="fc" id="L401">        parameter.name = p.getAnnotation(annotationClass).value();</span>
+<span class="fc" id="L402">        parameter.iterable = isOfIterableType(p);</span>
+<span class="fc" id="L403">        parameter.query = false;</span>
+<span class="fc" id="L404">        parameter.required = true;</span>
+<span class="fc" id="L405">        parameter.valueProvider = (args -&gt; args[index]);</span>
 
-<span class="fc" id="L394">        return ImmutableList.of(parameter);</span>
+<span class="fc" id="L407">        return ImmutableList.of(parameter);</span>
       }
     }
 
     class BeanParamFinder extends AnnotatedParamFinder&lt;BeanParam&gt; {
 
-<span class="fc" id="L400">      BeanParamFinder() {</span>
-<span class="fc" id="L401">        super(BeanParam.class);</span>
-<span class="fc" id="L402">      }</span>
+<span class="fc" id="L413">      BeanParamFinder() {</span>
+<span class="fc" id="L414">        super(BeanParam.class);</span>
+<span class="fc" id="L415">      }</span>
 
       @Override
       protected Collection&lt;TemplateParameter&gt; createTemplateParameters(Parameter p, int index) {
 
-<span class="fc" id="L407">        List&lt;TemplateParameter&gt; paramsInBean = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L420">        List&lt;TemplateParameter&gt; paramsInBean = new LinkedList&lt;&gt;();</span>
 
-<span class="fc" id="L409">        Class&lt;?&gt; beanType = p.getType();</span>
-<span class="fc" id="L410">        Field[] fields = FieldUtils.getAllFields(beanType);</span>
+<span class="fc" id="L422">        Class&lt;?&gt; beanType = p.getType();</span>
+<span class="fc" id="L423">        Field[] fields = FieldUtils.getAllFields(beanType);</span>
 
-<span class="fc" id="L412">        Stream.of(fields)</span>
-<span class="fc" id="L413">            .filter(field -&gt; field.isAnnotationPresent(QueryParam.class))</span>
-<span class="fc" id="L414">            .map(field -&gt; handleQueryParamField(index, field))</span>
-<span class="fc" id="L415">            .forEach(paramsInBean::add);</span>
+<span class="fc" id="L425">        Stream.of(fields)</span>
+<span class="fc" id="L426">            .filter(field -&gt; field.isAnnotationPresent(QueryParam.class))</span>
+<span class="fc" id="L427">            .map(field -&gt; handleQueryParamField(index, field))</span>
+<span class="fc" id="L428">            .forEach(paramsInBean::add);</span>
 
-<span class="fc" id="L417">        Stream.of(fields)</span>
-<span class="fc" id="L418">            .filter(field -&gt; field.isAnnotationPresent(PathParam.class))</span>
-<span class="fc" id="L419">            .map(field -&gt; handlePathParamField(index, field))</span>
-<span class="fc" id="L420">            .forEach(paramsInBean::add);</span>
+<span class="fc" id="L430">        Stream.of(fields)</span>
+<span class="fc" id="L431">            .filter(field -&gt; field.isAnnotationPresent(PathParam.class))</span>
+<span class="fc" id="L432">            .map(field -&gt; handlePathParamField(index, field))</span>
+<span class="fc" id="L433">            .forEach(paramsInBean::add);</span>
 
-<span class="fc" id="L422">        return paramsInBean;</span>
+<span class="fc" id="L435">        return paramsInBean;</span>
       }
 
       private TemplateParameter handleQueryParamField(int index, Field field) {
-<span class="fc" id="L426">        QueryParam qp = field.getAnnotation(QueryParam.class);</span>
-
-<span class="fc" id="L428">        TemplateParameter parameter = new TemplateParameter();</span>
-<span class="fc" id="L429">        parameter.name = qp.value();</span>
-<span class="fc" id="L430">        parameter.iterable = isOfIterableType(field);</span>
-<span class="fc" id="L431">        parameter.query = true;</span>
-<span class="fc bfc" id="L432" title="All 2 branches covered.">        parameter.required = !field.isAnnotationPresent(DefaultValue.class);</span>
-<span class="fc" id="L433">        parameter.valueProvider = (args -&gt; ReflectionUtils.getFieldValue(field, args[index]));</span>
-
-<span class="fc" id="L435">        return parameter;</span>
-      }
-
-      private TemplateParameter handlePathParamField(int index, Field field) {
-<span class="fc" id="L439">        PathParam pp = field.getAnnotation(PathParam.class);</span>
+<span class="fc" id="L439">        QueryParam qp = field.getAnnotation(QueryParam.class);</span>
 
 <span class="fc" id="L441">        TemplateParameter parameter = new TemplateParameter();</span>
-<span class="fc" id="L442">        parameter.name = pp.value();</span>
+<span class="fc" id="L442">        parameter.name = qp.value();</span>
 <span class="fc" id="L443">        parameter.iterable = isOfIterableType(field);</span>
-<span class="fc" id="L444">        parameter.query = false;</span>
-<span class="fc" id="L445">        parameter.required = true;</span>
+<span class="fc" id="L444">        parameter.query = true;</span>
+<span class="fc bfc" id="L445" title="All 2 branches covered.">        parameter.required = !field.isAnnotationPresent(DefaultValue.class);</span>
 <span class="fc" id="L446">        parameter.valueProvider = (args -&gt; ReflectionUtils.getFieldValue(field, args[index]));</span>
 
 <span class="fc" id="L448">        return parameter;</span>
+      }
+
+      private TemplateParameter handlePathParamField(int index, Field field) {
+<span class="fc" id="L452">        PathParam pp = field.getAnnotation(PathParam.class);</span>
+
+<span class="fc" id="L454">        TemplateParameter parameter = new TemplateParameter();</span>
+<span class="fc" id="L455">        parameter.name = pp.value();</span>
+<span class="fc" id="L456">        parameter.iterable = isOfIterableType(field);</span>
+<span class="fc" id="L457">        parameter.query = false;</span>
+<span class="fc" id="L458">        parameter.required = true;</span>
+<span class="fc" id="L459">        parameter.valueProvider = (args -&gt; ReflectionUtils.getFieldValue(field, args[index]));</span>
+
+<span class="fc" id="L461">        return parameter;</span>
       }
     }
   }
