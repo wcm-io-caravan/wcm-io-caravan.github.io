@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="UTF-8" />
-    <title>About JAX-RS Publisher | JAX-RS Publisher</title>
+    <title>Changes Report | JAX-RS Publisher</title>
 
     <link rel="shortcut icon" href="https://wcm.io/images/favicon.ico">
     <link rel="apple-touch-icon" href="https://wcm.io/images/favicon-152.png">
@@ -28,7 +28,7 @@
 
   </head>
 
-  <body class="page-index project-io.wcm.caravan.jaxrs.publisher" data-spy="scroll" data-offset="60" data-target="#toc-scroll-target" id="body">
+  <body class="page-changes project-io.wcm.caravan.jaxrs.publisher" data-spy="scroll" data-offset="60" data-target="#toc-scroll-target" id="body">
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
@@ -98,44 +98,193 @@
         <li class="divider">/</li>
         <li><a href="../index.html" title="JAX-RS">JAX-RS</a></li>
         <li class="divider">/</li>
-        <li><a href="" title="JAX-RS Publisher">JAX-RS Publisher</a></li>
+        <li><a href="index.html" title="JAX-RS Publisher">JAX-RS Publisher</a></li>
         <li class="divider">/</li>
-        <li>About JAX-RS Publisher</li>
+        <li>Changes Report</li>
       </ul>
     </div>
   </header>
 
   <div class="main-body">
   <div class="row">
-    <div class="span12">
+    <div class="span8">
       <div class="body-content">
-<section><section><a id="About_JAX-RS_Publisher"></a>
-<h2>About JAX-RS Publisher</h2>
-<p>Publishes OSGi services as JAX-RS RESTful services.</p>
-<p><a href="https://repo1.maven.org/maven2/io/wcm/caravan/io.wcm.caravan.jaxrs.publisher/" class="externalLink"><img src="https://img.shields.io/maven-central/v/io.wcm.caravan/io.wcm.caravan.jaxrs.publisher" alt="Maven Central" /></a></p><section><a id="Documentation"></a>
-<h3>Documentation</h3>
-<ul>
-
-<li><a href="usage.html">Usage</a></li>
-<li><a href="apidocs/">API documentation</a></li>
-<li><a href="changes.html">Changelog</a></li>
-</ul></section><section><a id="Overview"></a>
-<h3>Overview</h3>
-<p>Provides a <a href="https://jsr311.java.net/" class="externalLink">JAX-RS</a> integration based on <a href="https://jersey.java.net/" class="externalLink">Jersey</a> with OSGi. The implementation uses an OSGI Extender pattern.</p>
-<p>If a JAX-RS integration is configured for a bundle a JAX-RS application is created automatically and registered in a Servlet container to the Apache Felix HTTP whiteboard service. This is done transparently to the bundle, only the application path has to be configured and each JAX-RS components has to be registered as an OSGi service using a special marker interface.</p>
-<p>This connector only support publishing REST interfaces via JAX-RS. Consuming them via the JAX-RS client interface is not supported.</p>
-<p>Dependencies:</p>
-<ul>
-
-<li>Jersey and some additional bundles are requires, see <a href="https://github.com/wcm-io-caravan/caravan-jaxrs/tree/develop/examples/aem-caravan-jaxrs-sample" class="externalLink">this example</a> for details</li>
-</ul></section><section><a id="Alternatives"></a>
-<h3>Alternatives</h3>
-<ul>
-
-<li><a href="https://github.com/apache/aries-jax-rs-whiteboard" class="externalLink">Aries JAX-RS Whiteboard</a> - Implementation of <a href="https://github.com/osgi/design/tree/master/rfcs/rfc0217" class="externalLink">OSGI RFC-217</a>.</li>
-<li><a href="https://github.com/hstaudacher/osgi-jax-rs-connector" class="externalLink">OSGi JAX-RS Connector</a> - basically similar concept as the Caravan JAX-RS integrations, but creates always one single big Jersey Application for all bundles which breaks isolation between the bundles e.g. concerning @Provider JAX-RS components. Besides this the implementation is very stable and well maintained, and does not only support publishing but also consuming JAX-RS services within OSGi. This comes at a price of a quite complex implementation and a lot of dependencies.</li>
-<li><a href="https://github.com/njbartlett/jaxrs-osgi-extender" class="externalLink">JAX-RS Extender Bundle for OSGi</a> - quite old implementation based on the OSGi extender pattern. Builds one JAX-RS Application per module, but the JAX-RS components are not OSGi components, so OSGI dependency injection is not possible.</li>
-</ul></section></section></section>
+<section>
+ <a id="Changes_Report"></a>
+ <div class="page-header">
+  <h1 id="changes_report">Changes Report</h1>
+ </div>
+ <section>
+  <a id="Release_History"></a>
+  <h2 id="release_history">Release History</h2>
+  <table class="bodyTable table table-striped table-hover">
+   <thead>
+    <tr class="a">
+     <th>Version</th>
+     <th>Date</th>
+     <th>Description</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr class="b">
+     <td><a href="#a1.2.2">1.2.2</a></td>
+     <td>2024-03-21</td>
+     <td>&nbsp;</td>
+    </tr>
+    <tr class="a">
+     <td><a href="#a1.2.0">1.2.0</a></td>
+     <td>2019-06-03</td>
+     <td>&nbsp;</td>
+    </tr>
+    <tr class="b">
+     <td><a href="#a1.1.0">1.1.0</a></td>
+     <td>2016-03-18</td>
+     <td>&nbsp;</td>
+    </tr>
+    <tr class="a">
+     <td><a href="#a1.0.0">1.0.0</a></td>
+     <td>2015-07-25</td>
+     <td>&nbsp;</td>
+    </tr>
+    <tr class="b">
+     <td><a href="#a0.5.0">0.5.0</a></td>
+     <td>2015-06-05</td>
+     <td>&nbsp;</td>
+    </tr>
+   </tbody>
+  </table>
+ </section>
+ <section>
+  <a id="a1.2.2"></a>
+  <h2 id="release_1.2.2__2024-03-21">Release 1.2.2 – 2024-03-21</h2>
+  <table class="bodyTable table table-striped table-hover">
+   <thead>
+    <tr class="a">
+     <th>Type</th>
+     <th>Changes</th>
+     <th>By</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr class="b">
+     <td><i class="icon-wrench"></i></td>
+     <td>Fix issue with AEMaaCS: Use bundle ID instead of bundle instance to pass over bundle reference to ServletContainerBridge. Fixes <a class="externalLink" href="https://github.com/wcm-io-caravan/caravan-jaxrs/issues/4">4</a>.</td>
+     <td><a href="team.html#iakulenka">iakulenka</a></td>
+    </tr>
+   </tbody>
+  </table>
+ </section>
+ <section>
+  <a id="a1.2.0"></a>
+  <h2 id="release_1.2.0__2019-06-03">Release 1.2.0 – 2019-06-03</h2>
+  <table class="bodyTable table table-striped table-hover">
+   <thead>
+    <tr class="a">
+     <th>Type</th>
+     <th>Changes</th>
+     <th>By</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr class="b">
+     <td><i class="icon-plus"></i></td>
+     <td>Add new interface "JaxRsClassesProvider" to allow to register additional resources, providers and features that are not OSGi components.</td>
+     <td><a href="team.html#ssauder">ssauder</a></td>
+    </tr>
+    <tr class="a">
+     <td><i class="icon-wrench"></i></td>
+     <td>Ensure Jersey serlvet container can be re-initialized. Fixes <a class="externalLink" href="https://github.com/wcm-io-caravan/caravan-jaxrs/issues/WCARAV-7">WCARAV-7</a>.</td>
+     <td><a href="team.html#sseifert">sseifert</a></td>
+    </tr>
+    <tr class="b">
+     <td><i class="icon-refresh"></i></td>
+     <td>Java 11 compatibility.</td>
+     <td><a href="team.html#sseifert">sseifert</a></td>
+    </tr>
+   </tbody>
+  </table>
+ </section>
+ <section>
+  <a id="a1.1.0"></a>
+  <h2 id="release_1.1.0__2016-03-18">Release 1.1.0 – 2016-03-18</h2>
+  <table class="bodyTable table table-striped table-hover">
+   <thead>
+    <tr class="a">
+     <th>Type</th>
+     <th>Changes</th>
+     <th>By</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr class="b">
+     <td><i class="icon-refresh"></i></td>
+     <td>Switch to Java 8.</td>
+     <td><a href="team.html#sseifert">sseifert</a></td>
+    </tr>
+   </tbody>
+  </table>
+ </section>
+ <section>
+  <a id="a1.0.0"></a>
+  <h2 id="release_1.0.0__2015-07-25">Release 1.0.0 – 2015-07-25</h2>
+  <table class="bodyTable table table-striped table-hover">
+   <thead>
+    <tr class="a">
+     <th>Type</th>
+     <th>Changes</th>
+     <th>By</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr class="b">
+     <td><i class="icon-refresh"></i></td>
+     <td>Provide access to application path in service properties of global JAX-RS components.</td>
+     <td><a href="team.html#sseifert">sseifert</a></td>
+    </tr>
+   </tbody>
+  </table>
+ </section>
+ <section>
+  <a id="a0.5.0"></a>
+  <h2 id="release_0.5.0__2015-06-05">Release 0.5.0 – 2015-06-05</h2>
+  <table class="bodyTable table table-striped table-hover">
+   <thead>
+    <tr class="a">
+     <th>Type</th>
+     <th>Changes</th>
+     <th>By</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr class="b">
+     <td><i class="icon-refresh"></i></td>
+     <td>Initial release.</td>
+     <td><a href="team.html#sseifert">sseifert</a></td>
+    </tr>
+   </tbody>
+  </table>
+ </section>
+</section>
+      </div>
+    </div>
+    <div class="span4">
+      <div id="toc-sidebar">
+        <div class="well">
+          <ul class="nav nav-list">
+            <li class="nav-header">Table of Contents</li>
+    <li class="dropdown"><a href="#changes_report" title="Changes Report">Changes Report <b class="caret"></b></a>
+      <ul class="nav nav-list">
+    <li><a href="#release_history" title="Release History">Release History</a>
+    <li><a href="#release_1.2.2__2024-03-21" title="Release 1.2.2 – 2024-03-21">Release 1.2.2 – 2024-03-21</a>
+    <li><a href="#release_1.2.0__2019-06-03" title="Release 1.2.0 – 2019-06-03">Release 1.2.0 – 2019-06-03</a>
+    <li><a href="#release_1.1.0__2016-03-18" title="Release 1.1.0 – 2016-03-18">Release 1.1.0 – 2016-03-18</a>
+    <li><a href="#release_1.0.0__2015-07-25" title="Release 1.0.0 – 2015-07-25">Release 1.0.0 – 2015-07-25</a>
+    <li><a href="#release_0.5.0__2015-06-05" title="Release 0.5.0 – 2015-06-05">Release 0.5.0 – 2015-06-05</a>
+        <li class="divider"></li>
+      </ul>
+    </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -239,27 +388,39 @@
           <ul class="nav nav-list">
             <li class="nav-header">Maven documentation</li>
             <li >
-              <a href="project-info.html" title="Project Information">Project Information <i class="icon-chevron-down"></i></a>
+              <a href="project-info.html" title="Project Information">Project Information <i class="icon-chevron-right"></i></a>
+            </li>
+            <li >
+              <a href="project-reports.html" title="Project Reports">Project Reports <i class="icon-chevron-down"></i></a>
               <ul class="nav nav-list">
             <li class="active">
-              <a href="#" title="About">About</a>
+              <a href="#" title="Changes">Changes</a>
             </li>
             <li >
-              <a href="dependencies.html" title="Dependencies">Dependencies</a>
+              <a href="apidocs/index.html" title="Javadoc">Javadoc</a>
             </li>
             <li >
-              <a href="scm.html" title="Source Code Management">Source Code Management</a>
+              <a href="xref/index.html" title="Source Xref">Source Xref</a>
             </li>
             <li >
-              <a href="licenses.html" title="Licenses">Licenses</a>
+              <a href="checkstyle.html" title="Checkstyle">Checkstyle</a>
             </li>
             <li >
-              <a href="summary.html" title="Summary">Summary</a>
+              <a href="pmd.html" title="PMD">PMD</a>
+            </li>
+            <li >
+              <a href="cpd.html" title="CPD">CPD</a>
+            </li>
+            <li >
+              <a href="taglist.html" title="Tag List">Tag List</a>
+            </li>
+            <li >
+              <a href="spotbugs.html" title="SpotBugs">SpotBugs</a>
+            </li>
+            <li >
+              <a href="jacoco/index.html" title="JaCoCo">JaCoCo</a>
             </li>
               </ul>
-            </li>
-            <li >
-              <a href="project-reports.html" title="Project Reports">Project Reports <i class="icon-chevron-right"></i></a>
             </li>
           </ul>
         </div>
