@@ -123,9 +123,9 @@ public class CaravanHttpCallbackExecutor extends ThreadPoolExecutor {
 
     @Override
     public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-<span class="nc" id="L126">      LOG.error(&quot;Rejected to execute async http callback &quot; + r.toString() + &quot; because the maximum number of threads (&quot; + executor.getMaximumPoolSize()</span>
+<span class="fc" id="L126">      LOG.error(&quot;Rejected to execute async http callback &quot; + r.toString() + &quot; because the maximum number of threads (&quot; + executor.getMaximumPoolSize()</span>
       + &quot;) has been reached&quot;);
-<span class="nc" id="L128">    }</span>
+<span class="fc" id="L128">    }</span>
 
   }
 
