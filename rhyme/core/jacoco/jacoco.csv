@@ -1,12 +1,12 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,HalApiClientProxyFactory,0,191,0,6,0,38,0,15,0,12
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,HalApiMethodInvocation,0,208,0,8,0,41,0,25,0,21
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,ResourceLinkHandler,0,47,0,8,0,14,0,6,0,2
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,RelatedResourceHandler,0,355,0,26,0,75,0,35,0,22
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,ResourcePropertyHandler,0,126,0,14,0,27,0,12,0,5
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,HalApiMethodInvocation,0,210,0,8,0,41,0,25,0,21
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,ResourceLinkHandler,0,48,0,8,0,14,0,6,0,2
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,RelatedResourceHandler,0,357,0,26,0,75,0,35,0,22
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,ResourcePropertyHandler,0,129,0,14,0,27,0,12,0,5
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,ResourceStateHandler,0,52,0,4,0,13,0,5,0,3
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,HalApiInvocationHandler,0,246,0,18,0,50,0,18,0,9
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,ResourceRepresentationHandler,0,49,0,6,0,14,0,5,0,2
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,HalApiInvocationHandler,0,251,0,18,0,50,0,18,0,9
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.proxy,ResourceRepresentationHandler,0,50,0,6,0,14,0,5,0,2
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl,RhymeBuilders.RhymeBuilderImpl,0,9,0,0,0,3,0,1,0,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl,AbstractRhymeBuilder.new RhymeMetadataConfiguration() {...},0,6,0,0,0,1,0,1,0,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl,RhymeImpl,0,52,0,0,0,13,0,6,0,6
@@ -18,7 +18,7 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.CacheOn
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers,0,13,0,0,0,3,0,3,0,3
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.util,RxJavaTransformers.AsyncFilterTransformer,0,31,0,0,0,11,0,4,0,4
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client,HalApiClientImpl,0,55,0,0,0,11,0,4,0,4
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client,HalResourceLoaderWrapper,0,244,0,10,0,50,0,19,0,14
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client,HalResourceLoaderWrapper,0,245,0,10,0,50,0,19,0,14
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client,HalResourceLoaderBuilderImpl,0,145,0,4,0,26,0,12,0,10
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client,RemoteResourceOverrides,0,48,0,2,0,11,0,5,0,4
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client,LinkRewriting,0,112,0,10,0,30,0,12,0,7
@@ -30,8 +30,8 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.api.server,VndErrorResponseRenderer,
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.server,RhymeMetadataConfiguration,0,2,0,0,0,1,0,1,0,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.server,ResourceConversions,0,12,0,0,0,3,0,3,0,3
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.server,AsyncHalResponseRenderer,0,18,0,0,0,10,0,2,0,2
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.metadata,FullMetadataGenerator,0,544,0,16,0,97,0,33,0,25
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.metadata,MaxAgeOnlyCollector.new RequestMetricsStopwatch() {...},0,7,0,0,0,2,0,2,0,2
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.metadata,FullMetadataGenerator,0,544,0,16,0,97,0,33,0,25
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.metadata,FullMetadataGenerator.TimingResourceCategory,0,18,0,0,0,7,0,1,0,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.metadata,FullMetadataGenerator.TimeMeasurement,0,27,0,0,0,9,0,5,0,5
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.metadata,EmissionStopwatch,0,53,0,2,0,16,0,9,0,8
@@ -43,7 +43,7 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.cache,DefaultCachingConf
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.client.cache,CachingHalResourceLoader,0,216,0,12,0,50,0,21,0,15
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,VndErrorResponseRendererImpl,0,323,0,18,0,69,0,20,0,11
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,CompositeExceptionStatusAndLoggingStrategy,0,77,0,4,0,17,0,10,0,8
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,RelatedResourcesRendererImpl,0,345,0,22,0,81,0,35,0,24
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,RelatedResourcesRendererImpl,0,347,0,22,0,81,0,35,0,24
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,AsyncHalResourceRendererImpl,0,316,0,14,0,58,0,26,0,19
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,AsyncHalResponseRendererImpl,0,140,0,8,0,34,0,12,0,8
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.renderer,RelatedResourcesRendererImpl.RelationRenderResult,0,27,0,0,0,10,0,5,0,5
@@ -56,15 +56,15 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.api.spi,HalApiAnnotationSupport,0,4,
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.client,HalResourceLoaderBuilder,0,4,0,0,0,1,0,1,0,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.client,HalApiClientBuilder,0,2,0,0,0,1,0,1,0,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.client,HalApiClient,0,26,0,0,0,15,0,4,0,4
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,TemplateVariableDetection,1,292,1,21,0,63,1,22,0,12
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,TemplateVariableDetection,1,294,1,21,0,63,1,22,0,12
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils.MethodRelationComparator,0,40,0,8,0,10,0,6,0,2
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,DefaultHalApiTypeSupport,0,284,0,52,0,66,0,55,0,29
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiTypeSupportAdapter.NoAdditionalReturnTypeSupport,0,11,0,0,0,5,0,5,0,5
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils.new InvocationHandler() {...},0,38,0,6,0,6,0,5,0,2
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,TemplateVariableDetection.TemplateVariableWithTypeInfo,0,30,0,0,0,11,0,7,0,7
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils.EmbeddedResourceProxyInvocationHandler,0,55,0,8,0,15,0,6,0,2
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,RxJavaReflectionUtils,0,156,0,12,0,37,0,11,0,5
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiTypeSupportAdapter.NoAdditionalAnnotationSupport,0,21,0,0,0,10,0,10,0,10
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,RxJavaReflectionUtils,0,156,0,12,0,37,0,11,0,5
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils,0,240,0,14,0,58,0,22,0,15
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,CompositeHalApiTypeSupport,0,146,0,0,0,18,0,29,0,29
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils.InterfaceCollector,0,39,0,2,0,11,0,4,0,3

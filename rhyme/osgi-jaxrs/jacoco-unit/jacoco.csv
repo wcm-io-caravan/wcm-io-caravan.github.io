@@ -3,7 +3,7 @@ Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerP
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsAsyncHalResponseHandlerImpl.JaxRsExceptionStrategy,0,11,0,2,0,3,0,2,0,1
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,HalResourceMessageBodyWriter,0,31,0,0,0,8,0,4,0,4
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerProxyLinkBuilder.TemplateParameter,0,26,0,4,0,7,0,4,0,2
-Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsAsyncHalResponseHandlerImpl,0,154,0,4,0,46,0,11,0,9
+Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsAsyncHalResponseHandlerImpl,0,155,0,4,0,46,0,11,0,9
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerProxyLinkBuilder.MethodDetails.AnnotatedParamFinder,0,54,0,4,0,11,0,6,0,4
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsBundleInfoImpl,0,132,0,4,0,28,0,11,0,9
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.impl,JaxRsControllerProxyLinkBuilder.MethodDetails.PathParamFinder,0,42,0,0,0,10,0,3,0,3
@@ -20,7 +20,7 @@ Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanRhymeRe
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanHalApiClientImpl.JsonPipelineCacheLoader,0,14,0,0,0,2,0,2,0,2
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanResilientHttpSupport,0,103,0,2,0,29,0,9,0,8
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanRhymeRequestCycleImpl,0,42,0,0,0,10,0,3,0,3
-Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanHalApiClientImpl.GuavaCacheLoader,0,22,0,0,0,6,0,2,0,2
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanJsonPipelineResourceLoader,0,159,0,8,0,40,0,13,0,9
+Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanHalApiClientImpl.GuavaCacheLoader,0,22,0,0,0,6,0,2,0,2
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.caravan.impl,CaravanHalApiClientImpl,0,72,0,2,0,19,0,7,0,6
 Rhyme - OSGi/JAX-RS Integration,io.wcm.caravan.rhyme.jaxrs.api,JaxRsLinkBuilder,0,6,0,0,0,1,0,1,0,1
