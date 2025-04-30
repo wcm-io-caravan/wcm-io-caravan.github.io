@@ -49,18 +49,18 @@ class LinkableResourceStatusCodeAdvice implements ResponseBodyAdvice&lt;Linkable
   @Override
   public boolean supports(MethodParameter returnType, Class&lt;? extends HttpMessageConverter&lt;?&gt;&gt; converterType) {
 
-<span class="fc" id="L52">    return LinkableResourceMessageConverter.class.isAssignableFrom(converterType);</span>
+<span class="nc" id="L52">    return LinkableResourceMessageConverter.class.isAssignableFrom(converterType);</span>
   }
 
   @Override
   public LinkableResource beforeBodyWrite(LinkableResource body, MethodParameter returnType, MediaType selectedContentType,
       Class&lt;? extends HttpMessageConverter&lt;?&gt;&gt; selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
 
-<span class="fc" id="L59">    ResponseEntity&lt;JsonNode&gt; entity = rhyme.renderResponse(body);</span>
+<span class="nc" id="L59">    ResponseEntity&lt;JsonNode&gt; entity = rhyme.renderResponse(body);</span>
 
-<span class="fc" id="L61">    response.setStatusCode(entity.getStatusCode());</span>
+<span class="nc" id="L61">    response.setStatusCode(entity.getStatusCode());</span>
 
-<span class="fc" id="L63">    return body;</span>
+<span class="nc" id="L63">    return body;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -90,7 +90,7 @@ import reactor.netty.resources.ConnectionProvider;
   @ConditionalOnMissingBean
   WebClientProvider webClientProvider(WebClient.Builder webClientBuilder) {
 <span class="fc" id="L92">    WebClient webClient = webClientBuilder.build();</span>
-<span class="fc" id="L93">    return uri -&gt; webClient;</span>
+<span class="pc" id="L93">    return uri -&gt; webClient;</span>
   }
 
   /**

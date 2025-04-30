@@ -51,7 +51,7 @@ class VndErrorHandlingControllerAdvice {
 
   private ResponseEntity&lt;JsonNode&gt; renderAsBadRequest(String msg, Throwable ex) {
 
-<span class="fc" id="L54">    return rhyme.renderVndErrorResponse(new HalApiServerException(BAD_REQUEST.value(), msg, ex));</span>
+<span class="nc" id="L54">    return rhyme.renderVndErrorResponse(new HalApiServerException(BAD_REQUEST.value(), msg, ex));</span>
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -59,13 +59,13 @@ class VndErrorHandlingControllerAdvice {
 
     // re-throw this exception a new message as the default message MethodArgumentTypeMismatchException does
     // not clearly point out which parameter was invalid
-<span class="fc" id="L62">    return renderAsBadRequest(&quot;Invalid value for request parameter '&quot; + ex.getName() + &quot;'&quot;, ex);</span>
+<span class="nc" id="L62">    return renderAsBadRequest(&quot;Invalid value for request parameter '&quot; + ex.getName() + &quot;'&quot;, ex);</span>
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity&lt;JsonNode&gt; handleException(Exception ex) {
 
-<span class="fc" id="L68">    return rhyme.renderVndErrorResponse(ex);</span>
+<span class="nc" id="L68">    return rhyme.renderVndErrorResponse(ex);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

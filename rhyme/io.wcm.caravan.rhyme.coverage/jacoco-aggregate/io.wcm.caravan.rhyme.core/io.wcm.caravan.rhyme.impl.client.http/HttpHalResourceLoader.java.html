@@ -207,8 +207,8 @@ public class HttpHalResourceLoader implements HalResourceLoader {
         else {
           // the response code indicates that the request was *not* successful even though the response could be parsed
           String msg;
-<span class="fc bfc" id="L210" title="All 2 branches covered.">          if (StringUtils.equals(halResponse.getContentType(), VndErrorResponseRenderer.CONTENT_TYPE)) {</span>
-<span class="fc" id="L211">            msg = msgPrefix + &quot;which contains a vnd.error body with server-side error details&quot;;</span>
+<span class="pc bpc" id="L210" title="1 of 2 branches missed.">          if (StringUtils.equals(halResponse.getContentType(), VndErrorResponseRenderer.CONTENT_TYPE)) {</span>
+<span class="nc" id="L211">            msg = msgPrefix + &quot;which contains a vnd.error body with server-side error details&quot;;</span>
           }
           else {
 <span class="fc" id="L214">            msg = msgPrefix + &quot;and a JSON body that may contain further information is present&quot;;</span>
@@ -217,7 +217,7 @@ public class HttpHalResourceLoader implements HalResourceLoader {
         }
       }
 <span class="fc" id="L219">      catch (RuntimeException ex) {</span>
-<span class="fc bfc" id="L220" title="All 2 branches covered.">        if (statusIsOk) {</span>
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">        if (statusIsOk) {</span>
 <span class="fc" id="L221">          String msg = msgPrefix + &quot;but the body could not be successfully read and parsed as a JSON document&quot;;</span>
 
 <span class="fc" id="L223">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg, ex));</span>
@@ -226,8 +226,8 @@ public class HttpHalResourceLoader implements HalResourceLoader {
           // if JSON parsing failed for a non-ok response, we don't include that exception as a root cause,
           // as we cannot expected the body to be JSON all the time, and don't want confusing information
           // in the stack trace
-<span class="fc" id="L229">          String msg = msgPrefix + &quot;and no JSON body with further information was found&quot;;</span>
-<span class="fc" id="L230">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
+<span class="nc" id="L229">          String msg = msgPrefix + &quot;and no JSON body with further information was found&quot;;</span>
+<span class="nc" id="L230">          emitHalApiClientExceptionWithCause(new HttpClientSupportException(msg));</span>
         }
 <span class="fc" id="L232">      }</span>
 <span class="fc" id="L233">    }</span>
