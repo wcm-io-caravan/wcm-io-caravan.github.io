@@ -15,8 +15,8 @@ Resilient HTTP,io.wcm.caravan.io.http.impl,ApacheHttpClient.new Observable.OnSub
 Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpClientImpl.Context,0,12,0,0,0,4,0,1,0,1
 Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpClientImpl.ErrorDisassembleroperator.new Subscriber() {...},0,42,0,2,0,10,0,5,0,4
 Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpClientConfig,0,14,0,0,0,4,0,3,0,3
-Resilient HTTP,io.wcm.caravan.io.http.impl,HttpHystrixCommand,0,70,0,6,0,20,0,8,0,5
 Resilient HTTP,io.wcm.caravan.io.http.impl,ApacheHttpClient,22,22,4,0,2,3,6,5,4,5
+Resilient HTTP,io.wcm.caravan.io.http.impl,HttpHystrixCommand,0,70,0,6,0,20,0,8,0,5
 Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpThreadPoolConfig,29,65,2,2,10,17,4,6,2,6
 Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpServiceConfig,8,397,5,13,0,86,5,17,1,12
 Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpServiceConfigValidator,12,33,3,3,4,8,3,4,0,4
@@ -25,9 +25,9 @@ Resilient HTTP,io.wcm.caravan.io.http.impl,BundleActivator,6,0,0,0,4,0,3,0,3,0
 Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpHelper,12,69,0,6,4,10,0,6,0,3
 Resilient HTTP,io.wcm.caravan.io.http.impl,HttpHystrixCommand.new Action1() {...},0,15,0,0,0,3,0,2,0,2
 Resilient HTTP,io.wcm.caravan.io.http.impl,ApacheHttpClient.1.new FutureCallback() {...},79,51,0,0,8,4,2,2,2,2
+Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpClientImpl.ErrorDisassembleroperator,0,18,0,0,0,5,0,2,0,2
 Resilient HTTP,io.wcm.caravan.io.http.impl,HystrixHttpServiceMounter,40,0,2,0,7,0,6,0,5,0
 Resilient HTTP,io.wcm.caravan.io.http.impl,ArchaiusConfig,8,50,1,3,3,19,1,5,0,4
-Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpClientImpl.ErrorDisassembleroperator,0,18,0,0,0,5,0,2,0,2
 Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpClientImpl,32,249,10,18,0,46,10,31,4,23
 Resilient HTTP,io.wcm.caravan.io.http.impl,CaravanHttpCallbackExecutor,92,59,15,1,23,12,10,5,2,5
 Resilient HTTP,io.wcm.caravan.io.http,IllegalResponseRuntimeException,12,19,0,0,4,6,4,1,4,1
