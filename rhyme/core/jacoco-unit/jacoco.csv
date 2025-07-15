@@ -30,8 +30,8 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.api.server,VndErrorResponseRenderer,
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.server,RhymeMetadataConfiguration,0,2,0,0,0,1,0,1,0,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.server,ResourceConversions,0,12,0,0,0,3,0,3,0,3
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.server,AsyncHalResponseRenderer,0,18,0,0,0,10,0,2,0,2
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.metadata,FullMetadataGenerator,0,544,0,16,0,97,0,33,0,25
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.metadata,MaxAgeOnlyCollector.new RequestMetricsStopwatch() {...},0,7,0,0,0,2,0,2,0,2
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.metadata,FullMetadataGenerator,0,544,0,16,0,97,0,33,0,25
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.metadata,FullMetadataGenerator.TimingResourceCategory,0,18,0,0,0,7,0,1,0,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.metadata,FullMetadataGenerator.TimeMeasurement,0,27,0,0,0,9,0,5,0,5
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.metadata,EmissionStopwatch,0,53,0,2,0,16,0,9,0,8
