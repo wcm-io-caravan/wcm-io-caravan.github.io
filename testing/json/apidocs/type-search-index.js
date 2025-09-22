@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"io.wcm.caravan.testing.json","l":"JsonFixture"},{"p":"io.wcm.caravan.testing.json","l":"JsonTestEnvironment"}]
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"io.wcm.caravan.testing.json","l":"JsonFixture"},{"p":"io.wcm.caravan.testing.json","l":"JsonTestEnvironment"}];updateSearchResults();
