@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"io.wcm.caravan.maven.plugins.hal_docs_maven_plugin"},{"l":"io.wcm.caravan.maven.plugins.haldocs"}]
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"io.wcm.caravan.maven.plugins.hal_docs_maven_plugin"},{"l":"io.wcm.caravan.maven.plugins.haldocs"}];updateSearchResults();
