@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"io.wcm.caravan.jaxrs.publisher","l":"ApplicationPath"},{"p":"io.wcm.caravan.jaxrs.publisher","l":"JaxRsClassesProvider"},{"p":"io.wcm.caravan.jaxrs.publisher","l":"JaxRsComponent"}]
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"io.wcm.caravan.jaxrs.publisher","l":"ApplicationPath"},{"p":"io.wcm.caravan.jaxrs.publisher","l":"JaxRsClassesProvider"},{"p":"io.wcm.caravan.jaxrs.publisher","l":"JaxRsComponent"}];updateSearchResults();
