@@ -1,1 +1,1 @@
-typeSearchIndex = [{"p":"io.wcm.caravan.jaxws.publisher","l":"AbstractJaxWsServer"},{"l":"All Classes","url":"allclasses-index.html"}]
+typeSearchIndex = [{"p":"io.wcm.caravan.jaxws.publisher","l":"AbstractJaxWsServer"},{"l":"All Classes and Interfaces","u":"allclasses-index.html"}];updateSearchResults();
