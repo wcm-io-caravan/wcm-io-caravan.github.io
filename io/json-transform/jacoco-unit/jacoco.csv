@@ -3,7 +3,7 @@ JSON Transformation,io.wcm.caravan.io.jsontransform.sink,JacksonStreamSink,18,11
 JSON Transformation,io.wcm.caravan.io.jsontransform.sink,JacksonJsonNodeSink,55,199,14,26,8,45,13,22,1,12
 JSON Transformation,io.wcm.caravan.io.jsontransform.element,JsonPath,20,88,4,8,4,19,8,8,4,6
 JSON Transformation,io.wcm.caravan.io.jsontransform.element,JsonPathCreator,6,52,0,4,1,12,1,4,1,2
-JSON Transformation,io.wcm.caravan.io.jsontransform.element,JsonElementType,0,54,0,0,0,6,0,1,0,1
+JSON Transformation,io.wcm.caravan.io.jsontransform.element,JsonElementType,0,33,0,0,0,6,0,1,0,1
 JSON Transformation,io.wcm.caravan.io.jsontransform.element,JsonElement,14,111,2,6,3,19,5,14,3,12
 JSON Transformation,io.wcm.caravan.io.jsontransform.source,JacksonStreamSource,16,132,2,22,6,38,3,18,1,8
 JSON Transformation,io.wcm.caravan.io.jsontransform.source,XmlSource,72,281,15,37,15,79,15,31,2,18
