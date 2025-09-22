@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"io.wcm.caravan.commons.httpclient","l":"HttpClientConfig"},{"p":"io.wcm.caravan.commons.httpclient","l":"HttpClientFactory"}]
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"io.wcm.caravan.commons.httpclient","l":"HttpClientConfig"},{"p":"io.wcm.caravan.commons.httpclient","l":"HttpClientFactory"}];updateSearchResults();

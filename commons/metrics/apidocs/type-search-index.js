@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"io.wcm.caravan.commons.metrics.rx","l":"HitsAndMissesCountingMetricsOperator"},{"p":"io.wcm.caravan.commons.metrics.rx","l":"TimerMetricsOperator"}]
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"io.wcm.caravan.commons.metrics.rx","l":"HitsAndMissesCountingMetricsOperator"},{"p":"io.wcm.caravan.commons.metrics.rx","l":"TimerMetricsOperator"}];updateSearchResults();

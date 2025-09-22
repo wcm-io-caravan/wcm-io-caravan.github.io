@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"io.wcm.caravan.commons.httpclient"}]
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"io.wcm.caravan.commons.httpclient"}];updateSearchResults();
