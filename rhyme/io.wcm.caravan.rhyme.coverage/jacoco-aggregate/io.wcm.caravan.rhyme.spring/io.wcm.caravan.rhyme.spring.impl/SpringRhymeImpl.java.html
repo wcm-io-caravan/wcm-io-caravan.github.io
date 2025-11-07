@@ -185,7 +185,7 @@ class SpringRhymeImpl implements SpringRhyme {
     @Override
     public boolean isMetadataGenerationEnabled() {
 <span class="fc" id="L187">      String[] embedMetadata = httpRequest.getParameterMap().get(EMBED_RHYME_METADATA);</span>
-<span class="pc bpc" id="L188" title="1 of 4 branches missed.">      return embedMetadata != null &amp;&amp; Stream.of(embedMetadata).noneMatch(value -&gt; &quot;false&quot;.equals(value));</span>
+<span class="fc bfc" id="L188" title="All 4 branches covered.">      return embedMetadata != null &amp;&amp; Stream.of(embedMetadata).noneMatch(value -&gt; &quot;false&quot;.equals(value));</span>
     }
   }
 }
