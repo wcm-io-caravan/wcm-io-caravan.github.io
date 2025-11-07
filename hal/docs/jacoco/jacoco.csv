@@ -9,8 +9,8 @@ HAL Interface Documentation,io.wcm.caravan.hal.docs.impl,DocsPath,26,0,6,0,8,0,6
 HAL Interface Documentation,io.wcm.caravan.hal.docs.impl,HalDocsServlet,132,0,8,0,35,0,16,0,12,0
 HAL Interface Documentation,io.wcm.caravan.hal.docs.impl,JsonSchemaBundleTracker,112,0,10,0,29,0,16,0,11,0
 HAL Interface Documentation,io.wcm.caravan.hal.docs.impl.model,ResourceRef,9,15,0,0,3,7,3,4,3,4
-HAL Interface Documentation,io.wcm.caravan.hal.docs.impl.model,LinkRelation,18,87,1,1,6,27,6,11,5,11
 HAL Interface Documentation,io.wcm.caravan.hal.docs.impl.model,LinkRelationRef,19,21,2,0,5,7,4,5,3,5
+HAL Interface Documentation,io.wcm.caravan.hal.docs.impl.model,LinkRelation,18,87,1,1,6,27,6,11,5,11
 HAL Interface Documentation,io.wcm.caravan.hal.docs.impl.model,Service,50,39,6,0,14,14,6,9,3,9
 HAL Interface Documentation,io.wcm.caravan.hal.docs.impl.augmenter,HalDocsAugmenterImpl,0,30,0,0,0,8,0,2,0,2
 HAL Interface Documentation,io.wcm.caravan.hal.docs.impl.augmenter,LinkRelationTitleAugmenter,0,35,0,2,0,9,0,5,0,4
