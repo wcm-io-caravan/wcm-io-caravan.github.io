@@ -114,13 +114,33 @@
  <div class="page-header">
   <h1 id="pmd_results">PMD Results</h1>
  </div>
- <p>The following document contains the results of <a class="externalLink" href="https://pmd.github.io">PMD</a> 7.13.0.</p>
+ <p>The following document contains the results of <a class="externalLink" href="https://pmd.github.io">PMD</a> 7.21.0.</p>
  <section>
   <a id="Violations_By_Priority"></a>
   <h2 id="violations_by_priority">Violations By Priority</h2>
   <section>
    <a id="Priority_3"></a>
    <h3 id="priority_3">Priority 3</h3>
+   <section>
+    <a id="io.2Fwcm.2Fcaravan.2Frhyme.2Faem.2Fimpl.2FHalApiServlet.java"></a>
+    <h4 id="iowcmcaravanrhymeaemimplhalapiservlet.java">io/wcm/caravan/rhyme/aem/impl/HalApiServlet.java</h4>
+    <table class="bodyTable table table-striped table-hover">
+     <thead>
+      <tr class="a">
+       <th>Rule</th>
+       <th>Violation</th>
+       <th>Line</th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr class="b">
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+       <td>Avoid catching RuntimeException in try-catch block</td>
+       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/HalApiServlet.html#L70">70</a></td>
+      </tr>
+     </tbody>
+    </table>
+   </section>
    <section>
     <a id="io.2Fwcm.2Fcaravan.2Frhyme.2Faem.2Fimpl.2FSlingRhymeImpl.java"></a>
     <h4 id="iowcmcaravanrhymeaemimplslingrhymeimpl.java">io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.java</h4>
@@ -134,22 +154,27 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_errorprone.html#compareobjectswithequals">CompareObjectsWithEquals</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#compareobjectswithequals">CompareObjectsWithEquals</a></td>
        <td>Use equals() to compare object references.</td>
        <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.html#L90">90</a></td>
       </tr>
       <tr class="a">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_design.html#exceptionasflowcontrol">ExceptionAsFlowControl</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_design.html#exceptionasflowcontrol">ExceptionAsFlowControl</a></td>
        <td>Exception thrown at line 100 is caught in this block.</td>
        <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.html#L105">105</a>–<a href="./xref/io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.html#L110">110</a></td>
       </tr>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_bestpractices.html#preservestacktrace">PreserveStackTrace</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+       <td>Avoid catching RuntimeException in try-catch block</td>
+       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.html#L105">105</a></td>
+      </tr>
+      <tr class="a">
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_bestpractices.html#preservestacktrace">PreserveStackTrace</a></td>
        <td>Thrown exception does not preserve the stack trace of exception 'ex' on all code paths</td>
        <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.html#L107">107</a></td>
       </tr>
-      <tr class="a">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable">UnusedLocalVariable</a></td>
+      <tr class="b">
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_bestpractices.html#unusedlocalvariable">UnusedLocalVariable</a></td>
        <td>Avoid unused local variables such as 'sw'.</td>
        <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.html#L125">125</a></td>
       </tr>
@@ -169,9 +194,29 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_bestpractices.html#literalsfirstincomparisons">LiteralsFirstInComparisons</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_bestpractices.html#literalsfirstincomparisons">LiteralsFirstInComparisons</a></td>
        <td>Position literals first in String comparisons</td>
        <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/adaptation/TemplateProxyPostAdaptationStage.html#L108">108</a></td>
+      </tr>
+     </tbody>
+    </table>
+   </section>
+   <section>
+    <a id="io.2Fwcm.2Fcaravan.2Frhyme.2Faem.2Fimpl.2Fclient.2FApacheHttpClientFactorySupport.java"></a>
+    <h4 id="iowcmcaravanrhymeaemimplclientapachehttpclientfact">io/wcm/caravan/rhyme/aem/impl/client/ApacheHttpClientFactorySupport.java</h4>
+    <table class="bodyTable table table-striped table-hover">
+     <thead>
+      <tr class="a">
+       <th>Rule</th>
+       <th>Violation</th>
+       <th>Line</th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr class="b">
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+       <td>Avoid catching RuntimeException in try-catch block</td>
+       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/client/ApacheHttpClientFactorySupport.html#L69">69</a></td>
       </tr>
      </tbody>
     </table>
@@ -189,9 +234,29 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_performance.html#optimizabletoarraycall">OptimizableToArrayCall</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_performance.html#optimizabletoarraycall">OptimizableToArrayCall</a></td>
        <td>This call to Collection.toArray() may be optimizable</td>
        <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/linkbuilder/SlingLinkBuilderImpl.html#L71">71</a></td>
+      </tr>
+     </tbody>
+    </table>
+   </section>
+   <section>
+    <a id="io.2Fwcm.2Fcaravan.2Frhyme.2Faem.2Fimpl.2Fparameters.2FQueryParamCollector.java"></a>
+    <h4 id="iowcmcaravanrhymeaemimplparametersqueryparamcollec">io/wcm/caravan/rhyme/aem/impl/parameters/QueryParamCollector.java</h4>
+    <table class="bodyTable table table-striped table-hover">
+     <thead>
+      <tr class="a">
+       <th>Rule</th>
+       <th>Violation</th>
+       <th>Line</th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr class="b">
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+       <td>Avoid catching RuntimeException in try-catch block</td>
+       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/parameters/QueryParamCollector.html#L88">88</a></td>
       </tr>
      </tbody>
     </table>
@@ -213,12 +278,12 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
        <td>Unnecessary qualifier 'PageUtils': 'isPage' is already in scope</td>
        <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/util/PageUtils.html#L43">43</a></td>
       </tr>
       <tr class="a">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
        <td>Unnecessary qualifier 'PageUtils': 'isPage' is already in scope</td>
        <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/util/PageUtils.html#L56">56</a></td>
       </tr>
@@ -238,7 +303,7 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
        <td>Unnecessary qualifier 'ResourceStreams': 'getChildPages' is already in scope</td>
        <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/util/ResourceStreams.html#L101">101</a></td>
       </tr>
@@ -250,6 +315,28 @@
  <section>
   <a id="Files"></a>
   <h2 id="files">Files</h2>
+  <section>
+   <a id="io.2Fwcm.2Fcaravan.2Frhyme.2Faem.2Fimpl.2FHalApiServlet.java"></a>
+   <h3 id="iowcmcaravanrhymeaemimplhalapiservlet.java1">io/wcm/caravan/rhyme/aem/impl/HalApiServlet.java</h3>
+   <table class="bodyTable table table-striped table-hover">
+    <thead>
+     <tr class="a">
+      <th>Rule</th>
+      <th>Violation</th>
+      <th>Priority</th>
+      <th>Line</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr class="b">
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+      <td>Avoid catching RuntimeException in try-catch block</td>
+      <td>3</td>
+      <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/HalApiServlet.html#L70">70</a></td>
+     </tr>
+    </tbody>
+   </table>
+  </section>
   <section>
    <a id="io.2Fwcm.2Fcaravan.2Frhyme.2Faem.2Fimpl.2FSlingRhymeImpl.java"></a>
    <h3 id="iowcmcaravanrhymeaemimplslingrhymeimpl.java1">io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.java</h3>
@@ -264,25 +351,31 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_errorprone.html#compareobjectswithequals">CompareObjectsWithEquals</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#compareobjectswithequals">CompareObjectsWithEquals</a></td>
       <td>Use equals() to compare object references.</td>
       <td>3</td>
       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.html#L90">90</a></td>
      </tr>
      <tr class="a">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_design.html#exceptionasflowcontrol">ExceptionAsFlowControl</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_design.html#exceptionasflowcontrol">ExceptionAsFlowControl</a></td>
       <td>Exception thrown at line 100 is caught in this block.</td>
       <td>3</td>
       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.html#L105">105</a>–<a href="./xref/io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.html#L110">110</a></td>
      </tr>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_bestpractices.html#preservestacktrace">PreserveStackTrace</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+      <td>Avoid catching RuntimeException in try-catch block</td>
+      <td>3</td>
+      <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.html#L105">105</a></td>
+     </tr>
+     <tr class="a">
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_bestpractices.html#preservestacktrace">PreserveStackTrace</a></td>
       <td>Thrown exception does not preserve the stack trace of exception 'ex' on all code paths</td>
       <td>3</td>
       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.html#L107">107</a></td>
      </tr>
-     <tr class="a">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_bestpractices.html#unusedlocalvariable">UnusedLocalVariable</a></td>
+     <tr class="b">
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_bestpractices.html#unusedlocalvariable">UnusedLocalVariable</a></td>
       <td>Avoid unused local variables such as 'sw'.</td>
       <td>3</td>
       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.html#L125">125</a></td>
@@ -304,10 +397,32 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_bestpractices.html#literalsfirstincomparisons">LiteralsFirstInComparisons</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_bestpractices.html#literalsfirstincomparisons">LiteralsFirstInComparisons</a></td>
       <td>Position literals first in String comparisons</td>
       <td>3</td>
       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/adaptation/TemplateProxyPostAdaptationStage.html#L108">108</a></td>
+     </tr>
+    </tbody>
+   </table>
+  </section>
+  <section>
+   <a id="io.2Fwcm.2Fcaravan.2Frhyme.2Faem.2Fimpl.2Fclient.2FApacheHttpClientFactorySupport.java"></a>
+   <h3 id="iowcmcaravanrhymeaemimplclientapachehttpclientfact1">io/wcm/caravan/rhyme/aem/impl/client/ApacheHttpClientFactorySupport.java</h3>
+   <table class="bodyTable table table-striped table-hover">
+    <thead>
+     <tr class="a">
+      <th>Rule</th>
+      <th>Violation</th>
+      <th>Priority</th>
+      <th>Line</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr class="b">
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+      <td>Avoid catching RuntimeException in try-catch block</td>
+      <td>3</td>
+      <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/client/ApacheHttpClientFactorySupport.html#L69">69</a></td>
      </tr>
     </tbody>
    </table>
@@ -326,10 +441,32 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_performance.html#optimizabletoarraycall">OptimizableToArrayCall</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_performance.html#optimizabletoarraycall">OptimizableToArrayCall</a></td>
       <td>This call to Collection.toArray() may be optimizable</td>
       <td>3</td>
       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/linkbuilder/SlingLinkBuilderImpl.html#L71">71</a></td>
+     </tr>
+    </tbody>
+   </table>
+  </section>
+  <section>
+   <a id="io.2Fwcm.2Fcaravan.2Frhyme.2Faem.2Fimpl.2Fparameters.2FQueryParamCollector.java"></a>
+   <h3 id="iowcmcaravanrhymeaemimplparametersqueryparamcollec1">io/wcm/caravan/rhyme/aem/impl/parameters/QueryParamCollector.java</h3>
+   <table class="bodyTable table table-striped table-hover">
+    <thead>
+     <tr class="a">
+      <th>Rule</th>
+      <th>Violation</th>
+      <th>Priority</th>
+      <th>Line</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr class="b">
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+      <td>Avoid catching RuntimeException in try-catch block</td>
+      <td>3</td>
+      <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/parameters/QueryParamCollector.html#L88">88</a></td>
      </tr>
     </tbody>
    </table>
@@ -348,13 +485,13 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
       <td>Unnecessary qualifier 'PageUtils': 'isPage' is already in scope</td>
       <td>4</td>
       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/util/PageUtils.html#L43">43</a></td>
      </tr>
      <tr class="a">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
       <td>Unnecessary qualifier 'PageUtils': 'isPage' is already in scope</td>
       <td>4</td>
       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/util/PageUtils.html#L56">56</a></td>
@@ -376,7 +513,7 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
       <td>Unnecessary qualifier 'ResourceStreams': 'getChildPages' is already in scope</td>
       <td>4</td>
       <td><a href="./xref/io/wcm/caravan/rhyme/aem/impl/util/ResourceStreams.html#L101">101</a></td>
@@ -399,9 +536,12 @@
       <ul class="nav nav-list">
     <li class="dropdown"><a href="#priority_3" title="Priority 3">Priority 3 <b class="caret"></b></a>
       <ul class="nav nav-list">
+    <li><a href="#iowcmcaravanrhymeaemimplhalapiservlet.java" title="io/wcm/caravan/rhyme/aem/impl/HalApiServlet.java">io/wcm/caravan/rhyme/aem/impl/HalApiServlet.java</a>
     <li><a href="#iowcmcaravanrhymeaemimplslingrhymeimpl.java" title="io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.java">io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.java</a>
     <li><a href="#iowcmcaravanrhymeaemimpladaptationtemplateproxypos" title="io/wcm/caravan/rhyme/aem/impl/adaptation/TemplateProxyPostAdaptationStage.java">io/wcm/caravan/rhyme/aem/impl/adaptation/TemplateProxyPostAdaptationStage.java</a>
+    <li><a href="#iowcmcaravanrhymeaemimplclientapachehttpclientfact" title="io/wcm/caravan/rhyme/aem/impl/client/ApacheHttpClientFactorySupport.java">io/wcm/caravan/rhyme/aem/impl/client/ApacheHttpClientFactorySupport.java</a>
     <li><a href="#iowcmcaravanrhymeaemimpllinkbuilderslinglinkbuilde" title="io/wcm/caravan/rhyme/aem/impl/linkbuilder/SlingLinkBuilderImpl.java">io/wcm/caravan/rhyme/aem/impl/linkbuilder/SlingLinkBuilderImpl.java</a>
+    <li><a href="#iowcmcaravanrhymeaemimplparametersqueryparamcollec" title="io/wcm/caravan/rhyme/aem/impl/parameters/QueryParamCollector.java">io/wcm/caravan/rhyme/aem/impl/parameters/QueryParamCollector.java</a>
         <li class="divider"></li>
       </ul>
     </li>
@@ -416,9 +556,12 @@
     </li>
     <li class="dropdown"><a href="#files" title="Files">Files <b class="caret"></b></a>
       <ul class="nav nav-list">
+    <li><a href="#iowcmcaravanrhymeaemimplhalapiservlet.java1" title="io/wcm/caravan/rhyme/aem/impl/HalApiServlet.java">io/wcm/caravan/rhyme/aem/impl/HalApiServlet.java</a>
     <li><a href="#iowcmcaravanrhymeaemimplslingrhymeimpl.java1" title="io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.java">io/wcm/caravan/rhyme/aem/impl/SlingRhymeImpl.java</a>
     <li><a href="#iowcmcaravanrhymeaemimpladaptationtemplateproxypos1" title="io/wcm/caravan/rhyme/aem/impl/adaptation/TemplateProxyPostAdaptationStage.java">io/wcm/caravan/rhyme/aem/impl/adaptation/TemplateProxyPostAdaptationStage.java</a>
+    <li><a href="#iowcmcaravanrhymeaemimplclientapachehttpclientfact1" title="io/wcm/caravan/rhyme/aem/impl/client/ApacheHttpClientFactorySupport.java">io/wcm/caravan/rhyme/aem/impl/client/ApacheHttpClientFactorySupport.java</a>
     <li><a href="#iowcmcaravanrhymeaemimpllinkbuilderslinglinkbuilde1" title="io/wcm/caravan/rhyme/aem/impl/linkbuilder/SlingLinkBuilderImpl.java">io/wcm/caravan/rhyme/aem/impl/linkbuilder/SlingLinkBuilderImpl.java</a>
+    <li><a href="#iowcmcaravanrhymeaemimplparametersqueryparamcollec1" title="io/wcm/caravan/rhyme/aem/impl/parameters/QueryParamCollector.java">io/wcm/caravan/rhyme/aem/impl/parameters/QueryParamCollector.java</a>
     <li><a href="#iowcmcaravanrhymeaemimplutilpageutils.java1" title="io/wcm/caravan/rhyme/aem/impl/util/PageUtils.java">io/wcm/caravan/rhyme/aem/impl/util/PageUtils.java</a>
     <li><a href="#iowcmcaravanrhymeaemimplutilresourcestreams.java1" title="io/wcm/caravan/rhyme/aem/impl/util/ResourceStreams.java">io/wcm/caravan/rhyme/aem/impl/util/ResourceStreams.java</a>
         <li class="divider"></li>
@@ -576,7 +719,7 @@
       <div class="span12">
         <p class="pull-right"><a href="#body">Back to top</a></p>
         <p class="copyright">Copyright &copy;2014-2026 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All Rights Reserved.</p>
-        <p class="version-date"><span class="projectVersion">Version: 1.0.0-SNAPSHOT. </span><span class="publishDate">Last Published: 2026-03-09. </span></p>
+        <p class="version-date"><span class="projectVersion">Version: 1.0.0-SNAPSHOT. </span><span class="publishDate">Last Published: 2026-03-10. </span></p>
       </div>
     </div>
   </div>

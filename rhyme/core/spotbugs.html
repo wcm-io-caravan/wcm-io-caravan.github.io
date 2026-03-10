@@ -114,7 +114,7 @@
   <h1 id="spotbugs_bug_detector_report">SpotBugs Bug Detector Report</h1>
  </div>
  <p>The following document contains the results of <a class="externalLink" href="https://spotbugs.github.io/">SpotBugs</a></p>
- <p>SpotBugs Version is <i>4.9.3</i></p>
+ <p>SpotBugs Version is <i>4.9.8</i></p>
  <p>Threshold is <i>medium</i></p>
  <p>Effort is <i>default</i></p>
 </section>
@@ -132,9 +132,9 @@
   <tbody>
    <tr class="b">
     <td>94</td>
-    <td>2</td>
+    <td>1</td>
     <td>0</td>
-    <td>10</td>
+    <td>0</td>
    </tr>
   </tbody>
  </table>
@@ -151,10 +151,6 @@
   <tbody>
    <tr class="b">
     <td><a href="#io.wcm.caravan.rhyme.impl.client.http.HttpUrlConnectionSupport">io.wcm.caravan.rhyme.impl.client.http.HttpUrlConnectionSupport</a></td>
-    <td>1</td>
-   </tr>
-   <tr class="a">
-    <td><a href="#io.wcm.caravan.rhyme.impl.metadata.MaxAgeOnlyCollector">io.wcm.caravan.rhyme.impl.metadata.MaxAgeOnlyCollector</a></td>
     <td>1</td>
    </tr>
   </tbody>
@@ -177,30 +173,7 @@
     <td>This web server request could be used by an attacker to expose internal services and filesystem.</td>
     <td>SECURITY</td>
     <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#URLCONNECTION_SSRF_FD">URLCONNECTION_SSRF_FD</a></td>
-    <td><a href="./xref/io/wcm/caravan/rhyme/impl/client/http/HttpUrlConnectionSupport.html#L49">49</a></td>
-    <td>Medium</td>
-   </tr>
-  </tbody>
- </table>
-</section><a name="io.wcm.caravan.rhyme.impl.metadata.MaxAgeOnlyCollector"></a>
-<section>
- <h2 id="io.wcm.caravan.rhyme.impl.metadata.maxageonlycolle">io.wcm.caravan.rhyme.impl.metadata.MaxAgeOnlyCollector</h2>
- <table class="bodyTable table table-striped table-hover">
-  <thead>
-   <tr class="a">
-    <th>Bug</th>
-    <th>Category</th>
-    <th>Details</th>
-    <th>Line</th>
-    <th>Priority</th>
-   </tr>
-  </thead>
-  <tbody>
-   <tr class="b">
-    <td>Operation on the "maxAgeLimit" shared variable in "MaxAgeOnlyCollector" class is not atomic</td>
-    <td>MT_CORRECTNESS</td>
-    <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#AT_NONATOMIC_OPERATIONS_ON_SHARED_VARIABLE">AT_NONATOMIC_OPERATIONS_ON_SHARED_VARIABLE</a></td>
-    <td><a href="./xref/io/wcm/caravan/rhyme/impl/metadata/MaxAgeOnlyCollector.html#L74">74</a></td>
+    <td><a href="xref/xref/io/wcm/caravan/rhyme/impl/client/http/HttpUrlConnectionSupport.html#L49">49</a></td>
     <td>Medium</td>
    </tr>
   </tbody>
@@ -218,7 +191,6 @@
     <li class="dropdown"><a href="#files" title="Files">Files <b class="caret"></b></a>
       <ul class="nav nav-list">
     <li><a href="#io.wcm.caravan.rhyme.impl.client.http.httpurlconne" title="io.wcm.caravan.rhyme.impl.client.http.HttpUrlConnectionSupport">io.wcm.caravan.rhyme.impl.client.http.HttpUrlConnectionSupport</a>
-    <li><a href="#io.wcm.caravan.rhyme.impl.metadata.maxageonlycolle" title="io.wcm.caravan.rhyme.impl.metadata.MaxAgeOnlyCollector">io.wcm.caravan.rhyme.impl.metadata.MaxAgeOnlyCollector</a>
         <li class="divider"></li>
       </ul>
     </li>
@@ -375,7 +347,7 @@
       <div class="span12">
         <p class="pull-right"><a href="#body">Back to top</a></p>
         <p class="copyright">Copyright &copy;2014-2026 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All Rights Reserved.</p>
-        <p class="version-date"><span class="projectVersion">Version: 1.2.1-SNAPSHOT. </span><span class="publishDate">Last Published: 2026-03-09. </span></p>
+        <p class="version-date"><span class="projectVersion">Version: 1.2.1-SNAPSHOT. </span><span class="publishDate">Last Published: 2026-03-10. </span></p>
       </div>
     </div>
   </div>
