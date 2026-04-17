@@ -114,7 +114,7 @@
   <h1 id="spotbugs_bug_detector_report">SpotBugs Bug Detector Report</h1>
  </div>
  <p>The following document contains the results of <a class="externalLink" href="https://spotbugs.github.io/">SpotBugs</a></p>
- <p>SpotBugs Version is <i>4.9.3</i></p>
+ <p>SpotBugs Version is <i>4.9.8</i></p>
  <p>Threshold is <i>medium</i></p>
  <p>Effort is <i>default</i></p>
 </section>
@@ -134,7 +134,7 @@
     <td>3</td>
     <td>4</td>
     <td>0</td>
-    <td>1</td>
+    <td>0</td>
    </tr>
   </tbody>
  </table>
@@ -173,28 +173,28 @@
     <td>HTTP parameter directly written to HTTP header output in io.wcm.caravan.commons.cors.impl.CorsServletFilter.doFilter(ServletRequest, ServletResponse, FilterChain)</td>
     <td>SECURITY</td>
     <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#HRS_REQUEST_PARAMETER_TO_HTTP_HEADER">HRS_REQUEST_PARAMETER_TO_HTTP_HEADER</a></td>
-    <td><a href="./xref/io/wcm/caravan/commons/cors/impl/CorsServletFilter.html#L127">127</a></td>
+    <td><a href="xref/io/wcm/caravan/commons/cors/impl/CorsServletFilter.html#L127">127</a></td>
     <td>Medium</td>
    </tr>
    <tr class="a">
     <td>This use of javax/servlet/http/HttpServletResponse.setHeader(Ljava/lang/String;Ljava/lang/String;)V might be used to include CRLF characters into HTTP headers</td>
     <td>SECURITY</td>
     <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#HTTP_RESPONSE_SPLITTING">HTTP_RESPONSE_SPLITTING</a></td>
-    <td><a href="./xref/io/wcm/caravan/commons/cors/impl/CorsServletFilter.html#L127">127</a></td>
+    <td><a href="xref/io/wcm/caravan/commons/cors/impl/CorsServletFilter.html#L127">127</a></td>
     <td>Medium</td>
    </tr>
    <tr class="b">
     <td>The program defines an overly permissive Cross-Origin Resource Sharing (CORS) policy</td>
     <td>SECURITY</td>
     <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#PERMISSIVE_CORS">PERMISSIVE_CORS</a></td>
-    <td><a href="./xref/io/wcm/caravan/commons/cors/impl/CorsServletFilter.html#L123">123</a></td>
+    <td><a href="xref/io/wcm/caravan/commons/cors/impl/CorsServletFilter.html#L123">123</a></td>
     <td>High</td>
    </tr>
    <tr class="a">
     <td>The program defines an overly permissive Cross-Origin Resource Sharing (CORS) policy</td>
     <td>SECURITY</td>
     <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#PERMISSIVE_CORS">PERMISSIVE_CORS</a></td>
-    <td><a href="./xref/io/wcm/caravan/commons/cors/impl/CorsServletFilter.html#L127">127</a></td>
+    <td><a href="xref/io/wcm/caravan/commons/cors/impl/CorsServletFilter.html#L127">127</a></td>
     <td>High</td>
    </tr>
   </tbody>
