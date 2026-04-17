@@ -114,7 +114,7 @@
  <div class="page-header">
   <h1 id="pmd_results">PMD Results</h1>
  </div>
- <p>The following document contains the results of <a class="externalLink" href="https://pmd.github.io">PMD</a> 7.13.0.</p>
+ <p>The following document contains the results of <a class="externalLink" href="https://pmd.github.io">PMD</a> 7.23.0.</p>
  <section>
   <a id="Violations_By_Priority"></a>
   <h2 id="violations_by_priority">Violations By Priority</h2>
@@ -134,7 +134,7 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal">ClassWithOnlyPrivateConstructorsShouldBeFinal</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal">ClassWithOnlyPrivateConstructorsShouldBeFinal</a></td>
        <td>This class has only private constructors and may be final</td>
        <td><a href="./xref/io/wcm/caravan/io/http/impl/CaravanHttpCallbackExecutor.html#L122">122</a></td>
       </tr>
@@ -145,6 +145,31 @@
   <section>
    <a id="Priority_3"></a>
    <h3 id="priority_3">Priority 3</h3>
+   <section>
+    <a id="io.2Fwcm.2Fcaravan.2Fio.2Fhttp.2Fimpl.2FApacheHttpClient.java"></a>
+    <h4 id="iowcmcaravaniohttpimplapachehttpclient.java">io/wcm/caravan/io/http/impl/ApacheHttpClient.java</h4>
+    <table class="bodyTable table table-striped table-hover">
+     <thead>
+      <tr class="a">
+       <th>Rule</th>
+       <th>Violation</th>
+       <th>Line</th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr class="b">
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+       <td>Avoid catching Throwable in try-catch block</td>
+       <td><a href="./xref/io/wcm/caravan/io/http/impl/ApacheHttpClient.html#L108">108</a></td>
+      </tr>
+      <tr class="a">
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+       <td>Avoid catching Exception in try-catch block</td>
+       <td><a href="./xref/io/wcm/caravan/io/http/impl/ApacheHttpClient.html#L203">203</a></td>
+      </tr>
+     </tbody>
+    </table>
+   </section>
    <section>
     <a id="io.2Fwcm.2Fcaravan.2Fio.2Fhttp.2Fimpl.2FCaravanHttpServiceConfig.java"></a>
     <h4 id="iowcmcaravaniohttpimplcaravanhttpserviceconfig.jav">io/wcm/caravan/io/http/impl/CaravanHttpServiceConfig.java</h4>
@@ -158,9 +183,29 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_design.html#simplifyconditional">SimplifyConditional</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_design.html#simplifyconditional">SimplifyConditional</a></td>
        <td>No need to check for null before an instanceof</td>
        <td><a href="./xref/io/wcm/caravan/io/http/impl/CaravanHttpServiceConfig.html#L239">239</a></td>
+      </tr>
+     </tbody>
+    </table>
+   </section>
+   <section>
+    <a id="io.2Fwcm.2Fcaravan.2Fio.2Fhttp.2Fimpl.2Fribbon.2FSimpleLoadBalancerFactory.java"></a>
+    <h4 id="iowcmcaravaniohttpimplribbonsimpleloadbalancerfact">io/wcm/caravan/io/http/impl/ribbon/SimpleLoadBalancerFactory.java</h4>
+    <table class="bodyTable table table-striped table-hover">
+     <thead>
+      <tr class="a">
+       <th>Rule</th>
+       <th>Violation</th>
+       <th>Line</th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr class="b">
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+       <td>Avoid catching NullPointerException in try-catch block</td>
+       <td><a href="./xref/io/wcm/caravan/io/http/impl/ribbon/SimpleLoadBalancerFactory.html#L50">50</a></td>
       </tr>
      </tbody>
     </table>
@@ -178,12 +223,17 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_bestpractices.html#preservestacktrace">PreserveStackTrace</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_bestpractices.html#preservestacktrace">PreserveStackTrace</a></td>
        <td>Thrown exception does not preserve the stack trace of exception 'ex' on all code paths</td>
        <td><a href="./xref/io/wcm/caravan/io/http/impl/servletclient/HttpServletRequestMapper.html#L88">88</a></td>
       </tr>
       <tr class="a">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_performance.html#optimizabletoarraycall">OptimizableToArrayCall</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#assignmentinoperand">AssignmentInOperand</a></td>
+       <td>Avoid assignment to index in operand</td>
+       <td><a href="./xref/io/wcm/caravan/io/http/impl/servletclient/HttpServletRequestMapper.html#L130">130</a></td>
+      </tr>
+      <tr class="b">
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_performance.html#optimizabletoarraycall">OptimizableToArrayCall</a></td>
        <td>This call to Collection.toArray() may be optimizable</td>
        <td><a href="./xref/io/wcm/caravan/io/http/impl/servletclient/HttpServletRequestMapper.html#L160">160</a></td>
       </tr>
@@ -203,7 +253,7 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_bestpractices.html#avoidstringbufferfield">AvoidStringBufferField</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_bestpractices.html#avoidstringbufferfield">AvoidStringBufferField</a></td>
        <td>StringBuffers can grow quite a lot, and so may become a source of memory leak (if the owning class has a long life time).</td>
        <td><a href="./xref/io/wcm/caravan/io/http/request/CaravanHttpRequestBuilder.html#L55">55</a></td>
       </tr>
@@ -227,7 +277,7 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
        <td>Unnecessary qualifier 'LoadBalancerFactory': 'SIMPLE' is already in scope because it is inherited by an enclosing type</td>
        <td><a href="./xref/io/wcm/caravan/io/http/impl/ribbon/CachingLoadBalancerFactory.html#L42">42</a></td>
       </tr>
@@ -247,17 +297,17 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
        <td>Unnecessary qualifier 'HttpServletResponse': 'SC_OK' is already in scope because it is inherited by an enclosing type</td>
        <td><a href="./xref/io/wcm/caravan/io/http/impl/servletclient/HttpServletResponseMapper.html#L57">57</a></td>
       </tr>
       <tr class="a">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
        <td>Unnecessary qualifier 'HttpServletResponse': 'SC_OK' is already in scope because it is inherited by an enclosing type</td>
        <td><a href="./xref/io/wcm/caravan/io/http/impl/servletclient/HttpServletResponseMapper.html#L141">141</a></td>
       </tr>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
        <td>Unnecessary qualifier 'HttpServletResponse': 'SC_MOVED_TEMPORARILY' is already in scope because it is inherited by an enclosing type</td>
        <td><a href="./xref/io/wcm/caravan/io/http/impl/servletclient/HttpServletResponseMapper.html#L199">199</a></td>
       </tr>
@@ -277,7 +327,7 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
        <td>Unnecessary qualifier 'CaravanHttpRequest': 'CORRELATION_ID_HEADER_NAME' is already in scope because it is declared in an enclosing type</td>
        <td><a href="./xref/io/wcm/caravan/io/http/request/CaravanHttpRequest.html#L174">174</a></td>
       </tr>
@@ -301,7 +351,7 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_errorprone.html#invalidlogmessageformat">InvalidLogMessageFormat</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#invalidlogmessageformat">InvalidLogMessageFormat</a></td>
        <td>Missing arguments, expected 5 arguments but found 4</td>
        <td><a href="./xref/io/wcm/caravan/io/http/impl/CaravanHttpServiceConfig.html#L335">335</a>–<a href="./xref/io/wcm/caravan/io/http/impl/CaravanHttpServiceConfig.html#L336">336</a></td>
       </tr>
@@ -321,7 +371,7 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_errorprone.html#invalidlogmessageformat">InvalidLogMessageFormat</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#invalidlogmessageformat">InvalidLogMessageFormat</a></td>
        <td>Too many arguments, expected 0 argument but found 1</td>
        <td><a href="./xref/io/wcm/caravan/io/http/impl/CaravanHttpServiceConfigValidator.html#L63">63</a></td>
       </tr>
@@ -341,7 +391,7 @@
      </thead>
      <tbody>
       <tr class="b">
-       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_errorprone.html#invalidlogmessageformat">InvalidLogMessageFormat</a></td>
+       <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#invalidlogmessageformat">InvalidLogMessageFormat</a></td>
        <td>Too many arguments, expected 0 argument but found 1</td>
        <td><a href="./xref/io/wcm/caravan/io/http/impl/CaravanHttpThreadPoolConfig.html#L109">109</a></td>
       </tr>
@@ -353,6 +403,34 @@
  <section>
   <a id="Files"></a>
   <h2 id="files">Files</h2>
+  <section>
+   <a id="io.2Fwcm.2Fcaravan.2Fio.2Fhttp.2Fimpl.2FApacheHttpClient.java"></a>
+   <h3 id="iowcmcaravaniohttpimplapachehttpclient.java1">io/wcm/caravan/io/http/impl/ApacheHttpClient.java</h3>
+   <table class="bodyTable table table-striped table-hover">
+    <thead>
+     <tr class="a">
+      <th>Rule</th>
+      <th>Violation</th>
+      <th>Priority</th>
+      <th>Line</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr class="b">
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+      <td>Avoid catching Throwable in try-catch block</td>
+      <td>3</td>
+      <td><a href="./xref/io/wcm/caravan/io/http/impl/ApacheHttpClient.html#L108">108</a></td>
+     </tr>
+     <tr class="a">
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+      <td>Avoid catching Exception in try-catch block</td>
+      <td>3</td>
+      <td><a href="./xref/io/wcm/caravan/io/http/impl/ApacheHttpClient.html#L203">203</a></td>
+     </tr>
+    </tbody>
+   </table>
+  </section>
   <section>
    <a id="io.2Fwcm.2Fcaravan.2Fio.2Fhttp.2Fimpl.2FCaravanHttpCallbackExecutor.java"></a>
    <h3 id="iowcmcaravaniohttpimplcaravanhttpcallbackexecutor.1">io/wcm/caravan/io/http/impl/CaravanHttpCallbackExecutor.java</h3>
@@ -367,7 +445,7 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal">ClassWithOnlyPrivateConstructorsShouldBeFinal</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal">ClassWithOnlyPrivateConstructorsShouldBeFinal</a></td>
       <td>This class has only private constructors and may be final</td>
       <td>1</td>
       <td><a href="./xref/io/wcm/caravan/io/http/impl/CaravanHttpCallbackExecutor.html#L122">122</a></td>
@@ -389,13 +467,13 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_design.html#simplifyconditional">SimplifyConditional</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_design.html#simplifyconditional">SimplifyConditional</a></td>
       <td>No need to check for null before an instanceof</td>
       <td>3</td>
       <td><a href="./xref/io/wcm/caravan/io/http/impl/CaravanHttpServiceConfig.html#L239">239</a></td>
      </tr>
      <tr class="a">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_errorprone.html#invalidlogmessageformat">InvalidLogMessageFormat</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#invalidlogmessageformat">InvalidLogMessageFormat</a></td>
       <td>Missing arguments, expected 5 arguments but found 4</td>
       <td>5</td>
       <td><a href="./xref/io/wcm/caravan/io/http/impl/CaravanHttpServiceConfig.html#L335">335</a>–<a href="./xref/io/wcm/caravan/io/http/impl/CaravanHttpServiceConfig.html#L336">336</a></td>
@@ -417,7 +495,7 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_errorprone.html#invalidlogmessageformat">InvalidLogMessageFormat</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#invalidlogmessageformat">InvalidLogMessageFormat</a></td>
       <td>Too many arguments, expected 0 argument but found 1</td>
       <td>5</td>
       <td><a href="./xref/io/wcm/caravan/io/http/impl/CaravanHttpServiceConfigValidator.html#L63">63</a></td>
@@ -439,7 +517,7 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_errorprone.html#invalidlogmessageformat">InvalidLogMessageFormat</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#invalidlogmessageformat">InvalidLogMessageFormat</a></td>
       <td>Too many arguments, expected 0 argument but found 1</td>
       <td>5</td>
       <td><a href="./xref/io/wcm/caravan/io/http/impl/CaravanHttpThreadPoolConfig.html#L109">109</a></td>
@@ -461,10 +539,32 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
       <td>Unnecessary qualifier 'LoadBalancerFactory': 'SIMPLE' is already in scope because it is inherited by an enclosing type</td>
       <td>4</td>
       <td><a href="./xref/io/wcm/caravan/io/http/impl/ribbon/CachingLoadBalancerFactory.html#L42">42</a></td>
+     </tr>
+    </tbody>
+   </table>
+  </section>
+  <section>
+   <a id="io.2Fwcm.2Fcaravan.2Fio.2Fhttp.2Fimpl.2Fribbon.2FSimpleLoadBalancerFactory.java"></a>
+   <h3 id="iowcmcaravaniohttpimplribbonsimpleloadbalancerfact1">io/wcm/caravan/io/http/impl/ribbon/SimpleLoadBalancerFactory.java</h3>
+   <table class="bodyTable table table-striped table-hover">
+    <thead>
+     <tr class="a">
+      <th>Rule</th>
+      <th>Violation</th>
+      <th>Priority</th>
+      <th>Line</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr class="b">
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></td>
+      <td>Avoid catching NullPointerException in try-catch block</td>
+      <td>3</td>
+      <td><a href="./xref/io/wcm/caravan/io/http/impl/ribbon/SimpleLoadBalancerFactory.html#L50">50</a></td>
      </tr>
     </tbody>
    </table>
@@ -483,13 +583,19 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_bestpractices.html#preservestacktrace">PreserveStackTrace</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_bestpractices.html#preservestacktrace">PreserveStackTrace</a></td>
       <td>Thrown exception does not preserve the stack trace of exception 'ex' on all code paths</td>
       <td>3</td>
       <td><a href="./xref/io/wcm/caravan/io/http/impl/servletclient/HttpServletRequestMapper.html#L88">88</a></td>
      </tr>
      <tr class="a">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_performance.html#optimizabletoarraycall">OptimizableToArrayCall</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_errorprone.html#assignmentinoperand">AssignmentInOperand</a></td>
+      <td>Avoid assignment to index in operand</td>
+      <td>3</td>
+      <td><a href="./xref/io/wcm/caravan/io/http/impl/servletclient/HttpServletRequestMapper.html#L130">130</a></td>
+     </tr>
+     <tr class="b">
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_performance.html#optimizabletoarraycall">OptimizableToArrayCall</a></td>
       <td>This call to Collection.toArray() may be optimizable</td>
       <td>3</td>
       <td><a href="./xref/io/wcm/caravan/io/http/impl/servletclient/HttpServletRequestMapper.html#L160">160</a></td>
@@ -511,19 +617,19 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
       <td>Unnecessary qualifier 'HttpServletResponse': 'SC_OK' is already in scope because it is inherited by an enclosing type</td>
       <td>4</td>
       <td><a href="./xref/io/wcm/caravan/io/http/impl/servletclient/HttpServletResponseMapper.html#L57">57</a></td>
      </tr>
      <tr class="a">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
       <td>Unnecessary qualifier 'HttpServletResponse': 'SC_OK' is already in scope because it is inherited by an enclosing type</td>
       <td>4</td>
       <td><a href="./xref/io/wcm/caravan/io/http/impl/servletclient/HttpServletResponseMapper.html#L141">141</a></td>
      </tr>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
       <td>Unnecessary qualifier 'HttpServletResponse': 'SC_MOVED_TEMPORARILY' is already in scope because it is inherited by an enclosing type</td>
       <td>4</td>
       <td><a href="./xref/io/wcm/caravan/io/http/impl/servletclient/HttpServletResponseMapper.html#L199">199</a></td>
@@ -545,7 +651,7 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname">UnnecessaryFullyQualifiedName</a></td>
       <td>Unnecessary qualifier 'CaravanHttpRequest': 'CORRELATION_ID_HEADER_NAME' is already in scope because it is declared in an enclosing type</td>
       <td>4</td>
       <td><a href="./xref/io/wcm/caravan/io/http/request/CaravanHttpRequest.html#L174">174</a></td>
@@ -567,7 +673,7 @@
     </thead>
     <tbody>
      <tr class="b">
-      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_java_bestpractices.html#avoidstringbufferfield">AvoidStringBufferField</a></td>
+      <td><a class="externalLink" href="https://docs.pmd-code.org/pmd-doc-7.23.0/pmd_rules_java_bestpractices.html#avoidstringbufferfield">AvoidStringBufferField</a></td>
       <td>StringBuffers can grow quite a lot, and so may become a source of memory leak (if the owning class has a long life time).</td>
       <td>3</td>
       <td><a href="./xref/io/wcm/caravan/io/http/request/CaravanHttpRequestBuilder.html#L55">55</a></td>
@@ -596,7 +702,9 @@
     </li>
     <li class="dropdown"><a href="#priority_3" title="Priority 3">Priority 3 <b class="caret"></b></a>
       <ul class="nav nav-list">
+    <li><a href="#iowcmcaravaniohttpimplapachehttpclient.java" title="io/wcm/caravan/io/http/impl/ApacheHttpClient.java">io/wcm/caravan/io/http/impl/ApacheHttpClient.java</a>
     <li><a href="#iowcmcaravaniohttpimplcaravanhttpserviceconfig.jav" title="io/wcm/caravan/io/http/impl/CaravanHttpServiceConfig.java">io/wcm/caravan/io/http/impl/CaravanHttpServiceConfig.java</a>
+    <li><a href="#iowcmcaravaniohttpimplribbonsimpleloadbalancerfact" title="io/wcm/caravan/io/http/impl/ribbon/SimpleLoadBalancerFactory.java">io/wcm/caravan/io/http/impl/ribbon/SimpleLoadBalancerFactory.java</a>
     <li><a href="#iowcmcaravaniohttpimplservletclienthttpservletrequ" title="io/wcm/caravan/io/http/impl/servletclient/HttpServletRequestMapper.java">io/wcm/caravan/io/http/impl/servletclient/HttpServletRequestMapper.java</a>
     <li><a href="#iowcmcaravaniohttprequestcaravanhttprequestbuilder" title="io/wcm/caravan/io/http/request/CaravanHttpRequestBuilder.java">io/wcm/caravan/io/http/request/CaravanHttpRequestBuilder.java</a>
         <li class="divider"></li>
@@ -622,11 +730,13 @@
     </li>
     <li class="dropdown"><a href="#files" title="Files">Files <b class="caret"></b></a>
       <ul class="nav nav-list">
+    <li><a href="#iowcmcaravaniohttpimplapachehttpclient.java1" title="io/wcm/caravan/io/http/impl/ApacheHttpClient.java">io/wcm/caravan/io/http/impl/ApacheHttpClient.java</a>
     <li><a href="#iowcmcaravaniohttpimplcaravanhttpcallbackexecutor.1" title="io/wcm/caravan/io/http/impl/CaravanHttpCallbackExecutor.java">io/wcm/caravan/io/http/impl/CaravanHttpCallbackExecutor.java</a>
     <li><a href="#iowcmcaravaniohttpimplcaravanhttpserviceconfig.jav2" title="io/wcm/caravan/io/http/impl/CaravanHttpServiceConfig.java">io/wcm/caravan/io/http/impl/CaravanHttpServiceConfig.java</a>
     <li><a href="#iowcmcaravaniohttpimplcaravanhttpserviceconfigvali1" title="io/wcm/caravan/io/http/impl/CaravanHttpServiceConfigValidator.java">io/wcm/caravan/io/http/impl/CaravanHttpServiceConfigValidator.java</a>
     <li><a href="#iowcmcaravaniohttpimplcaravanhttpthreadpoolconfig.1" title="io/wcm/caravan/io/http/impl/CaravanHttpThreadPoolConfig.java">io/wcm/caravan/io/http/impl/CaravanHttpThreadPoolConfig.java</a>
     <li><a href="#iowcmcaravaniohttpimplribboncachingloadbalancerfac1" title="io/wcm/caravan/io/http/impl/ribbon/CachingLoadBalancerFactory.java">io/wcm/caravan/io/http/impl/ribbon/CachingLoadBalancerFactory.java</a>
+    <li><a href="#iowcmcaravaniohttpimplribbonsimpleloadbalancerfact1" title="io/wcm/caravan/io/http/impl/ribbon/SimpleLoadBalancerFactory.java">io/wcm/caravan/io/http/impl/ribbon/SimpleLoadBalancerFactory.java</a>
     <li><a href="#iowcmcaravaniohttpimplservletclienthttpservletrequ1" title="io/wcm/caravan/io/http/impl/servletclient/HttpServletRequestMapper.java">io/wcm/caravan/io/http/impl/servletclient/HttpServletRequestMapper.java</a>
     <li><a href="#iowcmcaravaniohttpimplservletclienthttpservletresp1" title="io/wcm/caravan/io/http/impl/servletclient/HttpServletResponseMapper.java">io/wcm/caravan/io/http/impl/servletclient/HttpServletResponseMapper.java</a>
     <li><a href="#iowcmcaravaniohttprequestcaravanhttprequest.java1" title="io/wcm/caravan/io/http/request/CaravanHttpRequest.java">io/wcm/caravan/io/http/request/CaravanHttpRequest.java</a>
@@ -788,8 +898,8 @@
     <div class="row">
       <div class="span12">
         <p class="pull-right"><a href="#body">Back to top</a></p>
-        <p class="copyright">Copyright &copy;2014-2025 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All Rights Reserved.</p>
-        <p class="version-date"><span class="projectVersion">Version: 0.10.3-SNAPSHOT. </span><span class="publishDate">Last Published: 2025-11-07. </span></p>
+        <p class="copyright">Copyright &copy;2014-2026 <a href="https://caravan.wcm.io">wcm.io Caravan</a>. All Rights Reserved.</p>
+        <p class="version-date"><span class="projectVersion">Version: 0.10.3-SNAPSHOT. </span><span class="publishDate">Last Published: 2026-04-17. </span></p>
       </div>
     </div>
   </div>
