@@ -57,7 +57,7 @@ Rhyme - Core Framework,io.wcm.caravan.rhyme.api.client,HalResourceLoaderBuilder,
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.client,HalApiClientBuilder,0,2,0,0,0,1,0,1,0,1
 Rhyme - Core Framework,io.wcm.caravan.rhyme.api.client,HalApiClient,0,26,0,0,0,15,0,4,0,4
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,TemplateVariableDetection,1,294,1,21,0,63,1,22,0,12
-Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils.MethodRelationComparator,2,38,1,7,1,9,1,5,0,2
+Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils.MethodRelationComparator,0,40,0,8,0,10,0,6,0,2
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,DefaultHalApiTypeSupport,0,284,0,52,0,66,0,55,0,29
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiTypeSupportAdapter.NoAdditionalReturnTypeSupport,0,11,0,0,0,5,0,5,0,5
 Rhyme - Core Framework,io.wcm.caravan.rhyme.impl.reflection,HalApiReflectionUtils.new InvocationHandler() {...},0,38,0,6,0,6,0,5,0,2
